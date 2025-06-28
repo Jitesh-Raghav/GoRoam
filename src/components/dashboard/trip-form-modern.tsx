@@ -53,7 +53,7 @@ export function ModernTripForm({ onSubmit, isLoading: externalLoading = false }:
     numberOfDays: 3,
     budget: 1000,
     numberOfPeople: 1,
-    tripType: "national" as const,
+    tripType: "national" as "national" | "international",
     interests: [] as string[],
   });
   
