@@ -96,7 +96,7 @@ function Noise({
       ctx.restore();
     };
 
-    let animationFrameId;
+    let animationFrameId: number | undefined;
     const loop = () => {
       // Only update and draw if dimensions are valid
       if (canvasCssSizeRef.current.width > 0 && canvasCssSizeRef.current.height > 0) {
@@ -167,8 +167,8 @@ function GradientBackground({
   const generateGradient = () => {
     if (customGradient) return customGradient;
     
-    const getGradientPosition = (origin) => {
-      const positions = {
+    const getGradientPosition = (origin: string) => {
+      const positions: Record<string, string> = {
         'bottom-middle': '50% 101%',
         'bottom-left': '0% 101%',
         'bottom-right': '100% 101%',
@@ -188,7 +188,7 @@ function GradientBackground({
     if (gradientType === 'radial-gradient') {
       return `radial-gradient(${gradientSize} at ${position},${colorStops})`;
     } else if (gradientType === 'linear-gradient') {
-      const angleMap = {
+      const angleMap: Record<string, string> = {
         'bottom-middle': '0deg',    // to top
         'bottom-left': '45deg',   // to top-right
         'bottom-right': '315deg', // to top-left
