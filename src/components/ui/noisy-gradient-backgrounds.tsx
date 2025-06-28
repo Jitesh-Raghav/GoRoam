@@ -9,7 +9,7 @@ function Noise({
   patternAlpha = 50,
   intensity = 1,
 }) {
-  const grainRef = useRef(null);
+  const grainRef = useRef<HTMLCanvasElement>(null);
   // Ref to store the CSS dimensions of the canvas to avoid repeated getBoundingClientRect in loop
   const canvasCssSizeRef = useRef({ width: 0, height: 0 });
 
