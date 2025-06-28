@@ -53,7 +53,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     numberOfDays: 3,
     budget: 1000,
     numberOfPeople: 1,
-    tripType: "national" as const,
+    tripType: "national" as "national" | "international",
     interests: [] as string[],
   });
   
