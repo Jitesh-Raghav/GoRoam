@@ -98,7 +98,7 @@ export default function ItineraryPage() {
         } else {
           setError(data.error || 'Failed to fetch itinerary');
         }
-      } catch (err) {
+      } catch {
         setError('Failed to fetch itinerary');
       } finally {
         setLoading(false);

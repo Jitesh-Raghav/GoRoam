@@ -28,11 +28,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const _userId = searchParams.get('userId');
-
     // In real implementation, this would fetch from database
     const mockItineraries = [
       {

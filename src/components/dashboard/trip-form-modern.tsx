@@ -159,7 +159,7 @@ export function ModernTripForm({ onSubmit, isLoading: externalLoading = false }:
           Plan Your Perfect Trip
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-          Tell us about your dream destination and we'll create a personalized itinerary just for you
+          Tell us about your dream destination and we&apos;ll create a personalized itinerary just for you
         </p>
       </div>
 
@@ -445,7 +445,7 @@ export function ModernTripForm({ onSubmit, isLoading: externalLoading = false }:
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   What interests you?
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">Select activities and experiences you'd love to include</p>
+                <p className="text-gray-600 dark:text-gray-400">Select activities and experiences you&apos;d love to include</p>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">

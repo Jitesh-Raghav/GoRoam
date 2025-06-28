@@ -65,7 +65,7 @@ export function TestimonialsSection() {
                   </div>
                   
                   <blockquote className="text-gray-700 mb-6 text-lg leading-relaxed">
-                    "{testimonial.content}"
+                    &quot;{testimonial.content}&quot;
                   </blockquote>
                   
                   <div className="flex items-center">

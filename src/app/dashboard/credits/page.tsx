@@ -220,7 +220,7 @@ function CreditsPageContent() {
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-400">
                   Each credit allows you to generate one complete AI-powered travel itinerary. 
-                  Credits don't expire and can be used anytime.
+                  Credits don&apos;t expire and can be used anytime.
                 </p>
               </CardContent>
             </Card>
@@ -231,7 +231,7 @@ function CreditsPageContent() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-400">
-                  We offer a 30-day money-back guarantee if you're not satisfied with our service. 
+                  We offer a 30-day money-back guarantee if you&apos;re not satisfied with our service. 
                   Contact support for assistance.
                 </p>
               </CardContent>
@@ -243,7 +243,7 @@ function CreditsPageContent() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-400">
-                  No! Your credits never expire. Use them whenever you're ready to plan your next adventure.
+                  No! Your credits never expire. Use them whenever you&apos;re ready to plan your next adventure.
                 </p>
               </CardContent>
             </Card>

@@ -57,7 +57,7 @@ export default function ItinerariesPage() {
           } else {
             setError(data.error || 'Failed to fetch itineraries');
           }
-        } catch (err) {
+        } catch {
           setError('Failed to fetch itineraries');
         } finally {
           setLoading(false);
@@ -187,7 +187,7 @@ export default function ItinerariesPage() {
                     Start Your Journey
                   </h3>
                   <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
-                    You haven't created any itineraries yet. Plan your first amazing trip!
+                    You haven&apos;t created any itineraries yet. Plan your first amazing trip!
                   </p>
                   <Button 
                     onClick={handleCreateNew}

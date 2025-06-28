@@ -12,16 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { 
   User, 
-  Mail, 
   Bell, 
   Shield, 
   Palette, 
-  Globe, 
-  CreditCard,
   Download,
   Trash2,
   Save
 } from "lucide-react";
+import Image from "next/image";
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
@@ -70,11 +68,15 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
-                <img
-                  src={session.user?.image || ""}
-                  alt="Profile"
-                  className="h-16 w-16 rounded-full border-2 border-orange-200"
-                />
+                {session.user?.image && (
+                  <Image
+                    src={session.user.image}
+                    alt="Profile"
+                    width={64}
+                    height={64}
+                    className="rounded-full border-2 border-orange-200"
+                  />
+                )}
                 <div className="flex-1">
                   <Button variant="outline" size="sm">
                     Change Avatar
