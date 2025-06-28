@@ -69,7 +69,13 @@ export default function AuthPage() {
         <Card className="backdrop-blur-md bg-gray-900/20 border-white/20 shadow-xl">
           <CardHeader className="text-center space-y-4">
             <div className="flex items-center justify-center">
-              <MapPin className="h-8 w-8 text-orange-400 mr-2" />
+            <Image
+                            src="/logo.png"
+                            alt="GoRoam Logo"
+                            width={40}
+                            height={40}
+                            className="w-12 h-12"
+                        />
               <h1 className="text-2xl font-bold text-white">GoRoam</h1>
             </div>
             <CardTitle className="text-xl text-white">

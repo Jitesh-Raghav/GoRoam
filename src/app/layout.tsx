@@ -18,16 +18,31 @@ export const metadata: Metadata = {
   description: "Plan your perfect trip with AI-powered itineraries. Get personalized travel plans, real-time maps, and downloadable PDFs in seconds.",
   keywords: ["travel planning", "AI itinerary", "trip planner", "travel app", "vacation planning"],
   authors: [{ name: "GoRoam Team" }],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "GoRoam - AI-Powered Travel Planning",
     description: "Create perfect travel itineraries with AI in minutes, not hours.",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "GoRoam - AI Travel Planning",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "GoRoam - AI Travel Planning",
     description: "Plan amazing trips with AI-powered itineraries",
+    images: ["/logo.png"],
   },
 };
 
