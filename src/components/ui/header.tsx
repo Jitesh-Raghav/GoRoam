@@ -24,7 +24,7 @@ function Header1() {
                             height={40}
                             className="w-12 h-12"
                         />
-                        <span className="text-2xl font-bold text-orange-600/90">GoRoam</span>
+                        <span className="text-2xl font-bold text-orange-600/90 hidden xl:block">GoRoam</span>
                     </Link>
                 </div>
 
