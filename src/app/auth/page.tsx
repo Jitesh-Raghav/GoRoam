@@ -7,6 +7,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { GradientBackground } from "@/components/ui/noisy-gradient-backgrounds";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function AuthPage() {
   const { data: session, status } = useSession();
@@ -111,11 +112,15 @@ export default function AuthPage() {
             ) : (
               <div className="space-y-4">
                 <div className="text-center">
-                  <img
-                    src={session.user?.image || ""}
-                    alt="Profile"
-                    className="w-16 h-16 rounded-full mx-auto mb-2 border-2 border-white/30"
-                  />
+                  {session.user?.image && (
+                    <Image
+                      src={session.user.image}
+                      alt="Profile"
+                      width={64}
+                      height={64}
+                      className="rounded-full mx-auto mb-2 border-2 border-white/30"
+                    />
+                  )}
                   <p className="text-white font-medium">{session.user?.email}</p>
                 </div>
                 <Button 

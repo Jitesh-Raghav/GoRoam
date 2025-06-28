@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       message: "Itinerary saved successfully"
     });
 
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to save itinerary' },
       { status: 500 }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    const _userId = searchParams.get('userId');
 
     // In real implementation, this would fetch from database
     const mockItineraries = [
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       data: mockItineraries
     });
 
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch itineraries' },
       { status: 500 }

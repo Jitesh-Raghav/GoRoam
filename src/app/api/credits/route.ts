@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // In real implementation, this would fetch from database based on user auth
     const mockUserCredits = {
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       data: mockUserCredits
     });
 
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch credits' },
       { status: 500 }
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
 
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to process credit transaction' },
       { status: 500 }
