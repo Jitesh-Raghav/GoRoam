@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, Sparkles, X } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight, Check, Loader2, Sparkles, X } from "lucide-react";
 import { useEffect } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { sceneForDestination } from "@/lib/destinations";
 import { PLANS, perTrip } from "@/lib/plans";
 import { titleCase } from "@/lib/trip";
 import { cn } from "@/lib/utils";
+import { useCheckout } from "./use-checkout";
 
 /** Where the planner stashes its answers while the traveller tops up. */
 export const PLANNER_DRAFT_KEY = "goroam:planner-draft";
@@ -20,6 +20,7 @@ export const PLANNER_DRAFT_KEY = "goroam:planner-draft";
 export function OutOfCredits({ destination, days, onClose }: { destination: string; days: number; onClose: () => void }) {
   const place = titleCase(destination.split(",")[0] || "your trip");
   const scene = sceneForDestination(destination || "mountains");
+  const checkout = useCheckout(0);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -79,11 +80,13 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
 
           <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
             {PLANS.map((p) => (
-              <Link
+              <button
                 key={p.id}
-                href={`/dashboard/credits?plan=${p.id}&return=planner`}
+                type="button"
+                onClick={() => checkout.start(p.id, "planner")}
+                disabled={checkout.pending !== null}
                 className={cn(
-                  "group relative flex flex-col rounded-[22px] p-4 ring-1 transition-colors",
+                  "group relative flex flex-col rounded-[22px] p-4 text-left ring-1 transition-colors disabled:cursor-wait",
                   p.popular ? "bg-ink text-paper ring-ink hover:bg-brand hover:ring-brand" : "bg-white/80 text-ink ring-line hover:bg-ink hover:text-paper"
                 )}
               >
@@ -97,13 +100,23 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
                 <span className="mt-1.5 text-sm">
                   {p.credits} trips <span className="opacity-60">· {perTrip(p)} each</span>
                 </span>
-                <ArrowUpRight className="absolute bottom-4 right-4 size-4 opacity-60 transition-transform duration-500 group-hover:rotate-45 group-hover:opacity-100" />
-              </Link>
+                {checkout.pending === p.id ? (
+                  <Loader2 className="absolute bottom-4 right-4 size-4 animate-spin" />
+                ) : (
+                  <ArrowUpRight className="absolute bottom-4 right-4 size-4 opacity-60 transition-transform duration-500 group-hover:rotate-45 group-hover:opacity-100" />
+                )}
+              </button>
             ))}
           </div>
 
+          {checkout.error && (
+            <p role="alert" className="mt-3 text-sm text-destructive">
+              {checkout.error}
+            </p>
+          )}
+
           <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-stone">
-            {["One-time payment", "Credits never expire", "30-day money-back guarantee"].map((t) => (
+            {["Cards, UPI & more", "Credits never expire", "30-day money-back guarantee"].map((t) => (
               <li key={t} className="inline-flex items-center gap-1.5">
                 <Check className="size-3.5 text-brand" /> {t}
               </li>

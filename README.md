@@ -58,7 +58,10 @@ src/
 - `/dashboard/book` - Booking hub
 - `/trip/[id]?t=…` - Public, read-only shared itinerary (signed link)
 - `/api/generate-itinerary` - POST endpoint for AI itinerary generation
-- `/api/credits` - GET/POST endpoints for credit management
+- `/api/user/credits` - GET the signed-in user's credit balance
+- `/api/checkout` - POST `{ planId }` to start a Dodo Payments checkout
+- `/api/webhooks/dodo` - Dodo Payments webhook (adds or removes credits)
+- `/api/payments` - GET the signed-in user's purchases
 - `/api/save-itinerary` - GET/POST endpoints for saving itineraries
 
 ## 💰 Pricing Plans
@@ -105,6 +108,21 @@ Besides `DATABASE_URL`, `NEXTAUTH_SECRET` (also signs share links), `NEXTAUTH_UR
 - `NEXT_PUBLIC_GYG_PARTNER_ID` - GetYourGuide partner id
 - `NEXT_PUBLIC_SKYSCANNER_ASSOCIATE` - Skyscanner associate id
 
+### Payments (Dodo Payments)
+
+Credit packs are sold through [Dodo Payments](https://dodopayments.com) hosted checkout. Credits are added **only** by the webhook, never by the redirect back to the site.
+
+1. In the Dodo dashboard (start in **Test mode**), create three **one-time** products priced like `src/lib/plans.ts`: Starter $9.99, Explorer $24.99, Adventurer $69.99.
+2. Add a webhook endpoint `https://<your-domain>/api/webhooks/dodo` subscribed to `payment.succeeded`, `refund.succeeded` and `dispute.lost`, and copy its signing secret.
+3. Set these environment variables (Vercel → Settings → Environment Variables):
+   - `DODO_PAYMENTS_API_KEY` - API key
+   - `DODO_PAYMENTS_WEBHOOK_KEY` - webhook signing secret
+   - `DODO_PAYMENTS_ENVIRONMENT` - `test_mode` (default) or `live_mode`
+   - `DODO_PRODUCT_STARTER`, `DODO_PRODUCT_EXPLORER`, `DODO_PRODUCT_ADVENTURER` - the product ids (`pdt_…`)
+4. Run `npx prisma db push` once to create the `Payment` table.
+
+Until the API key and all three product ids are set, the buy buttons show "Online checkout isn't available yet." When going live, switch to live-mode keys, live product ids and a live webhook secret together.
+
 ## 🔧 Development
 
 ### Available Scripts
@@ -149,14 +167,12 @@ POST /api/generate-itinerary
 }
 ```
 
-### Credit Management
+### Credits & payments
 ```typescript
-GET /api/credits
-POST /api/credits
-{
-  "action": "purchase" | "deduct",
-  "amount": 20
-}
+GET  /api/user/credits            // → { credits }
+POST /api/checkout                // { planId: "starter" | "explorer" | "adventurer" } → { url }
+POST /api/webhooks/dodo           // signed by Dodo; payment.succeeded / refund.succeeded / dispute.lost
+GET  /api/payments                // → purchase history
 ```
 
 ### Save Itinerary
