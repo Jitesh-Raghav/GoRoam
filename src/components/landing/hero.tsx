@@ -170,7 +170,7 @@ export function Hero() {
               transition={{ duration: 1.2, delay: delay + 0.95 }}
               className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone"
             >
-              {["3 free itineraries", "No card needed", "Ready in seconds"].map((t) => (
+              {["First trip free", "No card needed", "Ready in seconds"].map((t) => (
                 <li key={t} className="flex items-center gap-2">
                   <Check className="size-4 text-brand" /> {t}
                 </li>

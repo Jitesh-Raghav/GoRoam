@@ -5,7 +5,7 @@ import { Mail, Plus } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
-import { FREE_CREDITS, PLANS } from "@/lib/plans";
+import { PLANS, freeTrips } from "@/lib/plans";
 import { SectionHeading } from "./section-heading";
 
 export const FAQS = [
@@ -15,7 +15,7 @@ export const FAQS = [
   },
   {
     q: "What is a credit?",
-    a: `One credit creates one complete itinerary. Every new account starts with ${FREE_CREDITS} free credits, and packs of ${PLANS.map((p) => p.credits).join(", ").replace(/, (\d+)$/, " or $1")} credits start at $${PLANS[0].price}.`,
+    a: `One credit creates one complete itinerary. Every new account starts with ${freeTrips()}, and packs of ${PLANS.map((p) => p.credits).join(", ").replace(/, (\d+)$/, " or $1")} credits start at $${PLANS[0].price}.`,
   },
   {
     q: "Do credits expire?",

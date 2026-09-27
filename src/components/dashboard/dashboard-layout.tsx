@@ -19,6 +19,8 @@ interface DashboardLayoutProps {
 
 interface CreditContextType {
   credits: number;
+  /** False until the balance has been fetched, so 0 isn't mistaken for "out of credits". */
+  creditsLoaded: boolean;
   refreshCredits: () => Promise<void>;
 }
 
@@ -165,6 +167,7 @@ function ShellLoading() {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [credits, setCredits] = useState(0); // Start with 0, will be fetched from API
+  const [creditsLoaded, setCreditsLoaded] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -177,6 +180,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         const data = await response.json();
         if (data.success) {
           setCredits(data.credits);
+          setCreditsLoaded(true);
         }
       } catch (error) {
         console.error("Error fetching credits:", error);
@@ -205,7 +209,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <CreditContext.Provider value={{ credits, refreshCredits: fetchCredits }}>
+    <CreditContext.Provider value={{ credits, creditsLoaded, refreshCredits: fetchCredits }}>
       <div className="min-h-svh bg-paper lg:flex">
         {/* Desktop sidebar */}
         <aside className="no-print sticky top-0 hidden h-svh w-72 shrink-0 border-r border-line bg-paper-2/50 lg:block">

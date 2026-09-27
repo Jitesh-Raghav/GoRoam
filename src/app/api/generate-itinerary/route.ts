@@ -18,6 +18,7 @@ import {
   type Option,
   type TripPreferences,
 } from '@/lib/trip';
+import { FREE_CREDITS } from '@/lib/plans';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -247,7 +248,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       }, { status: 404 });
     }
 
-    const userCredits = user.credits ?? 3; // Default to 3 only if null/undefined, not if 0
+    const userCredits = user.credits ?? FREE_CREDITS; // Only when null/undefined, not when 0
     if (userCredits < 1) {
       return NextResponse.json({
         success: false,
