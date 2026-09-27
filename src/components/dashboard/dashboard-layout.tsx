@@ -1,24 +1,15 @@
 "use client";
 
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Home, 
-  MapPin, 
-  CreditCard, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X,
-  User
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
+import { Compass, CreditCard, LogOut, Map as MapIcon, Plus, Settings, X, Menu } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/site/logo";
+import { Scene } from "@/components/scenes/scene";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -41,243 +32,249 @@ export const useCredits = () => {
   return context;
 };
 
-interface NavItem {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  href: string;
-  onClick?: () => void;
+const NAV = [
+  { icon: Compass, label: "Plan a trip", href: "/dashboard" },
+  { icon: MapIcon, label: "My itineraries", href: "/dashboard/itineraries" },
+  { icon: CreditCard, label: "Credits", href: "/dashboard/credits" },
+  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+];
+
+function Avatar({ src, name, className }: { src?: string | null; name?: string | null; className?: string }) {
+  if (src) {
+    return <Image src={src} alt="" width={40} height={40} className={cn("rounded-full object-cover", className)} />;
+  }
+  return (
+    <span className={cn("grid place-items-center rounded-full bg-brand-soft font-medium text-brand", className)}>
+      {(name ?? "T").charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
+function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?: () => void }) {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const isActive = (href: string) => (href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href));
+  const inItinerary = pathname.startsWith("/dashboard/itinerary/");
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex h-20 items-center px-6">
+        <Logo />
+      </div>
+
+      <div className="px-4">
+        <Link
+          href="/dashboard"
+          onClick={onNavigate}
+          className="group flex h-12 items-center justify-between rounded-2xl bg-ink pl-4 pr-2 text-sm font-medium text-paper transition-colors hover:bg-brand"
+        >
+          New trip
+          <span className="grid size-8 place-items-center rounded-xl bg-paper/10 transition-transform duration-500 ease-out-expo group-hover:rotate-90">
+            <Plus className="size-4" />
+          </span>
+        </Link>
+      </div>
+
+      <nav aria-label="Dashboard" className="mt-6 space-y-1 px-4">
+        <p className="eyebrow px-3 pb-2 text-[0.62rem] text-stone-2">Menu</p>
+        {NAV.map((item) => {
+          const active = isActive(item.href) || (item.href === "/dashboard/itineraries" && inItinerary);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "relative flex h-11 items-center gap-3 rounded-xl px-3 text-[0.95rem] transition-colors",
+                active ? "text-ink" : "text-ink/60 hover:text-ink"
+              )}
+            >
+              {active && (
+                <motion.span
+                  layoutId="sidebar-active"
+                  className="absolute inset-0 rounded-xl bg-white shadow-[0_8px_24px_-16px_rgba(21,19,15,0.4)] ring-1 ring-line"
+                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                />
+              )}
+              <item.icon className={cn("relative size-[18px]", active && "text-brand")} />
+              <span className="relative">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="mt-auto space-y-3 p-4">
+        <Link
+          href="/dashboard/credits"
+          onClick={onNavigate}
+          className="group relative block overflow-hidden rounded-3xl bg-ink p-5 text-paper"
+        >
+          <div className="absolute inset-0 opacity-60 transition-opacity duration-700 group-hover:opacity-80">
+            <Scene id="peaks" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
+          <div className="relative">
+            <p className="eyebrow text-[0.62rem] text-paper/60">Credits left</p>
+            <p className="display mt-2 text-5xl leading-none">{credits}</p>
+            <p className="mt-2 text-xs text-paper/60">1 credit = 1 itinerary</p>
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs ring-1 ring-inset ring-paper/15 backdrop-blur transition-colors group-hover:bg-paper group-hover:text-ink">
+              <Plus className="size-3.5" /> Top up
+            </span>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-3 rounded-2xl p-2">
+          <Avatar src={session?.user?.image} name={session?.user?.name} className="size-10 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-ink">{session?.user?.name || "Traveller"}</p>
+            <p className="truncate text-xs text-stone">{session?.user?.email}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            aria-label="Sign out"
+            title="Sign out"
+            className="grid size-9 shrink-0 place-items-center rounded-full text-ink/60 transition-colors hover:bg-ink hover:text-paper"
+          >
+            <LogOut className="size-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShellLoading() {
+  return (
+    <div className="grid min-h-svh place-items-center bg-paper">
+      <div className="flex flex-col items-center gap-5">
+        <div className="relative size-14">
+          <span className="animate-ping-soft absolute inset-0 rounded-full bg-brand/30" />
+          <span className="absolute inset-0 grid place-items-center rounded-full bg-ink">
+            <Compass className="size-6 animate-spin text-paper [animation-duration:2.4s]" />
+          </span>
+        </div>
+        <p className="eyebrow text-stone">Unpacking your dashboard</p>
+      </div>
+    </div>
+  );
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [credits, setCredits] = useState(0); // Start with 0, will be fetched from API
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
 
   // Function to fetch user credits
-  const fetchCredits = async () => {
+  const fetchCredits = useCallback(async () => {
     if (session?.user?.email) {
       try {
-        const response = await fetch('/api/user/credits');
+        const response = await fetch("/api/user/credits");
         const data = await response.json();
         if (data.success) {
           setCredits(data.credits);
         }
       } catch (error) {
-        console.error('Error fetching credits:', error);
+        console.error("Error fetching credits:", error);
       }
     }
-  };
+  }, [session?.user?.email]);
 
   // Fetch user credits on mount
   useEffect(() => {
     fetchCredits();
-  }, [session?.user?.email]);
+  }, [fetchCredits]);
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
-  };
+  // Signed-out visitors go to sign in, then come straight back here.
+  useEffect(() => {
+    if (status !== "unauthenticated") return;
+    const here = `${window.location.pathname}${window.location.search}`;
+    router.replace(`/auth?callbackUrl=${encodeURIComponent(here)}`);
+  }, [status, router]);
 
-  const navItems: NavItem[] = [
-    {
-      icon: Home,
-      label: "Home",
-      href: "/dashboard",
-    },
-    {
-      icon: MapPin,
-      label: "All Itineraries",
-      href: "/dashboard/itineraries",
-    },
-    {
-      icon: CreditCard,
-      label: "Buy Credits",
-      href: "/dashboard/credits",
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      href: "/dashboard/settings",
-    },
-    {
-      icon: LogOut,
-      label: "Logout",
-      href: "#",
-      onClick: handleSignOut,
-    },
-  ];
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
-  const handleNavClick = (item: NavItem) => {
-    if (item.onClick) {
-      item.onClick();
-    } else {
-      router.push(item.href);
-    }
-    setSidebarOpen(false); // Close mobile sidebar after navigation
-  };
-
-  const isActive = (href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
-    }
-    return pathname.startsWith(href);
-  };
+  if (status !== "authenticated" || !session) {
+    return <ShellLoading />;
+  }
 
   return (
     <CreditContext.Provider value={{ credits, refreshCredits: fetchCredits }}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 lg:flex">
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-      </AnimatePresence>
+      <div className="min-h-svh bg-paper lg:flex">
+        {/* Desktop sidebar */}
+        <aside className="no-print sticky top-0 hidden h-svh w-72 shrink-0 border-r border-line bg-paper-2/50 lg:block">
+          <SidebarContent credits={credits} />
+        </aside>
 
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed top-0 left-0 z-50 h-screen w-64 bg-white dark:bg-gray-800 shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:shadow-none lg:flex-shrink-0 lg:sticky lg:top-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        )}
-      >
-        <div className="flex h-full flex-col overflow-hidden">
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-3">
-            <Image
-                            src="/logo.png"
-                            alt="GoRoam Logo"
-                            width={40}
-                            height={40}
-                            className="w-12 h-12"
-                        />
-              <span className="text-xl font-bold text-orange-600/90 dark:text-white">GoRoam</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-
-          {/* User Info */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <img
-                  src={session?.user?.image || ""}
-                  alt="Profile"
-                  className="h-10 w-10 rounded-full border-2 border-orange-200"
-                />
-                <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white"></div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {session?.user?.name || "User"}
-                </p>
-                <div className="flex items-center space-x-1">
-                  <CreditCard className="h-3 w-3 text-orange-500" />
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {credits} credits
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item)}
-                  className={cn(
-                    "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 hover:scale-[1.02] cursor-pointer",
-                    active
-                      ? "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-                  )}
-                >
-                  <Icon className={cn("h-5 w-5", active ? "text-orange-600" : "")} />
-                  <span className="font-medium">{item.label}</span>
-                  {active && (
-                    <div className="ml-auto h-2 w-2 rounded-full bg-orange-500" />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Credits Card */}
-          <div className="p-4">
-            <Card className="p-4 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
-                    Credits
-                  </p>
-                                  <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
-                  {credits}
-                </p>
-                </div>
-                <Badge variant="secondary" className="bg-orange-200 text-orange-800">
-                  Free Plan
-                </Badge>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 lg:flex lg:flex-col min-w-0">
-        {/* Mobile Header */}
-        <header className="lg:hidden bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between px-4 py-3">
-            <Button
-              variant="ghost"
-              size="sm"
+        {/* Mobile top bar */}
+        <header className="no-print sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-paper/80 px-4 backdrop-blur-xl lg:hidden">
+          <Logo />
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard/credits" className="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.06] px-3 py-1.5 text-sm text-ink">
+              <CreditCard className="size-3.5 text-brand" />
+              {credits}
+            </Link>
+            <button
+              type="button"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
+              className="grid size-10 place-items-center rounded-full bg-ink text-paper"
             >
-              <Menu className="h-6 w-6" />
-            </Button>
-            <div className="flex items-center space-x-3">
-              <MapPin className="h-6 w-6 text-orange-500" />
-              <span className="font-bold text-gray-900 dark:text-white">GoRoam</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <CreditCard className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{credits}</span>
-            </div>
+              <Menu className="size-4" />
+            </button>
           </div>
         </header>
 
+        {/* Mobile drawer */}
+        <AnimatePresence>
+          {sidebarOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+              <motion.aside
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "spring", stiffness: 380, damping: 40 }}
+                className="fixed inset-y-0 left-0 z-50 w-[86vw] max-w-xs bg-paper shadow-2xl lg:hidden"
+              >
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(false)}
+                  aria-label="Close menu"
+                  className="absolute right-4 top-5 grid size-10 place-items-center rounded-full bg-ink/[0.06] text-ink"
+                >
+                  <X className="size-4" />
+                </button>
+                <SidebarContent credits={credits} onNavigate={() => setSidebarOpen(false)} />
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>
+
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-6">
+        <main className="min-w-0 flex-1">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            key={pathname}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="px-4 py-8 sm:px-8 lg:px-12 lg:py-10"
           >
             {children}
           </motion.div>
         </main>
       </div>
-    </div>
     </CreditContext.Provider>
   );
-} 
+}

@@ -78,3 +78,56 @@ export async function GET(
     }, { status: 500 });
   }
 } 
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({
+        success: false,
+        error: 'Authentication required'
+      }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true }
+    });
+
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        error: 'User not found'
+      }, { status: 404 });
+    }
+
+    // Scoped to the owner, so nobody can delete someone else's trip.
+    const result = await prisma.itinerary.deleteMany({
+      where: {
+        id: id,
+        userId: user.id
+      }
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'Itinerary not found'
+      }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+
+  } catch (error) {
+    console.error('Error deleting itinerary:', error);
+
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Internal server error'
+    }, { status: 500 });
+  }
+}

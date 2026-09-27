@@ -1,28 +1,15 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, Crown, Info, Plus, Sparkles, Star, Zap } from "lucide-react";
 import { DashboardLayout, useCredits } from "@/components/dashboard/dashboard-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CreditCard, Check, Star, Zap, Crown } from "lucide-react";
+import { Scene } from "@/components/scenes/scene";
+import { SplitText } from "@/components/motion/split-text";
+import { PillButton, PillLink } from "@/components/site/pill";
+import { cn } from "@/lib/utils";
 
 export default function CreditsPage() {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    redirect("/auth");
-  }
-
   return (
     <DashboardLayout>
       <CreditsPageContent />
@@ -30,236 +17,209 @@ export default function CreditsPage() {
   );
 }
 
+const plans = [
+  {
+    name: "Starter",
+    credits: 50,
+    price: 9.99,
+    description: "Perfect for occasional travelers",
+    icon: Zap,
+    features: ["50 AI-generated itineraries", "Basic customization", "PDF downloads", "Email support"],
+    popular: false,
+  },
+  {
+    name: "Explorer",
+    credits: 150,
+    price: 24.99,
+    description: "Great for frequent travelers",
+    icon: Star,
+    features: [
+      "150 AI-generated itineraries",
+      "Advanced customization",
+      "PDF & Excel downloads",
+      "Priority support",
+      "Save favorite locations",
+      "Trip sharing",
+    ],
+    popular: true,
+  },
+  {
+    name: "Adventurer",
+    credits: 500,
+    price: 69.99,
+    description: "For travel enthusiasts",
+    icon: Crown,
+    features: [
+      "500 AI-generated itineraries",
+      "Premium customization",
+      "All download formats",
+      "24/7 priority support",
+      "Advanced trip analytics",
+      "Unlimited trip sharing",
+      "Custom branding",
+      "API access",
+    ],
+    popular: false,
+  },
+];
+
+const faqs = [
+  {
+    q: "How do credits work?",
+    a: "Each credit allows you to generate one complete AI-powered travel itinerary. Credits don't expire and can be used anytime.",
+  },
+  {
+    q: "Can I get a refund?",
+    a: "We offer a 30-day money-back guarantee if you're not satisfied with our service. Contact support for assistance.",
+  },
+  {
+    q: "Do credits expire?",
+    a: "No! Your credits never expire. Use them whenever you're ready to plan your next adventure.",
+  },
+  {
+    q: "Need more credits?",
+    a: "Contact our sales team for custom enterprise plans with bulk pricing and additional features.",
+  },
+];
+
 function CreditsPageContent() {
   const { credits } = useCredits();
-
-  const plans = [
-    {
-      name: "Starter",
-      credits: 50,
-      price: 9.99,
-      description: "Perfect for occasional travelers",
-      icon: Zap,
-      features: [
-        "50 AI-generated itineraries",
-        "Basic customization",
-        "PDF downloads",
-        "Email support"
-      ],
-      popular: false,
-      color: "blue"
-    },
-    {
-      name: "Explorer",
-      credits: 150,
-      price: 24.99,
-      description: "Great for frequent travelers",
-      icon: Star,
-      features: [
-        "150 AI-generated itineraries",
-        "Advanced customization",
-        "PDF & Excel downloads",
-        "Priority support",
-        "Save favorite locations",
-        "Trip sharing"
-      ],
-      popular: true,
-      color: "orange"
-    },
-    {
-      name: "Adventurer",
-      credits: 500,
-      price: 69.99,
-      description: "For travel enthusiasts",
-      icon: Crown,
-      features: [
-        "500 AI-generated itineraries",
-        "Premium customization",
-        "All download formats",
-        "24/7 priority support",
-        "Advanced trip analytics",
-        "Unlimited trip sharing",
-        "Custom branding",
-        "API access"
-      ],
-      popular: false,
-      color: "purple"
-    }
-  ];
+  const [notice, setNotice] = useState<string | null>(null);
 
   return (
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Choose Your Credit Plan
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Get more credits to unlock unlimited AI-powered travel planning. 
-            Each credit generates one complete itinerary with personalized recommendations.
-          </p>
+    <div className="mx-auto max-w-[1280px]">
+      <header>
+        <p className="eyebrow text-stone">Credits</p>
+        <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+          <SplitText text="More trips," trigger="mount" className="block" />
+          <SplitText segments={[{ text: "fewer spreadsheets.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+        </h1>
+      </header>
+
+      {/* Balance */}
+      <section className="relative mt-10 overflow-hidden rounded-[32px] bg-ink text-paper">
+        <div className="absolute inset-0 opacity-90">
+          <Scene id="santorini" intro />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/10" />
+        <div className="relative flex flex-col gap-8 p-8 sm:p-12 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="eyebrow text-paper/60">Current balance</p>
+            <p className="display mt-4 text-[clamp(5rem,12vw,9rem)] leading-[0.8]">{credits}</p>
+            <p className="mt-4 max-w-sm text-paper/70">
+              {credits === 1 ? "credit" : "credits"} left · each credit plans one complete itinerary, and they never expire.
+            </p>
+          </div>
+          <PillLink href="/dashboard" variant="paper" icon={<Plus className="size-4" />}>
+            Plan a trip
+          </PillLink>
+        </div>
+      </section>
+
+      {/* Plans */}
+      <section className="mt-16">
+        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+          <h2 className="display text-4xl text-ink">Choose a credit pack</h2>
+          <p className="text-sm text-stone">One-time payments · no subscription</p>
         </div>
 
-        {/* Current Credits Status */}
-        <Card className="mb-8 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-orange-100 dark:bg-orange-800/50 rounded-full">
-                  <CreditCard className="h-6 w-6 text-orange-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100">
-                    Current Balance
-                  </h3>
-                  <p className="text-sm text-orange-700 dark:text-orange-300">
-                    You have {credits} credits remaining
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">
-                  {credits}
-                </div>
-                <div className="text-sm text-orange-700 dark:text-orange-300">
-                  Credits
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <AnimatePresence>
+          {notice && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              role="status"
+              className="mt-6 flex items-start gap-3 rounded-2xl bg-brand-soft/60 p-4 text-sm text-ink ring-1 ring-brand/20"
+            >
+              <Info className="mt-0.5 size-4 shrink-0 text-brand" />
+              <p>
+                {notice} Email{" "}
+                <a href="mailto:hello@goroam.com" className="font-medium underline underline-offset-4">
+                  hello@goroam.com
+                </a>{" "}
+                and we&apos;ll get you topped up.
+              </p>
+              <button type="button" onClick={() => setNotice(null)} className="ml-auto text-stone hover:text-ink" aria-label="Dismiss">
+                ✕
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Pricing Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan) => {
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {plans.map((plan, i) => {
             const Icon = plan.icon;
             return (
-              <Card 
-                key={plan.name} 
-                className={`relative overflow-hidden ${
-                  plan.popular 
-                    ? "ring-2 ring-orange-500 shadow-lg scale-105" 
-                    : "hover:shadow-lg"
-                } transition-all duration-200`}
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
+                className={cn(
+                  "relative flex flex-col overflow-hidden rounded-[32px] p-8",
+                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(217,85,1,0.55)]" : "bg-white/80 text-ink ring-1 ring-line"
+                )}
               >
                 {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 bg-orange-500 text-white text-center py-2 text-sm font-medium">
-                    Most Popular
-                  </div>
+                  <>
+                    <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-brand/30 blur-3xl" />
+                    <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white">
+                      <Sparkles className="size-3.5" /> Most popular
+                    </span>
+                  </>
                 )}
-                
-                <CardHeader className={plan.popular ? "pt-12" : ""}>
-                  <div className="flex items-center justify-between">
-                    <div className={`p-3 rounded-full ${
-                      plan.color === "orange" ? "bg-orange-100 text-orange-600" :
-                      plan.color === "blue" ? "bg-blue-100 text-blue-600" :
-                      "bg-purple-100 text-purple-600"
-                    }`}>
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    {plan.popular && (
-                      <Badge className="bg-orange-100 text-orange-800">Popular</Badge>
-                    )}
-                  </div>
-                  
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  
-                  <div className="pt-4">
-                    <div className="flex items-baseline">
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                        ${plan.price}
-                      </span>
-                      <span className="text-gray-500 dark:text-gray-400 ml-2">
-                        one-time
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      {plan.credits} credits included
-                    </div>
-                  </div>
-                </CardHeader>
+                <span className={cn("grid size-11 place-items-center rounded-2xl", plan.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
+                  <Icon className="size-5" />
+                </span>
+                <p className={cn("eyebrow mt-6", plan.popular ? "text-paper/60" : "text-stone")}>{plan.name}</p>
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className="display text-6xl leading-none">${plan.price}</span>
+                  <span className={cn("text-sm", plan.popular ? "text-paper/60" : "text-stone")}>one-time</span>
+                </div>
+                <p className={cn("mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
+                  {plan.credits} credits
+                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>
+                    ≈ ${(plan.price / plan.credits).toFixed(2)} per trip
+                  </span>
+                </p>
+                <p className={cn("mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.description}</p>
 
-                <CardContent>
-                  <Button 
-                    className={`w-full mb-6 ${
-                      plan.popular 
-                        ? "bg-orange-500 hover:bg-orange-600" 
-                        : "bg-gray-900 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    Purchase Credits
-                  </Button>
+                <PillButton
+                  type="button"
+                  variant={plan.popular ? "brand" : "ink"}
+                  size="lg"
+                  className="mt-8 w-full justify-between"
+                  onClick={() => setNotice(`Online checkout for the ${plan.name} pack isn't live yet.`)}
+                >
+                  Purchase credits
+                </PillButton>
 
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center space-x-3">
-                        <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <ul className="mt-8 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", plan.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
+                        <Check className="size-3" />
+                      </span>
+                      <span className={cn("text-sm", plan.popular ? "text-paper/85" : "text-ink/80")}>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
             );
           })}
         </div>
+      </section>
 
-        {/* FAQ Section */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-            Frequently Asked Questions
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">How do credits work?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Each credit allows you to generate one complete AI-powered travel itinerary. 
-                  Credits don&apos;t expire and can be used anytime.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Can I get a refund?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
-                  We offer a 30-day money-back guarantee if you&apos;re not satisfied with our service. 
-                  Contact support for assistance.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Do credits expire?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
-                  No! Your credits never expire. Use them whenever you&apos;re ready to plan your next adventure.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Need more credits?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Contact our sales team for custom enterprise plans with bulk pricing and additional features.
-                </p>
-              </CardContent>
-            </Card>
+      {/* FAQ */}
+      <section className="mt-16 grid gap-3 md:grid-cols-2">
+        {faqs.map((f) => (
+          <div key={f.q} className="rounded-3xl bg-white/80 p-6 ring-1 ring-line">
+            <h3 className="display text-2xl text-ink">{f.q}</h3>
+            <p className="mt-2 leading-relaxed text-stone">{f.a}</p>
           </div>
-        </div>
-      </div>
+        ))}
+      </section>
+    </div>
   );
-} 
+}

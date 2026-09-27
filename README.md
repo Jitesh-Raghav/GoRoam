@@ -15,9 +15,10 @@ A modern, full-stack SaaS application for planning travel itineraries using AI t
 
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Shadcn UI
-- **Animations**: Framer Motion
+- **Styling**: Tailwind CSS v4
+- **UI Components**: Shadcn UI primitives + a custom design system
+- **Animations**: Framer Motion, Lenis (smooth scroll), cobe (WebGL globe)
+- **Illustrations**: Procedural SVG destination scenes (no image assets)
 - **Icons**: Lucide React
 
 ## 📁 Project Structure
@@ -107,9 +108,10 @@ npx shadcn@latest add [component-name]
 
 ## 🎨 Design System
 
-- **Primary Color**: Blue (#2563eb)
-- **Typography**: Geist Sans & Geist Mono
-- **Spacing**: Tailwind's default spacing scale
+- **Palette**: warm paper (`#f5f1ea`), ink (`#15130f`) and the brand orange from the logo (`#d95501`) — defined as tokens in `src/app/globals.css` (`bg-paper`, `text-ink`, `text-brand`, …)
+- **Typography**: Instrument Serif for display, Geist Sans for UI, Geist Mono for labels and coordinates
+- **Motion**: masked word reveals, scroll-linked sections, magnetic pills; everything respects `prefers-reduced-motion`
+- **Illustrations**: `src/components/scenes/` renders every destination as a layered, animated SVG scene — monuments in `monuments.ts`, compositions in `scenes.tsx`. `sceneForDestination()` in `src/lib/destinations.ts` picks a poster for any trip
 - **Breakpoints**: Mobile-first responsive design
 
 ## 📱 Responsive Design

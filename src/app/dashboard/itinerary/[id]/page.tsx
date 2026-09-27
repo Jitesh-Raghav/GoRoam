@@ -1,26 +1,30 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  Calendar, 
-  MapPin, 
-  Users, 
-  DollarSign, 
-  Clock, 
-  ExternalLink, 
-  Sunrise,
-  Sun,
-  Moon,
-  Star,
-  Heart,
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  CalendarDays,
+  Clock3,
   Download,
-  ArrowLeft
+  Heart,
+  MapPin,
+  Moon,
+  Plus,
+  Sparkles,
+  Sun,
+  Sunrise,
+  Users,
+  Wallet,
 } from 'lucide-react';
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
+import { Scene } from '@/components/scenes/scene';
+import { PillLink } from '@/components/site/pill';
+import { sceneForDestination } from '@/lib/destinations';
+import { cn } from '@/lib/utils';
 
 interface PlaceDetails {
   name: string;
@@ -69,23 +73,123 @@ interface ItineraryDetails {
   createdAt: string;
 }
 
-const timeOfDayIcons = {
-  morning: Sunrise,
-  afternoon: Sun,
-  evening: Moon
+const SLOTS = [
+  { key: 'morning', label: 'Morning', icon: Sunrise },
+  { key: 'afternoon', label: 'Afternoon', icon: Sun },
+  { key: 'evening', label: 'Evening', icon: Moon },
+] as const;
+
+const ease = [0.16, 1, 0.3, 1] as const;
+const money = (n: number | undefined) => `$${Math.round(n ?? 0).toLocaleString('en-US')}`;
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const fmt = (iso: string, opts: Intl.DateTimeFormatOptions) =>
+  new Date(iso).toLocaleDateString('en-US', { ...opts, timeZone: 'UTC' });
+
+const dayDate = (startIso: string, offset: number) => {
+  const d = new Date(startIso);
+  d.setUTCDate(d.getUTCDate() + offset);
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 };
 
-const timeOfDayColors = {
-  morning: "from-orange-300 to-orange-500",
-  afternoon: "from-orange-400 to-orange-600", 
-  evening: "from-orange-500 to-orange-700"
-};
+// A search URL is more reliable than whatever link the model returns.
+const mapsUrl = (place: string, destination: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place}, ${destination}`)}`;
 
-export default function ItineraryPage() {
+function Loading() {
+  return (
+    <div className="mx-auto max-w-[1280px] space-y-6">
+      <div className="skeleton h-[min(60vh,520px)] rounded-[32px]" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="skeleton h-28 rounded-3xl" />
+        ))}
+      </div>
+      <div className="skeleton h-64 rounded-[28px]" />
+    </div>
+  );
+}
+
+function NotFound({ message }: { message: string }) {
+  return (
+    <div className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[36px] bg-ink">
+      <div className="absolute inset-0">
+        <Scene id="dunes" intro />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent" />
+      <div className="relative max-w-lg p-8 py-20 text-paper sm:p-14">
+        <p className="eyebrow text-paper/60">Itinerary not found</p>
+        <h1 className="display mt-4 text-5xl leading-[0.95]">
+          This trip seems to have <span className="italic text-brand-2">wandered off.</span>
+        </h1>
+        <p className="mt-4 text-paper/70">{message}</p>
+        <PillLink href="/dashboard/itineraries" variant="paper" className="mt-8" icon={<ArrowLeft className="size-4" />}>
+          Back to itineraries
+        </PillLink>
+      </div>
+    </div>
+  );
+}
+
+function Slot({
+  slot,
+  activity,
+  destination,
+  last,
+}: {
+  slot: (typeof SLOTS)[number];
+  activity?: ActivitySlot;
+  destination: string;
+  last: boolean;
+}) {
+  if (!activity?.place?.name) return null;
+  const Icon = slot.icon;
+  return (
+    <motion.li
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease }}
+      className="print-avoid relative pb-8 pl-16 last:pb-0"
+    >
+      {!last && <span aria-hidden className="absolute bottom-0 left-[21px] top-12 w-px bg-line" />}
+      <span className="absolute left-0 top-0 grid size-11 place-items-center rounded-2xl bg-brand-soft text-brand">
+        <Icon className="size-5" />
+      </span>
+      <div className="rounded-3xl bg-white/80 p-5 ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_30px_60px_-45px_rgba(21,19,15,0.5)] sm:p-6">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-stone">
+          <span className="eyebrow text-[0.62rem] text-brand">{slot.label}</span>
+          {activity.time && <span>{activity.time}</span>}
+          {activity.duration && (
+            <span className="inline-flex items-center gap-1.5">
+              <Clock3 className="size-3.5" /> {activity.duration}
+            </span>
+          )}
+          <span className="ml-auto font-mono text-xs text-ink">{activity.estimatedCost ? money(activity.estimatedCost) : 'Free'}</span>
+        </div>
+        <h4 className="display mt-3 text-[1.9rem] leading-[1.05] text-ink">{activity.place.name}</h4>
+        {activity.place.description && <p className="mt-2 leading-relaxed text-stone">{activity.place.description}</p>}
+        <a
+          href={mapsUrl(activity.place.name, destination)}
+          target="_blank"
+          rel="noreferrer"
+          className="no-print mt-4 inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
+        >
+          <MapPin className="size-4" /> Open in Google Maps <ArrowUpRight className="size-3.5" />
+        </a>
+      </div>
+    </motion.li>
+  );
+}
+
+function ItineraryContent() {
   const params = useParams();
   const [itinerary, setItinerary] = useState<ItineraryDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeDay, setActiveDay] = useState(1);
+  const dayRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     const fetchItinerary = async () => {
@@ -110,380 +214,281 @@ export default function ItineraryPage() {
     }
   }, [params.id]);
 
-  if (loading) {
-        return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-orange-100 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full mx-auto"
-          />
-          <motion.p 
-            initial={{ y: 10 }}
-            animate={{ y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-6 text-xl font-semibold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent"
-          >
-            Loading your amazing adventure...
-          </motion.p>
-        </motion.div>
-      </div>
-    );
-  }
+  // Opened from "Print" on the itineraries page.
+  useEffect(() => {
+    if (!itinerary) return;
+    if (new URLSearchParams(window.location.search).get('print') === '1') {
+      // Let the hero scene finish its entrance before the snapshot.
+      const t = window.setTimeout(() => window.print(), 2400);
+      return () => window.clearTimeout(t);
+    }
+  }, [itinerary]);
 
-  if (error || !itinerary) {
-    return (
-              <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-orange-100 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-md mx-auto p-8"
-        >
-          <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-6">
-            <MapPin className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent mb-4">
-            Itinerary Not Found
-          </h1>
-          <p className="text-gray-600 mb-8 text-lg">{error || 'The requested itinerary could not be found.'}</p>
-          <Button 
-            onClick={() => window.history.back()}
-            className="bg-gradient-to-r from-orange-500 to-orange-700 hover:from-orange-600 hover:to-orange-800 text-white px-8 py-3 rounded-2xl shadow-xl"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
-        </motion.div>
-      </div>
-    );
-  }
+  const days = useMemo(() => itinerary?.itineraryData?.itinerary ?? [], [itinerary]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  useEffect(() => {
+    if (!days.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActiveDay(Number((e.target as HTMLElement).dataset.day));
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+    dayRefs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, [days.length]);
+
+  if (loading) return <Loading />;
+  if (error || !itinerary) return <NotFound message={error || 'The requested itinerary could not be found.'} />;
+
+  const summary = itinerary.itineraryData?.summary;
+  const highlights = summary?.highlights ?? [];
+  const totalCost = summary?.totalCost ?? days.reduce((s, d) => s + (d.totalDayCost ?? 0), 0);
+  const scene = sceneForDestination(itinerary.destination);
+  const perDay = itinerary.budget / Math.max(itinerary.numberOfDays, 1);
+  const maxDay = Math.max(perDay, ...days.map((d) => d.totalDayCost ?? 0), 1);
+  const within = totalCost <= itinerary.budget;
+
+  const jumpTo = (day: number) => {
+    const el = dayRefs.current[day - 1];
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-orange-100">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
-        
-        {/* Hero Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-10 rounded-3xl" />
-          <Card className="backdrop-blur-sm bg-white/90 border-0 shadow-2xl shadow-orange-500/20 rounded-3xl overflow-hidden">
-            <CardContent className="p-8">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex-1">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex items-center gap-3 mb-4"
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center shadow-lg">
-                      <MapPin className="w-6 h-6 text-white" />
-                    </div>
-                    <Badge className="bg-gradient-to-r from-orange-500 to-orange-700 text-white border-0 px-3 py-1">
-                      {itinerary.tripType.charAt(0).toUpperCase() + itinerary.tripType.slice(1)} Trip
-                    </Badge>
-                  </motion.div>
-                  
-                  <motion.h1 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-orange-700 to-orange-900 bg-clip-text text-transparent mb-6 p-3"
-                  >
-                    Your {itinerary.destination} Adventure
-                  </motion.h1>
-                  
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm"
-                  >
-                    <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl">
-                      <Calendar className="w-5 h-5 text-blue-600" />
-                      <div>
-                        <div className="font-semibold text-blue-900">Duration</div>
-                        <div className="text-blue-700">{itinerary.numberOfDays} days</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-                      <Users className="w-5 h-5 text-green-600" />
-                      <div>
-                        <div className="font-semibold text-green-900">Travelers</div>
-                        <div className="text-green-700">{itinerary.numberOfPeople} {itinerary.numberOfPeople === 1 ? 'person' : 'people'}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl">
-                      <DollarSign className="w-5 h-5 text-yellow-600" />
-                      <div>
-                        <div className="font-semibold text-yellow-900">Budget</div>
-                        <div className="text-yellow-700">${itinerary.budget}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl">
-                      <Heart className="w-5 h-5 text-orange-600" />
-                      <div>
-                        <div className="font-semibold text-orange-900">Interests</div>
-                        <div className="text-orange-700">{itinerary.interests.length} selected</div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-6 lg:mt-0 text-center"
-                >
-                  
-                  <div className="text-sm font-semibold text-gray-800">
-                    {formatDate(itinerary.startDate)}
-                  </div>
-                  <div className="text-gray-400 text-sm">to</div>
-                  <div className="text-sm font-semibold text-gray-800">
-                    {formatDate(itinerary.endDate)}
-                  </div>
-                </motion.div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Trip Summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="backdrop-blur-sm bg-white/90 border-0 shadow-2xl shadow-orange-500/20 rounded-3xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-700 text-white p-6">
-              <CardTitle className="text-2xl font-bold flex items-center gap-3">
-                <Star className="w-7 h-7" />
-                Trip Summary & Highlights
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="text-center p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl border border-orange-200"
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-                    <DollarSign className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="text-3xl font-bold text-orange-600 mb-1">${itinerary.itineraryData.summary.totalCost}</div>
-                  <div className="text-gray-600 font-medium">Total Cost</div>
-                </motion.div>
-                
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border border-blue-200"
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-                    <Calendar className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">{itinerary.itineraryData.summary.totalDays}</div>
-                  <div className="text-gray-600 font-medium">Amazing Days</div>
-                </motion.div>
-                
-                                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="text-center p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl border border-orange-200"
-                  >
-                    <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-                      <Heart className="w-8 h-8 text-white" />
-                    </div>
-                    <div className="text-3xl font-bold text-orange-600 mb-1">{itinerary.interests.length}</div>
-                    <div className="text-gray-600 font-medium">Interests</div>
-                  </motion.div>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Heart className="w-5 h-5 text-orange-500" />
-                    Your Interests
-                  </h3>
-                  <div className="flex flex-wrap gap-3">
-                    {itinerary.interests.map((interest, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.1 * index }}
-                      >
-                        <Badge className="bg-gradient-to-r from-orange-500 to-orange-700 text-white border-0 px-4 py-2 text-sm rounded-xl shadow-lg">
-                          {interest}
-                        </Badge>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    Trip Highlights
-                  </h3>
-                  <div className="space-y-3">
-                    {itinerary.itineraryData.summary.highlights.map((highlight, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index }}
-                        className="flex items-start gap-3 p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl"
-                      >
-                        <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-orange-700 rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-gray-700 font-medium">{highlight}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Daily Itinerary */}
-        <div className="space-y-8">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent"
-          >
-            Your Daily Adventure
-          </motion.h2>
-          
-          {itinerary.itineraryData.itinerary.map((day, dayIndex) => (
-            <motion.div
-              key={day.day}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + dayIndex * 0.1 }}
-            >
-              <Card className="backdrop-blur-sm bg-white/90 border-0 shadow-2xl shadow-orange-500/20 rounded-3xl overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-700 text-white p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <CardTitle className="text-2xl font-bold flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
-                        <span className="text-xl font-bold">{day.day}</span>
-                      </div>
-                      Day {day.day}: {day.theme}
-                    </CardTitle>
-                    <div className="mt-3 sm:mt-0 flex gap-3">
-                      <Badge className="bg-white/20 text-white border-white/30 px-3 py-1">
-                        {day.date}
-                      </Badge>
-                      <Badge className="bg-white/20 text-white border-white/30 px-3 py-1">
-                        ${day.totalDayCost} budget
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-1 lg:grid-cols-3">
-                    {(['morning', 'afternoon', 'evening'] as const).map((timeOfDay, timeIndex) => {
-                      const activity = day[timeOfDay];
-                      const Icon = timeOfDayIcons[timeOfDay];
-                      const gradientColor = timeOfDayColors[timeOfDay];
-                      
-                      return (
-                        <motion.div
-                          key={timeOfDay}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.6 + dayIndex * 0.1 + timeIndex * 0.1 }}
-                          className="p-8 border-b lg:border-b-0 lg:border-r last:border-r-0 last:border-b-0 hover:bg-gray-50/50 transition-colors duration-300"
-                        >
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className={`w-12 h-12 bg-gradient-to-r ${gradientColor} rounded-2xl flex items-center justify-center shadow-lg`}>
-                              <Icon className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                              <div className="font-bold text-gray-900 capitalize text-lg">{timeOfDay}</div>
-                              <div className="text-sm text-gray-500 font-medium">{activity.time}</div>
-                            </div>
-                          </div>
-                          
-                          <h4 className="font-bold text-gray-900 mb-3 text-lg">{activity.place.name}</h4>
-                          <p className="text-gray-600 mb-4 leading-relaxed">{activity.place.description}</p>
-                          
-                          <div className="flex items-center justify-between text-sm mb-4 p-3 bg-gray-50 rounded-xl">
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-gray-500" />
-                              <span className="text-gray-600 font-medium">{activity.duration}</span>
-                            </div>
-                            <div className={`font-bold text-lg bg-gradient-to-r ${gradientColor} bg-clip-text text-transparent`}>
-                              ${activity.estimatedCost}
-                            </div>
-                          </div>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-2 hover:scale-105 transition-all duration-200 rounded-xl"
-                            onClick={() => window.open(activity.place.googleMapsLink, '_blank')}
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            View on Maps
-                          </Button>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+    <div className="mx-auto max-w-[1280px]">
+      {/* Hero (doubles as the PDF cover) */}
+      <section className="relative h-[min(64vh,580px)] min-h-[420px] overflow-hidden rounded-[32px] bg-ink print:h-[300px] print:min-h-0">
+        <div className="absolute inset-0">
+          <Scene id={scene} intro interactive title={itinerary.destination} />
         </div>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 pt-8"
-        >
-          <Button 
-            onClick={() => window.history.back()}
-            variant="outline"
-            className="flex-1 h-14 text-lg font-semibold border-2 border-gray-300 hover:border-orange-500 hover:text-orange-600 rounded-2xl transition-all duration-300"
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-ink/30" />
+        <div className="no-print absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
+          <Link
+            href="/dashboard/itineraries"
+            className="inline-flex items-center gap-2 rounded-full bg-paper/15 px-4 py-2.5 text-sm text-paper ring-1 ring-inset ring-paper/25 backdrop-blur-md transition-colors hover:bg-paper hover:text-ink"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Dashboard
-          </Button>
-          <Button 
+            <ArrowLeft className="size-4" /> All trips
+          </Link>
+          <button
+            type="button"
             onClick={() => window.print()}
-            className="flex-1 h-14 text-lg font-semibold bg-gradient-to-r from-orange-500 to-orange-700 hover:from-orange-600 hover:to-orange-800 text-white rounded-2xl shadow-2xl shadow-orange-500/25 transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-full bg-paper px-4 py-2.5 text-sm text-ink transition-colors hover:bg-brand hover:text-white"
           >
-            <Download className="w-5 h-5 mr-2" />
-            Download Itinerary
-          </Button>
-        </motion.div>
+            <Download className="size-4" /> Download PDF
+          </button>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 p-6 text-paper sm:p-10">
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.3 }} className="eyebrow text-paper/75">
+            {cap(itinerary.tripType)} trip · {itinerary.numberOfDays} {itinerary.numberOfDays === 1 ? 'day' : 'days'}
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease, delay: 0.4 }}
+            className="display mt-3 max-w-4xl text-[clamp(3.2rem,8vw,7.5rem)] leading-[0.88]"
+          >
+            {itinerary.destination}
+          </motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }} className="mt-4 text-paper/80">
+            {fmt(itinerary.startDate, { month: 'long', day: 'numeric' })} — {fmt(itinerary.endDate, { month: 'long', day: 'numeric', year: 'numeric' })}
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="col-span-2 rounded-3xl bg-white/80 p-5 ring-1 ring-line lg:col-span-1">
+          <p className="flex items-center gap-2 text-sm text-stone">
+            <Wallet className="size-4 text-brand" /> Estimated total
+          </p>
+          <p className="display mt-3 text-5xl leading-none text-ink">{money(totalCost)}</p>
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-paper-2">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min((totalCost / Math.max(itinerary.budget, 1)) * 100, 100)}%` }}
+              transition={{ duration: 1.4, ease, delay: 0.4 }}
+              className={cn('h-full rounded-full', within ? 'bg-brand' : 'bg-destructive')}
+            />
+          </div>
+          <p className="mt-2 text-xs text-stone">
+            {within ? 'Within' : 'Over'} your {money(itinerary.budget)} budget
+          </p>
+        </div>
+        <div className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
+          <p className="flex items-center gap-2 text-sm text-stone">
+            <CalendarDays className="size-4 text-brand" /> Duration
+          </p>
+          <p className="display mt-3 text-5xl leading-none text-ink">{itinerary.numberOfDays}</p>
+          <p className="mt-2 text-xs text-stone">{itinerary.numberOfDays === 1 ? 'day' : 'days'} of adventure</p>
+        </div>
+        <div className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
+          <p className="flex items-center gap-2 text-sm text-stone">
+            <Users className="size-4 text-brand" /> Travellers
+          </p>
+          <p className="display mt-3 text-5xl leading-none text-ink">{itinerary.numberOfPeople}</p>
+          <p className="mt-2 text-xs text-stone">{itinerary.numberOfPeople === 1 ? 'solo explorer' : 'in the group'}</p>
+        </div>
+        <div className="col-span-2 rounded-3xl bg-white/80 p-5 ring-1 ring-line lg:col-span-1">
+          <p className="flex items-center gap-2 text-sm text-stone">
+            <Heart className="size-4 text-brand" /> Travel style
+          </p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {itinerary.interests.map((i) => (
+              <span key={i} className="rounded-full bg-paper-2 px-3 py-1 text-sm text-ink">
+                {cap(i)}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Highlights + spend */}
+      <section className="mt-5 grid gap-3 lg:grid-cols-12">
+        {highlights.length > 0 && (
+          <div className="print-avoid rounded-[28px] bg-ink p-7 text-paper sm:p-9 lg:col-span-7 print:col-span-12">
+            <p className="eyebrow flex items-center gap-2 text-paper/60">
+              <Sparkles className="size-3.5 text-brand-2" /> Trip highlights
+            </p>
+            <ol className="mt-6 space-y-5">
+              {highlights.map((h, i) => (
+                <motion.li
+                  key={i}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease, delay: i * 0.08 }}
+                  className="flex gap-5 border-t border-paper/10 pt-5 first:border-t-0 first:pt-0"
+                >
+                  <span className="display text-3xl leading-none text-brand-2">{pad(i + 1)}</span>
+                  <span className="text-lg leading-snug text-paper/90">{h}</span>
+                </motion.li>
+              ))}
+            </ol>
+          </div>
+        )}
+        <div className={cn('print-avoid rounded-[28px] bg-white/80 p-7 ring-1 ring-line sm:p-9 print:hidden', highlights.length ? 'lg:col-span-5' : 'lg:col-span-12')}>
+          <p className="eyebrow text-stone">Daily spend</p>
+          <p className="mt-2 text-sm text-stone">Estimated cost per day against your daily budget of {money(perDay)}.</p>
+          <div className="relative mt-8 flex h-44 items-end gap-2">
+            <div className="absolute inset-x-0 border-t border-dashed border-brand/60" style={{ bottom: `${(perDay / maxDay) * 100}%` }}>
+              <span className="eyebrow absolute -top-4 right-0 text-[0.55rem] text-brand">Budget / day</span>
+            </div>
+            {days.map((d, i) => (
+              <button
+                key={d.day ?? i}
+                type="button"
+                onClick={() => jumpTo(i + 1)}
+                className="group relative flex h-full flex-1 flex-col justify-end"
+                aria-label={`Day ${i + 1}: ${money(d.totalDayCost)}`}
+              >
+                <span className="pointer-events-none absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-ink px-2 py-1 font-mono text-[10px] text-paper opacity-0 transition-opacity group-hover:opacity-100">
+                  {money(d.totalDayCost)}
+                </span>
+                <motion.span
+                  initial={{ height: 0 }}
+                  whileInView={{ height: `${((d.totalDayCost ?? 0) / maxDay) * 100}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.1, ease, delay: i * 0.06 }}
+                  className={cn(
+                    'block w-full rounded-t-lg transition-colors',
+                    activeDay === i + 1 ? 'bg-brand' : 'bg-ink/80 group-hover:bg-ink'
+                  )}
+                />
+              </button>
+            ))}
+          </div>
+          <div className="mt-2 flex gap-2">
+            {days.map((d, i) => (
+              <span key={d.day ?? i} className="flex-1 text-center font-mono text-[10px] text-stone">
+                D{i + 1}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Day navigator */}
+      {days.length > 1 && (
+        <nav aria-label="Days" className="no-print sticky top-16 z-20 -mx-4 mt-10 bg-paper/85 px-4 py-3 backdrop-blur-xl lg:top-0 lg:mx-0 lg:rounded-full lg:px-2 lg:py-2 lg:ring-1 lg:ring-line">
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto">
+            {days.map((d, i) => (
+              <button
+                key={d.day ?? i}
+                type="button"
+                onClick={() => jumpTo(i + 1)}
+                className={cn(
+                  'relative shrink-0 rounded-full px-4 py-2 text-sm transition-colors',
+                  activeDay === i + 1 ? 'text-paper' : 'text-ink/70 hover:bg-paper-2'
+                )}
+              >
+                {activeDay === i + 1 && (
+                  <motion.span layoutId="day-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />
+                )}
+                <span className="relative">Day {i + 1}</span>
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
+
+      {/* Days */}
+      <div className="mt-4">
+        {days.map((day, i) => (
+          <section
+            key={day.day ?? i}
+            ref={(el) => {
+              dayRefs.current[i] = el;
+            }}
+            data-day={i + 1}
+            className="grid gap-8 border-t border-line py-12 lg:grid-cols-12 lg:gap-12 lg:py-16"
+          >
+            <div className="lg:col-span-4">
+              <div className="lg:sticky lg:top-28">
+                <p className="eyebrow text-stone">
+                  Day {pad(i + 1)} · {dayDate(itinerary.startDate, i)}
+                </p>
+                <h3 className="display mt-4 text-[clamp(2.4rem,4vw,3.4rem)] leading-[0.95] text-ink">{day.theme || `Day ${i + 1}`}</h3>
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-paper-2 px-3.5 py-1.5 text-sm text-ink">
+                  <Wallet className="size-3.5 text-brand" /> {money(day.totalDayCost)} estimated
+                </p>
+              </div>
+            </div>
+            <ol className="lg:col-span-8">
+              {SLOTS.map((slot, k) => (
+                <Slot key={slot.key} slot={slot} activity={day[slot.key]} destination={itinerary.destination} last={k === SLOTS.length - 1} />
+              ))}
+            </ol>
+          </section>
+        ))}
       </div>
+
+      {/* Outro */}
+      <section className="no-print mt-4 flex flex-col items-start justify-between gap-6 rounded-[32px] bg-ink p-8 text-paper sm:flex-row sm:items-center sm:p-10">
+        <div>
+          <p className="display text-4xl leading-none">Bon voyage.</p>
+          <p className="mt-2 text-paper/60">Take it offline, or start dreaming about the next one.</p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-paper/10 px-5 text-sm ring-1 ring-inset ring-paper/20 transition-colors hover:bg-paper hover:text-ink"
+          >
+            <Download className="size-4" /> Download PDF
+          </button>
+          <PillLink href="/dashboard" variant="brand" icon={<Plus className="size-4" />}>
+            Plan another trip
+          </PillLink>
+        </div>
+      </section>
     </div>
   );
-} 
+}
+
+export default function ItineraryPage() {
+  return (
+    <DashboardLayout>
+      <ItineraryContent />
+    </DashboardLayout>
+  );
+}
