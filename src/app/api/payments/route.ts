@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { logIfSchemaOutOfSync, prisma } from '@/lib/prisma';
 
 // The signed-in traveller's credit-pack purchases, newest first.
 export async function GET() {
@@ -21,6 +21,7 @@ export async function GET() {
     return NextResponse.json({ success: true, data: payments });
   } catch (error) {
     console.error('Error fetching payments:', error);
+    logIfSchemaOutOfSync(error, 'GET /api/payments');
     return NextResponse.json({ success: false, error: 'Failed to fetch payments' }, { status: 500 });
   }
 }

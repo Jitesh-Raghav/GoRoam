@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import type DodoPayments from 'dodopayments';
-import { prisma } from '@/lib/prisma';
+import { logIfSchemaOutOfSync, prisma } from '@/lib/prisma';
 import { dodo, planForProduct } from '@/lib/dodo';
 import { PLANS } from '@/lib/plans';
 
@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error(`Error handling Dodo webhook ${event.type}:`, error);
+    logIfSchemaOutOfSync(error, `POST /api/webhooks/dodo (${event.type})`);
     // A 5xx makes Dodo retry the delivery later.
     return NextResponse.json({ error: 'Webhook handling failed' }, { status: 500 });
   }
