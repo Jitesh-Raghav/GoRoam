@@ -1,27 +1,18 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, CalendarDays, Loader2, Plus, Printer, Search, Trash2, Users, Wallet } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  MapPin, 
-  Calendar, 
-  Users, 
-  DollarSign, 
-  Plus, 
-  Eye, 
-  Download, 
-  Trash2, 
-  Loader2,
-  Clock,
-  Heart
-} from "lucide-react";
+import { LazyScene } from "@/components/scenes/lazy-scene";
+import { Scene } from "@/components/scenes/scene";
+import { SCENES } from "@/components/scenes/scenes";
+import { PillLink } from "@/components/site/pill";
+import { SplitText } from "@/components/motion/split-text";
+import { sceneForDestination } from "@/lib/destinations";
+import { cn } from "@/lib/utils";
 
 interface Itinerary {
   id: string;
@@ -38,27 +29,167 @@ interface Itinerary {
   createdAt: string;
 }
 
-export default function ItinerariesPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+const formatDate = (dateString: string, withYear = true) =>
+  new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    ...(withYear ? { year: "numeric" } : {}),
+    timeZone: "UTC",
+  });
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDelete: (id: string) => Promise<void> }) {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const scene = sceneForDestination(it.destination);
+
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
+      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(21,19,15,0.5)]"
+    >
+      <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${it.destination} itinerary`}>
+        <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
+          <LazyScene id={scene} tint={SCENES[scene].tint} />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
+        <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/15 px-2.5 py-1.5 text-center text-paper backdrop-blur-sm">
+          <span className="display block text-2xl leading-none">{it.numberOfDays}</span>
+          <span className="eyebrow block text-[0.52rem]">{it.numberOfDays === 1 ? "day" : "days"}</span>
+        </span>
+        <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
+          <p className="eyebrow text-[0.6rem] text-paper/70">
+            {formatDate(it.startDate, false)} — {formatDate(it.endDate)}
+          </p>
+          <h3 className="display mt-2 truncate text-[2.2rem] leading-none">{it.destination}</h3>
+        </div>
+      </Link>
+
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex flex-wrap gap-2 text-xs text-ink/75">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">
+            <Users className="size-3.5 text-brand" /> {it.numberOfPeople} {it.numberOfPeople === 1 ? "traveller" : "travellers"}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">
+            <Wallet className="size-3.5 text-brand" /> ${it.budget.toLocaleString("en-US")}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">{cap(it.tripType)}</span>
+        </div>
+        {it.interests.length > 0 && (
+          <p className="mt-4 text-sm text-stone">
+            {it.interests.slice(0, 3).map(cap).join(" · ")}
+            {it.interests.length > 3 && ` +${it.interests.length - 3}`}
+          </p>
+        )}
+
+        <div className="mt-auto pt-5">
+          <div className="flex items-center justify-between gap-3 border-t border-line pt-4">
+            <AnimatePresence mode="wait" initial={false}>
+              {confirming ? (
+                <motion.div
+                  key="confirm"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="flex w-full items-center justify-between gap-2"
+                >
+                  <span className="text-sm text-ink">Delete this trip?</span>
+                  <span className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setConfirming(false)}
+                      className="rounded-full px-3 py-1.5 text-sm text-ink/70 hover:bg-paper-2"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      disabled={deleting}
+                      onClick={async () => {
+                        setDeleting(true);
+                        await onDelete(it.id);
+                        setDeleting(false);
+                        setConfirming(false);
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3.5 py-1.5 text-sm text-white disabled:opacity-60"
+                    >
+                      {deleting && <Loader2 className="size-3.5 animate-spin" />} Delete
+                    </button>
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="actions"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="flex w-full items-center justify-between gap-2"
+                >
+                  <span className="whitespace-nowrap text-xs text-stone" title={`Created ${formatDate(it.createdAt)}`}>
+                    Created {formatDate(it.createdAt, false)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Link
+                      href={`/dashboard/itinerary/${it.id}?print=1`}
+                      aria-label={`Print ${it.destination} itinerary`}
+                      title="Print or save as PDF"
+                      className="grid size-9 place-items-center rounded-full text-ink/60 transition-colors hover:bg-paper-2 hover:text-ink"
+                    >
+                      <Printer className="size-4" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setConfirming(true)}
+                      aria-label={`Delete ${it.destination} itinerary`}
+                      title="Delete"
+                      className="grid size-9 place-items-center rounded-full text-ink/60 transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                    <Link
+                      href={`/dashboard/itinerary/${it.id}`}
+                      className="ml-1 inline-flex items-center gap-1 rounded-full bg-ink px-3.5 py-2 text-sm text-paper transition-colors hover:bg-brand"
+                    >
+                      Open <ArrowUpRight className="size-3.5" />
+                    </Link>
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function ItinerariesContent() {
+  const { data: session } = useSession();
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchItineraries = async () => {
       if (session?.user?.email) {
         try {
-          const response = await fetch('/api/itineraries');
+          const response = await fetch("/api/itineraries");
           const data = await response.json();
-          
+
           if (data.success) {
             setItineraries(data.data);
           } else {
-            setError(data.error || 'Failed to fetch itineraries');
+            setError(data.error || "Failed to fetch itineraries");
           }
         } catch {
-          setError('Failed to fetch itineraries');
+          setError("Failed to fetch itineraries");
         } finally {
           setLoading(false);
         }
@@ -70,290 +201,146 @@ export default function ItinerariesPage() {
     }
   }, [session?.user?.email]);
 
-  if (status === "loading" || loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="relative"
-          >
-            <Loader2 className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-          </motion.div>
-          <p className="text-gray-600 font-medium">Loading your itineraries...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    redirect("/auth");
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+  const handleDelete = async (id: string) => {
+    setDeleteError(null);
+    try {
+      const response = await fetch(`/api/itinerary/${id}`, { method: "DELETE" });
+      const data = await response.json();
+      if (data.success) setItineraries((list) => list.filter((i) => i.id !== id));
+      else setDeleteError(data.error || "Couldn't delete that itinerary.");
+    } catch {
+      setDeleteError("Network error. Please try again.");
+    }
   };
 
-  const handleViewItinerary = (id: string) => {
-    router.push(`/dashboard/itinerary/${id}`);
-  };
-
-  const handleCreateNew = () => {
-    router.push('/dashboard');
-  };
+  const filtered = useMemo(
+    () => itineraries.filter((i) => i.destination.toLowerCase().includes(query.trim().toLowerCase())),
+    [itineraries, query]
+  );
+  const stats = useMemo(
+    () => [
+      { label: "Trips planned", value: itineraries.length },
+      { label: "Days of adventure", value: itineraries.reduce((s, i) => s + i.numberOfDays, 0) },
+      { label: "Destinations", value: new Set(itineraries.map((i) => i.destination.toLowerCase().trim())).size },
+      { label: "Travellers", value: itineraries.reduce((s, i) => s + i.numberOfPeople, 0) },
+    ],
+    [itineraries]
+  );
 
   return (
-    <DashboardLayout>
-      <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          
-          {/* Header Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12"
-          >
-            <div className="mb-6 sm:mb-0">
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">
-                Your Itineraries
-              </h1>
-              <p className="text-lg text-gray-600">
-                Manage and explore all your travel adventures
-              </p>
-            </div>
-            
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                onClick={handleCreateNew}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl shadow-lg shadow-orange-500/25 transition-all duration-300 font-semibold"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Create New Trip
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Error State */}
-          {error ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Card className="border-red-200 bg-red-50/50 backdrop-blur-sm">
-                <CardContent className="text-center py-12">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-red-500 text-2xl">⚠️</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    Unable to load itineraries
-                  </h3>
-                  <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                    {error}
-                  </p>
-                  <Button 
-                    onClick={() => window.location.reload()}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl"
-                  >
-                    Try Again
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ) : itineraries.length === 0 ? (
-            
-            /* Empty State */
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Card className="border-gray-200 bg-gray-50/50 backdrop-blur-sm">
-                <CardContent className="text-center py-16">
-                  <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <MapPin className="h-10 w-10 text-orange-500" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">
-                    Start Your Journey
-                  </h3>
-                  <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
-                    You haven&apos;t created any itineraries yet. Plan your first amazing trip!
-                  </p>
-                  <Button 
-                    onClick={handleCreateNew}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl shadow-lg shadow-orange-500/25 font-semibold"
-                  >
-                    <Plus className="h-5 w-5 mr-2" />
-                    Create Your First Trip
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ) : (
-            
-            /* Itineraries Grid */
-            <div className="space-y-6">
-              {itineraries.map((itinerary, index) => (
-                <motion.div
-                  key={itinerary.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -2 }}
-                  className="group cursor-pointer"
-                  onClick={() => handleViewItinerary(itinerary.id)}
-                >
-                  <Card className="border-gray-200 hover:border-orange-300 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 bg-white">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                            <CardTitle className="text-xl font-bold text-gray-900">
-                              {itinerary.title}
-                            </CardTitle>
-                          </div>
-                          <CardDescription className="text-gray-600 text-base">
-                            {itinerary.numberOfDays} day {itinerary.tripType} adventure
-                          </CardDescription>
-                        </div>
-                        <Badge 
-                          className="bg-green-100 text-green-700 border-green-200 capitalize font-medium px-3 py-1"
-                        >
-                          {itinerary.status}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    
-                    <CardContent className="pt-0">
-                      {/* Trip Details Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 group-hover:bg-orange-50 transition-colors">
-                          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <MapPin className="h-4 w-4 text-orange-600" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500 font-medium">Destination</p>
-                            <p className="text-sm font-semibold text-gray-900">{itinerary.destination}</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 group-hover:bg-orange-50 transition-colors">
-                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Calendar className="h-4 w-4 text-blue-600" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500 font-medium">Dates</p>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {formatDate(itinerary.startDate)} - {formatDate(itinerary.endDate)}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 group-hover:bg-orange-50 transition-colors">
-                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                            <DollarSign className="h-4 w-4 text-green-600" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500 font-medium">Budget</p>
-                            <p className="text-sm font-semibold text-gray-900">${itinerary.budget}</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 group-hover:bg-orange-50 transition-colors">
-                          <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <Users className="h-4 w-4 text-purple-600" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500 font-medium">Travelers</p>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {itinerary.numberOfPeople} {itinerary.numberOfPeople === 1 ? 'person' : 'people'}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Interests Tags */}
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Heart className="h-4 w-4 text-orange-500" />
-                          <span className="text-sm font-medium text-gray-700">Interests</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {itinerary.interests.slice(0, 3).map((interest, idx) => (
-                            <Badge 
-                              key={idx}
-                              className="bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-200 transition-colors"
-                            >
-                              {interest}
-                            </Badge>
-                          ))}
-                          {itinerary.interests.length > 3 && (
-                            <Badge className="bg-gray-100 text-gray-600 border-gray-200">
-                              +{itinerary.interests.length - 3} more
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Clock className="h-4 w-4" />
-                          <span>Created {formatDate(itinerary.createdAt)}</span>
-                        </div>
-                        
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleViewItinerary(itinerary.id);
-                            }}
-                            className="border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-all duration-200"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={(e) => e.stopPropagation()}
-                            className="border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
-                          >
-                            <Download className="h-4 w-4 mr-1" />
-                            Export
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={(e) => e.stopPropagation()}
-                            className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200"
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
+    <div className="mx-auto max-w-[1280px]">
+      <header className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <p className="eyebrow text-stone">Your collection</p>
+          <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+            <SplitText text="Every trip," trigger="mount" className="block" />
+            <SplitText segments={[{ text: "beautifully kept.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+          </h1>
         </div>
+        <PillLink href="/dashboard" variant="ink" icon={<Plus className="size-4" />}>
+          New trip
+        </PillLink>
+      </header>
+
+      {!loading && !error && itineraries.length > 0 && (
+        <>
+          <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
+                <p className="display text-5xl leading-none text-ink">{s.value}</p>
+                <p className="mt-2 text-sm text-stone">{s.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <label className="flex h-12 w-full items-center gap-3 rounded-full bg-white/80 px-5 ring-1 ring-line focus-within:ring-2 focus-within:ring-brand/40 sm:max-w-sm">
+              <Search className="size-4 text-stone" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search destinations"
+                aria-label="Search destinations"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-stone-2"
+              />
+            </label>
+            <p className="text-sm text-stone">
+              Showing {filtered.length} of {itineraries.length}
+            </p>
+          </div>
+        </>
+      )}
+
+      {deleteError && <p className="mt-6 text-sm text-destructive">{deleteError}</p>}
+
+      <div className="mt-8">
+        {loading ? (
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="overflow-hidden rounded-[28px] bg-white ring-1 ring-line">
+                <div className="skeleton h-56" />
+                <div className="space-y-3 p-5">
+                  <div className="skeleton h-4 w-2/3 rounded-full" />
+                  <div className="skeleton h-4 w-1/2 rounded-full" />
+                  <div className="skeleton mt-6 h-9 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="rounded-[28px] bg-white/80 p-10 text-center ring-1 ring-line">
+            <p className="display text-3xl">We couldn&apos;t load your trips.</p>
+            <p className="mx-auto mt-3 max-w-md text-stone">{error}</p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-6 rounded-full bg-ink px-6 py-3 text-sm text-paper transition-colors hover:bg-brand"
+            >
+              Try again
+            </button>
+          </div>
+        ) : itineraries.length === 0 ? (
+          <div className="relative overflow-hidden rounded-[36px] bg-ink">
+            <div className="absolute inset-0">
+              <Scene id="peaks" intro />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent" />
+            <div className="relative max-w-lg p-8 py-16 text-paper sm:p-14">
+              <p className="eyebrow text-paper/60">Nothing here yet</p>
+              <h2 className="display mt-4 text-5xl leading-[0.95]">
+                Your first adventure is <span className="italic text-brand-2">one sentence</span> away.
+              </h2>
+              <p className="mt-4 text-paper/70">Tell GoRoam where you&apos;re dreaming of and we&apos;ll plan every day of it.</p>
+              <PillLink href="/dashboard" variant="paper" className="mt-8">
+                Plan your first trip
+              </PillLink>
+            </div>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-[28px] bg-white/80 p-10 text-center ring-1 ring-line">
+            <CalendarDays className="mx-auto size-6 text-brand" />
+            <p className="display mt-3 text-3xl">No trips match “{query}”.</p>
+            <button type="button" onClick={() => setQuery("")} className={cn("mt-4 text-sm text-ink underline underline-offset-4")}>
+              Clear search
+            </button>
+          </div>
+        ) : (
+          <motion.div layout className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <AnimatePresence>
+              {filtered.map((it, index) => (
+                <Postcard key={it.id} it={it} index={index} onDelete={handleDelete} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
+    </div>
+  );
+}
+
+export default function ItinerariesPage() {
+  return (
+    <DashboardLayout>
+      <ItinerariesContent />
     </DashboardLayout>
   );
-} 
+}
