@@ -5,17 +5,17 @@ export async function GET() {
     // In real implementation, this would fetch from database based on user auth
     const mockUserCredits = {
       userId: "user_123",
-      totalCredits: 20,
+      totalCredits: 30,
       usedCredits: 5,
-      remainingCredits: 15,
-      plan: "Pro",
+      remainingCredits: 25,
+      plan: "Explorer",
       purchaseHistory: [
         {
           id: "purchase_1",
           date: "2024-01-15",
-          credits: 20,
-          amount: "₹299",
-          plan: "Pro"
+          credits: 30,
+          amount: "$24.99",
+          plan: "Explorer"
         }
       ]
     };

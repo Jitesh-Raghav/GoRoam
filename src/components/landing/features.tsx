@@ -4,12 +4,12 @@ import { motion, useInView } from "framer-motion";
 import {
   Building2,
   Camera,
+  Compass,
   Download,
   FileText,
+  Landmark,
   MapPin,
   Moon,
-  Mountain,
-  ShoppingBag,
   Sun,
   Sunrise,
   TreePine,
@@ -198,14 +198,14 @@ function PdfVisual() {
 }
 
 const STYLES = [
-  { icon: TreePine, label: "Nature" },
-  { icon: UtensilsCrossed, label: "Food" },
-  { icon: Building2, label: "Culture" },
-  { icon: Mountain, label: "Adventure" },
-  { icon: ShoppingBag, label: "Shopping" },
+  { icon: Landmark, label: "Iconic sights" },
+  { icon: UtensilsCrossed, label: "Food & drink" },
+  { icon: Building2, label: "History" },
+  { icon: Compass, label: "Hidden gems" },
+  { icon: TreePine, label: "Outdoors" },
   { icon: Moon, label: "Nightlife" },
-  { icon: Waves, label: "Relaxation" },
-  { icon: Camera, label: "Photography" },
+  { icon: Waves, label: "Wellness" },
+  { icon: Camera, label: "Photo spots" },
 ];
 
 function StylesVisual() {
@@ -260,21 +260,21 @@ export function Features() {
             className="lg:col-span-2"
             visual={<MapVisual />}
             title="One tap to directions"
-            body="Every place links straight to Google Maps, ready for the walk, the metro or the cab."
+            body="Every stop is pinned on a day map, and one tap opens the whole day's route in Google Maps."
           />
           <Tile
             className="lg:col-span-2"
             delay={0.08}
             visual={<PdfVisual />}
-            title="Print-ready plans"
-            body="Download a clean, beautiful PDF of any itinerary for offline days and shared trips."
+            title="Share, sync, print"
+            body="Send the crew a private link, add every stop to your calendar, or save a beautiful PDF for offline days."
           />
           <Tile
             className="md:col-span-2 lg:col-span-2"
             delay={0.16}
             visual={<StylesVisual />}
             title="Made for how you travel"
-            body="Mix eight travel styles, from slow food mornings to late nights out."
+            body="Solo or with the kids, slow or full throttle, vegan or anything goes — twelve interests and every preference shape the plan."
           />
         </div>
       </div>

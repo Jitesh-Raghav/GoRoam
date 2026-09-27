@@ -37,7 +37,8 @@ export type SceneId =
   | "peaks"
   | "coast"
   | "aurora"
-  | "dunes";
+  | "dunes"
+  | "berlin";
 
 export interface SceneDef {
   id: SceneId;
@@ -1311,6 +1312,104 @@ const dunes: SceneDef = {
   },
 };
 
+
+/** Berlin's Fernsehturm: tapering shaft, the steel sphere and a striped antenna. */
+function tvTower(x: number, ground: number, h: number) {
+  const sphereY = ground - h * 0.66;
+  const r = h * 0.052;
+  const b = new PathBuilder()
+    .M(x - h * 0.02, ground)
+    .L(x - h * 0.011, sphereY + r * 0.9)
+    .L(x + h * 0.011, sphereY + r * 0.9)
+    .L(x + h * 0.02, ground)
+    .Z();
+  const collar = rect(x - r * 0.62, sphereY + r * 0.78, r * 1.24, r * 0.34);
+  const mast = rect(x - h * 0.006, sphereY - r - h * 0.2, h * 0.012, h * 0.2);
+  let stripes = "";
+  for (let i = 0; i < 5; i++) stripes += rect(x - h * 0.0065, sphereY - r - h * 0.2 + i * h * 0.04, h * 0.013, h * 0.02);
+  return {
+    body: b.toString() + collar + mast + circle(x, sphereY, r),
+    windows: rect(x - r, sphereY - r * 0.12, r * 2, r * 0.24),
+    stripes,
+    tip: { x, y: sphereY - r - h * 0.2 },
+  };
+}
+
+const berlin: SceneDef = {
+  id: "berlin",
+  tint: "#4B4F8C",
+  dark: true,
+  render: (uid) => {
+    const baseY = 872;
+    const s = 2.45;
+    const tower = tvTower(360, 800, 720);
+    const far = skyline(41, 800, -20, 1640, 26, 120, 0.12);
+    const near = skyline(17, 900, -20, 1640, 30, 96, 0.2);
+    const lamps = [120, 330, 1270, 1480];
+    const tones = { body: "#F2C88C", shade: "#4E3A4C", accent: "#2C3A3E" };
+    return (
+      <>
+        <Sky uid={uid} stops={[[0, "#171D44"], [0.38, "#303C78"], [0.66, "#6C66A0"], [0.86, "#D99A8E"], [1, "#F6C597"]]} />
+        <Stars seed={21} count={60} maxY={380} opacity={0.7} />
+        <Layer depth={0.06}>
+          <Sun uid={uid} x={1230} y={790} r={46} color="#FFE2B8" glow="#F4A688" />
+        </Layer>
+        <Clouds color="#B58FA8" opacity={0.3} items={[{ x: 180, y: 330, w: 420, seed: 5, speed: 110 }, { x: 1040, y: 250, w: 360, seed: 12, speed: 90 }]} />
+        <Birds x={1050} y={420} count={3} color="#3D3F6E" scale={0.7} duration={48} delay={-20} />
+        <Layer depth={0.18}>
+          <path d={far.body} fill="#474A7E" />
+          <path d={far.lit} fill="#FFD9A0" opacity={0.45} />
+          <path d={tower.body} fill="#3A3C6C" />
+          <path d={tower.windows} fill="#FFD9A0" opacity={0.8} />
+          <path d={tower.stripes} fill="#E9707A" opacity={0.8} />
+          <circle cx={tower.tip.x} cy={tower.tip.y} r={4} fill="#FF5A5A" className="scene-blink" />
+        </Layer>
+        <Layer depth={0.34}>
+          <path d={near.body} fill="#2D2F58" />
+          <path d={near.lit} fill="#FFC98A" opacity={0.7} />
+        </Layer>
+        <Layer depth={0.5}>
+          <defs>
+            <radialGradient id={`${uid}-flood`} cx="0.5" cy="1" r="0.7">
+              <stop offset="0" stopColor="#FFD39A" stopOpacity="0.55" />
+              <stop offset="1" stopColor="#FFD39A" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <ellipse cx={800} cy={baseY} rx={560} ry={300} fill={`url(#${uid}-flood)`} />
+          <Monument id="brandenburg" x={800} y={baseY} scale={s} tones={tones} />
+        </Layer>
+        <Layer depth={0.68}>
+          <rect x={-40} y={baseY - 2} width={1680} height={200} fill="#231F3A" />
+          <path d={`M-40 ${baseY + 6}H1640`} stroke="#F2C88C" strokeOpacity={0.25} strokeWidth={2} />
+          <g className="scene-bus" style={{ animationDuration: "30s" }}>
+            <g transform={`translate(0 ${baseY + 22}) scale(1.6)`}>
+              <rect x={0} y={0} width={96} height={20} rx={5} fill="#F2C230" />
+              <path d="M6 4h12v7h-12zM24 4h12v7h-12zM42 4h12v7h-12zM60 4h12v7h-12zM78 4h12v7h-12z" fill="#FFF1C8" opacity={0.85} />
+              <rect x={0} y={14} width={96} height={2} fill="#1C1A2E" opacity={0.5} />
+            </g>
+          </g>
+        </Layer>
+        <Layer depth={0.82}>
+          {lamps.map((x) => (
+            <g key={x}>
+              <rect x={x - 2.5} y={baseY - 150} width={5} height={210} fill="#15142A" />
+              <circle cx={x} cy={baseY - 156} r={34} fill="#FFD9A0" opacity={0.16} />
+              <circle cx={x} cy={baseY - 156} r={8} fill="#FFE7C0" />
+            </g>
+          ))}
+          {/* The lindens of Unter den Linden framing the view. */}
+          {canopyBlobs(90, 700, 150, 18, 13)
+            .concat(canopyBlobs(1520, 690, 160, 18, 22))
+            .map((c, i) => (
+              <circle key={i} cx={r1(c.cx)} cy={r1(c.cy)} r={r1(c.r)} fill={c.k > 0.7 ? "#1E1D3A" : "#16152C"} />
+            ))}
+          <path d={`${rect(80, 720, 14, 300)}${rect(1512, 710, 16, 310)}`} fill="#16152C" />
+        </Layer>
+      </>
+    );
+  },
+};
+
 export const SCENES: Record<SceneId, SceneDef> = {
   taj,
   eiffel,
@@ -1330,4 +1429,5 @@ export const SCENES: Record<SceneId, SceneDef> = {
   coast,
   aurora,
   dunes,
+  berlin,
 };

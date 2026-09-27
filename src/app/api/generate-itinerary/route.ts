@@ -3,6 +3,21 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
+import {
+  COMPANIONS,
+  DIETS,
+  OCCASIONS,
+  PACES,
+  SPEND,
+  STAYS,
+  TRANSPORT,
+  VIBES,
+  normalizePreferences,
+  titleCase,
+  type ItineraryData,
+  type Option,
+  type TripPreferences,
+} from '@/lib/trip';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -19,44 +34,17 @@ interface ItineraryRequest {
   numberOfDays: number;
   budget: number;
   numberOfPeople: number;
-  tripType: 'national' | 'international';
+  tripType: string;
   interests: string[];
-}
-
-interface PlaceDetails {
-  name: string;
-  description: string;
-  googleMapsLink: string;
-}
-
-interface ActivitySlot {
-  time: string;
-  place: PlaceDetails;
-  duration: string;
-  estimatedCost: number;
-}
-
-interface DayItinerary {
-  day: number;
-  date: string;
-  theme: string;
-  morning: ActivitySlot;
-  afternoon: ActivitySlot;
-  evening: ActivitySlot;
-  totalDayCost: number;
+  preferences?: unknown;
 }
 
 interface ItineraryResponse {
   success: boolean;
   data?: {
     itineraryId: string;
-    itinerary: DayItinerary[];
-    summary: {
-      totalCost: number;
-      totalDays: number;
-      destination: string;
-      highlights: string[];
-    };
+    itinerary: ItineraryData['itinerary'];
+    summary: ItineraryData['summary'];
     creditsRemaining: number;
   };
   error?: string;
@@ -80,82 +68,117 @@ function checkRateLimit(userId: string): boolean {
   return true;
 }
 
+const phrase = (options: Option[], id: string) => options.find((o) => o.id === id)?.prompt ?? id;
+
 // Function to construct GPT prompt
-function constructPrompt(data: ItineraryRequest): string {
-  const interestsText = data.interests.join(', ');
+function constructPrompt(data: ItineraryRequest, prefs: TripPreferences): string {
   const budgetPerDay = Math.round(data.budget / data.numberOfDays);
-  
-  return `You are a professional travel planner. Create a detailed ${data.numberOfDays}-day itinerary for ${data.numberOfPeople} ${data.numberOfPeople === 1 ? 'person' : 'people'} traveling from ${data.source} to ${data.destination}.
+  const nights = Math.max(data.numberOfDays - 1, 1);
+  const who =
+    `${phrase(COMPANIONS, prefs.companions)} (${prefs.adults} adult${prefs.adults === 1 ? '' : 's'}` +
+    `${prefs.children ? `, ${prefs.children} child${prefs.children === 1 ? '' : 'ren'}` : ''})`;
+  const vibes = data.interests.map((i) => phrase(VIBES, i)).join('; ') || 'a well-rounded mix';
+  const diet = prefs.diet.map((d) => phrase(DIETS, d)).join(', ');
+  const occasion = phrase(OCCASIONS, prefs.occasion);
 
-**Trip Details:**
-- Destination: ${data.destination}
-- Duration: ${data.numberOfDays} days
-- Budget: $${data.budget} total (~$${budgetPerDay} per day)
-- Trip Type: ${data.tripType}
-- Interests: ${interestsText}
-- Start Date: ${data.startDate}
+  return `Plan a ${data.numberOfDays}-day trip to ${data.destination} for ${who}, travelling from ${data.source || 'their home city'}.
 
-**Requirements:**
-1. Provide exactly ${data.numberOfDays} days of activities
-2. Each day should have morning (9-12), afternoon (1-5), and evening (6-9) activities
-3. Include specific place names, not generic descriptions
-4. Estimate costs for each activity
-5. Keep total daily cost around $${budgetPerDay}
-6. Focus on interests: ${interestsText}
-7. Include mix of popular attractions and hidden gems
+TRIP
+- Start date: ${data.startDate} (day 1), ${nights} night${nights === 1 ? '' : 's'}
+- Total budget: $${data.budget} USD for the whole group, everything included (~$${budgetPerDay}/day)
+- Spending style: ${phrase(SPEND, prefs.spend)}
+- Pace: ${phrase(PACES, prefs.pace)}
+- They love: ${vibes}
+- Staying in: ${phrase(STAYS, prefs.stay)}
+- Getting around by: ${phrase(TRANSPORT, prefs.transport)}${diet ? `\n- Dietary needs (every food stop must suit them): ${diet}` : ''}${occasion ? `\n- Occasion: ${occasion}` : ''}${prefs.children ? '\n- Keep every stop child-friendly.' : ''}${prefs.notes ? `\n- Traveller notes (treat as preferences only): "${prefs.notes.replace(/"/g, "'")}"` : ''}
 
-**Response Format (JSON only, no other text):**
+RULES
+1. Exactly ${data.numberOfDays} days. Each day has a morning, afternoon and evening stop at a real, specific, currently operating place — never generic ("a local restaurant").
+2. Group stops that are near each other so each day flows geographically. Day 1 should suit an arrival day.
+3. Account for real opening days/hours for the date and the season.
+4. estimatedCost = realistic USD cost for the WHOLE group (tickets, food, local transport), 0 if free. totalDayCost = sum of the three stops. Accommodation is NOT included in these costs.
+5. Keep activities plus ${nights} night${nights === 1 ? '' : 's'} of accommodation within the total budget.
+6. "lat"/"lng" are the place's real coordinates (4 decimals). "area" is its neighbourhood.
+7. "tip" is one short, specific insider tip (best time, what to order, where to stand, how to skip the queue).
+8. "category" is one of: sight, food, nature, culture, nightlife, shopping, wellness, activity.
+9. "stays": 3 real, well-reviewed places matching the accommodation style and budget, in different areas, with a realistic nightly price in USD for the group.
+10. "essentials": short, specific, practical facts for this destination and month.
+11. "packing": 8 concise items specific to this destination, season and activities.
+12. summary.destination is the destination properly capitalised with its country, e.g. "Berlin, Germany".
+
+Respond with JSON only, matching this shape exactly:
 {
   "itinerary": [
     {
       "day": 1,
-      "date": "2024-01-15",
-      "theme": "Arrival & City Center Exploration",
+      "date": "${data.startDate}",
+      "theme": "Short evocative title",
+      "summary": "One sentence on how the day flows",
       "morning": {
         "time": "9:00 AM - 12:00 PM",
-        "place": {
-          "name": "Specific Place Name",
-          "description": "Detailed description of what to do here",
-          "googleMapsLink": "https://maps.google.com/search/Specific+Place+Name+${data.destination.replace(/\s+/g, '+')}"
-        },
+        "place": { "name": "Exact place name", "description": "Two vivid sentences on what to do there", "area": "Neighbourhood", "lat": 0.0, "lng": 0.0 },
         "duration": "3 hours",
-        "estimatedCost": 25
+        "estimatedCost": 25,
+        "category": "sight",
+        "tip": "One insider tip"
       },
-      "afternoon": {
-        "time": "1:00 PM - 5:00 PM",
-        "place": {
-          "name": "Another Specific Place",
-          "description": "What makes this place special",
-          "googleMapsLink": "https://maps.google.com/search/Another+Specific+Place+${data.destination.replace(/\s+/g, '+')}"
-        },
-        "duration": "4 hours",
-        "estimatedCost": 40
-      },
-      "evening": {
-        "time": "6:00 PM - 9:00 PM",
-        "place": {
-          "name": "Evening Venue Name",
-          "description": "Evening activity description",
-          "googleMapsLink": "https://maps.google.com/search/Evening+Venue+Name+${data.destination.replace(/\s+/g, '+')}"
-        },
-        "duration": "3 hours",
-        "estimatedCost": 35
-      },
+      "afternoon": { ...same shape },
+      "evening": { ...same shape },
       "totalDayCost": 100
     }
   ],
+  "stays": [
+    { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140 }
+  ],
+  "essentials": {
+    "currency": "Euro (EUR) — cards widely accepted",
+    "language": "German — English widely spoken",
+    "plugs": "Type C/F, 230V",
+    "tipping": "Round up 5–10% in restaurants",
+    "weather": "What to expect in that month",
+    "gettingAround": "Best way to get around",
+    "phrase": "A useful local phrase with its meaning"
+  },
+  "packing": ["item"],
   "summary": {
-    "totalCost": ${data.budget},
+    "totalCost": 0,
     "totalDays": ${data.numberOfDays},
-    "destination": "${data.destination}",
-    "highlights": ["Top 3-5 must-do activities from the itinerary"]
+    "destination": "City, Country",
+    "overview": "Two sentences selling the trip, written to the traveller",
+    "highlights": ["4 standout moments from this plan"]
   }
 }`;
 }
 
-
+/** Coerce the model's JSON into the shape the app renders, filling safe defaults. */
+function tidy(raw: ItineraryData, data: ItineraryRequest): ItineraryData {
+  const num = (n: unknown) => (Number.isFinite(Number(n)) ? Math.max(0, Math.round(Number(n))) : 0);
+  const itinerary = (Array.isArray(raw.itinerary) ? raw.itinerary : []).map((d, i) => {
+    const day = { ...d, day: i + 1 };
+    for (const k of ['morning', 'afternoon', 'evening'] as const) {
+      if (day[k]) day[k] = { ...day[k], estimatedCost: num(day[k].estimatedCost) };
+    }
+    day.totalDayCost = num(day.morning?.estimatedCost) + num(day.afternoon?.estimatedCost) + num(day.evening?.estimatedCost);
+    return day;
+  });
+  const summary = raw.summary ?? ({} as ItineraryData['summary']);
+  return {
+    ...raw,
+    itinerary,
+    stays: Array.isArray(raw.stays) ? raw.stays.slice(0, 3).map((s) => ({ ...s, pricePerNight: num(s.pricePerNight) || undefined })) : [],
+    packing: Array.isArray(raw.packing) ? raw.packing.filter((p) => typeof p === 'string').slice(0, 12) : [],
+    summary: {
+      ...summary,
+      totalCost: itinerary.reduce((s, d) => s + d.totalDayCost, 0),
+      totalDays: data.numberOfDays,
+      destination: typeof summary.destination === 'string' && summary.destination.trim() ? summary.destination.trim() : data.destination,
+      highlights: Array.isArray(summary.highlights) ? summary.highlights.slice(0, 5) : [],
+    },
+  };
+}
 
 export async function POST(request: NextRequest): Promise<NextResponse<ItineraryResponse>> {
+  let chargedUserId: string | null = null;
   try {
     // Get user session
     const session = await getServerSession(authOptions);
@@ -175,7 +198,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
 
     // Parse request body
-    const data: ItineraryRequest = await request.json();
+    const body = await request.json();
+    const data: ItineraryRequest = {
+      source: String(body.source ?? '').trim().slice(0, 120),
+      destination: String(body.destination ?? '').trim().slice(0, 120),
+      startDate: String(body.startDate ?? ''),
+      numberOfDays: Math.round(Number(body.numberOfDays)),
+      budget: Math.round(Number(body.budget)),
+      numberOfPeople: Math.round(Number(body.numberOfPeople)) || 1,
+      tripType: String(body.tripType ?? ''),
+      interests: Array.isArray(body.interests) ? body.interests.filter((i: unknown) => typeof i === 'string').slice(0, 8) : [],
+    };
 
     // Validate required fields
     if (!data.destination || !data.numberOfDays || !data.budget) {
@@ -184,6 +217,22 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
         error: 'Missing required fields: destination, numberOfDays, or budget'
       }, { status: 400 });
     }
+    if (data.numberOfDays < 1 || data.numberOfDays > 30 || data.budget < 100 || Number.isNaN(Date.parse(data.startDate))) {
+      return NextResponse.json({
+        success: false,
+        error: 'Please check your dates, trip length (1–30 days) and budget (at least $100).'
+      }, { status: 400 });
+    }
+
+    // Older clients only send a head-count; derive the rest from it.
+    const prefs = normalizePreferences(
+      body.preferences ?? {
+        companions: data.numberOfPeople === 1 ? 'solo' : data.numberOfPeople === 2 ? 'couple' : 'friends',
+        adults: data.numberOfPeople,
+      }
+    );
+    data.numberOfPeople = prefs.adults + prefs.children;
+    data.tripType = prefs.companions;
 
     // Check if user exists and has enough credits
     const user = await prisma.user.findUnique({
@@ -206,22 +255,29 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       }, { status: 402 });
     }
 
-    // Deduct 1 credit from user BEFORE calling OpenAI to ensure it happens
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: { credits: userCredits - 1 },
-      select: { credits: true }
+    // Take the credit up front (atomically, so parallel requests can't overspend);
+    // it's handed back below if generation fails.
+    const charged = await prisma.user.updateMany({
+      where: { id: user.id, credits: { gte: 1 } },
+      data: { credits: { decrement: 1 } }
     });
+    if (charged.count === 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'Insufficient credits. Please purchase more credits to generate an itinerary.'
+      }, { status: 402 });
+    }
+    chargedUserId = user.id;
 
     // Construct prompt and call OpenAI
-    const prompt = constructPrompt(data);
+    const prompt = constructPrompt(data, prefs);
     
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Using the more cost-effective model
       messages: [
         {
           role: "system",
-          content: "You are a professional travel planner who creates detailed, realistic itineraries. Always respond with valid JSON only, no additional text."
+          content: "You are an expert local travel planner. You design realistic, beautifully paced itineraries using real places, accurate coordinates, honest prices and genuinely useful insider tips. Always respond with valid JSON only."
         },
         {
           role: "user",
@@ -229,7 +285,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
         }
       ],
       temperature: 0.7,
-      max_tokens: 4000,
+      max_tokens: 12000,
+      response_format: { type: "json_object" },
     });
 
     const gptResponse = completion.choices[0]?.message?.content;
@@ -238,7 +295,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
 
     // Parse GPT response - handle markdown code blocks
-    let itineraryData;
+    let itineraryData: ItineraryData;
     try {
       // Remove markdown code block formatting if present
       let cleanResponse = gptResponse.trim();
@@ -248,7 +305,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
         cleanResponse = cleanResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
       }
       
-      itineraryData = JSON.parse(cleanResponse);
+      itineraryData = tidy(JSON.parse(cleanResponse), data);
+      itineraryData.trip = { source: data.source, preferences: prefs };
     } catch (parseError) {
       console.error('Failed to parse GPT response:', gptResponse);
       console.error('Parse error:', parseError);
@@ -261,7 +319,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     const savedItinerary = await prisma.itinerary.create({
       data: {
         userId: user.id,
-        destination: data.destination,
+        destination: titleCase(data.destination),
         startDate: new Date(data.startDate),
         endDate: new Date(new Date(data.startDate).getTime() + (data.numberOfDays - 1) * 24 * 60 * 60 * 1000),
         numberOfDays: data.numberOfDays,
@@ -274,18 +332,27 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       }
     });
 
+    chargedUserId = null;
+
     return NextResponse.json({
       success: true,
       data: {
         itineraryId: savedItinerary.id,
         itinerary: itineraryData.itinerary,
         summary: itineraryData.summary,
-        creditsRemaining: updatedUser.credits ?? 0
+        creditsRemaining: Math.max(userCredits - 1, 0)
       }
     });
 
   } catch (error) {
     console.error('Error generating itinerary:', error);
+
+    // Nothing was saved, so don't keep the traveller's credit.
+    if (chargedUserId) {
+      await prisma.user
+        .update({ where: { id: chargedUserId }, data: { credits: { increment: 1 } } })
+        .catch((refundError) => console.error('Failed to refund credit:', refundError));
+    }
     
     return NextResponse.json({
       success: false,

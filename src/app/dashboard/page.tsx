@@ -29,7 +29,7 @@ function Welcome() {
         <SplitText text="Where are we" trigger="mount" className="block" />
         <SplitText segments={[{ text: "headed next?", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
       </h1>
-      <p className="mt-4 max-w-xl text-lg text-stone">Fill in the basics and GoRoam will craft a day-by-day itinerary in seconds.</p>
+      <p className="mt-4 max-w-xl text-lg text-stone">Four quick steps and GoRoam crafts a day-by-day plan — with flights, stays and tickets ready to book.</p>
     </header>
   );
 }

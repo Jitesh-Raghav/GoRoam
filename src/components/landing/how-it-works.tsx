@@ -26,20 +26,20 @@ const STEPS = [
   {
     icon: PenLine,
     title: "Tell us the dream.",
-    body: "Where you're starting, where you're headed, when, who's coming and what you love. It takes about thirty seconds.",
-    points: ["Any city, country or wild idea", "Budget, group size and trip length", "Eight travel styles to mix"],
+    body: "Where you're starting and headed, who's coming, your pace, where you like to stay and what you love. Four quick steps.",
+    points: ["Solo, couple, family or friends", "Pace, spending style & stay", "Food needs, occasions & must-sees"],
   },
   {
     icon: Sparkles,
     title: "We craft the days.",
     body: "GoRoam's AI weighs your budget, pace and interests to build a morning, afternoon and evening for every day — real places, not placeholders.",
-    points: ["Popular icons and hidden gems", "Costs estimated for every stop", "A theme for every day"],
+    points: ["Icons and hidden gems, geographically grouped", "Costs and an insider tip for every stop", "Where to stay, what to pack, local essentials"],
   },
   {
     icon: Navigation,
-    title: "Go. It's all in your pocket.",
-    body: "Open any stop in Google Maps, keep every itinerary in your dashboard, or print a clean PDF for the road.",
-    points: ["One tap to directions", "Saved to your account", "Print-ready PDF export"],
+    title: "Book it. Go.",
+    body: "Flights, stays and tickets open prefilled with your dates. Share the plan with the crew, sync it to your calendar, and tick off the packing list.",
+    points: ["Flights, stays & tickets in two taps", "Private share links & calendar sync", "Packing list & pre-trip checklist"],
   },
 ];
 
@@ -95,16 +95,16 @@ function FormState() {
       <div className="grid grid-cols-2 gap-3">
         <Field label="From" icon={Navigation} value="Mumbai, India" />
         <Field label="When" icon={CalendarDays} value="12 Apr · 5 days" />
-        <Field label="Who" icon={Users} value="2 travellers" />
+        <Field label="Who" icon={Users} value="Couple · Slow pace" />
         <Field label="Budget" icon={Wallet} value="$2,400" />
       </div>
       <div className="flex flex-wrap gap-2 pt-1">
         {[
-          ["Culture", true],
-          ["Food", true],
-          ["Nature", false],
-          ["Photography", true],
-          ["Nightlife", false],
+          ["History", true],
+          ["Food & drink", true],
+          ["Hidden gems", false],
+          ["Photo spots", true],
+          ["Wellness", false],
         ].map(([label, on], i) => (
           <motion.span
             key={label as string}

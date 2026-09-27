@@ -201,6 +201,7 @@ html.lenis, html.lenis body { height: auto; }
   html, body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .no-print, .grain { display: none !important; }
   .print-avoid { break-inside: avoid; }
+  .print-break + .print-break { break-before: page; }
   /* Scroll reveals that never ran must still print. */
   [style*="opacity"] { opacity: 1 !important; }
   [style*="transform"]:not(svg *) { transform: none !important; }

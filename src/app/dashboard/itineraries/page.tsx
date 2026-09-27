@@ -13,6 +13,7 @@ import { PillLink } from "@/components/site/pill";
 import { SplitText } from "@/components/motion/split-text";
 import { sceneForDestination } from "@/lib/destinations";
 import { cn } from "@/lib/utils";
+import { COMPANIONS, VIBES, labelFor, titleCase } from "@/lib/trip";
 
 interface Itinerary {
   id: string;
@@ -37,7 +38,6 @@ const formatDate = (dateString: string, withYear = true) =>
     timeZone: "UTC",
   });
 
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDelete: (id: string) => Promise<void> }) {
   const [confirming, setConfirming] = useState(false);
@@ -53,7 +53,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
       className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(21,19,15,0.5)]"
     >
-      <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${it.destination} itinerary`}>
+      <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${titleCase(it.destination)} itinerary`}>
         <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
           <LazyScene id={scene} tint={SCENES[scene].tint} />
         </div>
@@ -66,7 +66,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
           <p className="eyebrow text-[0.6rem] text-paper/70">
             {formatDate(it.startDate, false)} — {formatDate(it.endDate)}
           </p>
-          <h3 className="display mt-2 truncate text-[2.2rem] leading-none">{it.destination}</h3>
+          <h3 className="display mt-2 truncate text-[2.2rem] leading-none">{titleCase(it.destination)}</h3>
         </div>
       </Link>
 
@@ -78,11 +78,11 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
           <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">
             <Wallet className="size-3.5 text-brand" /> ${it.budget.toLocaleString("en-US")}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">{cap(it.tripType)}</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">{labelFor(COMPANIONS, it.tripType)}</span>
         </div>
         {it.interests.length > 0 && (
           <p className="mt-4 text-sm text-stone">
-            {it.interests.slice(0, 3).map(cap).join(" · ")}
+            {it.interests.slice(0, 3).map((i) => labelFor(VIBES, i)).join(" · ")}
             {it.interests.length > 3 && ` +${it.interests.length - 3}`}
           </p>
         )}

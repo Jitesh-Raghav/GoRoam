@@ -50,8 +50,11 @@ export interface PassData {
   numberOfDays: number;
   numberOfPeople: number;
   budget: number;
-  tripType: "national" | "international";
+  /** Short label for the chip on the pass, e.g. "Couple". */
+  tripType: string;
   interests: string[];
+  /** Extra line under the travel style, e.g. pace and stay. */
+  note?: string;
 }
 
 export function BoardingPass({ data, interestLabels, className }: { data: PassData; interestLabels: Record<string, string>; className?: string }) {
@@ -131,6 +134,7 @@ export function BoardingPass({ data, interestLabels, className }: { data: PassDa
           <p className="mt-2 line-clamp-2 text-sm text-ink">
             {data.interests.length ? data.interests.map((i) => interestLabels[i] ?? i).join(" · ") : "Pick what you love"}
           </p>
+          {data.note && <p className="mt-1 truncate text-xs text-stone">{data.note}</p>}
           <p className="mt-3 font-mono text-[11px] text-stone-2">{serial}</p>
         </div>
         <Barcode seed={`${data.destination}${data.startDate}`} />

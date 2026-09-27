@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Crown, Info, Plus, Sparkles, Star, Zap } from "lucide-react";
 import { DashboardLayout, useCredits } from "@/components/dashboard/dashboard-layout";
@@ -8,6 +8,7 @@ import { Scene } from "@/components/scenes/scene";
 import { SplitText } from "@/components/motion/split-text";
 import { PillButton, PillLink } from "@/components/site/pill";
 import { cn } from "@/lib/utils";
+import { FREE_CREDITS, PLANS, perTrip, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
   return (
@@ -17,56 +18,12 @@ export default function CreditsPage() {
   );
 }
 
-const plans = [
-  {
-    name: "Starter",
-    credits: 50,
-    price: 9.99,
-    description: "Perfect for occasional travelers",
-    icon: Zap,
-    features: ["50 AI-generated itineraries", "Basic customization", "PDF downloads", "Email support"],
-    popular: false,
-  },
-  {
-    name: "Explorer",
-    credits: 150,
-    price: 24.99,
-    description: "Great for frequent travelers",
-    icon: Star,
-    features: [
-      "150 AI-generated itineraries",
-      "Advanced customization",
-      "PDF & Excel downloads",
-      "Priority support",
-      "Save favorite locations",
-      "Trip sharing",
-    ],
-    popular: true,
-  },
-  {
-    name: "Adventurer",
-    credits: 500,
-    price: 69.99,
-    description: "For travel enthusiasts",
-    icon: Crown,
-    features: [
-      "500 AI-generated itineraries",
-      "Premium customization",
-      "All download formats",
-      "24/7 priority support",
-      "Advanced trip analytics",
-      "Unlimited trip sharing",
-      "Custom branding",
-      "API access",
-    ],
-    popular: false,
-  },
-];
+const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, adventurer: Crown };
 
 const faqs = [
   {
     q: "How do credits work?",
-    a: "Each credit allows you to generate one complete AI-powered travel itinerary. Credits don't expire and can be used anytime.",
+    a: `Each credit plans one complete itinerary, with bookings, checklists and a shareable link. New accounts start with ${FREE_CREDITS} free credits.`,
   },
   {
     q: "Can I get a refund?",
@@ -85,6 +42,13 @@ const faqs = [
 function CreditsPageContent() {
   const { credits } = useCredits();
   const [notice, setNotice] = useState<string | null>(null);
+  const [picked, setPicked] = useState<PlanId | null>(null);
+
+  // Arriving from a landing-page plan: spotlight that pack.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("plan");
+    if (PLANS.some((p) => p.id === id)) setPicked(id as PlanId);
+  }, []);
 
   return (
     <div className="mx-auto max-w-[1280px]">
@@ -148,17 +112,18 @@ function CreditsPageContent() {
         </AnimatePresence>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {plans.map((plan, i) => {
-            const Icon = plan.icon;
+          {PLANS.map((plan, i) => {
+            const Icon = ICONS[plan.id];
             return (
               <motion.div
-                key={plan.name}
+                key={plan.id}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
                 className={cn(
                   "relative flex flex-col overflow-hidden rounded-[32px] p-8",
-                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(217,85,1,0.55)]" : "bg-white/80 text-ink ring-1 ring-line"
+                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(217,85,1,0.55)]" : "bg-white/80 text-ink ring-1 ring-line",
+                  picked === plan.id && "ring-2 ring-brand"
                 )}
               >
                 {plan.popular && (
@@ -180,10 +145,10 @@ function CreditsPageContent() {
                 <p className={cn("mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
                   {plan.credits} credits
                   <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>
-                    ≈ ${(plan.price / plan.credits).toFixed(2)} per trip
+                    ≈ {perTrip(plan)} per trip
                   </span>
                 </p>
-                <p className={cn("mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.description}</p>
+                <p className={cn("mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
 
                 <PillButton
                   type="button"
