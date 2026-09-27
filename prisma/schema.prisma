@@ -57,6 +57,7 @@ model User {
   accounts Account[]
   sessions Session[]
   itineraries Itinerary[]
+  payments Payment[]
 }
 
 model VerificationToken {
@@ -87,4 +88,25 @@ model Itinerary {
   updatedAt       DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// One row per credit-pack purchase. Written only by the payment webhook, so the
+// unique provider id makes a retried webhook a no-op instead of double credits.
+model Payment {
+  id                String   @id @default(cuid())
+  provider          String   @default("dodo")
+  providerPaymentId String   @unique
+  checkoutSessionId String?
+  userId            String
+  planId            String   // 'starter' | 'explorer' | 'adventurer'
+  credits           Int      // credits this purchase added
+  amount            Int      // total charged, in the currency's smallest unit
+  currency          String
+  status            String   @default("succeeded") // 'succeeded' | 'refunded' | 'disputed'
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
