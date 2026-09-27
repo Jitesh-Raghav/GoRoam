@@ -119,9 +119,16 @@ Credit packs are sold through [Dodo Payments](https://dodopayments.com) hosted c
    - `DODO_PAYMENTS_WEBHOOK_KEY` - webhook signing secret
    - `DODO_PAYMENTS_ENVIRONMENT` - `test_mode` (default) or `live_mode`
    - `DODO_PRODUCT_STARTER`, `DODO_PRODUCT_EXPLORER`, `DODO_PRODUCT_ADVENTURER` - the product ids (`pdt_…`)
-4. Run `npx prisma db push` once to create the `Payment` table.
+
+The `Payment` table is created automatically on the next deploy — see **Database schema** below.
 
 Until the API key and all three product ids are set, the buy buttons show "Online checkout isn't available yet." When going live, switch to live-mode keys, live product ids and a live webhook secret together.
+
+### Database schema
+
+There's no migrations folder: the build script itself runs `prisma db push` (`"vercel-build"` in `package.json`), so every deploy syncs the live database to whatever is in `schema.prisma`. Editing that file is enough — you don't need to run anything by hand.
+
+The one exception is a change that would **drop or truncate a column with data in it** (e.g. deleting a field, changing its type). `db push` refuses those instead of applying them silently, so the build fails loudly with a "data loss" error rather than deploying and quietly deleting something. If that happens, resolve it locally (`DATABASE_URL="<prod-url>" npx prisma db push`, which shows the same warning and lets you decide) before pushing again.
 
 ## 🔧 Development
 
