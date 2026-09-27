@@ -49,6 +49,7 @@ import {
 import { useCredits } from "@/components/dashboard/dashboard-layout";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { GeneratingOverlay } from "@/components/dashboard/generating-overlay";
+import { OutOfCredits, PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { PillButton } from "@/components/site/pill";
 import {
   COMPANIONS,
@@ -63,6 +64,7 @@ import {
   labelFor,
   type TripPreferences,
 } from "@/lib/trip";
+import { PLANS, perTrip } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<string, typeof MapPin> = {
@@ -347,7 +349,7 @@ const nf = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 
 export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripFormProps) {
   const router = useRouter();
-  const { credits, refreshCredits } = useCredits();
+  const { credits, creditsLoaded, refreshCredits } = useCredits();
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [formData, setFormData] = useState<TripFormData>({
@@ -361,11 +363,26 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   const [prefs, setPrefs] = useState<TripPreferences>(DEFAULT_PREFERENCES);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paywall, setPaywall] = useState(false);
+  const outOfCredits = creditsLoaded && credits < 1;
   const today = new Date().toISOString().split("T")[0];
 
-  // Pre-fill from the landing page or "Plan a similar trip".
+  // Pre-fill from the landing page or "Plan a similar trip", or pick up a plan
+  // saved when the traveller went to top up their credits.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
+    try {
+      const raw = window.sessionStorage.getItem(PLANNER_DRAFT_KEY);
+      if (raw && !q.get("destination")) {
+        const draft = JSON.parse(raw);
+        if (draft?.formData) setFormData((prev) => ({ ...prev, ...draft.formData }));
+        if (draft?.prefs) setPrefs((prev) => ({ ...prev, ...draft.prefs }));
+        if (typeof draft?.step === "number") setStep(Math.max(0, Math.min(STEPS.length - 1, draft.step)));
+        return;
+      }
+    } catch {
+      /* storage unavailable or corrupt draft: start fresh */
+    }
     const d = q.get("destination");
     const days = Number(q.get("days"));
     const budget = Number(q.get("budget"));
@@ -437,8 +454,18 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const showPaywall = () => {
+    try {
+      window.sessionStorage.setItem(PLANNER_DRAFT_KEY, JSON.stringify({ formData, prefs, step }));
+    } catch {
+      /* ignore */
+    }
+    setPaywall(true);
+  };
+
   const generate = async () => {
     if (!validate(3)) return;
+    if (outOfCredits) return showPaywall();
     setIsSubmitting(true);
     setErrors({});
     try {
@@ -453,7 +480,17 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         }),
       });
       const result = await response.json();
+      if (response.status === 402) {
+        setIsSubmitting(false);
+        await refreshCredits();
+        return showPaywall();
+      }
       if (result.success) {
+        try {
+          window.sessionStorage.removeItem(PLANNER_DRAFT_KEY);
+        } catch {
+          /* ignore */
+        }
         await refreshCredits();
         router.push(`/dashboard/itinerary/${result.data.itineraryId}`);
         onSubmit?.(result.data);
@@ -490,6 +527,9 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   return (
     <>
       <AnimatePresence>{busy && <GeneratingOverlay destination={formData.destination} days={formData.numberOfDays} />}</AnimatePresence>
+      <AnimatePresence>
+        {paywall && <OutOfCredits destination={formData.destination} days={formData.numberOfDays} onClose={() => setPaywall(false)} />}
+      </AnimatePresence>
 
       <form onSubmit={handleSubmit} noValidate className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
         <div className="min-w-0 space-y-4">
@@ -743,16 +783,16 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                   <>
                     Step {step + 1} of {STEPS.length} · next: <span className="text-paper">{STEPS[step + 1].label}</span>
                   </>
-                ) : credits > 0 ? (
+                ) : outOfCredits ? (
                   <>
-                    Uses 1 credit · you have <span className="text-paper">{credits}</span> left
+                    You&apos;ve used your free trip · more from <span className="text-paper">{perTrip(PLANS[PLANS.length - 1])}</span> a trip.{" "}
+                    <Link href="/dashboard/credits" className="text-brand-2 underline underline-offset-4">
+                      See packs
+                    </Link>
                   </>
                 ) : (
                   <>
-                    You&apos;re out of credits.{" "}
-                    <Link href="/dashboard/credits" className="text-brand-2 underline underline-offset-4">
-                      Top up to keep planning
-                    </Link>
+                    Uses 1 credit · you have <span className="text-paper">{credits}</span> left
                   </>
                 )}
               </p>
@@ -763,7 +803,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
               </PillButton>
             ) : (
               <PillButton type="submit" variant="brand" size="lg" disabled={busy} icon={<Sparkles className="size-4" />}>
-                {busy ? "Generating…" : "Generate itinerary"}
+                {busy ? "Generating…" : outOfCredits ? "Unlock this trip" : "Generate itinerary"}
               </PillButton>
             )}
           </div>

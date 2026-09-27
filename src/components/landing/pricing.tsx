@@ -2,7 +2,7 @@ import { Check, Gift, ShieldCheck, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 import { PillLink } from "@/components/site/pill";
-import { FREE_CREDITS, PLANS, perTrip } from "@/lib/plans";
+import { PLANS, freeTrips, perTrip } from "@/lib/plans";
 import { SectionHeading } from "./section-heading";
 
 export function Pricing() {
@@ -85,11 +85,11 @@ export function Pricing() {
               </span>
               <div>
                 <p className="display text-3xl leading-none text-ink">Start free.</p>
-                <p className="mt-1.5 text-stone">Every new account gets {FREE_CREDITS} credits — plan {FREE_CREDITS} full trips before you pay a cent.</p>
+                <p className="mt-1.5 text-stone">Every new account gets {freeTrips()} — see a complete plan before you pay a cent.</p>
               </div>
             </div>
             <PillLink href="/auth" variant="outline" className="w-full justify-between sm:w-auto">
-              Claim {FREE_CREDITS} free credits
+              Plan my free trip
             </PillLink>
           </div>
         </Reveal>

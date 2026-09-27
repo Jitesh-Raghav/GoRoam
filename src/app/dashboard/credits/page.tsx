@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Crown, Info, Plus, Sparkles, Star, Zap } from "lucide-react";
+import { ArrowLeft, Check, Crown, Info, Plus, Sparkles, Star, Zap } from "lucide-react";
+import Link from "next/link";
+import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { DashboardLayout, useCredits } from "@/components/dashboard/dashboard-layout";
 import { Scene } from "@/components/scenes/scene";
 import { SplitText } from "@/components/motion/split-text";
 import { PillButton, PillLink } from "@/components/site/pill";
 import { cn } from "@/lib/utils";
-import { FREE_CREDITS, PLANS, perTrip, type PlanId } from "@/lib/plans";
+import { PLANS, freeTrips, perTrip, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
   return (
@@ -23,7 +25,7 @@ const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, advent
 const faqs = [
   {
     q: "How do credits work?",
-    a: `Each credit plans one complete itinerary, with bookings, checklists and a shareable link. New accounts start with ${FREE_CREDITS} free credits.`,
+    a: `Each credit plans one complete itinerary, with bookings, checklists and a shareable link. New accounts start with ${freeTrips()}.`,
   },
   {
     q: "Can I get a refund?",
@@ -43,11 +45,22 @@ function CreditsPageContent() {
   const { credits } = useCredits();
   const [notice, setNotice] = useState<string | null>(null);
   const [picked, setPicked] = useState<PlanId | null>(null);
+  const [savedTrip, setSavedTrip] = useState<string | null>(null);
 
-  // Arriving from a landing-page plan: spotlight that pack.
+  // Arriving from a plan link: spotlight that pack. Arriving from the planner's
+  // paywall: offer the way back to the trip they were building.
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("plan");
+    const q = new URLSearchParams(window.location.search);
+    const id = q.get("plan");
     if (PLANS.some((p) => p.id === id)) setPicked(id as PlanId);
+    if (q.get("return") === "planner") {
+      try {
+        const draft = JSON.parse(window.sessionStorage.getItem(PLANNER_DRAFT_KEY) ?? "null");
+        setSavedTrip(draft?.formData?.destination?.split(",")[0]?.trim() || "your trip");
+      } catch {
+        setSavedTrip("your trip");
+      }
+    }
   }, []);
 
   return (
@@ -59,6 +72,15 @@ function CreditsPageContent() {
           <SplitText segments={[{ text: "fewer spreadsheets.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
         </h1>
       </header>
+
+      {savedTrip && (
+        <Link
+          href="/dashboard"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-soft px-4 py-2 text-sm text-ink ring-1 ring-brand/20 transition-colors hover:bg-ink hover:text-paper"
+        >
+          <ArrowLeft className="size-4" /> Your {savedTrip} plan is saved — back to it
+        </Link>
+      )}
 
       {/* Balance */}
       <section className="relative mt-10 overflow-hidden rounded-[32px] bg-ink text-paper">

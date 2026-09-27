@@ -30,7 +30,7 @@ export function FinalCta() {
           </h2>
           <Reveal delay={0.35} className="mx-auto mt-12 max-w-xl">
             <TripPrompt tone="glass" />
-            <p className="mt-5 text-sm text-paper/60">Three free itineraries when you sign up. No card needed.</p>
+            <p className="mt-5 text-sm text-paper/60">Your first itinerary is free. No card needed.</p>
           </Reveal>
         </div>
       </motion.div>

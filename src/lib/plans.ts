@@ -15,8 +15,14 @@ export interface Plan {
   popular?: boolean;
 }
 
-/** Credits every new account starts with (matches the `User.credits` default in Prisma). */
-export const FREE_CREDITS = 3;
+/**
+ * Credits every new account starts with (matches the `User.credits` default in Prisma).
+ * One full trip shows what GoRoam does; the next one is what people pay for.
+ */
+export const FREE_CREDITS = 1;
+
+/** "1 free itinerary" / "3 free itineraries". */
+export const freeTrips = (n = FREE_CREDITS) => `${n === 1 ? "1 free itinerary" : `${n} free itineraries`}`;
 
 export const PLANS: Plan[] = [
   {

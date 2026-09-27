@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { FREE_CREDITS } from '@/lib/plans';
 
 export async function GET() {
   try {
@@ -29,7 +30,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      credits: user.credits ?? 3 // Default to 3 only if null/undefined, not if 0
+      credits: user.credits ?? FREE_CREDITS // Only when null/undefined, not when 0
     });
 
   } catch (error) {

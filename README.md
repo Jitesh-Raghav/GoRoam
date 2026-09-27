@@ -65,7 +65,7 @@ src/
 
 Defined once in `src/lib/plans.ts` and used across the site. 1 credit = 1 itinerary; credits never expire.
 
-- **Free**: 3 credits for every new account
+- **Free**: 1 credit (one full itinerary) for every new account
 - **Starter**: $9.99 - 10 credits (one-time)
 - **Explorer**: $24.99 - 30 credits (one-time)
 - **Adventurer**: $69.99 - 90 credits (one-time)

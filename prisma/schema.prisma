@@ -51,7 +51,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   
   // User specific fields for GoRoam
-  credits       Int       @default(3)
+  credits       Int       @default(1)
   subscription  String?   @default("free")
   
   accounts Account[]
