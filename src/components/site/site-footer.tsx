@@ -111,7 +111,6 @@ const COLUMNS = [
       { label: "Dashboard", href: "/dashboard" },
       { label: "My itineraries", href: "/dashboard/itineraries" },
       { label: "Buy credits", href: "/dashboard/credits" },
-      { label: "Contact us", href: "mailto:hello@goroam.com" },
     ],
   },
   {
@@ -121,6 +120,15 @@ const COLUMNS = [
       { label: "LinkedIn", href: "https://www.linkedin.com/company/goroam" },
       { label: "X (Twitter)", href: "https://x.com/goroamapp" },
       { label: "Instagram", href: "https://instagram.com/goroamapp" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of service", href: "/terms" },
+      { label: "Privacy policy", href: "/privacy" },
+      { label: "Refund policy", href: "/refunds" },
+      { label: "Contact us", href: "/contact" },
     ],
   },
 ];
@@ -146,7 +154,7 @@ export function SiteFooter() {
             Share your journey on X
           </a>
         </div>
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-6 lg:col-start-7">
+        <div className="grid grid-cols-2 gap-10 sm:grid-cols-4 lg:col-span-6 lg:col-start-7">
           {COLUMNS.map((col) => (
             <div key={col.title}>
               <p className="eyebrow text-paper/45">{col.title}</p>
