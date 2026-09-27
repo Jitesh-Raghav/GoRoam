@@ -4,9 +4,11 @@ A modern, full-stack SaaS application for planning travel itineraries using AI t
 
 ## 🌟 Features
 
-- **AI-Powered Itineraries**: Generate personalized travel plans using advanced AI
-- **Real-Time Interactive Maps**: Explore destinations with live maps and navigation
-- **Downloadable PDF Plans**: Export itineraries as beautiful PDFs for offline access
+- **AI-Powered Itineraries**: A 4-step planner (route, who & budget, style, details) feeds a day-by-day plan with local tips, stays, essentials and a packing list
+- **Book it all**: Flights, stays, tickets and transport open on partner sites (Google Flights, Skyscanner, Kayak, Booking.com, Expedia, Airbnb, GetYourGuide, Viator, Klook, Rome2Rio) prefilled with the trip's route, dates and party
+- **Day route maps**: Every day is pinned on a map, with one-tap multi-stop directions in Google Maps
+- **Share, sync, print**: Private read-only share links, calendar (.ics) export and print-ready PDFs
+- **Before-you-go checklist**: Pre-trip to-dos and a destination-specific packing list, saved on the device
 - **Flexible Credit System**: Pay-per-use pricing model with multiple plan options
 - **Responsive Design**: Beautiful UI that works on all devices
 - **Smooth Animations**: Enhanced UX with Framer Motion animations
@@ -51,16 +53,22 @@ src/
 
 - `/` - Landing page with hero, features, testimonials, pricing
 - `/auth` - Authentication (login/signup)
-- `/dashboard` - Main application dashboard
+- `/dashboard` - Trip planner
+- `/dashboard/itinerary/[id]` - Itinerary, budget, bookings, stays, essentials, checklist
+- `/dashboard/book` - Booking hub
+- `/trip/[id]?t=…` - Public, read-only shared itinerary (signed link)
 - `/api/generate-itinerary` - POST endpoint for AI itinerary generation
 - `/api/credits` - GET/POST endpoints for credit management
 - `/api/save-itinerary` - GET/POST endpoints for saving itineraries
 
 ## 💰 Pricing Plans
 
-- **Free**: ₹0 - 3 credits forever
-- **Pro**: ₹299 - 20 credits (one-time payment)
-- **Premium**: ₹599 - 50 credits (one-time payment)
+Defined once in `src/lib/plans.ts` and used across the site. 1 credit = 1 itinerary; credits never expire.
+
+- **Free**: 3 credits for every new account
+- **Starter**: $9.99 - 10 credits (one-time)
+- **Explorer**: $24.99 - 30 credits (one-time)
+- **Adventurer**: $69.99 - 90 credits (one-time)
 
 ## 🚀 Getting Started
 
@@ -88,6 +96,14 @@ npm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Environment
+
+Besides `DATABASE_URL`, `NEXTAUTH_SECRET` (also signs share links), `NEXTAUTH_URL`, the Google OAuth keys and `OPENAI_API_KEY`, these optional affiliate IDs are appended to booking links when set:
+
+- `NEXT_PUBLIC_BOOKING_AID` - Booking.com affiliate id
+- `NEXT_PUBLIC_GYG_PARTNER_ID` - GetYourGuide partner id
+- `NEXT_PUBLIC_SKYSCANNER_ASSOCIATE` - Skyscanner associate id
 
 ## 🔧 Development
 

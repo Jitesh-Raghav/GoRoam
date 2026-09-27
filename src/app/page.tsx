@@ -1,3 +1,4 @@
+import { BookingSection } from "@/components/landing/booking";
 import { Faq } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { FinalCta } from "@/components/landing/final-cta";
@@ -27,6 +28,7 @@ export default function Home() {
         <HowItWorks />
         <GlobeSection />
         <Features />
+        <BookingSection />
         <Testimonials />
         <Pricing />
         <Faq />

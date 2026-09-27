@@ -54,7 +54,8 @@ export type MonumentId =
   | "bigben"
   | "burj"
   | "goldengate"
-  | "angkor";
+  | "angkor"
+  | "brandenburg";
 
 /* ---------------------------------- Eiffel --------------------------------- */
 
@@ -938,6 +939,84 @@ function angkor(): Monument {
   };
 }
 
+
+/* ----------------------------- Brandenburg Gate ----------------------------- */
+
+function brandenburg(): Monument {
+  const G = 220; // ground line (the standard tops out at y = 0)
+  const cols = [-80, -48, -16, 16, 48, 80];
+  // The shadowed passages behind the front colonnade.
+  const interior = rect(-92, G - 92, 184, 84) + rect(-146, G - 40, 40, 34) + rect(106, G - 40, 40, 34);
+  let body = "";
+  // Stylobate (two steps).
+  body += rect(-100, G - 4, 200, 4) + rect(-96, G - 8, 192, 4);
+  // Doric columns with a base and a capital.
+  for (const x of cols) {
+    body += rect(x - 5, G - 92, 10, 84);
+    body += rect(x - 6.5, G - 96, 13, 4) + rect(x - 6, G - 11, 12, 3);
+  }
+  // Entablature: architrave, frieze, cornice.
+  body += rect(-92, G - 104, 184, 8) + rect(-93, G - 112, 186, 8) + rect(-96, G - 116, 192, 4);
+  // Stepped attic and the raised centre carrying the quadriga.
+  body += rect(-82, G - 130, 164, 14) + rect(-40, G - 138, 80, 8) + rect(-44, G - 140, 88, 3);
+  // Side wings: little Doric temples with a low pediment.
+  for (const dir of [-1, 1]) {
+    const x0 = dir < 0 ? -150 : 104;
+    body += rect(x0, G - 6, 46, 6) + rect(x0 + 2, G - 48, 42, 8);
+    body += `M${x0} ${G - 48}L${x0 + 23} ${G - 60}L${x0 + 46} ${G - 48}Z`;
+    for (const cx of [x0 + 6, x0 + 23, x0 + 40]) body += rect(cx - 3, G - 40, 6, 34);
+  }
+  // Triglyphs in the frieze and the relief panel on the attic.
+  let detail = "";
+  for (let x = -88; x <= 84; x += 8) detail += rect(x, G - 111, 2.4, 6);
+  detail += rect(-72, G - 127, 144, 8);
+
+  // Quadriga: four horses stepping out in echelon, the chariot and Victoria with her standard.
+  const q = new PathBuilder();
+  const top = G - 140;
+  const horse: Pt[] = [
+    [0, 0], [2, 0], [2.6, -7], [4.4, -10.5], [3.6, -14.5], [-6, -16.5], [-10, -19.5], [-12, -26.5], [-14.6, -30],
+    [-15.6, -28], [-17.4, -27.4], [-21, -23], [-19.6, -21.2], [-15, -21.6], [-13.4, -17.6], [-18, -16.6], [-21.4, -12.4],
+    [-19.6, -11], [-15.6, -13.2], [-11.4, -11], [-4.6, -10.4], [-3, -6], [-1.6, 0],
+  ];
+  for (const [i, x] of [-12, -2, 8, 18].entries()) {
+    const dy = i % 2 ? 1.5 : 0;
+    q.M(x + horse[0][0], top + horse[0][1]);
+    for (const [hx, hy] of horse.slice(1)) q.L(x + hx, top + hy - dy);
+    q.Z();
+    // Tail.
+    q.M(x + 4, top - 12 - dy).Q(x + 8, top - 9 - dy, x + 6.4, top - 3 - dy).L(x + 4.6, top - 5 - dy).Z();
+  }
+  // Chariot box.
+  q.M(20, top).L(20, top - 12).L(36, top - 14).L(38, top).Z();
+  // Victoria: robed figure, raised arm and the staff with wreath and eagle.
+  q.M(24, top - 12).C(24, top - 24, 26, top - 32, 28.6, top - 37).L(33.4, top - 37).C(35, top - 30, 36, top - 22, 36, top - 13).Z();
+  // Wings sweeping up behind her shoulders.
+  q.M(29, top - 34).C(24, top - 40, 21, top - 48, 22, top - 56).C(25, top - 50, 28, top - 44, 32, top - 38).Z();
+  q.M(33, top - 34).L(40, top - 46).L(42, top - 45).L(36, top - 32).Z();
+  let quad = q.toString();
+  const head = circle(31, top - 40, 2.8);
+  quad += rect(40, top - 67, 2, 23);
+  quad += `M34 ${top - 80}L41 ${top - 76}L48 ${top - 80}L44 ${top - 74}L38 ${top - 74}Z`;
+  const wreath = circle(41, top - 72, 5) + circle(41, top - 72, 2.6);
+
+  return {
+    id: "brandenburg",
+    name: "Brandenburg Gate",
+    width: 300,
+    height: G,
+    ground: G,
+    layers: [
+      { d: interior, tone: "shade", noLine: true },
+      { d: body, tone: "body" },
+      { d: detail, tone: "shade", noLine: true },
+      { d: quad, tone: "accent" },
+      { d: head, tone: "accent", noLine: true },
+      { d: wreath, tone: "accent", rule: "evenodd" },
+    ],
+  };
+}
+
 /* ---------------------------------------------------------------------------- */
 
 const builders: Record<MonumentId, () => Monument> = {
@@ -953,6 +1032,7 @@ const builders: Record<MonumentId, () => Monument> = {
   burj,
   goldengate,
   angkor,
+  brandenburg,
 };
 
 const cache = new Map<MonumentId, Monument>();

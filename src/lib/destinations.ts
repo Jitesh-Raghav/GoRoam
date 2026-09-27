@@ -241,7 +241,8 @@ const RULES: [SceneId, string[]][] = [
   ["angkor", ["cambodia", "siem reap", "angkor", "vietnam", "hanoi", "ha long", "thailand", "bangkok", "chiang mai", "laos", "myanmar", "bagan", "indonesia", "yogyakarta"]],
   ["pyramids", ["egypt", "cairo", "giza", "luxor", "aswan"]],
   ["colosseum", ["rome", "italy", "florence", "venice", "milan", "naples", "tuscany", "sicily", "spain", "madrid", "barcelona", "portugal", "lisbon"]],
-  ["eiffel", ["paris", "france", "lyon", "nice", "provence", "germany", "berlin", "munich", "vienna", "austria", "prague", "budapest", "europe"]],
+  ["berlin", ["berlin", "germany", "deutschland", "munich", "hamburg", "frankfurt", "cologne", "dresden", "potsdam", "bavaria", "heidelberg", "vienna", "austria", "prague", "czech", "budapest", "hungary", "poland", "warsaw", "krakow", "copenhagen", "denmark"]],
+  ["eiffel", ["paris", "france", "lyon", "nice", "provence", "bordeaux", "europe"]],
   ["taj", ["india", "agra", "delhi", "jaipur", "udaipur", "jodhpur", "varanasi", "mumbai", "hyderabad", "lucknow", "rajasthan", "kolkata", "bengaluru", "bangalore", "chennai", "amritsar", "mysore", "pakistan", "lahore"]],
 ];
 

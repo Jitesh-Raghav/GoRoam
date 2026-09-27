@@ -63,7 +63,7 @@ export function Testimonials() {
       </span>
       <div className="container-x relative">
         <SectionHeading
-          index="06"
+          index="07"
           label="Loved by travellers"
           align="center"
           title={[[{ text: "Postcards from" }], [{ text: "our travellers.", className: "italic text-brand" }]]}
