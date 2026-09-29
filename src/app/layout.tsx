@@ -26,9 +26,12 @@ export const metadata: Metadata = {
   keywords: ["travel planning", "AI itinerary", "trip planner", "travel app", "vacation planning"],
   authors: [{ name: "GoRoam Team" }],
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
+    ],
     shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
   openGraph: {
@@ -54,7 +57,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f1ea",
+  themeColor: "#f4f8f9",
 };
 
 export default function RootLayout({

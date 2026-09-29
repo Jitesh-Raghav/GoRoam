@@ -10,9 +10,9 @@ const base =
   "group/pill relative isolate inline-flex shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full font-medium tracking-[-0.01em] transition-[color,background-color,box-shadow,transform] duration-500 ease-out-expo active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30";
 
 const variants: Record<Variant, string> = {
-  ink: "bg-ink text-paper hover:text-white shadow-[0_10px_30px_-12px_rgba(21,19,15,0.6)]",
+  ink: "bg-ink text-paper hover:text-white shadow-[0_10px_30px_-12px_rgba(10,30,44,0.6)]",
   paper: "bg-paper text-ink hover:text-white shadow-[0_10px_30px_-12px_rgba(0,0,0,0.35)]",
-  brand: "bg-brand text-white hover:text-white shadow-[0_14px_34px_-12px_rgba(217,85,1,0.65)]",
+  brand: "bg-brand text-white hover:text-white shadow-[0_14px_34px_-12px_rgba(11,130,120,0.65)]",
   outline: "bg-transparent text-ink ring-1 ring-inset ring-ink/15 hover:text-paper",
   glass: "bg-white/12 text-white ring-1 ring-inset ring-white/25 backdrop-blur-md hover:text-ink",
 };

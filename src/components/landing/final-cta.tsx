@@ -26,7 +26,7 @@ export function FinalCta() {
           </Reveal>
           <h2 className="display mt-8 text-[clamp(3.4rem,9vw,9rem)] leading-[0.88]">
             <SplitText text="The world is waiting." className="block" />
-            <SplitText text="Where to first?" className="block italic text-brand-2" delay={0.2} />
+            <SplitText text="Where to first?" className="block italic text-white" delay={0.2} />
           </h2>
           <Reveal delay={0.35} className="mx-auto mt-12 max-w-xl">
             <TripPrompt tone="glass" />

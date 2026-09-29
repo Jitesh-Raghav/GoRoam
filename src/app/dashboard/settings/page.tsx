@@ -2,8 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useState, type ReactNode } from "react";
-import Image from "next/image";
 import { Bell, Download, Palette, Save, Shield, Trash2, User } from "lucide-react";
+import { AvatarPicker } from "@/components/dashboard/avatar-picker";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { SplitText } from "@/components/motion/split-text";
 import { Switch } from "@/components/ui/switch";
@@ -67,17 +67,7 @@ function SettingsContent() {
       </header>
 
       <Panel icon={User} title="Profile" description="Update your personal information and profile details.">
-        <div className="flex items-center gap-4 rounded-2xl bg-white/80 p-5 ring-1 ring-line">
-          {session?.user?.image ? (
-            <Image src={session.user.image} alt="Profile" width={64} height={64} className="size-16 rounded-full object-cover" />
-          ) : (
-            <span className="grid size-16 place-items-center rounded-full bg-brand-soft text-2xl text-brand">{(session?.user?.name ?? "T").charAt(0)}</span>
-          )}
-          <div className="flex-1">
-            <p className="font-medium text-ink">{session?.user?.name || "Traveller"}</p>
-            <p className="text-sm text-stone">Your photo comes from your Google account.</p>
-          </div>
-        </div>
+        <AvatarPicker />
         <div className="grid gap-3 md:grid-cols-2">
           <label className="block">
             <span className="eyebrow mb-2 block text-[0.62rem] text-stone">Full name</span>

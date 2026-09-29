@@ -38,7 +38,11 @@ export type SceneId =
   | "coast"
   | "aurora"
   | "dunes"
-  | "berlin";
+  | "berlin"
+  | "hills"
+  | "lake"
+  | "city"
+  | "journey";
 
 export interface SceneDef {
   id: SceneId;
@@ -203,8 +207,8 @@ function Petals({ seed, count, color }: { seed: number; count: number; color: st
 
 const taj: SceneDef = {
   id: "taj",
-  tint: "#D9967F",
-  dark: false,
+  tint: "#2F7C84",
+  dark: true,
   render: (uid) => {
     const far = rollingRidge({ seed: 3, y: 744, amp: 16, waves: 4 });
     const mid = mountainRidge({ seed: 12, y: 774, amp: 16, rough: 0.64, detail: 8 });
@@ -218,33 +222,33 @@ const taj: SceneDef = {
     }));
     const pool = `M${vx - 14} ${ground + 4}L${vx + 14} ${ground + 4}L${vx + 110} 1000L${vx - 110} 1000Z`;
     const walk = `M${vx - 30} ${ground + 4}L${vx + 30} ${ground + 4}L${vx + 260} 1000L${vx - 260} 1000Z`;
-    const tones = { body: "#B98178", shade: "#A06C64", light: "#EBC6B3", glow: "#FFE7CF" };
+    const tones = { body: "#DCE8E4", shade: "#A9C6C2", light: "#F7FBF9", glow: "#FFE6B8" };
     return (
       <>
-        <Sky uid={uid} stops={[[0, "#E6AF97"], [0.38, "#F1C7AC"], [0.7, "#F8DCC6"], [1, "#FBE9D9"]]} />
+        <Sky uid={uid} stops={[[0, "#0F2F42"], [0.34, "#1F6475"], [0.66, "#5FA8A6"], [0.88, "#CFE3CF"], [1, "#F6D9A6"]]} />
         <Layer depth={0.1}>
-          <Sun uid={uid} x={912} y={410} r={88} color="#FFF4E8" glow="#FFCFAE" />
+          <Sun uid={uid} x={912} y={410} r={88} color="#FFF3D6" glow="#FFC876" />
         </Layer>
-        <Clouds color="#FCE6D6" opacity={0.55} items={[{ x: 170, y: 250, w: 300, seed: 4, speed: 70 }, { x: 1120, y: 180, w: 240, seed: 9, speed: 90 }]} />
-        <Birds x={980} y={300} count={5} color="#A5716A" scale={0.9} duration={46} delay={-8} />
+        <Clouds color="#D9F0EB" opacity={0.4} items={[{ x: 170, y: 250, w: 300, seed: 4, speed: 70 }, { x: 1120, y: 180, w: 240, seed: 9, speed: 90 }]} />
+        <Birds x={980} y={300} count={5} color="#0F3140" scale={0.9} duration={46} delay={-8} />
         <Layer depth={0.2}>
-          <path d={far.d} fill="#E3B6A3" />
+          <path d={far.d} fill="#7FB5AF" />
         </Layer>
         <Layer depth={0.35}>
-          <path d={mid.d} fill="#D5A292" />
+          <path d={mid.d} fill="#5A9791" />
         </Layer>
         <Layer depth={0.5}>
           <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} />
         </Layer>
         <Layer depth={0.7}>
-          <rect x="0" y={ground} width={VIEW_W} height={1000 - ground} fill="#A8766C" />
-          <path d={walk} fill="#D8AE9C" />
+          <rect x="0" y={ground} width={VIEW_W} height={1000 - ground} fill="#1F5654" />
+          <path d={walk} fill="#C9DDD6" />
           <defs>
             <clipPath id={`${uid}-pool`}>
               <path d={pool} />
             </clipPath>
           </defs>
-          <path d={pool} fill="#F3CDB8" />
+          <path d={pool} fill="#8FCBC4" />
           <g clipPath={`url(#${uid}-pool)`}>
             <Reflection uid={uid} y={ground + 4} opacity={0.5}>
               <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} />
@@ -254,7 +258,7 @@ const taj: SceneDef = {
             .slice()
             .reverse()
             .map((tr) => (
-              <g key={tr.t} fill={mix("#C79286", "#5E3C3C", Math.min(tr.t * 1.1, 1))}>
+              <g key={tr.t} fill={mix("#4E8F86", "#0C2E32", Math.min(tr.t * 1.1, 1))}>
                 <path d={cypressTree(vx - tr.dx, tr.y, tr.h)} />
                 <path d={cypressTree(vx + tr.dx, tr.y, tr.h)} />
               </g>
@@ -1410,6 +1414,287 @@ const berlin: SceneDef = {
   },
 };
 
+/* -------------------------------------------------------------------------- */
+/*                     Landscapes for places without a wonder                 */
+/* -------------------------------------------------------------------------- */
+
+const blobs = (x: number, y: number, r: number, count: number, seed: number) =>
+  canopyBlobs(x, y, r, count, seed)
+    .map((b) => circle(r1(b.cx), r1(b.cy), r1(b.r)))
+    .join("");
+
+/** Broadleaf canopy running along a ridge (tropical forest rather than alpine pines). */
+function canopyOnRidge(ridge: { at: (x: number) => number }, seed: number, r: number, gap = 0.1) {
+  const rand = mulberry32(seed);
+  let d = "";
+  for (let x = -20; x < 1640; x += r * (0.9 + rand() * 0.8)) {
+    if (rand() < gap) continue;
+    const size = r * (0.7 + rand() * 0.6);
+    d += blobs(x, ridge.at(x) - size * 0.35, size, 4, Math.floor(rand() * 1e6));
+  }
+  return d;
+}
+
+function rainStreaks(seed: number, count: number) {
+  const rand = mulberry32(seed);
+  let d = "";
+  for (let i = 0; i < count; i++) {
+    const x = rand() * 1760 - 80;
+    const y = rand() * 1100 - 100;
+    d += `M${r1(x)} ${r1(y)}l-7 ${r1(24 + rand() * 30)}`;
+  }
+  return d;
+}
+
+/** A shikara / long boat with a canopy, sitting on the waterline at (x, y). */
+function longBoat(x: number, y: number, s: number) {
+  const k = (n: number) => r1(n * s);
+  return (
+    `M${x - k(90)} ${y - k(10)}Q${x} ${y + k(16)} ${x + k(96)} ${y - k(16)}L${x + k(80)} ${y - k(4)}Q${x} ${y + k(6)} ${x - k(78)} ${y - k(2)}Z` +
+    `M${x - k(40)} ${y - k(6)}V${y - k(40)}Q${x} ${y - k(54)} ${x + k(40)} ${y - k(40)}V${y - k(6)}Z`
+  );
+}
+
+const hills: SceneDef = {
+  id: "hills",
+  tint: "#4F8A6E",
+  dark: false,
+  render: (uid) => {
+    const inks = ["#9CC4AE", "#72A987", "#4E8C68", "#34704D", "#1F5236"];
+    const ridges = [
+      rollingRidge({ seed: 3, y: 540, amp: 150, waves: 4 }),
+      rollingRidge({ seed: 11, y: 630, amp: 130, waves: 4 }),
+      rollingRidge({ seed: 19, y: 720, amp: 110, waves: 3 }),
+      rollingRidge({ seed: 27, y: 815, amp: 90, waves: 3 }),
+      rollingRidge({ seed: 41, y: 925, amp: 60, waves: 2 }),
+    ];
+    const fallX = 1060;
+    const fallTop = ridges[2].at(fallX) + 6;
+    return (
+      <>
+        <Sky uid={uid} stops={[[0, "#6F95A0"], [0.45, "#A7C4C0"], [0.8, "#D6E6DE"], [1, "#E8F1EB"]]} />
+        <Layer depth={0.06}>
+          <Sun uid={uid} x={420} y={330} r={70} color="#F5F8F2" glow="#FFFFFF" />
+        </Layer>
+        <Clouds
+          color="#FFFFFF"
+          opacity={0.6}
+          items={[
+            { x: 120, y: 200, w: 420, seed: 4, speed: 90 },
+            { x: 820, y: 150, w: 360, seed: 15, speed: 110 },
+            { x: 1250, y: 260, w: 300, seed: 22, speed: 80 },
+          ]}
+        />
+        <Birds x={760} y={330} count={4} color="#3E5E58" scale={0.8} duration={46} />
+        {ridges.map((r, i) => (
+          <Layer key={i} depth={0.12 + i * 0.17}>
+            <path d={r.d + (i >= 1 ? canopyOnRidge(r, i * 13, 14 + i * 7, 0.12) : "")} fill={inks[i]} />
+            {i === 2 && (
+              <>
+                <path
+                  d={`M${fallX - 7} ${r1(fallTop)}C${fallX - 9} ${r1(fallTop + 60)} ${fallX - 4} ${r1(fallTop + 120)} ${fallX - 6} 830H${fallX + 8}C${fallX + 6} ${r1(fallTop + 120)} ${fallX + 10} ${r1(fallTop + 60)} ${fallX + 7} ${r1(fallTop)}Z`}
+                  fill="#EEF6F3"
+                  opacity={0.9}
+                />
+                <path d={`M${fallX - 2} ${r1(fallTop + 10)}V826`} stroke="#FFFFFF" strokeWidth={2} className="scene-shimmer" />
+              </>
+            )}
+            {i < 3 && <Mist uid={`${uid}-h${i}`} y={r.at(800) + 40} h={80} opacity={0.34 - i * 0.08} speed={50 + i * 12} />}
+          </Layer>
+        ))}
+        <Layer depth={0.95}>
+          <path d={blobs(60, 820, 190, 9, 5) + blobs(1560, 800, 170, 8, 8) + rect(40, 820, 18, 200) + rect(1545, 800, 16, 220)} fill="#1C3D2E" />
+        </Layer>
+        <g className="scene-rain" stroke="#FFFFFF" strokeOpacity={0.38} strokeWidth={1.6} strokeLinecap="round">
+          <path d={rainStreaks(9, 260)} />
+        </g>
+      </>
+    );
+  },
+};
+
+const lake: SceneDef = {
+  id: "lake",
+  tint: "#4E7FA0",
+  dark: false,
+  render: (uid) => {
+    const shore = 700;
+    const far = mountainRidge({ seed: 5, y: 470, amp: 240, rough: 0.5 });
+    const mid = rollingRidge({ seed: 12, y: 610, amp: 90, waves: 3 });
+    const near = rollingRidge({ seed: 23, y: 675, amp: 40, waves: 2 });
+    const mountains = (
+      <>
+        <path d={far.d} fill="#7D98B3" />
+        <path d={mid.d + forestOnRidge(mid, { seed: 4, density: 0.07, minH: 14, maxH: 30 })} fill="#4F6F7E" />
+        <path d={near.d + forestOnRidge(near, { seed: 9, density: 0.09, minH: 10, maxH: 22 })} fill="#34545E" />
+      </>
+    );
+    return (
+      <>
+        <Sky uid={uid} stops={[[0, "#5F86B0"], [0.45, "#A9C0D6"], [0.78, "#F1D2B6"], [1, "#F8E4CB"]]} />
+        <Layer depth={0.06}>
+          <Sun uid={uid} x={1120} y={560} r={70} color="#FFF4E0" glow="#FFD9AE" />
+        </Layer>
+        <Clouds color="#FFFFFF" opacity={0.55} items={[{ x: 200, y: 230, w: 340, seed: 6, speed: 100 }, { x: 980, y: 180, w: 280, seed: 18, speed: 120 }]} />
+        <Birds x={640} y={360} count={5} color="#3C5670" scale={0.85} duration={48} />
+        <Layer depth={0.2}>{mountains}</Layer>
+        <Layer depth={0.32}>
+          <Water uid={uid} y={shore} top="#8FB3C9" bottom="#3F6E8A" sunX={1120} sunColor="#FFE9C8" lines={40} />
+          <Reflection uid={uid} y={shore} opacity={0.3}>
+            {mountains}
+          </Reflection>
+          <Mist uid={`${uid}-l`} y={shore - 10} h={60} opacity={0.45} speed={70} />
+        </Layer>
+        <Layer depth={0.55}>
+          <g className="scene-drift" style={{ animationDuration: "90s" }}>
+            <path d={longBoat(640, 820, 1)} fill="#23343F" />
+          </g>
+        </Layer>
+        <Layer depth={0.9}>
+          <path d="M0 1000V880C220 870 380 905 560 1000Z" fill="#22403F" />
+          <path d={blobs(-10, 610, 150, 9, 3) + rect(-6, 620, 16, 380)} fill="#1B3434" />
+        </Layer>
+      </>
+    );
+  },
+};
+
+const city: SceneDef = {
+  id: "city",
+  tint: "#4A5F86",
+  dark: true,
+  render: (uid) => {
+    const back = skyline(31, 760, -20, 1640, 60, 240, 0);
+    const mid = skyline(58, 830, -20, 1640, 70, 330, 0.12);
+    const front = skyline(94, 905, -20, 1640, 40, 170, 0.16);
+    return (
+      <>
+        <Sky uid={uid} stops={[[0, "#15223F"], [0.42, "#3E5582"], [0.72, "#C98A7A"], [0.9, "#F2B68A"], [1, "#F8CE9C"]]} />
+        <Stars seed={31} count={70} maxY={380} opacity={0.7} />
+        <Layer depth={0.06}>
+          <Sun uid={uid} x={1180} y={700} r={78} color="#FFE9C4" glow="#FFB985" />
+        </Layer>
+        <Birds x={520} y={420} count={4} color="#26324E" scale={0.8} duration={44} />
+        <Layer depth={0.2}>
+          <path d={back.body} fill="#5A6A8E" opacity={0.75} />
+        </Layer>
+        <Layer depth={0.34}>
+          <path d={mid.body} fill="#2E3B5C" />
+          <path d={mid.lit} fill="#FFD48A" opacity={0.65} />
+        </Layer>
+        <Layer depth={0.5}>
+          <path d={front.body} fill="#1A2440" />
+          <path d={front.lit} fill="#FFDFA0" opacity={0.75} />
+        </Layer>
+        <Layer depth={0.62}>
+          <Water uid={uid} y={905} top="#2F3F63" bottom="#141C31" sunX={1180} sunColor="#FFC98F" lines={30} />
+        </Layer>
+      </>
+    );
+  },
+};
+
+/** Side-view airliner pointing right, centred on (0, 0). */
+const AIRLINER =
+  "M-62 -3C-64 1 -61 5 -56 5L52 6C60 6 68 3 70 0C66 -5 60 -7 52 -7L-50 -7C-56 -7 -60 -6 -62 -3Z" +
+  "M-54 -6L-66 -30H-54L-36 -7Z" +
+  "M-6 1L-30 26H-18L20 2Z";
+
+/** A train heading right: locomotive with its nose at x = 0, carriages trailing left; bottom at y = 0. */
+function train() {
+  let body = "M0 -8C0 -26 -14 -34 -34 -34H-96V0H-2C-1 -2 0 -5 0 -8Z";
+  let windows = "M-30 -28H-12C-8 -26 -6 -22 -5 -18H-30Z";
+  let stripe = "M-96 -12H-3V-8H-96Z";
+  for (let c = 0; c < 4; c++) {
+    const x1 = -102 - c * 118;
+    const x0 = x1 - 112;
+    body += `M${x0 + 6} -34H${x1 - 6}Q${x1} -34 ${x1} -28V0H${x0}V-28Q${x0} -34 ${x0 + 6} -34Z`;
+    stripe += `M${x0} -12H${x1}V-8H${x0}Z`;
+    for (let wx = x0 + 10; wx < x1 - 14; wx += 19) windows += `M${wx} -27h13v10h-13Z`;
+  }
+  return { body, windows, stripe };
+}
+
+/** A coach bus heading right, wheels touching y = 0 at x = 0..130. */
+const COACH = {
+  body: "M8 -46H112C122 -46 130 -38 130 -28V-8H0V-38C0 -42 3 -46 8 -46Z",
+  windows: "M10 -40H96V-24H10ZM102 -40H114C120 -40 124 -35 124 -28V-24H102Z",
+  wheels: "M20 -8a9 9 0 1 0 18 0a9 9 0 1 0 -18 0ZM92 -8a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z",
+};
+
+const journey: SceneDef = {
+  id: "journey",
+  tint: "#1F6475",
+  dark: true,
+  render: (uid) => {
+    const far = mountainRidge({ seed: 8, y: 455, amp: 110, rough: 0.5 });
+    const mid = rollingRidge({ seed: 17, y: 505, amp: 40, waves: 3 });
+    const deck = 540;
+    const road = 600;
+    const t = train();
+    let arches = "";
+    for (let x = -40; x < 1680; x += 150) arches += `M${x} ${deck + 14}H${x + 150}V720H${x + 132}V${deck + 70}A57 50 0 0 0 ${x + 18} ${deck + 70}V720H${x}Z`;
+    return (
+      <>
+        <Sky uid={uid} stops={[[0, "#0F2F42"], [0.34, "#1F6475"], [0.46, "#6FB3AE"], [0.56, "#F2D2A0"], [1, "#F6D9A6"]]} />
+        <Stars seed={12} count={40} maxY={260} opacity={0.6} />
+        <Layer depth={0.06}>
+          <Sun uid={uid} x={1240} y={495} r={62} color="#FFF3D6" glow="#FFC876" />
+        </Layer>
+        <Clouds color="#E4F3EF" opacity={0.45} items={[{ x: 180, y: 360, w: 300, seed: 5, speed: 80 }, { x: 980, y: 300, w: 260, seed: 14, speed: 100 }]} />
+        <g className="scene-fly" style={{ animationDuration: "30s" }}>
+          <g transform="translate(800 412) scale(0.85)">
+            <defs>
+              <linearGradient id={`${uid}-trail`} gradientUnits="userSpaceOnUse" x1={-70} y1={0} x2={-620} y2={0}>
+                <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.85" />
+                <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M-66 -1H-620" stroke={`url(#${uid}-trail)`} strokeWidth={4} strokeLinecap="round" />
+            <path d="M-62 4H-560" stroke={`url(#${uid}-trail)`} strokeWidth={2} strokeLinecap="round" opacity={0.6} />
+            <path d={AIRLINER} fill="#F7FBF9" />
+            <path d="M-50 -2H48" stroke="#0B8278" strokeWidth={2.4} />
+            <path d="M-54 -6L-66 -30H-54Z" fill="#F4A340" />
+          </g>
+        </g>
+        <Layer depth={0.14}>
+          <path d={far.d} fill="#86B3B0" />
+        </Layer>
+        <Layer depth={0.24}>
+          <path d={mid.d + forestOnRidge(mid, { seed: 3, density: 0.05, minH: 12, maxH: 26 })} fill="#4F8B86" />
+        </Layer>
+        <Layer depth={0.36}>
+          <rect x={0} y={deck + 30} width={VIEW_W} height={200} fill="#3B7772" />
+          <path d={arches} fill="#D9E6E1" />
+          <rect x={-20} y={deck} width={VIEW_W + 40} height={16} fill="#EAF2EF" />
+          <rect x={-20} y={deck - 4} width={VIEW_W + 40} height={4} fill="#9DBDB6" />
+          <g className="scene-train">
+            <path d={t.body} transform={`translate(0 ${deck - 4})`} fill="#F7FBF9" />
+            <path d={t.stripe} transform={`translate(0 ${deck - 4})`} fill="#0B8278" />
+            <path d={t.windows} transform={`translate(0 ${deck - 4})`} fill="#16324A" />
+          </g>
+        </Layer>
+        <Layer depth={0.55}>
+          <rect x={0} y={road - 26} width={VIEW_W} height={400} fill="#2A5A55" />
+          <rect x={0} y={road - 14} width={VIEW_W} height={44} fill="#22363F" />
+          <path d={`M0 ${road + 8}H${VIEW_W}`} stroke="#F7FBF9" strokeOpacity={0.55} strokeWidth={3} strokeDasharray="26 22" />
+          <g className="scene-drive">
+            <g transform={`translate(0 ${road + 10})`}>
+              <path d={COACH.body} fill="#F4A340" />
+              <path d={COACH.windows} fill="#16324A" />
+              <path d="M0 -20H130V-16H0Z" fill="#FFFFFF" opacity={0.7} />
+              <path d={COACH.wheels} fill="#0F1E28" />
+            </g>
+          </g>
+        </Layer>
+        <Layer depth={0.85}>
+          <path d={blobs(40, 700, 150, 8, 21) + blobs(1580, 690, 140, 8, 34) + rect(30, 690, 14, 320) + rect(1570, 680, 14, 330)} fill="#173833" />
+        </Layer>
+      </>
+    );
+  },
+};
+
 export const SCENES: Record<SceneId, SceneDef> = {
   taj,
   eiffel,
@@ -1430,4 +1715,8 @@ export const SCENES: Record<SceneId, SceneDef> = {
   aurora,
   dunes,
   berlin,
+  hills,
+  lake,
+  city,
+  journey,
 };

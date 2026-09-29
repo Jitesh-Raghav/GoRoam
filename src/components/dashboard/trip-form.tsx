@@ -771,7 +771,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
             </AnimatePresence>
           </section>
 
-          <div className="flex flex-col gap-4 rounded-[28px] bg-ink p-4 text-paper sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:pl-6">
+          <div className="flex flex-col gap-4 rounded-[28px] bg-ocean p-4 text-paper sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:pl-6">
             <div className="flex items-center gap-3">
               {step > 0 && (
                 <button type="button" onClick={() => go(step - 1)} aria-label="Previous step" className="grid size-11 shrink-0 place-items-center rounded-full bg-paper/10 transition-colors hover:bg-paper hover:text-ink">

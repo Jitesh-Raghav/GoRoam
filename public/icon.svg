@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123447"/>
+      <stop offset="1" stop-color="#06131B"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.52" r="0.5">
+      <stop offset="0" stop-color="#34D1BF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#34D1BF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="globe" cx="0.36" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#5BE3D1"/>
+      <stop offset="0.45" stop-color="#11A08F"/>
+      <stop offset="1" stop-color="#05484A"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C8741F"/>
+      <stop offset="0.45" stop-color="#FFD98A"/>
+      <stop offset="0.7" stop-color="#F4A340"/>
+      <stop offset="1" stop-color="#FFE7B0"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.1"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="ball"><circle cx="256" cy="262" r="124"/></clipPath>
+    <clipPath id="front"><rect x="0" y="262" width="512" height="300"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#tile)"/>
+  <circle cx="256" cy="262" r="230" fill="url(#halo)"/>
+  <!-- the far side of the orbit, behind the globe -->
+  <g transform="rotate(-24 256 262)">
+    <ellipse cx="256" cy="262" rx="206" ry="66" fill="none" stroke="url(#gold)" stroke-width="18" stroke-opacity="0.55"/>
+  </g>
+  <circle cx="256" cy="262" r="124" fill="url(#globe)"/>
+  <g clip-path="url(#ball)" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="5">
+    <ellipse cx="256" cy="262" rx="54" ry="124"/>
+    <ellipse cx="256" cy="262" rx="100" ry="124"/>
+    <path d="M120 262H392M130 205H382M130 319H382"/>
+  </g>
+  <circle cx="256" cy="262" r="124" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="3"/>
+  <!-- the near side of the orbit, in front -->
+  <g transform="rotate(-24 256 262)" clip-path="url(#front)">
+    <ellipse cx="256" cy="262" rx="206" ry="66" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  </g>
+  <!-- the plane riding the orbit -->
+  <g transform="rotate(-24 256 262) translate(256 262) translate(158 42) rotate(-17) scale(1.25)">
+    <path d="M38 0C38 -3 35 -5 30 -5L10 -5L-8 -32L-18 -32L-6 -5L-24 -5L-31 -15L-38 -15L-34 0L-38 15L-31 15L-24 5L-6 5L-18 32L-8 32L10 5L30 5C35 5 38 3 38 0Z" fill="#0B1F2C" transform="translate(3 5)" opacity="0.45"/>
+    <path d="M38 0C38 -3 35 -5 30 -5L10 -5L-8 -32L-18 -32L-6 -5L-24 -5L-31 -15L-38 -15L-34 0L-38 15L-31 15L-24 5L-6 5L-18 32L-8 32L10 5L30 5C35 5 38 3 38 0Z" fill="#FFFFFF"/>
+  </g>
+  <rect width="512" height="512" rx="116" fill="url(#gloss)"/>
+  <rect x="6" y="6" width="500" height="500" rx="110" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+</svg>

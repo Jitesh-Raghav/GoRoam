@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeftRight, ArrowUpRight, Baby, CalendarDays, Navigation, Plane, ShieldCheck, User } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
@@ -9,7 +9,6 @@ import { SplitText } from "@/components/motion/split-text";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { cityOf, isoDay, type BookingKind, type BookingQuery } from "@/lib/booking";
-import { sceneForDestination } from "@/lib/destinations";
 import { titleCase } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +90,6 @@ function BookContent() {
   const ready = q.destination.trim().length > 1;
   const query = useMemo(() => ({ ...q, destination: titleCase(q.destination || "Anywhere") }), [q]);
   const partners = partnersFor(kind, query);
-  const scene = sceneForDestination(q.destination || "santorini");
 
   const fillFromTrip = (t: TripSummary) =>
     setQ((prev) => ({
@@ -115,12 +113,9 @@ function BookContent() {
       </header>
 
       <section className="mt-10 overflow-hidden rounded-[32px] bg-white/80 ring-1 ring-line">
-        <div className="relative h-44 overflow-hidden sm:h-56">
-          <AnimatePresence initial={false}>
-            <motion.div key={scene} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.9 }}>
-              <LazyScene id={scene} tint={SCENES[scene].tint} />
-            </motion.div>
-          </AnimatePresence>
+        <div className="relative h-48 overflow-hidden sm:h-64">
+          {/* Plane, train and coach on the move: the journey rather than the destination. */}
+          <LazyScene id="journey" tint={SCENES.journey.tint} align="xMidYMid slice" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
           <div role="tablist" aria-label="What to book" className="absolute bottom-4 left-4 right-4 flex gap-1 overflow-x-auto rounded-full bg-ink/40 p-1 backdrop-blur-md sm:right-auto">
             {BOOKING_TABS.map((t) => (

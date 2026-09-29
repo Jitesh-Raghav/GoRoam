@@ -19,6 +19,9 @@
   --color-brand: var(--brand);
   --color-brand-2: var(--brand-2);
   --color-brand-soft: var(--brand-soft);
+  --color-sun: var(--sun);
+  --color-sun-2: var(--sun-2);
+  --color-sun-soft: var(--sun-soft);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -51,23 +54,27 @@
 :root {
   --radius: 1rem;
 
-  --paper: #f5f1ea;
-  --paper-2: #ede7dc;
-  --paper-3: #e3dbcd;
-  --ink: #15130f;
-  --ink-2: #2b2722;
-  --stone: #6e665c;
-  --stone-2: #a1988b;
-  --line: rgba(21, 19, 15, 0.1);
-  --brand: #d95501;
-  --brand-2: #f07b2c;
-  --brand-soft: #f8e1cf;
+  /* Lagoon & Golden Hour: deep ocean navy, lagoon teal and sunset amber on crisp cool white. */
+  --paper: #f4f8f9;
+  --paper-2: #e7f0f2;
+  --paper-3: #d4e4e8;
+  --ink: #0a1e2c;
+  --ink-2: #133246;
+  --stone: #54707f;
+  --stone-2: #8fa6b2;
+  --line: rgba(10, 30, 44, 0.09);
+  --brand: #0b8278;
+  --brand-2: #34d1bf;
+  --brand-soft: #d6f3ef;
+  --sun: #f4a340;
+  --sun-2: #ffc876;
+  --sun-soft: #fdebd2;
 
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: #fbf9f5;
+  --card: #ffffff;
   --card-foreground: var(--ink);
-  --popover: #fbf9f5;
+  --popover: #ffffff;
   --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: var(--paper);
@@ -77,10 +84,10 @@
   --muted-foreground: var(--stone);
   --accent: var(--paper-2);
   --accent-foreground: var(--ink);
-  --destructive: #b42318;
+  --destructive: #c2362b;
   --border: var(--line);
-  --input: rgba(21, 19, 15, 0.14);
-  --ring: rgba(217, 85, 1, 0.45);
+  --input: rgba(10, 30, 44, 0.14);
+  --ring: rgba(11, 130, 120, 0.45);
 }
 
 @layer base {
@@ -95,6 +102,34 @@
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11";
     text-rendering: optimizeLegibility;
+  }
+  /* Soft lagoon and golden-hour glows behind everything; a fixed layer so scrolling never repaints it. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 0% 0%, rgba(52, 209, 191, 0.12), transparent 60%),
+      radial-gradient(ellipse 70% 55% at 100% 100%, rgba(244, 163, 64, 0.1), transparent 60%);
+  }
+  /* Tailwind v4 dropped the pointer cursor on buttons; bring it back for everything clickable. */
+  button,
+  [role="button"],
+  [role="tab"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  summary,
+  select,
+  label[for],
+  a[href] {
+    cursor: pointer;
+  }
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
   ::selection {
     background: var(--brand);
@@ -128,6 +163,14 @@
   line-height: 0.95;
 }
 
+/* Deep sea → lagoon, for the big dark panels. */
+@utility bg-ocean {
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 100% 0%, rgba(11, 130, 120, 0.35), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 0% 100%, rgba(244, 163, 64, 0.12), transparent 60%);
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -142,7 +185,7 @@
   position: fixed;
   inset: 0;
   z-index: 90;
-  opacity: 0.05;
+  opacity: 0.03;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
@@ -318,6 +361,12 @@ html.lenis, html.lenis body { height: auto; }
 }
 .scene-foam { animation: scene-foam 5s ease-in-out infinite; }
 @keyframes scene-foam { 0%, 100% { transform: translateY(0); opacity: 0.9; } 50% { transform: translateY(8px); opacity: 0.4; } }
+.scene-rain { animation: scene-rain 0.9s linear infinite; }
+.scene-train { animation: scene-train 34s linear infinite; }
+@keyframes scene-train { from { transform: translateX(-700px); } to { transform: translateX(2300px); } }
+.scene-drive { animation: scene-drive 19s linear infinite; animation-delay: -6s; }
+@keyframes scene-drive { from { transform: translateX(-220px); } to { transform: translateX(1820px); } }
+@keyframes scene-rain { from { transform: translate(7px, -48px); } to { transform: translate(-7px, 48px); } }
 .scene[data-paused="true"] * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
   .scene * { animation: none !important; }

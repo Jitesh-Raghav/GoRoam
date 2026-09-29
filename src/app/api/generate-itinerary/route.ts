@@ -19,6 +19,7 @@ import {
   type TripPreferences,
 } from '@/lib/trip';
 import { FREE_CREDITS } from '@/lib/plans';
+import { isLandscape } from '@/lib/destinations';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -106,6 +107,7 @@ RULES
 10. "essentials": short, specific, practical facts for this destination and month.
 11. "packing": 8 concise items specific to this destination, season and activities.
 12. summary.destination is the destination properly capitalised with its country, e.g. "Berlin, Germany".
+13. summary.landscape is the single word that best describes what the destination looks like: "coast" (beaches, islands, seaside), "mountains" (high, rocky or snowy peaks), "hills" (lush, green, often rainy hill country or rainforest), "lake" (the trip centres on a lake or backwaters), "desert" (sand, dunes, arid), "snow" (arctic, polar, northern lights) or "city" (an urban destination with no dominant landscape).
 
 Respond with JSON only, matching this shape exactly:
 {
@@ -146,6 +148,7 @@ Respond with JSON only, matching this shape exactly:
     "totalDays": ${data.numberOfDays},
     "destination": "City, Country",
     "overview": "Two sentences selling the trip, written to the traveller",
+    "landscape": "hills",
     "highlights": ["4 standout moments from this plan"]
   }
 }`;
@@ -174,6 +177,7 @@ function tidy(raw: ItineraryData, data: ItineraryRequest): ItineraryData {
       totalDays: data.numberOfDays,
       destination: typeof summary.destination === 'string' && summary.destination.trim() ? summary.destination.trim() : data.destination,
       highlights: Array.isArray(summary.highlights) ? summary.highlights.slice(0, 5) : [],
+      landscape: isLandscape(summary.landscape) ? summary.landscape : undefined,
     },
   };
 }

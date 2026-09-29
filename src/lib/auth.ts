@@ -20,12 +20,17 @@ export const authOptions = {
     error: "/auth",
   },
   callbacks: {
-    async jwt({ token, user, account }: any) {
+    async jwt({ token, user, account, trigger }: any) {
       if (account && user) {
         return {
           ...token,
           userId: user.id,
         };
+      }
+      // After the avatar changes, read it back from the database (never trust the client's copy).
+      if (trigger === "update" && token.email) {
+        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { image: true } });
+        if (fresh) return { ...token, picture: fresh.image };
       }
       return token;
     },

@@ -73,7 +73,7 @@ export function ShareButton({ tripId, title, className }: { tripId: string; titl
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md rounded-[28px] bg-paper p-6 shadow-[0_40px_120px_-30px_rgba(21,19,15,0.6)] sm:p-7"
+              className="w-full max-w-md rounded-[28px] bg-paper p-6 shadow-[0_40px_120px_-30px_rgba(10,30,44,0.6)] sm:p-7"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

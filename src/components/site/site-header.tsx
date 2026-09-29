@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -58,7 +58,7 @@ export function SiteHeader() {
         <div
           className={cn(
             "transition-[background-color,box-shadow,backdrop-filter] duration-500",
-            scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(21,19,15,0.08)] backdrop-blur-md" : "bg-transparent"
+            scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(10,30,44,0.08)] backdrop-blur-md" : "bg-transparent"
           )}
         >
           <div className="container-x flex h-[72px] items-center justify-between gap-6">
@@ -83,20 +83,7 @@ export function SiteHeader() {
                     Dashboard
                   </PillLink>
                   <Link href="/dashboard/settings" aria-label="Your account" className="hidden sm:block">
-                    {session.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt=""
-                        width={40}
-                        height={40}
-                        unoptimized
-                        className="size-10 rounded-full object-cover ring-2 ring-paper"
-                      />
-                    ) : (
-                      <span className="grid size-10 place-items-center rounded-full bg-ink text-sm text-paper">
-                        {(session.user?.name ?? "U").charAt(0)}
-                      </span>
-                    )}
+                    <UserAvatar user={session.user} className="size-10 ring-2 ring-paper" />
                   </Link>
                 </>
               ) : (

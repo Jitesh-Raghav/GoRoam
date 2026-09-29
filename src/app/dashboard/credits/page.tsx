@@ -83,7 +83,7 @@ function CreditsPageContent() {
       )}
 
       {/* Balance */}
-      <section className="relative mt-10 overflow-hidden rounded-[32px] bg-ink text-paper">
+      <section className="relative mt-10 overflow-hidden rounded-[32px] bg-ocean text-paper">
         <div className="absolute inset-0 opacity-90">
           <Scene id="santorini" intro />
         </div>
@@ -144,7 +144,7 @@ function CreditsPageContent() {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
                 className={cn(
                   "relative flex flex-col overflow-hidden rounded-[32px] p-8",
-                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(217,85,1,0.55)]" : "bg-white/80 text-ink ring-1 ring-line",
+                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,130,120,0.55)]" : "bg-white/80 text-ink ring-1 ring-line",
                   picked === plan.id && "ring-2 ring-brand"
                 )}
               >

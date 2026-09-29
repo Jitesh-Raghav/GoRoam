@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { sceneForDestination } from "@/lib/destinations";
+import { useDestinationScene } from "@/lib/use-destination-scene";
 import { Scene } from "@/components/scenes/scene";
 
 const STEPS = [
@@ -19,7 +19,7 @@ const STEPS = [
 /** Full-screen, cinematic wait while the itinerary is generated. */
 export function GeneratingOverlay({ destination, days }: { destination: string; days: number }) {
   const [done, setDone] = useState(0);
-  const scene = sceneForDestination(destination);
+  const { scene } = useDestinationScene(destination);
 
   useEffect(() => {
     const t = window.setInterval(() => setDone((d) => Math.min(d + 1, STEPS.length - 1)), 2600);
@@ -48,7 +48,7 @@ export function GeneratingOverlay({ destination, days }: { destination: string; 
         <Scene id={scene} intro />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(21,19,15,0.55),transparent_65%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,30,44,0.55),transparent_65%)]" />
 
       <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
         <svg viewBox="0 0 320 90" className="w-[min(320px,80vw)] text-paper/40" aria-hidden>

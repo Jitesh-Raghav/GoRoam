@@ -38,9 +38,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
+import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
-import { sceneForDestination } from "@/lib/destinations";
+import { useDestinationScene } from "@/lib/use-destination-scene";
 import { downloadIcs } from "@/lib/ics";
 import {
   COMPANIONS,
@@ -60,10 +61,12 @@ import {
 import { cn } from "@/lib/utils";
 import { BookingPanel } from "./booking-panel";
 import { Checklist } from "./checklist";
+import { PlacePhoto } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+const VIBE_LABELS = Object.fromEntries(VIBES.map((v) => [v.id, v.label]));
 const pad = (n: number) => String(n).padStart(2, "0");
 
 const SLOTS = [
@@ -113,7 +116,7 @@ const bookable = (a: ActivitySlot) => (a.estimatedCost ?? 0) > 0 && !["food", "n
 
 function Fact({ label, value, sub, className }: { label: string; value: ReactNode; sub?: ReactNode; className?: string }) {
   return (
-    <div className={cn("min-w-0 bg-[#fbf9f5] px-5 py-4 sm:px-6", className)}>
+    <div className={cn("min-w-0 bg-card px-5 py-4 sm:px-6", className)}>
       <p className="eyebrow text-[0.6rem] text-stone">{label}</p>
       <p className="mt-1.5 truncate text-[1.05rem] text-ink">{value}</p>
       {sub && <p className="truncate text-xs text-stone">{sub}</p>}
@@ -146,7 +149,9 @@ function Countdown({ start, days }: { start: string; days: number }) {
   );
 }
 
-function StopCard({ slot, activity, index, destination, last }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; destination: string; last: boolean }) {
+const stopId = (day: number, key: string) => `stop-${day}-${key}`;
+
+function StopCard({ slot, activity, index, day, destination, last, eager }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean }) {
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
   return (
@@ -154,79 +159,147 @@ function StopCard({ slot, activity, index, destination, last }: { slot: (typeof 
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease, delay: 0.1 + index * 0.08 }}
-      className="print-avoid relative grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 pb-4 last:pb-0 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-5"
+      className="print-avoid relative grid grid-cols-[2.25rem_minmax(0,1fr)] gap-2.5 pb-5 last:pb-0 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-5"
     >
       <div className="relative flex justify-center">
-        {!last && <span aria-hidden className="absolute bottom-[-1rem] top-12 w-px border-l border-dashed border-ink/20" />}
-        <span className={cn("relative mt-5 grid size-10 place-items-center rounded-full font-mono text-sm text-white sm:size-11", last ? "bg-brand" : "bg-ink")}>
+        {!last && <span aria-hidden className="absolute bottom-[-1.25rem] top-12 w-px border-l border-dashed border-brand/35" />}
+        <span
+          className={cn(
+            "relative mt-5 grid size-9 place-items-center rounded-full font-mono text-sm shadow-[0_10px_24px_-10px_rgba(10,30,44,0.6)] ring-4 ring-paper sm:size-11",
+            last ? "bg-sun text-ink" : "bg-ink text-white"
+          )}
+        >
           {index + 1}
         </span>
       </div>
-      <article className="rounded-[26px] bg-white/85 p-5 ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_30px_60px_-45px_rgba(21,19,15,0.5)] sm:p-7">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-stone">
-          <span className="inline-flex items-center gap-1.5 text-brand">
-            <Icon className="size-4" />
-            <span className="eyebrow text-[0.62rem]">{slot.label}</span>
-          </span>
-          {activity.time && <span>{activity.time}</span>}
-          {activity.duration && (
-            <span className="inline-flex items-center gap-1">
-              <Clock3 className="size-3.5" /> {activity.duration}
+      <article
+        id={stopId(day, slot.key)}
+        className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+      >
+        <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[300px]">
+          <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
+          <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/35 px-3 py-1.5 text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">
+              <Icon className="size-3.5 shrink-0 text-sun-2" />
+              <span className="eyebrow text-[0.6rem]">{slot.label}</span>
+              {activity.time && <span className="hidden truncate text-xs text-paper/80 sm:inline">· {activity.time}</span>}
             </span>
-          )}
-          <span className="ml-auto rounded-full bg-paper-2 px-2.5 py-1 font-mono text-xs text-ink">{activity.estimatedCost ? money(activity.estimatedCost) : "Free"}</span>
+            <span className="shrink-0 rounded-full bg-white/95 px-2.5 py-1.5 font-mono text-xs text-ink shadow-sm">{activity.estimatedCost ? money(activity.estimatedCost) : "Free"}</span>
+          </div>
         </div>
-        <h4 className="display mt-3 text-[clamp(1.7rem,3vw,2.2rem)] leading-[1.02] text-ink">{activity.place.name}</h4>
-        {(cat || activity.place.area) && (
-          <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
-            {cat && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-2.5 py-1 text-ink/80">
-                <cat.icon className="size-3.5 text-brand" /> {cat.label}
-              </span>
-            )}
-            {activity.place.area && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-2.5 py-1 text-ink/80">
-                <MapPin className="size-3.5 text-brand" /> {activity.place.area}
+        <div className="p-5 sm:p-7">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-stone">
+            {activity.time && <span className="sm:hidden">{activity.time}</span>}
+            {activity.duration && (
+              <span className="inline-flex items-center gap-1">
+                <Clock3 className="size-3.5 text-brand" /> {activity.duration}
               </span>
             )}
           </div>
-        )}
-        {activity.place.description && <p className="mt-3 leading-relaxed text-stone">{activity.place.description}</p>}
-        {activity.tip && (
-          <p className="mt-4 flex gap-3 rounded-2xl bg-brand-soft/60 p-3.5 text-sm leading-relaxed text-ink">
-            <Lightbulb className="mt-0.5 size-4 shrink-0 text-brand" />
-            <span>
-              <span className="font-medium">Local tip · </span>
-              {activity.tip}
-            </span>
-          </p>
-        )}
-        <div className="no-print mt-5 flex flex-wrap gap-2">
-          <a
-            href={mapsSearchUrl(activity.place.name, destination)}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
-          >
-            <MapPin className="size-4" /> Directions
-          </a>
-          {bookable(activity) && (
-            <a
-              href={ticketsFor(activity.place.name, destination)}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
-            >
-              <Ticket className="size-4" /> Tickets & tours
-            </a>
+          <h4 className="display mt-2 text-[clamp(1.7rem,3vw,2.2rem)] leading-[1.02] text-ink">{activity.place.name}</h4>
+          {(cat || activity.place.area) && (
+            <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
+              {cat && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-2.5 py-1 text-ink/80">
+                  <cat.icon className="size-3.5 text-brand" /> {cat.label}
+                </span>
+              )}
+              {activity.place.area && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-2.5 py-1 text-ink/80">
+                  <MapPin className="size-3.5 text-brand" /> {activity.place.area}
+                </span>
+              )}
+            </div>
           )}
+          {activity.place.description && <p className="mt-3 leading-relaxed text-stone">{activity.place.description}</p>}
+          {activity.tip && (
+            <p className="mt-4 flex gap-3 rounded-2xl bg-brand-soft/60 p-3.5 text-sm leading-relaxed text-ink">
+              <Lightbulb className="mt-0.5 size-4 shrink-0 text-brand" />
+              <span>
+                <span className="font-medium">Local tip · </span>
+                {activity.tip}
+              </span>
+            </p>
+          )}
+          <div className="no-print mt-5 flex flex-wrap gap-2">
+            <a
+              href={mapsSearchUrl(activity.place.name, destination)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
+            >
+              <MapPin className="size-4" /> Directions
+            </a>
+            {bookable(activity) && (
+              <a
+                href={ticketsFor(activity.place.name, destination)}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
+              >
+                <Ticket className="size-4" /> Tickets & tours
+              </a>
+            )}
+          </div>
         </div>
       </article>
     </motion.li>
   );
 }
 
-function DayPanel({ day, index, it, total, onJump }: { day: DayItinerary; index: number; it: ItineraryDetails; total: number; onJump?: (i: number) => void }) {
+/** The day's stops as a photo mosaic: one hero shot and the rest stacked beside it. Tapping one scrolls to its card. */
+function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: number; destination: string }) {
+  if (!stops.length) return null;
+  const go = (key: string) => document.getElementById(stopId(day, key))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  return (
+    <div
+      className={cn(
+        "no-print no-scrollbar -mx-4 mt-6 flex snap-x gap-2 overflow-x-auto px-4 sm:mx-0 sm:grid sm:h-[380px] sm:gap-3 sm:overflow-visible sm:px-0",
+        stops.length === 1 && "sm:grid-cols-1",
+        stops.length === 2 && "sm:grid-cols-2",
+        stops.length >= 3 && "sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] sm:grid-rows-2"
+      )}
+    >
+      {stops.map((s, k) => {
+        const cat = s.activity.category ? CATEGORY[s.activity.category] : undefined;
+        const slot = SLOTS.find((x) => x.key === s.key)!;
+        return (
+          <motion.button
+            key={s.key}
+            type="button"
+            onClick={() => go(s.key)}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease, delay: k * 0.08 }}
+            className={cn(
+              "group relative h-64 w-[78%] shrink-0 snap-start overflow-hidden rounded-[26px] bg-ink text-left sm:h-auto sm:w-auto",
+              stops.length >= 3 && k === 0 && "sm:row-span-2"
+            )}
+            aria-label={`${slot.label}: ${s.activity.place.name}`}
+          >
+            <PlacePhoto activity={s.activity} destination={destination} icon={cat?.icon ?? slot.icon} credit={false} imgClassName="group-hover:scale-[1.06]" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/15 to-transparent" />
+            <span className={cn("absolute left-4 top-4 grid size-8 place-items-center rounded-full font-mono text-xs shadow-lg", k === stops.length - 1 ? "bg-sun text-ink" : "bg-white/95 text-ink")}>
+              {k + 1}
+            </span>
+            <span className="absolute inset-x-0 bottom-0 p-4 text-paper sm:p-5">
+              <span className="eyebrow flex items-center gap-1.5 text-[0.6rem] text-sun-2">
+                <slot.icon className="size-3.5" /> {slot.label}
+              </span>
+              <span className={cn("display mt-1.5 line-clamp-2 block leading-[1]", stops.length >= 3 && k === 0 ? "text-[clamp(1.8rem,3vw,2.6rem)]" : "text-[1.6rem]")}>
+                {s.activity.place.name}
+              </span>
+              {s.activity.place.area && <span className="mt-1 block truncate text-xs text-paper/70">{s.activity.place.area}</span>}
+            </span>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary; index: number; it: ItineraryDetails; total: number; onJump?: (i: number) => void; print?: boolean }) {
   const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
@@ -260,11 +333,13 @@ function DayPanel({ day, index, it, total, onJump }: { day: DayItinerary; index:
         </div>
       </div>
 
-      {stops.length > 1 && <RouteMap stops={stops} seed={`${it.id}-${index}`} className="no-print mt-6 aspect-[100/56] sm:aspect-[100/40]" />}
+      <DayGlance stops={stops} day={index} destination={it.destination} />
 
-      <ol className="mt-6">
+      {stops.length > 1 && <RouteMap stops={stops} seed={`${it.id}-${index}`} className="no-print mt-3 aspect-[100/56] sm:aspect-[100/40]" />}
+
+      <ol className="mt-8">
         {stops.map((s, k) => (
-          <StopCard key={s.key} slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} destination={it.destination} last={k === stops.length - 1} />
+          <StopCard key={s.key} slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} />
         ))}
       </ol>
 
@@ -486,7 +561,10 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
 
   const prefs = data?.trip?.preferences;
   const title = titleCase(it.destination);
-  const scene = sceneForDestination(`${it.destination} ${data?.summary?.destination ?? ""}`);
+  const { scene, pending: scenePending } = useDestinationScene(
+    [it.destination, data?.summary?.destination].filter(Boolean).join(", "),
+    data?.summary?.landscape
+  );
   const dark = SCENES[scene]?.dark ?? true;
   const adults = prefs?.adults ?? it.numberOfPeople;
   const children = prefs?.children ?? 0;
@@ -511,6 +589,21 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
   const essentials = ESSENTIALS.filter((e) => data?.essentials?.[e.key]);
   const similar = `/dashboard?${new URLSearchParams({ destination: title, days: String(it.numberOfDays), budget: String(Math.round(it.budget)) })}`;
 
+  // Browsers name a saved PDF after the page title: "New York Itinerary-By GoRoam".
+  useEffect(() => {
+    const previous = document.title;
+    const name = `${title.split(",")[0].trim() || "Trip"} Itinerary-By GoRoam`;
+    const apply = () => {
+      document.title = name;
+    };
+    apply();
+    window.addEventListener("beforeprint", apply);
+    return () => {
+      window.removeEventListener("beforeprint", apply);
+      document.title = previous;
+    };
+  }, [title]);
+
   // Opened from "Print" on the itineraries page.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("print") === "1") {
@@ -534,7 +627,7 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
-          <Scene id={scene} intro interactive title={title} />
+          {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
@@ -601,6 +694,25 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
         />
       </section>
 
+      {/* The trip's boarding pass, on the PDF cover only. */}
+      <section className="print-avoid mx-auto mt-6 hidden max-w-[560px] print:block">
+        <BoardingPass
+          scene={scene}
+          interestLabels={VIBE_LABELS}
+          data={{
+            source: data?.trip?.source ? titleCase(data.trip.source) : "",
+            destination: title,
+            startDate: isoDay(it.startDate, 0),
+            numberOfDays: it.numberOfDays,
+            numberOfPeople: people,
+            budget: Math.round(it.budget),
+            tripType: who || "Trip",
+            interests: it.interests,
+            note: prefs ? `${labelFor(PACES, prefs.pace)} pace · ${labelFor(STAYS, prefs.stay)}` : undefined,
+          }}
+        />
+      </section>
+
       <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-8">
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
@@ -619,17 +731,21 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
                       aria-selected={on}
                       onClick={() => jump(i)}
                       className={cn(
-                        "relative w-44 shrink-0 snap-start overflow-hidden rounded-[22px] p-4 text-left ring-1 transition-colors duration-300",
-                        on ? "text-paper ring-ink" : "bg-white/70 text-ink ring-line hover:bg-white"
+                        "group relative w-48 shrink-0 snap-start overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
+                        on ? "text-paper shadow-[0_24px_50px_-28px_rgba(10,30,44,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(10,30,44,0.6)]"
                       )}
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
-                      <span className="relative flex items-center justify-between">
-                        <span className={cn("font-mono text-[11px]", on ? "text-brand-2" : "text-brand")}>DAY {pad(i + 1)}</span>
-                        <span className={cn("font-mono text-[11px]", on ? "text-paper/60" : "text-stone")}>{money(d.totalDayCost)}</span>
+                      <span className="relative block h-20 overflow-hidden">
+                        <PlacePhoto activity={d.morning ?? d.afternoon ?? d.evening} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                        <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">DAY {pad(i + 1)}</span>
+                        <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{money(d.totalDayCost)}</span>
                       </span>
-                      <span className={cn("relative mt-1 block text-xs", on ? "text-paper/60" : "text-stone")}>{dayLabel(it.startDate, i)}</span>
-                      <span className="relative mt-3 line-clamp-2 block text-[0.95rem] leading-snug">{d.theme || `Day ${i + 1}`}</span>
+                      <span className="relative block p-3.5 pt-3">
+                        <span className={cn("block text-xs", on ? "text-sun-2" : "text-brand")}>{dayLabel(it.startDate, i)}</span>
+                        <span className="mt-1.5 line-clamp-2 block text-[0.95rem] leading-snug">{d.theme || `Day ${i + 1}`}</span>
+                      </span>
                     </button>
                   );
                 })}
@@ -645,21 +761,21 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
               </AnimatePresence>
               <div className="hidden space-y-14 print:block">
                 {days.map((d, i) => (
-                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} />
+                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} print />
                 ))}
               </div>
             </div>
           </section>
 
           {(data?.summary?.highlights?.length ?? 0) > 0 && (
-            <section className="print-avoid mt-14 rounded-[28px] bg-ink p-7 text-paper sm:p-10">
+            <section className="print-avoid mt-14 rounded-[28px] bg-ocean p-7 text-paper sm:p-10">
               <p className="eyebrow flex items-center gap-2 text-paper/60">
-                <Sparkles className="size-3.5 text-brand-2" /> Don&apos;t miss
+                <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
               </p>
               <ol className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
                 {data.summary.highlights.map((h, i) => (
                   <li key={i} className="flex gap-4 border-t border-paper/10 pt-5">
-                    <span className="display text-3xl leading-none text-brand-2">{pad(i + 1)}</span>
+                    <span className="display text-3xl leading-none text-sun-2">{pad(i + 1)}</span>
                     <span className="text-[1.05rem] leading-snug text-paper/90">{h}</span>
                   </li>
                 ))}
@@ -738,9 +854,9 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, ease, delay: i * 0.05 }}
-                className={cn("print-avoid rounded-[24px] bg-white/80 p-5 ring-1 ring-line", e.key === "weather" && "sm:col-span-2 bg-ink text-paper ring-ink")}
+                className={cn("print-avoid rounded-[24px] bg-white/80 p-5 ring-1 ring-line", e.key === "weather" && "sm:col-span-2 bg-ocean text-paper ring-ink")}
               >
-                <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
+                <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "bg-paper/10 text-sun-2" : "bg-brand-soft text-brand")}>
                   <e.icon className="size-5" />
                 </span>
                 <p className={cn("eyebrow mt-4 text-[0.6rem]", e.key === "weather" ? "text-paper/55" : "text-stone")}>{e.label}</p>
@@ -757,8 +873,8 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
       </section>
 
       {/* Outro */}
-      <section className="no-print relative mt-4 overflow-hidden rounded-[32px] bg-ink p-8 text-paper sm:p-12">
-        <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-brand/25 blur-3xl" />
+      <section className="no-print relative mt-4 overflow-hidden rounded-[32px] bg-ocean p-8 text-paper sm:p-12">
+        <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-sun/20 blur-3xl" />
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>
             <p className="display text-[clamp(2.6rem,5vw,4rem)] leading-[0.95]">

@@ -13,7 +13,7 @@ const TESTIMONIALS = [
     content:
       "GoRoam completely transformed how I plan my travels. The AI suggestions were spot-on, and I discovered amazing hidden gems I would have never found otherwise!",
     initials: "SJ",
-    tint: "bg-[#E9B79E]",
+    tint: "bg-[#F6C995]",
   },
   {
     name: "Mike Chen",
@@ -21,7 +21,7 @@ const TESTIMONIALS = [
     content:
       "Planning our family vacation to Europe was so easy with GoRoam. The downloadable PDF was perfect for offline access, and the kids loved following our custom map!",
     initials: "MC",
-    tint: "bg-[#A9C8C3]",
+    tint: "bg-[#9FDCD3]",
   },
   {
     name: "Emma Rodriguez",
@@ -29,7 +29,7 @@ const TESTIMONIALS = [
     content:
       "As someone who travels frequently for work, GoRoam saves me hours of planning time. The credit system is perfect — I only pay for what I actually use.",
     initials: "ER",
-    tint: "bg-[#C9B8D8]",
+    tint: "bg-[#B9CCEB]",
   },
 ];
 

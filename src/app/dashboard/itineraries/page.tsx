@@ -11,7 +11,7 @@ import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { PillLink } from "@/components/site/pill";
 import { SplitText } from "@/components/motion/split-text";
-import { sceneForDestination } from "@/lib/destinations";
+import { useDestinationScene } from "@/lib/use-destination-scene";
 import { cn } from "@/lib/utils";
 import { COMPANIONS, VIBES, labelFor, titleCase } from "@/lib/trip";
 
@@ -19,6 +19,8 @@ interface Itinerary {
   id: string;
   title: string;
   destination: string;
+  place?: string;
+  landscape?: string;
   startDate: string;
   endDate: string;
   numberOfDays: number;
@@ -42,7 +44,7 @@ const formatDate = (dateString: string, withYear = true) =>
 function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDelete: (id: string) => Promise<void> }) {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const scene = sceneForDestination(it.destination);
+  const { scene } = useDestinationScene([it.destination, it.place].filter(Boolean).join(", "), it.landscape);
 
   return (
     <motion.article
@@ -51,7 +53,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
-      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(21,19,15,0.5)]"
+      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.5)]"
     >
       <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${titleCase(it.destination)} itinerary`}>
         <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">

@@ -202,6 +202,8 @@ export interface ItineraryData {
     destination: string;
     highlights: string[];
     overview?: string;
+    /** What the place looks like (coast, hills, city…), for picking its poster. */
+    landscape?: string;
   };
   stays?: StaySuggestion[];
   essentials?: Essentials;

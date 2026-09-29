@@ -5,7 +5,7 @@ import { ArrowUpRight, Check, Sparkles, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { Scene } from "@/components/scenes/scene";
-import { sceneForDestination } from "@/lib/destinations";
+import { useDestinationScene } from "@/lib/use-destination-scene";
 import { PLANS, perTrip } from "@/lib/plans";
 import { titleCase } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ export const PLANNER_DRAFT_KEY = "goroam:planner-draft";
  */
 export function OutOfCredits({ destination, days, onClose }: { destination: string; days: number; onClose: () => void }) {
   const place = titleCase(destination.split(",")[0] || "your trip");
-  const scene = sceneForDestination(destination || "mountains");
+  const { scene } = useDestinationScene(destination || "mountains");
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -49,7 +49,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
         exit={{ y: 24, opacity: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-paper shadow-[0_50px_140px_-40px_rgba(21,19,15,0.7)]"
+        className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-paper shadow-[0_50px_140px_-40px_rgba(10,30,44,0.7)]"
       >
         <div className="relative h-44 overflow-hidden bg-ink sm:h-52">
           <Scene id={scene} intro />

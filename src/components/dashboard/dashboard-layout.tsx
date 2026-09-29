@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback, createContext, useContext } from "rea
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { Compass, CreditCard, LogOut, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/logo";
+import { UserAvatar } from "@/components/site/user-avatar";
 import { Scene } from "@/components/scenes/scene";
 
 interface DashboardLayoutProps {
@@ -41,17 +41,6 @@ const NAV = [
   { icon: CreditCard, label: "Credits", href: "/dashboard/credits" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
-
-function Avatar({ src, name, className }: { src?: string | null; name?: string | null; className?: string }) {
-  if (src) {
-    return <Image src={src} alt="" width={40} height={40} className={cn("rounded-full object-cover", className)} />;
-  }
-  return (
-    <span className={cn("grid place-items-center rounded-full bg-brand-soft font-medium text-brand", className)}>
-      {(name ?? "T").charAt(0).toUpperCase()}
-    </span>
-  );
-}
 
 function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -96,7 +85,7 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
               {active && (
                 <motion.span
                   layoutId="sidebar-active"
-                  className="absolute inset-0 rounded-xl bg-white shadow-[0_8px_24px_-16px_rgba(21,19,15,0.4)] ring-1 ring-line"
+                  className="absolute inset-0 rounded-xl bg-white shadow-[0_8px_24px_-16px_rgba(10,30,44,0.4)] ring-1 ring-line"
                   transition={{ type: "spring", stiffness: 420, damping: 36 }}
                 />
               )}
@@ -128,7 +117,7 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
         </Link>
 
         <div className="flex items-center gap-3 rounded-2xl p-2">
-          <Avatar src={session?.user?.image} name={session?.user?.name} className="size-10 shrink-0" />
+          <UserAvatar user={session?.user} className="size-10 shrink-0" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-ink">{session?.user?.name || "Traveller"}</p>
             <p className="truncate text-xs text-stone">{session?.user?.email}</p>

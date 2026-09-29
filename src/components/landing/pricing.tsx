@@ -30,7 +30,7 @@ export function Pricing() {
                 className={cn(
                   "relative flex h-full flex-col overflow-hidden rounded-[32px] p-8 sm:p-10",
                   p.popular
-                    ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(217,85,1,0.55)]"
+                    ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,130,120,0.55)]"
                     : "bg-white/80 text-ink ring-1 ring-line"
                 )}
               >

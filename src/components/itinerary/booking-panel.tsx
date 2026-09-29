@@ -66,7 +66,7 @@ export function BookingPanel({ query, className, dark = true }: { query: Booking
   const to = airportCode(query.destination) ?? cityOf(query.destination).slice(0, 3).toUpperCase();
 
   return (
-    <div className={cn("relative overflow-hidden rounded-[28px] p-5 sm:p-6", dark ? "bg-ink text-paper" : "bg-white/80 text-ink ring-1 ring-line", className)}>
+    <div className={cn("relative overflow-hidden rounded-[28px] p-5 sm:p-6", dark ? "bg-ocean text-paper" : "bg-white/80 text-ink ring-1 ring-line", className)}>
       {dark && <div className="pointer-events-none absolute -right-20 -top-24 size-56 rounded-full bg-brand/25 blur-3xl" />}
       <div className="relative">
         <p className={cn("eyebrow", dark ? "text-paper/55" : "text-stone")}>Book this trip</p>

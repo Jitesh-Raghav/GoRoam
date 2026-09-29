@@ -79,9 +79,9 @@ function StayCard() {
 
 function TicketCard() {
   return (
-    <div className="relative flex items-center gap-4 overflow-hidden rounded-[24px] bg-brand p-5 text-white shadow-[0_30px_60px_-30px_rgba(217,85,1,0.8)]">
-      <span className="absolute -left-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-[#22201b]" />
-      <span className="absolute -right-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-[#22201b]" />
+    <div className="relative flex items-center gap-4 overflow-hidden rounded-[24px] bg-brand p-5 text-white shadow-[0_30px_60px_-30px_rgba(11,130,120,0.8)]">
+      <span className="absolute -left-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-ink" />
+      <span className="absolute -right-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-ink" />
       <Ticket className="size-6 shrink-0" />
       <div className="min-w-0">
         <p className="eyebrow text-[0.58rem] text-white/70">Skip the line · Oct 5</p>

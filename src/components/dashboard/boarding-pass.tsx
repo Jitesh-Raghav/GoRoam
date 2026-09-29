@@ -4,9 +4,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Plane } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { sceneForDestination } from "@/lib/destinations";
+import { useDestinationScene } from "@/lib/use-destination-scene";
 import { hashString, mulberry32 } from "@/components/scenes/geometry";
 import { Scene } from "@/components/scenes/scene";
+import type { SceneId } from "@/components/scenes/scenes";
 
 function useDebounced<T>(value: T, ms: number) {
   const [v, setV] = useState(value);
@@ -57,16 +58,28 @@ export interface PassData {
   note?: string;
 }
 
-export function BoardingPass({ data, interestLabels, className }: { data: PassData; interestLabels: Record<string, string>; className?: string }) {
+export function BoardingPass({
+  data,
+  interestLabels,
+  scene: fixed,
+  className,
+}: {
+  data: PassData;
+  interestLabels: Record<string, string>;
+  /** The trip's poster, when the caller already knows it. */
+  scene?: SceneId;
+  className?: string;
+}) {
   const dest = useDebounced(data.destination, 450);
-  const scene = sceneForDestination(dest || "mountains");
+  const guessed = useDestinationScene(fixed ? "" : dest).scene;
+  const scene = fixed ?? (dest.trim() ? guessed : "peaks");
   const date = data.startDate
     ? new Date(`${data.startDate}T00:00:00`).toLocaleDateString("en-US", { day: "2-digit", month: "short" }).toUpperCase()
     : "— — —";
   const serial = `GR-${(hashString(`${data.source}${data.destination}${data.startDate}`) % 900000) + 100000}`;
 
   return (
-    <div className={cn("overflow-hidden rounded-[28px] bg-white shadow-[0_40px_80px_-50px_rgba(21,19,15,0.55)] ring-1 ring-line", className)}>
+    <div className={cn("overflow-hidden rounded-[28px] bg-white shadow-[0_40px_80px_-50px_rgba(10,30,44,0.55)] ring-1 ring-line", className)}>
       <div className="relative h-52 overflow-hidden bg-paper-2">
         <AnimatePresence initial={false}>
           <motion.div

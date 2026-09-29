@@ -28,7 +28,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 function Tile({ className, visual, title, body, delay = 0 }: { className?: string; visual: ReactNode; title: string; body: string; delay?: number }) {
   return (
     <Reveal delay={delay} className={className}>
-      <div className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white/80 p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-[0_40px_80px_-50px_rgba(21,19,15,0.45)]">
+      <div className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white/80 p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.45)]">
         <div className="relative h-60 overflow-hidden rounded-[22px] bg-paper">{visual}</div>
         <div className="p-5 pt-6">
           <h3 className="display text-[1.9rem] leading-none text-ink">{title}</h3>
@@ -127,8 +127,8 @@ function MapVisual() {
           </pattern>
         </defs>
         <rect width="400" height="240" fill="url(#feat-grid)" />
-        <path d="M0 150Q120 120 200 170T400 140" fill="none" stroke="#e7dfd2" strokeWidth="18" />
-        <path d="M120 0Q150 120 110 240" fill="none" stroke="#e7dfd2" strokeWidth="10" />
+        <path d="M0 150Q120 120 200 170T400 140" fill="none" stroke="#d4e4e8" strokeWidth="18" />
+        <path d="M120 0Q150 120 110 240" fill="none" stroke="#d4e4e8" strokeWidth="10" />
         <motion.path
           d={route}
           fill="none"
@@ -167,7 +167,7 @@ function PdfVisual() {
         initial={{ y: 40, rotate: 6, opacity: 0 }}
         animate={inView ? { y: 0, rotate: -4, opacity: 1 } : undefined}
         transition={{ duration: 1.1, ease }}
-        className="relative h-48 w-36 overflow-hidden rounded-xl bg-white p-3 shadow-[0_24px_50px_-24px_rgba(21,19,15,0.5)] ring-1 ring-line"
+        className="relative h-48 w-36 overflow-hidden rounded-xl bg-white p-3 shadow-[0_24px_50px_-24px_rgba(10,30,44,0.5)] ring-1 ring-line"
       >
         <div className="relative h-14 overflow-hidden rounded-md">
           <LazyScene id="santorini" tint="#E98A7C" />

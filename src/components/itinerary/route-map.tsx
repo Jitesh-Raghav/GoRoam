@@ -120,12 +120,12 @@ export function RouteMap({ stops, seed, className }: { stops: RouteStop[]; seed:
   const route = smooth(pts);
 
   return (
-    <div className={cn("relative overflow-hidden rounded-[24px] bg-[#ece5d8]", className)}>
+    <div className={cn("relative overflow-hidden rounded-[24px] bg-[#e3eef0]", className)}>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full" aria-hidden>
-        <rect x={park.x} y={park.y} width={park.w} height={park.h} rx={2} fill="#dcdcc0" />
-        <path d={river} fill="none" stroke="#cfdbe0" strokeWidth={10} vectorEffect="non-scaling-stroke" strokeLinecap="round" />
+        <rect x={park.x} y={park.y} width={park.w} height={park.h} rx={2} fill="#d5ead9" />
+        <path d={river} fill="none" stroke="#bfe0ea" strokeWidth={10} vectorEffect="non-scaling-stroke" strokeLinecap="round" />
         {streets.map((d, i) => (
-          <path key={i} d={d} fill="none" stroke="#f7f2e9" strokeWidth={i % 3 === 0 ? 6 : 3} vectorEffect="non-scaling-stroke" />
+          <path key={i} d={d} fill="none" stroke="#f8fcfd" strokeWidth={i % 3 === 0 ? 6 : 3} vectorEffect="non-scaling-stroke" />
         ))}
         <path d={route} fill="none" stroke="var(--ink)" strokeOpacity={0.12} strokeWidth={9} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
         {/* Revealed left to right; pathLength can't be used with non-scaling strokes. */}
@@ -152,8 +152,8 @@ export function RouteMap({ stops, seed, className }: { stops: RouteStop[]; seed:
           >
             <span
               className={cn(
-                "absolute left-0 top-0 grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-xs text-white shadow-[0_8px_20px_-6px_rgba(21,19,15,0.6)] ring-[3px] ring-white",
-                i === stops.length - 1 ? "bg-brand" : "bg-ink"
+                "absolute left-0 top-0 grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-xs text-white shadow-[0_8px_20px_-6px_rgba(10,30,44,0.6)] ring-[3px] ring-white",
+                i === stops.length - 1 ? "bg-sun text-ink" : "bg-ink"
               )}
             >
               {i + 1}

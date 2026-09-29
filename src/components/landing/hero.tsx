@@ -9,8 +9,8 @@ import {
   useTransform,
   type MotionStyle,
 } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, Compass, Moon, Sun, Sunrise } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Check, Moon, Sun, Sunrise } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MANIFESTO } from "@/lib/copy";
 import { HERO_SEQUENCE, formatCoords } from "@/lib/destinations";
@@ -38,20 +38,84 @@ function useIsDesktop() {
   return desktop;
 }
 
-function RotatingBadge() {
+const STAMP_INKS = ["#0B8278", "#16324A", "#B23A2B", "#A8631A"];
+const STAMP_TILTS = [-12, 9, -6, 14, -9, 5, -14, 11];
+const MINI_PLANE =
+  "M38 0C38 -3 35 -5 30 -5L10 -5L-8 -32L-18 -32L-6 -5L-24 -5L-31 -15L-38 -15L-34 0L-38 15L-31 15L-24 5L-6 5L-18 32L-8 32L10 5L30 5C35 5 38 3 38 0Z";
+
+/**
+ * A passport page that gets stamped for every wonder the hero visits: an inked
+ * arrival stamp (city code, country, plane) thumps down, slightly askew, in a new ink.
+ */
+function PassportStamp({ dest, index }: { dest: (typeof HERO_SEQUENCE)[number]; index: number }) {
+  const u = useId().replace(/:/g, "");
+  const ink = STAMP_INKS[index % STAMP_INKS.length];
+  const tilt = STAMP_TILTS[index % STAMP_TILTS.length];
+  const country = (dest.place.split(",").pop() ?? "").trim().toUpperCase();
+
   return (
-    <div className="relative size-[132px] rounded-full bg-paper shadow-[0_20px_50px_-25px_rgba(21,19,15,0.5)]">
-      <svg viewBox="0 0 120 120" className="animate-spin-slow absolute inset-0" aria-hidden>
-        <defs>
-          <path id="hero-badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
-        </defs>
-        <text className="fill-ink font-mono text-[9px] uppercase tracking-[0.34em]">
-          <textPath href="#hero-badge-circle">Plan · Explore · Roam · Wander ·</textPath>
-        </text>
+    <div className="relative size-[140px] rounded-full bg-[#FBFAF5] shadow-[0_26px_50px_-24px_rgba(10,30,44,0.6)] ring-[5px] ring-paper">
+      {/* The page: faint security guilloche. */}
+      <svg viewBox="0 0 120 120" className="absolute inset-0" aria-hidden>
+        {[18, 26, 34, 42, 50, 56].map((r) => (
+          <circle key={r} cx="60" cy="60" r={r} fill="none" stroke="#0B8278" strokeOpacity="0.07" strokeDasharray="1.5 2.5" />
+        ))}
       </svg>
-      <div className="absolute inset-0 m-auto grid size-12 place-items-center rounded-full bg-ink text-paper">
-        <Compass className="size-5" />
-      </div>
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={`${dest.slug}-ring`}
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{ boxShadow: `0 0 0 2px ${ink}` }}
+          initial={{ opacity: 0.5, scale: 0.8 }}
+          animate={{ opacity: 0, scale: 1.35 }}
+          transition={{ duration: 0.9, ease, delay: 0.12 }}
+        />
+        <motion.svg
+          key={dest.slug}
+          viewBox="0 0 120 120"
+          className="absolute inset-0"
+          role="img"
+          aria-label={`Passport stamp: ${dest.name}, ${dest.place}`}
+          initial={{ opacity: 0, scale: 1.8, rotate: tilt - 16 }}
+          animate={{ opacity: 0.96, scale: 1, rotate: tilt }}
+          exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.3 } }}
+          transition={{ type: "spring", stiffness: 520, damping: 26, mass: 0.9 }}
+        >
+          <defs>
+            <path id={`${u}-top`} d="M24,60 a36,36 0 1,1 72,0" />
+            <path id={`${u}-bottom`} d="M19,60 a41,41 0 0,0 82,0" />
+            {/* Worn, uneven ink. */}
+            <filter id={`${u}-ink`} x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="noise" />
+              <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.05 1.5" result="speckle" />
+              <feComposite in="SourceGraphic" in2="speckle" operator="in" />
+            </filter>
+          </defs>
+          <g filter={`url(#${u}-ink)`} fill={ink}>
+            <circle cx="60" cy="60" r="50" fill="none" stroke={ink} strokeWidth="3.2" />
+            <circle cx="60" cy="60" r="46" fill="none" stroke={ink} strokeWidth="1.1" />
+            <circle cx="60" cy="60" r="30" fill="none" stroke={ink} strokeWidth="1.3" />
+            <text className="font-mono" fontSize="6.8" fontWeight="600" letterSpacing="1.6">
+              <textPath href={`#${u}-top`} startOffset="50%" textAnchor="middle">
+                {country}
+              </textPath>
+            </text>
+            <text className="font-mono" fontSize="5.6" fontWeight="600" letterSpacing="1.4">
+              <textPath href={`#${u}-bottom`} startOffset="50%" textAnchor="middle">
+                ARRIVED · GOROAM
+              </textPath>
+            </text>
+            <path d="M14.5 60l1.6-1.1 1.6 1.1-1.6 1.1zM102.3 60l1.6-1.1 1.6 1.1-1.6 1.1z" />
+            <path d={MINI_PLANE} transform="translate(60 44) rotate(-90) scale(0.13)" />
+            <text x="60" y="68" textAnchor="middle" fontSize="21" letterSpacing="0.5" stroke={ink} strokeWidth="0.35" style={{ fontFamily: "var(--font-instrument-serif), serif" }}>
+              {dest.code}
+            </text>
+            <text x="60" y="79" textAnchor="middle" className="font-mono" fontSize="5" fontWeight="600" letterSpacing="1">
+              {dest.moment.time}
+            </text>
+          </g>
+        </motion.svg>
+      </AnimatePresence>
     </div>
   );
 }
@@ -185,7 +249,7 @@ export function Hero() {
             initial={{ opacity: 0, x: -24 }}
             animate={intro.ready ? { opacity: 1, x: 0 } : undefined}
             transition={{ duration: 1.2, ease, delay: delay + 0.9 }}
-            className={cn("pointer-events-auto absolute -left-16 bottom-10 w-[17.5rem] rounded-3xl border border-white/60 bg-paper/95 p-5 shadow-[0_30px_70px_-35px_rgba(21,19,15,0.55)]", expanded && "pointer-events-none")}
+            className={cn("pointer-events-auto absolute -left-16 bottom-10 w-[17.5rem] rounded-3xl border border-white/60 bg-paper/95 p-5 shadow-[0_30px_70px_-35px_rgba(10,30,44,0.55)]", expanded && "pointer-events-none")}
           >
             <div className="flex items-center justify-between">
               <span className="eyebrow text-stone">Now showing</span>
@@ -193,15 +257,16 @@ export function Hero() {
                 {pad(index + 1)} / {pad(HERO_SEQUENCE.length)}
               </span>
             </div>
-            <div className="mt-3 h-[2.4rem] overflow-hidden">
-              <AnimatePresence mode="popLayout" initial={false}>
+            {/* Positioned and clipped, so the outgoing name can't slide up over "Now showing". */}
+            <div className="relative mt-3 h-[2.4rem] overflow-hidden [clip-path:inset(0)]">
+              <AnimatePresence initial={false}>
                 <motion.p
                   key={dest.slug}
                   initial={{ y: "100%" }}
                   animate={{ y: "0%" }}
                   exit={{ y: "-100%" }}
                   transition={{ duration: 0.8, ease }}
-                  className="display text-[2.1rem] leading-[1.1] text-ink"
+                  className="display absolute inset-x-0 top-0 truncate whitespace-nowrap text-[2rem] leading-[1.2] text-ink"
                 >
                   {dest.name}
                 </motion.p>
@@ -244,7 +309,7 @@ export function Hero() {
             transition={{ duration: 1.2, ease, delay: delay + 1.05 }}
             className="absolute -right-8 top-[16%] hidden xl:block"
           >
-            <div className="animate-float flex w-[17rem] items-center gap-3 rounded-2xl border border-white/60 bg-paper/95 p-3 pr-4 shadow-[0_24px_60px_-30px_rgba(21,19,15,0.5)]">
+            <div className="animate-float flex w-[17rem] items-center gap-3 rounded-2xl border border-white/60 bg-paper/95 p-3 pr-4 shadow-[0_24px_60px_-30px_rgba(10,30,44,0.5)]">
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand">
                 <Icon className="size-5" />
               </span>
@@ -266,12 +331,12 @@ export function Hero() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.6, rotate: -40 }}
-            animate={intro.ready ? { opacity: 1, scale: 1, rotate: 0 } : undefined}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={intro.ready ? { opacity: 1, scale: 1 } : undefined}
             transition={{ duration: 1.4, ease, delay: delay + 1.15 }}
             className="absolute -left-[66px] top-[7%]"
           >
-            <RotatingBadge />
+            <PassportStamp dest={dest} index={index} />
           </motion.div>
         </motion.div>
 
@@ -305,7 +370,7 @@ export function Hero() {
           </div>
 
           {/* desktop manifesto over the opened scene */}
-          <motion.div style={{ opacity: overlayOpacity }} className="pointer-events-none absolute inset-0 z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(21,19,15,0.62),rgba(21,19,15,0.42))] lg:block" />
+          <motion.div style={{ opacity: overlayOpacity }} className="pointer-events-none absolute inset-0 z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(10,30,44,0.62),rgba(10,30,44,0.42))] lg:block" />
           <motion.div style={{ opacity: manifestoOpacity }} className="pointer-events-none absolute inset-0 z-20 hidden items-center justify-center lg:flex">
             <div className="container-x max-w-6xl text-center">
               <p className="eyebrow mb-8 text-paper/70">(01) — Why GoRoam</p>
@@ -322,7 +387,7 @@ export function Hero() {
         {/* Scroll cue */}
         <motion.div
           style={{ opacity: chromeOpacity }}
-          className="hero-cue pointer-events-none absolute bottom-8 z-10 hidden items-center gap-3 lg:flex"
+          className="hero-cue pointer-events-none absolute bottom-8 z-10 hidden items-center gap-3 lg:flex [@media(max-height:820px)]:!hidden"
         >
           <span className="relative h-10 w-px overflow-hidden bg-ink/15">
             <span className="hero-scroll-line absolute inset-x-0 top-0 h-1/2 bg-ink" />

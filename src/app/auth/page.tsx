@@ -3,7 +3,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, ArrowLeft, Check, Loader2 } from "lucide-react";
@@ -11,6 +10,7 @@ import { Scene } from "@/components/scenes/scene";
 import { ScrambleText } from "@/components/motion/scramble-text";
 import { SplitText } from "@/components/motion/split-text";
 import { Logo } from "@/components/site/logo";
+import { UserAvatar } from "@/components/site/user-avatar";
 import { destinationBySlug, formatCoords } from "@/lib/destinations";
 
 const SLIDES = ["santorini", "mount-fuji", "taj-mahal", "christ-the-redeemer", "eiffel-tower"].map((s) => destinationBySlug(s)!);
@@ -149,9 +149,7 @@ function AuthPanel() {
               <span className="italic text-brand">{session.user?.name?.split(" ")[0] ?? "traveller"}.</span>
             </h1>
             <div className="mt-8 flex items-center gap-4 rounded-2xl bg-white/80 p-4 ring-1 ring-line">
-              {session.user?.image && (
-                <Image src={session.user.image} alt="Profile" width={48} height={48} className="size-12 rounded-full object-cover" />
-              )}
+              <UserAvatar user={session.user} className="size-12" />
               <p className="text-sm text-ink">{session.user?.email}</p>
             </div>
             <button
@@ -185,7 +183,7 @@ function AuthPanel() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={pending}
-              className="group mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white text-[0.95rem] font-medium text-ink shadow-[0_20px_40px_-24px_rgba(21,19,15,0.45)] ring-1 ring-line transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_50px_-24px_rgba(21,19,15,0.5)] disabled:pointer-events-none disabled:opacity-70"
+              className="group mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white text-[0.95rem] font-medium text-ink shadow-[0_20px_40px_-24px_rgba(10,30,44,0.45)] ring-1 ring-line transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_50px_-24px_rgba(10,30,44,0.5)] disabled:pointer-events-none disabled:opacity-70"
             >
               {pending ? <Loader2 className="size-5 animate-spin text-brand" /> : <GoogleMark />}
               {pending ? "Redirecting to Google…" : "Continue with Google"}

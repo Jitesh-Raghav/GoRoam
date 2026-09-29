@@ -43,7 +43,8 @@ export async function GET() {
         tripType: true,
         interests: true,
         status: true,
-        createdAt: true
+        createdAt: true,
+        itineraryData: true
       },
       orderBy: {
         createdAt: 'desc' // Show newest first
@@ -51,8 +52,16 @@ export async function GET() {
     });
 
     // Format the data for the frontend
-    const formattedItineraries = itineraries.map(itinerary => ({
+    const formattedItineraries = itineraries.map(itinerary => {
+      // Just what the postcard needs to pick the same poster as the trip page.
+      let summary: { destination?: unknown; landscape?: unknown } = {};
+      try {
+        summary = JSON.parse(itinerary.itineraryData)?.summary ?? {};
+      } catch {}
+      return {
       id: itinerary.id,
+      place: typeof summary.destination === 'string' ? summary.destination : undefined,
+      landscape: typeof summary.landscape === 'string' ? summary.landscape : undefined,
       title: `${itinerary.destination} Adventure`,
       destination: itinerary.destination,
       startDate: itinerary.startDate.toISOString(),
@@ -64,7 +73,8 @@ export async function GET() {
       interests: JSON.parse(itinerary.interests),
       status: itinerary.status,
       createdAt: itinerary.createdAt.toISOString()
-    }));
+      };
+    });
 
     return NextResponse.json({
       success: true,

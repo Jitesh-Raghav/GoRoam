@@ -67,12 +67,12 @@ function Globe({ focus }: { focus: string | null }) {
       mapSamples: 20000,
       mapBrightness: 5.5,
       mapBaseBrightness: 0.02,
-      baseColor: [0.22, 0.2, 0.18],
-      markerColor: [0.98, 0.45, 0.1],
-      glowColor: [0.55, 0.42, 0.32],
+      baseColor: [0.12, 0.24, 0.32],
+      markerColor: [0.96, 0.64, 0.25],
+      glowColor: [0.2, 0.62, 0.6],
       markers,
       arcs,
-      arcColor: [0.98, 0.55, 0.2],
+      arcColor: [0.2, 0.82, 0.75],
       arcWidth: 0.6,
       arcHeight: 0.2,
       markerElevation: 0.015,
@@ -142,7 +142,7 @@ function Globe({ focus }: { focus: string | null }) {
 
   return (
     <div ref={wrapRef} className="relative aspect-square w-full">
-      <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(217,85,1,0.22),transparent_62%)] blur-2xl" />
+      <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(11,130,120,0.22),transparent_62%)] blur-2xl" />
       <canvas
         ref={canvasRef}
         className="relative size-full cursor-grab touch-none opacity-0 transition-opacity duration-1000"
@@ -159,8 +159,8 @@ export function GlobeSection() {
 
   return (
     <section className="px-3 sm:px-4">
-      <div className="relative overflow-hidden rounded-[36px] bg-ink py-24 text-paper sm:rounded-[48px] lg:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(217,85,1,0.16),transparent_55%)]" />
+      <div className="relative overflow-hidden rounded-[36px] bg-ocean py-24 text-paper sm:rounded-[48px] lg:py-32">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(11,130,120,0.16),transparent_55%)]" />
         <div className="container-x relative grid items-center gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <SectionHeading

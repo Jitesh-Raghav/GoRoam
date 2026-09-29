@@ -148,7 +148,7 @@ export function Wonders() {
             <WonderCard key={d.slug} d={d} i={i} />
           ))}
 
-          <div className="flex h-[500px] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ink p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
+          <div className="flex h-[500px] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
             <p className="eyebrow text-paper/60">And everywhere else</p>
             <div>
               <p className="display text-[2.8rem] leading-[0.95]">

@@ -1,13 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LogoMark } from "./logo-mark";
 
 export function Logo({ className, tone = "ink", href = "/" }: { className?: string; tone?: "ink" | "paper"; href?: string }) {
   return (
     <Link href={href} className={cn("group inline-flex items-center gap-2.5", className)} aria-label="GoRoam home">
-      <span className="relative grid size-9 place-items-center overflow-hidden rounded-full bg-white/70 ring-1 ring-black/5 transition-transform duration-500 ease-out-expo group-hover:rotate-[-18deg]">
-        <Image src="/logo.png" alt="" width={36} height={36} className="size-8" priority />
-      </span>
+      <LogoMark className="size-9 shrink-0 rounded-[11px] shadow-[0_8px_20px_-10px_rgba(10,30,44,0.6)] transition-transform duration-500 ease-out-expo group-hover:rotate-[-8deg]" />
       <span className={cn("display text-[1.7rem] leading-none", tone === "paper" ? "text-paper" : "text-ink")}>GoRoam</span>
     </Link>
   );
