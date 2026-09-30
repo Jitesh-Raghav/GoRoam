@@ -1,0 +1,454 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-11-14",
+      "theme": "Welcome to Kochi's Charm",
+      "summary": "Start your journey in the heart of Kochi, exploring rich history and vibrant culture.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Fort Kochi Beach",
+          "description": "Stroll along this beautiful beach lined with iconic Chinese fishing nets. Immerse yourself in the local vibe and enjoy the sea breeze.",
+          "area": "Fort Kochi",
+          "lat": 9.9656,
+          "lng": 76.221
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early morning for fewer crowds and a peaceful atmosphere."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Kochi Spice Market",
+          "description": "Explore the bustling market filled with the aroma of spices and local products. It's a great place to pick up souvenirs and try street snacks.",
+          "area": "Mattancherry",
+          "lat": 9.9484,
+          "lng": 76.25
+        },
+        "duration": "2 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Try the fresh masala dosa from a local vendor for an authentic taste."
+      },
+      "evening": {
+        "time": "6:00 PM - 8:00 PM",
+        "place": {
+          "name": "Kathakali Performance at Kerala Kathakali Centre",
+          "description": "Witness the traditional art form of Kathakali, a mesmerizing dance-drama showcasing Kerala's rich heritage. The performance is both captivating and educational.",
+          "area": "Fort Kochi",
+          "lat": 9.965,
+          "lng": 76.2235
+        },
+        "duration": "2 hours",
+        "estimatedCost": 40,
+        "category": "cultural",
+        "tip": "Arrive early to get the best seats and enjoy the makeup demonstration before the show."
+      },
+      "totalDayCost": 70
+    },
+    {
+      "day": 2,
+      "date": "2026-11-15",
+      "theme": "Nature's Retreat in Munnar",
+      "summary": "Travel to Munnar for lush tea gardens and breathtaking views.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Tea Museum",
+          "description": "Discover the history of tea production in Munnar through engaging exhibits and a guided tour. Don't miss the chance to sample some fresh tea!",
+          "area": "Munnar",
+          "lat": 10.0918,
+          "lng": 77.0584
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Visit the museum's café for a delightful cup of freshly brewed tea."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Pothamedu View Point",
+          "description": "Enjoy panoramic views of the sprawling tea estates and the Western Ghats. It's a perfect spot for photography and relaxation amidst nature.",
+          "area": "Munnar",
+          "lat": 10.0955,
+          "lng": 77.0552
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Visit in the afternoon for the best light for photos."
+      },
+      "evening": {
+        "time": "6:00 PM - 8:00 PM",
+        "place": {
+          "name": "Chateau d'Ernakulam",
+          "description": "Savor a delightful dinner featuring local Kerala cuisine in a cozy ambiance. The restaurant offers a range of dishes, including vegetarian options.",
+          "area": "Munnar",
+          "lat": 10.0888,
+          "lng": 77.0634
+        },
+        "duration": "2 hours",
+        "estimatedCost": 60,
+        "category": "food",
+        "tip": "Try the Kerala fish curry and appam for a true local experience."
+      },
+      "totalDayCost": 80
+    },
+    {
+      "day": 3,
+      "date": "2026-11-16",
+      "theme": "Adventures in the Hills",
+      "summary": "Explore Munnar's natural beauty with a day of hiking and relaxation.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Anamudi Peak",
+          "description": "Embark on a guided trek to Anamudi Peak, the highest peak in South India. The trek offers stunning landscapes and diverse flora and fauna.",
+          "area": "Munnar",
+          "lat": 10.0861,
+          "lng": 77.0737
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "activity",
+        "tip": "Start early to enjoy cooler temperatures and fewer hikers."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Kochi's Hillside Restaurant",
+          "description": "Recharge with a hearty meal featuring local ingredients and flavors. The restaurant's serene location adds to the dining experience.",
+          "area": "Munnar",
+          "lat": 10.0888,
+          "lng": 77.0634
+        },
+        "duration": "2 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Opt for the thali for a taste of various local dishes."
+      },
+      "evening": {
+        "time": "6:00 PM - 8:00 PM",
+        "place": {
+          "name": "Spice Garden Resort Spa",
+          "description": "Indulge in a rejuvenating spa treatment surrounded by nature. The spa offers a range of wellness treatments utilizing local herbs and oils.",
+          "area": "Munnar",
+          "lat": 10.0923,
+          "lng": 77.0595
+        },
+        "duration": "2 hours",
+        "estimatedCost": 100,
+        "category": "wellness",
+        "tip": "Book treatments in advance to secure your preferred time slot."
+      },
+      "totalDayCost": 190
+    },
+    {
+      "day": 4,
+      "date": "2026-11-17",
+      "theme": "Backwaters Bliss in Alleppey",
+      "summary": "Experience the serene backwaters of Alleppey with a day of exploration.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Alleppey Backwaters",
+          "description": "Take a tranquil houseboat ride through the scenic backwaters, surrounded by lush greenery and local villages. It's a perfect way to unwind and soak in the beauty.",
+          "area": "Alleppey",
+          "lat": 9.4981,
+          "lng": 76.325
+        },
+        "duration": "3 hours",
+        "estimatedCost": 150,
+        "category": "nature",
+        "tip": "Opt for a morning cruise for a quieter experience before the crowds arrive."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Mannarasala Sree Nagaraja Temple",
+          "description": "Visit this ancient temple dedicated to the serpent god, known for its unique architecture and serene atmosphere. It's nestled amidst a lush forest.",
+          "area": "Alleppey",
+          "lat": 9.4628,
+          "lng": 76.3223
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "culture",
+        "tip": "Respect the local customs and dress modestly while visiting."
+      },
+      "evening": {
+        "time": "6:00 PM - 8:00 PM",
+        "place": {
+          "name": "The Rice Boat Restaurant",
+          "description": "Enjoy a delightful dinner with views of the backwaters at this unique restaurant shaped like a traditional rice boat. The seafood is highly recommended.",
+          "area": "Alleppey",
+          "lat": 9.4904,
+          "lng": 76.3324
+        },
+        "duration": "2 hours",
+        "estimatedCost": 80,
+        "category": "food",
+        "tip": "Try the catch of the day for the freshest seafood experience."
+      },
+      "totalDayCost": 230
+    },
+    {
+      "day": 5,
+      "date": "2026-11-18",
+      "theme": "Farewell to Kerala",
+      "summary": "Wrap up your trip with a leisurely morning and some last-minute exploration.",
+      "morning": {
+        "time": "9:00 AM - 11:00 AM",
+        "place": {
+          "name": "Alleppey Beach",
+          "description": "Spend your morning relaxing at the beach, enjoying the sun and local snacks from nearby vendors. It's a perfect way to unwind before departure.",
+          "area": "Alleppey",
+          "lat": 9.4961,
+          "lng": 76.3396
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Grab a coconut water to refresh yourself while lounging on the beach."
+      },
+      "afternoon": {
+        "time": "12:00 PM - 2:00 PM",
+        "place": {
+          "name": "Local Market in Alleppey",
+          "description": "Wander through the local market to pick up last-minute souvenirs and experience the bustling atmosphere of local life.",
+          "area": "Alleppey",
+          "lat": 9.4987,
+          "lng": 76.3256
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "shopping",
+        "tip": "Bargain a bit for the best prices on local handicrafts."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:00 PM",
+        "place": {
+          "name": "Kochi International Airport",
+          "description": "Conclude your trip as you head to the airport, reflecting on the unforgettable experiences in Kerala.",
+          "area": "Nedumbassery",
+          "lat": 10.1514,
+          "lng": 76.4014
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Arrive at least 2 hours before your flight for a smooth departure."
+      },
+      "totalDayCost": 20
+    }
+  ],
+  "stays": [
+    {
+      "name": "Malabar House",
+      "area": "Fort Kochi",
+      "type": "Boutique hotel",
+      "why": "This heritage hotel combines modern comforts with traditional Kerala architecture.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "The Panoramic Getaway",
+      "area": "Munnar",
+      "type": "Boutique hotel",
+      "why": "Offers stunning views of the surrounding hills and tea gardens, ideal for relaxing.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Lake Palace Resort",
+      "area": "Alleppey",
+      "type": "Boutique hotel",
+      "why": "Located by the backwaters, it provides a tranquil atmosphere and luxurious comfort.",
+      "pricePerNight": 140
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR) — cards widely accepted",
+    "language": "Malayalam — English widely spoken",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Round up 10% in restaurants",
+    "weather": "Expect mild temperatures with occasional rain showers, perfect for exploring.",
+    "gettingAround": "A rental car is recommended for convenience and flexibility.",
+    "phrase": "Nanni (നന്ദി) — Thank you"
+  },
+  "packing": [
+    "Lightweight clothing for warm weather",
+    "Comfortable walking shoes for hiking",
+    "Rain jacket or umbrella for occasional showers",
+    "Sunscreen and a hat for sun protection",
+    "Swimsuit for beach and backwater activities",
+    "Camera for capturing beautiful landscapes",
+    "Reusable water bottle to stay hydrated",
+    "Local currency for markets and small vendors"
+  ],
+  "summary": {
+    "totalCost": 590,
+    "totalDays": 5,
+    "destination": "Kochi, India",
+    "overview": "Experience the enchanting landscapes and rich culture of Kerala on this 5-day journey. From the historical charm of Kochi to the serene backwaters of Alleppey, every moment is a celebration of nature and heritage.",
+    "landscape": "hills",
+    "highlights": [
+      "Explore the historic Fort Kochi and its vibrant culture.",
+      "Trek to the highest peak in South India, Anamudi Peak.",
+      "Relax on a houseboat amidst the scenic backwaters of Alleppey.",
+      "Indulge in authentic Kerala cuisine and local delicacies."
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "car",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "fort kochi beach|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Fort_Kochi_-_Fisher_-_1.jpg/1280px-Fort_Kochi_-_Fisher_-_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Fort Kochi Beach",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fort_Kochi_-_Fisher_-_1.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Kochi_Skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "tea museum|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Le_mus%C3%A9e_du_th%C3%A9_%28Munnar%2C_Inde%29_%2813694719014%29.jpg/1280px-Le_mus%C3%A9e_du_th%C3%A9_%28Munnar%2C_Inde%29_%2813694719014%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "KDHP Tea Museum",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=50639855",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "kathakali performance at kerala kathakali centre|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Kochi_LNG_Terminal_DSW.jpg/1280px-Kochi_LNG_Terminal_DSW.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Kochi LNG Terminal",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=31538776",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Kochi_Skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "kochi spice market|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Ariyittuvazhcha_Kovilakom.jpg/1280px-Ariyittuvazhcha_Kovilakom.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ariyittuvazhcha Kovilakam",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=58541546",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Jew_Street_Mattancherry%2C_Fort_Kochi%2C_Ernakulam%2C_Kerala%2C_India_IMG_20190526_150112.jpg/1280px-Jew_Street_Mattancherry%2C_Fort_Kochi%2C_Ernakulam%2C_Kerala%2C_India_IMG_20190526_150112.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "anamudi peak|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/AnaimudiPeak_DSC_4834.jpg/1280px-AnaimudiPeak_DSC_4834.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Anamudi",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1607583",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "pothamedu view point|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Munnar",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=300627",
+      "exact": false,
+      "kind": "nearby"
+    },
+    "chateau d'ernakulam|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Munnar_Temple_-_Om_Saravana_Bhavan_-_%E0%B4%AE%E0%B5%82%E0%B4%A8%E0%B5%8D%E0%B4%A8%E0%B4%BE%E0%B5%BC_-_%E0%B4%93%E0%B4%82_%E0%B4%B6%E0%B4%B0%E0%B4%B5%E0%B4%A3_%E0%B4%AD%E0%B4%B5%E0%B5%BB.JPG/1280px-Munnar_Temple_-_Om_Saravana_Bhavan_-_%E0%B4%AE%E0%B5%82%E0%B4%A8%E0%B5%8D%E0%B4%A8%E0%B4%BE%E0%B5%BC_-_%E0%B4%93%E0%B4%82_%E0%B4%B6%E0%B4%B0%E0%B4%B5%E0%B4%A3_%E0%B4%AD%E0%B4%B5%E0%B5%BB.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Subramanya Temple, Munnar",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=52563011",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "kochi's hillside restaurant|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Munnar_Temple_-_Om_Saravana_Bhavan_-_%E0%B4%AE%E0%B5%82%E0%B4%A8%E0%B5%8D%E0%B4%A8%E0%B4%BE%E0%B5%BC_-_%E0%B4%93%E0%B4%82_%E0%B4%B6%E0%B4%B0%E0%B4%B5%E0%B4%A3_%E0%B4%AD%E0%B4%B5%E0%B5%BB.JPG/1280px-Munnar_Temple_-_Om_Saravana_Bhavan_-_%E0%B4%AE%E0%B5%82%E0%B4%A8%E0%B5%8D%E0%B4%A8%E0%B4%BE%E0%B5%BC_-_%E0%B4%93%E0%B4%82_%E0%B4%B6%E0%B4%B0%E0%B4%B5%E0%B4%A3_%E0%B4%AD%E0%B4%B5%E0%B5%BB.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Subramanya Temple, Munnar",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=52563011",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "spice garden resort spa|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Munnar_Overview.jpg/1280px-Munnar_Overview.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Munnar",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=300627",
+      "exact": false,
+      "kind": "nearby"
+    },
+    "alleppey backwaters|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Alleppey_backwaters_view_%2C_Kerala_%2C_India_15.jpg/1280px-Alleppey_backwaters_view_%2C_Kerala_%2C_India_15.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Alleppey Backwaters",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alleppey_backwaters_view_,_Kerala_,_India_15.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Our_Lady_of_Mount_Carmel_Cathedral.jpg/1280px-Our_Lady_of_Mount_Carmel_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "mannarasala sree nagaraja temple|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Mannarasala_temple.jpg/1280px-Mannarasala_temple.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Mannarasala Temple",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=7042166",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Our_Lady_of_Mount_Carmel_Cathedral.jpg/1280px-Our_Lady_of_Mount_Carmel_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "alleppey beach|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Alleppey_beach.jpg/1280px-Alleppey_beach.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Alappuzha Beach",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=2798060",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Our_Lady_of_Mount_Carmel_Cathedral.jpg/1280px-Our_Lady_of_Mount_Carmel_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "local market in alleppey|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Raja_Kesava_Das_Statue_in_Alleppey_-_Changanassery_Road_%40_Changananassery_Junction.jpg/1280px-Raja_Kesava_Das_Statue_in_Alleppey_-_Changanassery_Road_%40_Changananassery_Junction.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Raja Kesavadas",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=6307742",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Our_Lady_of_Mount_Carmel_Cathedral.jpg/1280px-Our_Lady_of_Mount_Carmel_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "kochi international airport|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Cochin_International_Airport_IMG_20251109_114917159.jpg/1280px-Cochin_International_Airport_IMG_20251109_114917159.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Cochin International Airport",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=667462",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Cochin_International_Airport_Limited.jpg/1280px-Cochin_International_Airport_Limited.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "the rice boat restaurant|kochi": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Alappuzha_Boat_Beauty_W.jpg/1280px-Alappuzha_Boat_Beauty_W.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Alappuzha",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=3793923",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Our_Lady_of_Mount_Carmel_Cathedral.jpg/1280px-Our_Lady_of_Mount_Carmel_Cathedral.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

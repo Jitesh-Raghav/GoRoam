@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Copy, Link2, Mail, MessageCircle, Share2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 /** "Share" button plus a sheet with a signed, read-only link for travel companions. */
 export function ShareButton({ tripId, title, className }: { tripId: string; title: string; className?: string }) {
@@ -20,7 +21,10 @@ export function ShareButton({ tripId, title, className }: { tripId: string; titl
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;
-        if (d.success) setUrl(d.data.url);
+        if (d.success) {
+          setUrl(d.data.url);
+          track("share_link_created");
+        }
         else setError(d.error || "Couldn't create a link.");
       })
       .catch(() => !cancelled && setError("Couldn't create a link."));

@@ -194,8 +194,27 @@ export interface Essentials {
   phrase?: string;
 }
 
+export interface PlacePhoto {
+  url: string | null;
+  /** What the photo actually shows (the matched page or place). */
+  title?: string;
+  credit?: string;
+  sourceUrl?: string;
+  /** false when it's a nearby landmark or the city rather than the place itself. */
+  exact?: boolean;
+  kind?: "place" | "nearby" | "city";
+  /** A photo of the destination, shown if `url` fails to load. */
+  fallback?: string;
+}
+
+/** How a stop's photo is filed on the trip: by place and city, so repeats share one. */
+export const photoKey = (name: string, city: string) =>
+  `${name}|${city.split(",")[0]}`.toLowerCase().replace(/\s+/g, " ").trim();
+
 export interface ItineraryData {
   itinerary: DayItinerary[];
+  /** Real photos found for the stops, saved so later views need no lookups. */
+  photos?: Record<string, PlacePhoto>;
   summary: {
     totalCost: number;
     totalDays: number;

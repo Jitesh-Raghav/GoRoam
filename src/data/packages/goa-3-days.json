@@ -1,0 +1,304 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-12-18",
+      "theme": "Welcome to Goa",
+      "summary": "Arrive in Goa and immerse in the vibrant local culture and scenic beaches.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Fort Aguada",
+          "description": "Explore the historic Fort Aguada, a well-preserved 17th-century Portuguese fort offering stunning views of the Arabian Sea. Stroll around the fort walls and enjoy the fresh coastal breeze.",
+          "area": "Sinquerim",
+          "lat": 15.5528,
+          "lng": 73.7528
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early in the morning to avoid the crowds and enjoy a peaceful experience."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:00 PM",
+        "place": {
+          "name": "Fisherman’s Wharf",
+          "description": "Savor Goan cuisine at Fisherman's Wharf, known for its seafood and vibrant ambiance. Don't miss trying the Goan Fish Curry paired with steamed rice.",
+          "area": "Candolim",
+          "lat": 15.5527,
+          "lng": 73.7552
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Order the catch of the day for the freshest experience!"
+      },
+      "evening": {
+        "time": "6:00 PM - 10:00 PM",
+        "place": {
+          "name": "Titos Lane",
+          "description": "Experience the nightlife at Titos Lane, famous for its bars and live music. Enjoy a drink at Café Mambo and soak in the lively atmosphere.",
+          "area": "Baga",
+          "lat": 15.5522,
+          "lng": 73.7506
+        },
+        "duration": "4 hours",
+        "estimatedCost": 50,
+        "category": "nightlife",
+        "tip": "Visit after 8 PM when live music starts to really enjoy the vibe."
+      },
+      "totalDayCost": 100
+    },
+    {
+      "day": 2,
+      "date": "2026-12-19",
+      "theme": "Beach Bliss",
+      "summary": "Relax on the stunning beaches and explore local markets.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Anjuna Beach",
+          "description": "Spend your morning at Anjuna Beach, known for its vibrant atmosphere and picturesque views. Relax on the sandy shores or take a stroll along the coast.",
+          "area": "Anjuna",
+          "lat": 15.5523,
+          "lng": 73.7512
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Go for a swim early in the day to enjoy the calm waters and fewer crowds."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:00 PM",
+        "place": {
+          "name": "Anjuna Flea Market",
+          "description": "Explore the famous Anjuna Flea Market, where you can find unique handicrafts, clothing, and souvenirs. It's a great place to haggle and pick up local art.",
+          "area": "Anjuna",
+          "lat": 15.5526,
+          "lng": 73.7517
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 60,
+        "category": "shopping",
+        "tip": "Visit around lunchtime to enjoy street food vendors offering delicious Goan snacks."
+      },
+      "evening": {
+        "time": "6:00 PM - 10:00 PM",
+        "place": {
+          "name": "Club Cubana",
+          "description": "Dance the night away at Club Cubana, one of Goa's most popular nightclubs set in a lush environment. Enjoy the vibrant music and lively crowd.",
+          "area": "Arpora",
+          "lat": 15.5521,
+          "lng": 73.7495
+        },
+        "duration": "4 hours",
+        "estimatedCost": 60,
+        "category": "nightlife",
+        "tip": "Arrive early to enjoy the happy hour specials before the crowd builds."
+      },
+      "totalDayCost": 120
+    },
+    {
+      "day": 3,
+      "date": "2026-12-20",
+      "theme": "Cultural Exploration",
+      "summary": "Discover the unique blend of cultures and cuisines that Goa has to offer.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Basilica of Bom Jesus",
+          "description": "Visit the Basilica of Bom Jesus, a UNESCO World Heritage site that showcases stunning Baroque architecture. Marvel at the intricately designed interiors and learn about its historical significance.",
+          "area": "Old Goa",
+          "lat": 15.4902,
+          "lng": 73.8329
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Try to catch the morning mass if you're interested in a more spiritual experience."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:00 PM",
+        "place": {
+          "name": "Martin's Corner",
+          "description": "Enjoy authentic Goan food at Martin's Corner, famous for its local dishes, especially the prawn vindaloo. The restaurant has a relaxed setting and friendly service.",
+          "area": "Betalbatim",
+          "lat": 15.3001,
+          "lng": 73.9175
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Order the kingfish steak for a delicious, local flavor."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "The Fisherman’s Wharf",
+          "description": "Relax at The Fisherman's Wharf, a beautiful waterfront restaurant ideal for dinner. Enjoy the sunset views while indulging in seafood dishes.",
+          "area": "Cavelossim",
+          "lat": 15.0718,
+          "lng": 73.964
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "food",
+        "tip": "Make a reservation for a waterfront table to enjoy the best views."
+      },
+      "totalDayCost": 110
+    }
+  ],
+  "stays": [
+    {
+      "name": "Taj Fort Aguada Resort & Spa",
+      "area": "Sinquerim",
+      "type": "Boutique hotel",
+      "why": "This hotel offers luxurious amenities and stunning sea views, perfect for a relaxing getaway.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Casa Anjuna",
+      "area": "Anjuna",
+      "type": "Boutique hotel",
+      "why": "With charming decor and a laid-back vibe, it's ideal for couples seeking a cozy atmosphere.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "The Postcard Velha",
+      "area": "Old Goa",
+      "type": "Boutique hotel",
+      "why": "A serene retreat that combines comfort with a touch of local culture, perfect for exploration.",
+      "pricePerNight": 160
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR) — cards widely accepted",
+    "language": "Konkani — English widely spoken",
+    "plugs": "Type C, 230V",
+    "tipping": "Round up 5-10% in restaurants",
+    "weather": "Expect warm and humid weather with occasional rain showers.",
+    "gettingAround": "Taxis and ride-hailing services like Uber are convenient and affordable.",
+    "phrase": "Sukhantat aahe (सुखांतात आहे) — How are you?"
+  },
+  "packing": [
+    "Lightweight clothing",
+    "Sunscreen",
+    "Swimwear",
+    "Comfortable sandals",
+    "Hat or cap",
+    "Reusable water bottle",
+    "Beach towel",
+    "Camera"
+  ],
+  "summary": {
+    "totalCost": 330,
+    "totalDays": 3,
+    "destination": "Goa, India",
+    "overview": "Experience the sun-kissed beaches and vibrant nightlife of Goa, perfect for a couple's retreat. Indulge in local cuisine and explore cultural treasures as you unwind in this tropical paradise.",
+    "landscape": "coast",
+    "highlights": [
+      "Historic Fort Aguada with stunning sea views",
+      "Exploring the lively Anjuna Flea Market",
+      "Relaxing at beautiful beaches",
+      "Experiencing the vibrant nightlife at Titos Lane"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "fort aguada|goa": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Fort_aguada.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Fort Aguada",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=3296486",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/A_view_of_Sinquerim_Beach_near_Panaji%2C_Goa_%28December_2018%29.jpg/1280px-A_view_of_Sinquerim_Beach_near_Panaji%2C_Goa_%28December_2018%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "anjuna beach|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Anjuna_Beach%2C_Goa%2C_India%2C_Legendary_Curlies_beach_shack.jpg/1280px-Anjuna_Beach%2C_Goa%2C_India%2C_Legendary_Curlies_beach_shack.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Anjuna",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=4070172",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/BeachFun.jpg/1280px-BeachFun.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "anjuna flea market|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Anjuna%2C_Goa%2C_India%2C_Anjuna_Flea_Market_2.jpg/1280px-Anjuna%2C_Goa%2C_India%2C_Anjuna_Flea_Market_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Anjuna Flea Market",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Anjuna,_Goa,_India,_Anjuna_Flea_Market_2.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Anjuna_Beach%2C_Goa%2C_India%2C_Legendary_Curlies_beach_shack.jpg/1280px-Anjuna_Beach%2C_Goa%2C_India%2C_Legendary_Curlies_beach_shack.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "titos lane|goa": {
+      "url": "https://api.openverse.org/v1/images/00f6fdf0-4cdc-4c25-8764-6ab95b587a68/thumb/",
+      "title": "A selfie outside the Pink Elephant bar",
+      "credit": "shankar s. · Openverse",
+      "sourceUrl": "https://www.flickr.com/photos/77742560@N06/52575129443",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/en/4/4b/Poster_of_the_film_Baga_Beach.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "fisherman’s wharf|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Baga_Creek.jpg/1280px-Baga_Creek.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Baga Creek",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=10533958",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Sinquerim_Beach_from_the_fort_during_Sunset.jpg/1280px-Sinquerim_Beach_from_the_fort_during_Sunset.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "basilica of bom jesus|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Front_Elevation_of_Basilica_of_Bom_Jesus.jpg/1280px-Front_Elevation_of_Basilica_of_Bom_Jesus.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Basilica of Bom Jesus",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1688078",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Kailasanatha_Temple-Ellora-Aurangabad-Maharashtra-IMG_9777.jpg/1280px-Kailasanatha_Temple-Ellora-Aurangabad-Maharashtra-IMG_9777.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "martin's corner|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Bebinca_with_Ice_Cream_-_Martin%27s_Corner_-_Goa_-_01.jpg/1280px-Bebinca_with_Ice_Cream_-_Martin%27s_Corner_-_Goa_-_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Martin's Corner",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bebinca_with_Ice_Cream_-_Martin%27s_Corner_-_Goa_-_01.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/BeachFun.jpg/1280px-BeachFun.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "club cubana|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Baga_Creek.jpg/1280px-Baga_Creek.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Baga Creek",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=10533958",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/BeachFun.jpg/1280px-BeachFun.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "the fisherman’s wharf|goa": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Cavelossim_Beach.JPG/1280px-Cavelossim_Beach.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Cavelossim",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=18489064",
+      "exact": false,
+      "kind": "city",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/BeachFun.jpg/1280px-BeachFun.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

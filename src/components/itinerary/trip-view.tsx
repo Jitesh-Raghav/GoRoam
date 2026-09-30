@@ -34,6 +34,7 @@ import {
   TreePine,
   UtensilsCrossed,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
@@ -56,12 +57,16 @@ import {
   type DayItinerary,
   type Essentials,
   type ItineraryDetails,
+  type PlacePhoto as PlacePhotoData,
   type StaySuggestion,
 } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { BookingPanel } from "./booking-panel";
 import { Checklist } from "./checklist";
-import { PlacePhoto } from "./place-photo";
+import { PlacePhoto, TripPhotosProvider } from "./place-photo";
+import { useCachedJson } from "@/lib/cached-json";
+import { track } from "@/lib/analytics";
+import { hasMapsKey, locatedStops } from "@/lib/maps";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
 
@@ -227,6 +232,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager }: { sl
               href={mapsSearchUrl(activity.place.name, destination)}
               target="_blank"
               rel="noreferrer"
+              onClick={() => track("directions_clicked", { where: "stop" })}
               className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
             >
               <MapPin className="size-4" /> Directions
@@ -245,6 +251,36 @@ function StopCard({ slot, activity, index, day, destination, last, eager }: { sl
         </div>
       </article>
     </motion.li>
+  );
+}
+
+// The live Google map only loads (script and all) when a day's map scrolls into view.
+const DayMap = dynamic(() => import("./day-map"), { ssr: false });
+
+/**
+ * The day's route: a live, zoomable dark Google map when a Maps key is set,
+ * otherwise (or if Google rejects the key) the illustrated route.
+ */
+function DayRoute({ stops, seed, destination, className }: { stops: RouteStop[]; seed: string; destination: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const live = hasMapsKey && !failed && locatedStops(stops).length > 0;
+
+  useEffect(() => {
+    if (!live || near) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "300px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [live, near]);
+
+  return (
+    <div ref={ref} className={cn("relative", className)}>
+      <RouteMap stops={stops} seed={seed} className="absolute inset-0" />
+      {live && near && <DayMap stops={stops} destination={destination} className="absolute inset-0" onFail={() => setFailed(true)} />}
+    </div>
   );
 }
 
@@ -335,7 +371,7 @@ function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary;
 
       <DayGlance stops={stops} day={index} destination={it.destination} />
 
-      {stops.length > 1 && <RouteMap stops={stops} seed={`${it.id}-${index}`} className="no-print mt-3 aspect-[100/56] sm:aspect-[100/40]" />}
+      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/56] sm:aspect-[100/40]" />}
 
       <ol className="mt-8">
         {stops.map((s, k) => (
@@ -553,8 +589,36 @@ function SectionTitle({ eyebrow, title, children }: { eyebrow: string; title: Re
 /*                                    View                                    */
 /* -------------------------------------------------------------------------- */
 
-export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?: boolean }) {
+export function TripView({
+  it,
+  shared = false,
+  shareToken,
+  variant = "trip",
+}: {
+  it: ItineraryDetails;
+  shared?: boolean;
+  /** The share link's token, so a shared view can load the trip's photos. */
+  shareToken?: string | null;
+  /** "package": a ready-made GoRoam trip rather than one of yours. */
+  variant?: "trip" | "package";
+}) {
   const data = it.itineraryData;
+  const isPackage = variant === "package";
+
+  // Every stop's photo in one request; packages ship with theirs.
+  const photosUrl = isPackage ? null : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`;
+  const fetchedPhotos = useCachedJson<{ photos: Record<string, PlacePhotoData>; fallback: string | null }>(photosUrl);
+  const tripPhotos = useMemo(() => {
+    const saved = data?.photos ?? {};
+    const photos = { ...saved, ...fetchedPhotos.data?.photos };
+    const anyFallback = Object.values(photos).find((p) => p.fallback)?.fallback ?? null;
+    return {
+      photos,
+      fallback: fetchedPhotos.data?.fallback ?? anyFallback,
+      city: (data?.summary?.destination || it.destination).split(",")[0].trim(),
+      loading: !!photosUrl && fetchedPhotos.loading,
+    };
+  }, [data, fetchedPhotos.data, fetchedPhotos.loading, photosUrl, it.destination]);
   const days = useMemo(() => data?.itinerary ?? [], [data]);
   const [active, setActive] = useState(0);
   const planRef = useRef<HTMLElement>(null);
@@ -604,6 +668,15 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
     };
   }, [title]);
 
+  const printPdf = () => {
+    track("pdf_downloaded", { destination: it.destination, variant });
+    window.print();
+  };
+
+  useEffect(() => {
+    track(isPackage ? "package_viewed" : "itinerary_viewed", { destination: it.destination, days: it.numberOfDays, shared });
+  }, [it.id, it.destination, it.numberOfDays, isPackage, shared]);
+
   // Opened from "Print" on the itineraries page.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("print") === "1") {
@@ -623,6 +696,7 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
   const glass = cn(btn, "bg-paper/15 text-paper ring-1 ring-inset ring-paper/25 hover:bg-paper hover:text-ink");
 
   return (
+    <TripPhotosProvider value={tripPhotos}>
     <div className="mx-auto max-w-[1320px]">
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
@@ -631,7 +705,11 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
-          {shared ? (
+          {isPackage ? (
+            <Link href="/dashboard/packages" className={glass}>
+              <ArrowLeft className="size-4" /> All packages
+            </Link>
+          ) : shared ? (
             <span className={cn(glass, "pointer-events-none")}>
               <Sparkles className="size-4" /> Shared with you
             </span>
@@ -641,11 +719,18 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
             </Link>
           )}
           <div className="flex flex-wrap gap-2">
-            {!shared && <ShareButton tripId={it.id} title={title} className={cn(btn, "bg-paper text-ink hover:bg-brand hover:text-white")} />}
-            <button type="button" onClick={() => downloadIcs(it)} className={glass}>
+            {!shared && !isPackage && <ShareButton tripId={it.id} title={title} className={cn(btn, "bg-paper text-ink hover:bg-brand hover:text-white")} />}
+            <button
+              type="button"
+              onClick={() => {
+                downloadIcs(it);
+                track("calendar_downloaded", { destination: it.destination });
+              }}
+              className={glass}
+            >
               <CalendarPlus className="size-4" /> <span className="hidden sm:inline">Calendar</span>
             </button>
-            <button type="button" onClick={() => window.print()} className={glass}>
+            <button type="button" onClick={printPdf} className={glass}>
               <Printer className="size-4" /> <span className="hidden sm:inline">PDF</span>
             </button>
           </div>
@@ -653,7 +738,8 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-6 text-paper sm:p-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-3xl">
             <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.3 }} className="eyebrow text-paper/75">
-              {it.numberOfDays} {it.numberOfDays === 1 ? "day" : "days"} · {fmt(it.startDate, { month: "short", day: "numeric" })} – {fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}
+              {it.numberOfDays} {it.numberOfDays === 1 ? "day" : "days"} ·{" "}
+              {isPackage ? "GoRoam travel package" : `${fmt(it.startDate, { month: "short", day: "numeric" })} – ${fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}`}
               {who && ` · ${who}`}
             </motion.p>
             <motion.h1
@@ -671,7 +757,13 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
             )}
           </div>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease, delay: 0.8 }} className="no-print shrink-0 self-start lg:self-auto">
-            <Countdown start={it.startDate} days={it.numberOfDays} />
+            {isPackage ? (
+              <PillLink href={similar} variant="brand" size="lg" onClick={() => track("package_customized", { destination: it.destination, where: "hero" })}>
+                Make it mine
+              </PillLink>
+            ) : (
+              <Countdown start={it.startDate} days={it.numberOfDays} />
+            )}
           </motion.div>
         </div>
       </section>
@@ -878,7 +970,11 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>
             <p className="display text-[clamp(2.6rem,5vw,4rem)] leading-[0.95]">
-              {shared ? (
+              {isPackage ? (
+                <>
+                  Make it <span className="italic text-brand-2">yours.</span>
+                </>
+              ) : shared ? (
                 <>
                   Dreaming up <span className="italic text-brand-2">your own?</span>
                 </>
@@ -889,11 +985,24 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
               )}
             </p>
             <p className="mt-3 max-w-md text-paper/60">
-              {shared ? "GoRoam plans a day-by-day trip like this one in under a minute — flights, stays and all." : "Take it offline, send it to the crew, or start dreaming about the next one."}
+              {isPackage
+                ? "Change the dates, budget, pace or who's coming, and GoRoam re-plans every day around you."
+                : shared
+                  ? "GoRoam plans a day-by-day trip like this one in under a minute — flights, stays and all."
+                  : "Take it offline, send it to the crew, or start dreaming about the next one."}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            {shared ? (
+            {isPackage ? (
+              <>
+                <Link href="/dashboard/packages" className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
+                  <ArrowLeft className="size-4" /> More packages
+                </Link>
+                <PillLink href={similar} variant="brand" onClick={() => track("package_customized", { destination: it.destination, where: "outro" })}>
+                  Make it mine
+                </PillLink>
+              </>
+            ) : shared ? (
               <PillLink href="/dashboard" variant="brand" size="lg">
                 Plan my trip — free
               </PillLink>
@@ -911,5 +1020,6 @@ export function TripView({ it, shared = false }: { it: ItineraryDetails; shared?
         </div>
       </section>
     </div>
+    </TripPhotosProvider>
   );
 }

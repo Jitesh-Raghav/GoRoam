@@ -1,0 +1,304 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-12-05",
+      "theme": "Arrival and Ancient Wonders",
+      "summary": "Kick off your Bangkok adventure by exploring the city's iconic temple and enjoying vibrant street food.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Wat Phra Kaew (Temple of the Emerald Buddha)",
+          "description": "Marvel at the stunning architecture and intricate details of Thailand's most sacred temple. Be sure to explore the Grand Palace grounds as well for a comprehensive experience.",
+          "area": "Phra Nakhon",
+          "lat": 13.75,
+          "lng": 100.4913
+        },
+        "duration": "3 hours",
+        "estimatedCost": 50,
+        "category": "sight",
+        "tip": "Arrive early to avoid the crowds and consider hiring a guide for deeper insights."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 2:00 PM",
+        "place": {
+          "name": "Thip Samai Pad Thai",
+          "description": "Indulge in one of Bangkok's best Pad Thai dishes at this famous eatery, known for its rich flavors and perfect texture. Don't miss their special 'Superb Pad Thai'!",
+          "area": "Phra Nakhon",
+          "lat": 13.7481,
+          "lng": 100.4932
+        },
+        "duration": "1.5 hours",
+        "estimatedCost": 20,
+        "category": "food",
+        "tip": "Try to visit during off-peak hours to avoid long queues."
+      },
+      "evening": {
+        "time": "7:00 PM - 10:00 PM",
+        "place": {
+          "name": "Khao San Road",
+          "description": "Experience the energetic nightlife of Khao San Road, filled with bars, street performers, and vibrant atmosphere. Enjoy live music at one of the many open-air venues.",
+          "area": "Khao San",
+          "lat": 13.7563,
+          "lng": 100.5018
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "nightlife",
+        "tip": "Check out the 'Brick Bar' for live local music and a fun crowd."
+      },
+      "totalDayCost": 100
+    },
+    {
+      "day": 2,
+      "date": "2026-12-06",
+      "theme": "Cultural Immersion and Riverside Relaxation",
+      "summary": "Dive deeper into Bangkok's culture with a visit to local markets and a serene boat ride.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Chatuchak Weekend Market",
+          "description": "Explore the vast array of stalls selling everything from handicrafts to street food in one of the world's largest markets. It's a treasure trove for unique souvenirs and local delicacies.",
+          "area": "Chatuchak",
+          "lat": 13.8,
+          "lng": 100.5585
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "shopping",
+        "tip": "Visit on Saturday for the best selection and arrive early to beat the heat."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 2:30 PM",
+        "place": {
+          "name": "Savoey Restaurant",
+          "description": "Savor fresh seafood dishes at Savoey, known for its authentic Thai flavors and vibrant atmosphere. Their seafood platter is a must-try for any food lover.",
+          "area": "Sukhumvit",
+          "lat": 13.7405,
+          "lng": 100.5805
+        },
+        "duration": "2 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Ask for their signature dipping sauces to enhance your meal."
+      },
+      "evening": {
+        "time": "7:00 PM - 10:00 PM",
+        "place": {
+          "name": "Asiatique The Riverfront",
+          "description": "Stroll along the riverside market filled with shops, restaurants, and entertainment. Catch a traditional Thai puppet show or just enjoy the views of the Chao Phraya River.",
+          "area": "Bangkok Riverside",
+          "lat": 13.7125,
+          "lng": 100.508
+        },
+        "duration": "3 hours",
+        "estimatedCost": 15,
+        "category": "nightlife",
+        "tip": "Take the free shuttle boat from Saphan Taksin BTS station for a scenic ride."
+      },
+      "totalDayCost": 105
+    },
+    {
+      "day": 3,
+      "date": "2026-12-07",
+      "theme": "City Highlights and Farewell",
+      "summary": "Wrap up your trip with a mix of culture and relaxation, visiting key sights before departure.",
+      "morning": {
+        "time": "9:00 AM - 11:00 AM",
+        "place": {
+          "name": "Jim Thompson House",
+          "description": "Discover the intriguing history of Jim Thompson and his contributions to Thai silk in this beautifully preserved traditional house. The tranquil gardens are a lovely place to unwind.",
+          "area": "Bangkok Siam",
+          "lat": 13.7464,
+          "lng": 100.5305
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "culture",
+        "tip": "Join a guided tour to learn more about the art and history of silk weaving."
+      },
+      "afternoon": {
+        "time": "12:00 PM - 2:00 PM",
+        "place": {
+          "name": "Baan Khanitha",
+          "description": "Enjoy a delicious Thai lunch at this charming restaurant known for its beautifully presented dishes. The green curry and tom yum soup are local favorites.",
+          "area": "Sukhumvit",
+          "lat": 13.7459,
+          "lng": 100.5545
+        },
+        "duration": "2 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Opt for their set lunch menu for great value."
+      },
+      "evening": {
+        "time": "4:00 PM - 6:00 PM",
+        "place": {
+          "name": "Lumphini Park",
+          "description": "Relax in the city’s green oasis, perfect for a leisurely walk or simply soaking in the atmosphere. Watch locals practice Tai Chi or enjoy a paddleboat ride on the lake.",
+          "area": "Lumphini",
+          "lat": 13.7305,
+          "lng": 100.5465
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Visit in the late afternoon for a more serene experience."
+      },
+      "totalDayCost": 70
+    }
+  ],
+  "stays": [
+    {
+      "name": "Ariyasom Villa",
+      "area": "Sukhumvit",
+      "type": "Boutique hotel",
+      "why": "This charming hotel offers a tranquil escape with beautifully decorated rooms and a relaxing atmosphere.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Siam Heritage Boutique Suites",
+      "area": "Siam",
+      "type": "Boutique hotel",
+      "why": "A blend of traditional Thai design and modern comfort, located near major attractions.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "Riva Surya Bangkok",
+      "area": "Riverside",
+      "type": "Boutique hotel",
+      "why": "Stylish riverside accommodations with easy access to nightlife and cultural sites.",
+      "pricePerNight": 160
+    }
+  ],
+  "essentials": {
+    "currency": "Thai Baht (THB) — cards widely accepted",
+    "language": "Thai — English widely spoken in tourist areas",
+    "plugs": "Type A/B, 220V",
+    "tipping": "Round up to 10% in restaurants",
+    "weather": "Expect warm and humid conditions with temperatures around 25-30°C (77-86°F).",
+    "gettingAround": "Use BTS Skytrain and MRT subway for efficient travel across the city.",
+    "phrase": "Sawasdee ka/krub — Hello (female/male)"
+  },
+  "packing": [
+    "Lightweight clothing for warm weather",
+    "Comfortable walking shoes",
+    "Sunscreen and sunglasses",
+    "A reusable water bottle",
+    "A small backpack for day trips",
+    "A travel umbrella or poncho",
+    "Power bank for devices",
+    "Travel guidebook or app"
+  ],
+  "summary": {
+    "totalCost": 275,
+    "totalDays": 3,
+    "destination": "Bangkok, Thailand",
+    "overview": "Experience the vibrant blend of culture, history, and nightlife in Bangkok, a city that never sleeps. Enjoy iconic landmarks, delicious food, and lively entertainment as you explore this bustling metropolis.",
+    "landscape": "city",
+    "highlights": [
+      "Visit the stunning Wat Phra Kaew",
+      "Taste authentic Pad Thai at Thip Samai",
+      "Experience the lively atmosphere of Khao San Road",
+      "Relax in the serene Lumphini Park"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "khao san road|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Bangkok_Thailand_Street_Close_to_Kao_San_Road.JPG/1280px-Bangkok_Thailand_Street_Close_to_Kao_San_Road.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Tanao Road",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=59659358",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B8%AA%E0%B8%B5_%E0%B8%A8%E0%B8%B2%E0%B8%A5%E0%B8%B2_%E0%B8%99%E0%B8%97%E0%B8%B5_%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%A8%E0%B8%B4%E0%B8%A3%E0%B8%B4_Nathi_Thongsiri_Sian_Pae_Rong_Si_2020_03.jpg/1280px-%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B8%AA%E0%B8%B5_%E0%B8%A8%E0%B8%B2%E0%B8%A5%E0%B8%B2_%E0%B8%99%E0%B8%97%E0%B8%B5_%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%A8%E0%B8%B4%E0%B8%A3%E0%B8%B4_Nathi_Thongsiri_Sian_Pae_Rong_Si_2020_03.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "wat phra kaew (temple of the emerald buddha)|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Wat_Phra_Kaew_by_Ninara_TSP_edit_crop.jpg/1280px-Wat_Phra_Kaew_by_Ninara_TSP_edit_crop.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Wat Phra Kaew",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=197414",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/018-Sao_Ching_Cha.jpg/1280px-018-Sao_Ching_Cha.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "chatuchak weekend market|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Bangkok_-_Jatujak_Market_02.JPG/1280px-Bangkok_-_Jatujak_Market_02.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Chatuchak Weekend Market",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=161815",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/4Y1A1150_Bangkok_%2833536339665%29.jpg/1280px-4Y1A1150_Bangkok_%2833536339665%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "asiatique the riverfront|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Asiatique_%28II%29.jpg/1280px-Asiatique_%28II%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Asiatique",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=41156112",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Mandarin_Oriental_Bangkok_Bang_Rak.jpg/1280px-Mandarin_Oriental_Bangkok_Bang_Rak.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "jim thompson house|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Main_House_of_Jim_Thompson_photo_Don_Ramey_Logan.jpg/1280px-Main_House_of_Jim_Thompson_photo_Don_Ramey_Logan.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Jim Thompson House",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=15188906",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/4Y1A1150_Bangkok_%2833536339665%29.jpg/1280px-4Y1A1150_Bangkok_%2833536339665%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "thip samai pad thai|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/%E3%82%B5%E3%83%8A%E3%83%BC%E3%83%A0%E3%83%81%E3%83%A3%E3%82%A4%E9%80%9A%E3%82%8A.jpg/1280px-%E3%82%B5%E3%83%8A%E3%83%BC%E3%83%A0%E3%83%81%E3%83%A3%E3%82%A4%E9%80%9A%E3%82%8A.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Sanam Chai Road",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=53060132",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/018-Sao_Ching_Cha.jpg/1280px-018-Sao_Ching_Cha.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "lumphini park|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Aerial_view_of_Lumphini_Park.jpg/1280px-Aerial_view_of_Lumphini_Park.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Lumphini Park",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=3644740",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/4Y1A1150_Bangkok_%2833536339665%29.jpg/1280px-4Y1A1150_Bangkok_%2833536339665%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "savoey restaurant|bangkok": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B8%9E%E0%B8%A2%E0%B8%B2%E0%B8%9A%E0%B8%B2%E0%B8%A5%E0%B8%84%E0%B8%B2%E0%B8%A1%E0%B8%B4%E0%B8%A5%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%991.jpg/1280px-%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B8%9E%E0%B8%A2%E0%B8%B2%E0%B8%9A%E0%B8%B2%E0%B8%A5%E0%B8%84%E0%B8%B2%E0%B8%A1%E0%B8%B4%E0%B8%A5%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%991.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Camillian Hospital",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=11373487",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Bangkok_Skytrain_BTS_3.jpg/1280px-Bangkok_Skytrain_BTS_3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "baan khanitha|bangkok": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/52/Thailand_Bangkok_Bumrungrad_International_Hospital_entrance-building.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Bumrungrad International Hospital",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=7030185",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Bangkok_Skytrain_BTS_3.jpg/1280px-Bangkok_Skytrain_BTS_3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

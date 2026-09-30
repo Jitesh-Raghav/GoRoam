@@ -1,0 +1,608 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-05-10",
+      "theme": "Welcome to Paris",
+      "summary": "Arrive in Paris and immerse yourselves in the charming ambiance of Montmartre.",
+      "morning": {
+        "time": "10:00 AM - 12:00 PM",
+        "place": {
+          "name": "Sacré-Cœur Basilica",
+          "description": "Marvel at the stunning architecture and panoramic views of Paris from the dome. The interior is equally breathtaking with its mosaics and serene atmosphere.",
+          "area": "Montmartre",
+          "lat": 48.8876,
+          "lng": 2.3431
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early to avoid the crowds and enjoy the tranquility."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 2:30 PM",
+        "place": {
+          "name": "Le Consulat",
+          "description": "Enjoy a classic French lunch at this picturesque café, known for its charming exterior and local ambiance. Try the croque monsieur or a quiche for a true Parisian experience.",
+          "area": "Montmartre",
+          "lat": 48.8883,
+          "lng": 2.3357
+        },
+        "duration": "2 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Sit outside for the best people-watching opportunities."
+      },
+      "evening": {
+        "time": "3:00 PM - 6:00 PM",
+        "place": {
+          "name": "Place du Tertre",
+          "description": "Wander through this lively square where artists display their work and create portraits. It's a perfect spot to soak in the artistic spirit of Montmartre.",
+          "area": "Montmartre",
+          "lat": 48.8867,
+          "lng": 2.3434
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit later in the day for a more vibrant atmosphere with street performers."
+      },
+      "totalDayCost": 50
+    },
+    {
+      "day": 2,
+      "date": "2027-05-11",
+      "theme": "Art Appreciation",
+      "summary": "Dive into the world of art at the Louvre and the Musée d'Orsay.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Louvre Museum",
+          "description": "Explore the iconic museum housing thousands of artworks, including the Mona Lisa and the Venus de Milo. Ensure you appreciate the glass pyramid and the beautiful courtyards.",
+          "area": "Louvre/Les Halles",
+          "lat": 48.8606,
+          "lng": 2.3376
+        },
+        "duration": "3 hours",
+        "estimatedCost": 48,
+        "category": "culture",
+        "tip": "Book timed entry tickets online to skip the long lines."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 2:30 PM",
+        "place": {
+          "name": "Café Marly",
+          "description": "Dine with a view of the Louvre’s glass pyramid at this elegant café. The atmosphere is refined, and the food showcases classic French cuisine.",
+          "area": "Louvre/Les Halles",
+          "lat": 48.8614,
+          "lng": 2.3364
+        },
+        "duration": "2 hours",
+        "estimatedCost": 80,
+        "category": "food",
+        "tip": "Try the duck confit for a delicious taste of French culinary tradition."
+      },
+      "evening": {
+        "time": "3:00 PM - 6:00 PM",
+        "place": {
+          "name": "Musée d'Orsay",
+          "description": "Experience the stunning collection of Impressionist and Post-Impressionist masterpieces housed in a former railway station. Don't miss works by Monet, Van Gogh, and Degas.",
+          "area": "Saint-Germain-des-Prés",
+          "lat": 48.86,
+          "lng": 2.3266
+        },
+        "duration": "3 hours",
+        "estimatedCost": 32,
+        "category": "culture",
+        "tip": "Visit late on Thursdays when the museum is open until 9:45 PM to avoid crowds."
+      },
+      "totalDayCost": 160
+    },
+    {
+      "day": 3,
+      "date": "2027-05-12",
+      "theme": "Historical Icons",
+      "summary": "Explore the iconic landmarks of Paris, from the Notre-Dame to the Eiffel Tower.",
+      "morning": {
+        "time": "9:00 AM - 11:30 AM",
+        "place": {
+          "name": "Notre-Dame Cathedral",
+          "description": "Visit this masterpiece of French Gothic architecture and admire its stunning facade and rose windows. Though restoration is ongoing, you can still appreciate its beauty from the outside.",
+          "area": "Île de la Cité",
+          "lat": 48.8529,
+          "lng": 2.35
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Arrive early to enjoy a peaceful moment in the nearby square."
+      },
+      "afternoon": {
+        "time": "12:00 PM - 2:00 PM",
+        "place": {
+          "name": "Le Saint Régis",
+          "description": "Savor French cuisine at this elegant bistro located on Île Saint-Louis. The duck breast is highly recommended, paired with a fine French wine.",
+          "area": "Île Saint-Louis",
+          "lat": 48.8485,
+          "lng": 2.3603
+        },
+        "duration": "2 hours",
+        "estimatedCost": 90,
+        "category": "food",
+        "tip": "Ask for the daily specials for a unique culinary experience."
+      },
+      "evening": {
+        "time": "3:00 PM - 6:00 PM",
+        "place": {
+          "name": "Eiffel Tower",
+          "description": "Visit the iconic landmark and enjoy breathtaking views of the city from the summit. Be sure to book tickets in advance to skip the long lines.",
+          "area": "Champ de Mars",
+          "lat": 48.8584,
+          "lng": 2.2945
+        },
+        "duration": "3 hours",
+        "estimatedCost": 90,
+        "category": "sight",
+        "tip": "Visit just before sunset for stunning views and to see the city lights come alive."
+      },
+      "totalDayCost": 180
+    },
+    {
+      "day": 4,
+      "date": "2027-05-13",
+      "theme": "Stroll and Snack",
+      "summary": "Experience the vibrant life of Paris through its streets and markets.",
+      "morning": {
+        "time": "9:00 AM - 11:00 AM",
+        "place": {
+          "name": "Le Marché Bastille",
+          "description": "Explore one of the largest open-air markets in Paris, offering a variety of fresh produce, cheeses, and local delicacies. It's a feast for the senses.",
+          "area": "Bastille",
+          "lat": 48.8481,
+          "lng": 2.3725
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "food",
+        "tip": "Try the fresh pastries from local vendors for a perfect breakfast."
+      },
+      "afternoon": {
+        "time": "11:30 AM - 1:30 PM",
+        "place": {
+          "name": "Canal de l'Ourcq",
+          "description": "Take a leisurely stroll along this picturesque canal, lined with trees and cafés. It's a perfect spot for a peaceful walk away from the city's hustle and bustle.",
+          "area": "19th Arrondissement",
+          "lat": 48.8895,
+          "lng": 2.3805
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Bring a book and relax by the water for a while."
+      },
+      "evening": {
+        "time": "2:00 PM - 5:00 PM",
+        "place": {
+          "name": "Maison de la Photographie",
+          "description": "Visit this charming photography museum showcasing contemporary and historical works. It's a hidden gem that highlights the art of photography.",
+          "area": "Le Marais",
+          "lat": 48.861,
+          "lng": 2.3664
+        },
+        "duration": "3 hours",
+        "estimatedCost": 12,
+        "category": "culture",
+        "tip": "Check out the temporary exhibits for something new and inspiring."
+      },
+      "totalDayCost": 32
+    },
+    {
+      "day": 5,
+      "date": "2027-05-14",
+      "theme": "Royal Retreats",
+      "summary": "Visit the opulence of Versailles and its stunning gardens.",
+      "morning": {
+        "time": "8:00 AM - 12:00 PM",
+        "place": {
+          "name": "Palace of Versailles",
+          "description": "Explore the grand palace that was the residence of French kings, adorned with luxurious rooms and rich history. Don’t miss the Hall of Mirrors and the royal apartments.",
+          "area": "Versailles",
+          "lat": 48.8049,
+          "lng": 2.1205
+        },
+        "duration": "4 hours",
+        "estimatedCost": 70,
+        "category": "sight",
+        "tip": "Arrive early to avoid the crowds and maximize your time."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 2:00 PM",
+        "place": {
+          "name": "La Petite Venise",
+          "description": "Enjoy lunch at this lovely café located in the gardens of Versailles, offering picturesque views and delicious French dishes. The quiche and tart are favorites.",
+          "area": "Versailles",
+          "lat": 48.8066,
+          "lng": 2.1218
+        },
+        "duration": "1.5 hours",
+        "estimatedCost": 60,
+        "category": "food",
+        "tip": "Try to sit outside to enjoy the garden views."
+      },
+      "evening": {
+        "time": "2:30 PM - 5:00 PM",
+        "place": {
+          "name": "Gardens of Versailles",
+          "description": "Wander through the meticulously landscaped gardens, filled with fountains, sculptures, and manicured lawns. A perfect spot for a romantic stroll.",
+          "area": "Versailles",
+          "lat": 48.8049,
+          "lng": 2.1183
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Bring a picnic blanket to enjoy some relaxation amidst the beauty."
+      },
+      "totalDayCost": 130
+    },
+    {
+      "day": 6,
+      "date": "2027-05-15",
+      "theme": "Parisian Evenings",
+      "summary": "Experience the vibrant nightlife and culinary scene of Paris.",
+      "morning": {
+        "time": "9:00 AM - 11:00 AM",
+        "place": {
+          "name": "Sainte-Chapelle",
+          "description": "Visit this stunning Gothic chapel known for its magnificent stained-glass windows. The beauty of the light filtering through the glass is awe-inspiring.",
+          "area": "Île de la Cité",
+          "lat": 48.855,
+          "lng": 2.3445
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Visit early in the day to enjoy the chapel in peace."
+      },
+      "afternoon": {
+        "time": "11:30 AM - 1:30 PM",
+        "place": {
+          "name": "Chez Janou",
+          "description": "Savor a delightful lunch at this Provençal-style bistro known for its charming courtyard and delicious dishes, especially the chocolate mousse.",
+          "area": "Le Marais",
+          "lat": 48.8578,
+          "lng": 2.3647
+        },
+        "duration": "2 hours",
+        "estimatedCost": 70,
+        "category": "food",
+        "tip": "Reserve a table in advance, especially if you want to sit outside."
+      },
+      "evening": {
+        "time": "7:00 PM - 10:00 PM",
+        "place": {
+          "name": "Moulin Rouge",
+          "description": "End your trip with a spectacular cabaret show at the world-famous Moulin Rouge. Experience the vibrant performances and the energy of Paris nightlife.",
+          "area": "Montmartre",
+          "lat": 48.8841,
+          "lng": 2.3324
+        },
+        "duration": "3 hours",
+        "estimatedCost": 300,
+        "category": "nightlife",
+        "tip": "Book your tickets in advance for the best seats and package deals."
+      },
+      "totalDayCost": 390
+    },
+    {
+      "day": 7,
+      "date": "2027-05-16",
+      "theme": "Departure",
+      "summary": "Enjoy a leisurely morning before departing Paris.",
+      "morning": {
+        "time": "9:00 AM - 11:00 AM",
+        "place": {
+          "name": "Tuileries Garden",
+          "description": "Stroll through these beautiful gardens located between the Louvre and Place de la Concorde. It's a perfect spot for a final Parisian picnic or just to relax.",
+          "area": "Tuileries",
+          "lat": 48.8638,
+          "lng": 2.327
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Grab a pastry from a nearby boulangerie to enjoy in the gardens."
+      },
+      "afternoon": {
+        "time": "11:30 AM - 1:00 PM",
+        "place": {
+          "name": "Angelina Paris",
+          "description": "Indulge in a hot chocolate and pastries at this iconic tearoom known for its rich and velvety hot chocolate. A perfect sweet farewell to Paris.",
+          "area": "Louvre/Les Halles",
+          "lat": 48.8653,
+          "lng": 2.3313
+        },
+        "duration": "1.5 hours",
+        "estimatedCost": 40,
+        "category": "food",
+        "tip": "Order the Mont-Blanc for a delicious pastry experience."
+      },
+      "evening": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Gare Saint-Lazare",
+          "description": "Prepare for your departure at this historic train station, known for its architecture and bustling atmosphere. It’s a great place to grab last-minute souvenirs.",
+          "area": "8th Arrondissement",
+          "lat": 48.8737,
+          "lng": 2.3323
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Check out the shops for unique local products."
+      },
+      "totalDayCost": 40
+    }
+  ],
+  "stays": [
+    {
+      "name": "Hôtel Le Six",
+      "area": "Montparnasse",
+      "type": "Boutique hotel",
+      "why": "This stylish hotel offers a blend of modern comfort and classic Parisian elegance, perfect for first-time visitors.",
+      "pricePerNight": 200
+    },
+    {
+      "name": "Hotel Fabric",
+      "area": "11th Arrondissement",
+      "type": "Boutique hotel",
+      "why": "A former textile factory turned into a chic hotel, known for its unique design and cozy atmosphere.",
+      "pricePerNight": 180
+    },
+    {
+      "name": "Le Marais Hôtel",
+      "area": "Le Marais",
+      "type": "Boutique hotel",
+      "why": "Located in the heart of Le Marais, this hotel offers a vibrant neighborhood rich with culture and history.",
+      "pricePerNight": 160
+    }
+  ],
+  "essentials": {
+    "currency": "Euro (EUR) — cards widely accepted",
+    "language": "French — English widely spoken",
+    "plugs": "Type C/F, 230V",
+    "tipping": "Round up 5–10% in restaurants",
+    "weather": "May is generally mild with temperatures ranging from 12°C to 20°C (54°F to 68°F).",
+    "gettingAround": "Best way to get around is by walking and using the Metro for longer distances.",
+    "phrase": "Bonjour! (Hello!)"
+  },
+  "packing": [
+    "Comfortable walking shoes",
+    "Light jacket",
+    "Power adapter",
+    "Sunglasses",
+    "Reusable water bottle",
+    "Travel umbrella",
+    "Camera",
+    "Guidebook or map"
+  ],
+  "summary": {
+    "totalCost": 982,
+    "totalDays": 7,
+    "destination": "Paris, France",
+    "overview": "Discover the magic of Paris, where art, history, and culinary delights await at every corner. From iconic landmarks to hidden gems, this itinerary offers a perfect blend of experiences for first-time visitors.",
+    "landscape": "city",
+    "highlights": [
+      "Explore the Louvre and Musée d'Orsay",
+      "Visit the Palace of Versailles",
+      "Enjoy a cabaret show at Moulin Rouge",
+      "Sample delicious pastries at local cafés"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "sacré-cœur basilica|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Le_sacre_coeur.jpg/1280px-Le_sacre_coeur.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Sacré-Cœur, Paris",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=294254",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg/1280px-View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "place du tertre|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Restaurants%2C_Place_du_Tertre%2C_Paris_30_September_2019.jpg/1280px-Restaurants%2C_Place_du_Tertre%2C_Paris_30_September_2019.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Place du Tertre",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=73084",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg/1280px-View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "louvre museum|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/Louvre_Museum_Wikimedia_Commons.jpg/1280px-Louvre_Museum_Wikimedia_Commons.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Louvre",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=17546",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg/1280px-Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "le consulat|paris": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Le_consulat%2C_Montmartre%2C_May_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "title": "Le Consulat",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_consulat,_Montmartre,_May_2009.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg/1280px-View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "notre-dame cathedral|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Notre-Dame_de_Paris%2C_4_October_2017.jpg/1280px-Notre-Dame_de_Paris%2C_4_October_2017.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Notre-Dame de Paris",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=62233",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/%C3%8Ele_de_la_Cit%C3%A9_shortly_before_sunrise%2C_West_View_140320_1.jpg/1280px-%C3%8Ele_de_la_Cit%C3%A9_shortly_before_sunrise%2C_West_View_140320_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "musée d'orsay|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Paris_2012-aout-0006-2-Hotel-de-Cluny.jpg/1280px-Paris_2012-aout-0006-2-Hotel-de-Cluny.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Musée de Cluny",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=353326",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Abbaye_de_Saint-Germain-des-Pr%C3%A9s_140131_1.jpg/1280px-Abbaye_de_Saint-Germain-des-Pr%C3%A9s_140131_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "café marly|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Le_Caf%C3%A9_Marly%2C_Louvre_Museum%2C_Paris_19_April_2013.jpg/1280px-Le_Caf%C3%A9_Marly%2C_Louvre_Museum%2C_Paris_19_April_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Café Marly",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_Caf%C3%A9_Marly,_Louvre_Museum,_Paris_19_April_2013.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg/1280px-Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "le saint régis|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Abbaye_de_Saint-Germain-des-Pr%C3%A9s_140131_1.jpg/1280px-Abbaye_de_Saint-Germain-des-Pr%C3%A9s_140131_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Saint-Germain-des-Prés (church)",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=3533207",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Le_quai_de_B%C3%A9thune_dans_l%27%C3%AEle_St_Louis%2C_le_pont_de_la_Tournelle_et_la_Seine.jpg/1280px-Le_quai_de_B%C3%A9thune_dans_l%27%C3%AEle_St_Louis%2C_le_pont_de_la_Tournelle_et_la_Seine.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "eiffel tower|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Gare_Champ_Mars_Tour_Eiffel_-_Paris_XV_%28FR75%29_-_2022-05-28_-_3.jpg/1280px-Gare_Champ_Mars_Tour_Eiffel_-_Paris_XV_%28FR75%29_-_2022-05-28_-_3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Champ de Mars–Tour Eiffel station",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=2650598",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/MG-Paris-Champ_de_Mars.jpg/1280px-MG-Paris-Champ_de_Mars.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "le marché bastille|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Station_Bastille_M%C3%A9tro_Paris_Ligne_1_-_Paris_XII_%28FR75%29_-_2022-06-28_-_2.jpg/1280px-Station_Bastille_M%C3%A9tro_Paris_Ligne_1_-_Paris_XII_%28FR75%29_-_2022-06-28_-_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Bastille station (Paris Metro)",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=502271",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Bastille_Exterior_1790_or_1791.jpg/1280px-Bastille_Exterior_1790_or_1791.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "palace of versailles|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg/1280px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Palace of Versailles",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=53316",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg/1280px-La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "maison de la photographie|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Maison_europ%C3%A9enne_de_la_photographie_%C2%B7_%22Moriyama_%E2%80%93_Tomatsu_%3B_Tokyo_%22.jpg/1280px-Maison_europ%C3%A9enne_de_la_photographie_%C2%B7_%22Moriyama_%E2%80%93_Tomatsu_%3B_Tokyo_%22.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Maison européenne de la photographie",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=21378013",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Paris_Hotel_de_Sens_dsc04028.jpg/1280px-Paris_Hotel_de_Sens_dsc04028.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "gardens of versailles|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Vue_a%C3%A9rienne_du_domaine_de_Versailles_le_20_ao%C3%BBt_2014_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_22.jpg/1280px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_le_20_ao%C3%BBt_2014_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_22.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Gardens of Versailles",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=15641682",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg/1280px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "sainte-chapelle|paris": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sainte_Chapelle_-_Upper_level_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Sainte-Chapelle",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=74342",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/%C3%8Ele_de_la_Cit%C3%A9_shortly_before_sunrise%2C_West_View_140320_1.jpg/1280px-%C3%8Ele_de_la_Cit%C3%A9_shortly_before_sunrise%2C_West_View_140320_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "canal de l'ourcq|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Canal_de_l%27Ourcq_%40_La_Villette_%40_Paris_%2835182140246%29.jpg/1280px-Canal_de_l%27Ourcq_%40_La_Villette_%40_Paris_%2835182140246%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Canal de l'Ourcq",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Canal_de_l%27Ourcq_@_La_Villette_@_Paris_(35182140246).jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Bassin_de_la_Villette_1.jpg/1280px-Bassin_de_la_Villette_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "la petite venise|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/All%C3%A9e_Petite_Venise_Parc_Versailles_-_Versailles_%28FR78%29_-_2025-07-26_-_2.jpg/1280px-All%C3%A9e_Petite_Venise_Parc_Versailles_-_Versailles_%28FR78%29_-_2025-07-26_-_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "La Petite Venise",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:All%C3%A9e_Petite_Venise_Parc_Versailles_-_Versailles_(FR78)_-_2025-07-26_-_2.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg/1280px-Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "moulin rouge|paris": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Moulin_rouge.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Moulin Rouge",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=43486",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg/1280px-View_from_Notre-Dame_de_Paris%2C_24_June_2014_004.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "tuileries garden|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Crowd_in_the_Jardin_des_Tuileries%2C_Paris_July_2014.jpg/1280px-Crowd_in_the_Jardin_des_Tuileries%2C_Paris_July_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Tuileries Garden",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=299713",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Le_Palais_des_Tuileries_-_Le_Gray.jpg/1280px-Le_Palais_des_Tuileries_-_Le_Gray.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "angelina paris|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/AngelinaParis.JPG/1280px-AngelinaParis.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Angelina (tea house)",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=44560858",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg/1280px-Entr%C3%A9e_Gare_Ch%C3%A2telet_Halles_place_Marguerite_Navarre_Paris_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "gare saint-lazare|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Gare_de_Paris-Saint-Lazare_001.jpg/1280px-Gare_de_Paris-Saint-Lazare_001.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Gare Saint-Lazare",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=503936",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/L%27avenue_des_Champs-Elys%C3%A9es_illumin%C3%A9e_pour_les_f%C3%AAtes_de_fin_d%27ann%C3%A9e_2019_%28Paris%29_%2849222752717%29.jpg/1280px-L%27avenue_des_Champs-Elys%C3%A9es_illumin%C3%A9e_pour_les_f%C3%AAtes_de_fin_d%27ann%C3%A9e_2019_%28Paris%29_%2849222752717%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "chez janou|paris": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Lycee-VH-annexe-barbette.jpg/1280px-Lycee-VH-annexe-barbette.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Lycée Victor Hugo, Paris",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=39549652",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Paris_Hotel_de_Sens_dsc04028.jpg/1280px-Paris_Hotel_de_Sens_dsc04028.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Compass, CreditCard, LogOut, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "lucide-react";
+import { Compass, CreditCard, LogOut, Luggage, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
@@ -44,6 +44,7 @@ const PAGE_DATA: Record<string, string> = {
 const NAV = [
   { icon: Compass, label: "Plan a trip", href: "/dashboard" },
   { icon: MapIcon, label: "My itineraries", href: "/dashboard/itineraries" },
+  { icon: Luggage, label: "Travel packages", href: "/dashboard/packages" },
   { icon: Plane, label: "Book travel", href: "/dashboard/book" },
   { icon: CreditCard, label: "Credits", href: "/dashboard/credits" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },

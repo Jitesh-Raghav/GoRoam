@@ -1,0 +1,528 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-07-08",
+      "theme": "Welcome to Lucerne",
+      "summary": "Arrive in Lucerne and soak in the beauty of this lakeside city with historic charm.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Chapel Bridge (Kapellbrücke)",
+          "description": "Stroll across this iconic, wooden bridge adorned with beautiful paintings and take in views of the lake and mountains. It’s a perfect spot for your first photographs of Switzerland.",
+          "area": "Old Town",
+          "lat": 47.0502,
+          "lng": 8.3093
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early in the morning to avoid crowds and capture great photos."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Restaurant Fritschi",
+          "description": "Enjoy traditional Swiss cuisine in a charming, rustic setting. Try the local specialty, Älplermagronen, a hearty dish perfect after a morning of exploration.",
+          "area": "Old Town",
+          "lat": 47.0505,
+          "lng": 8.3089
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "food",
+        "tip": "Make a reservation for lunch to ensure a table."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Lake Lucerne Boat Cruise",
+          "description": "Take a scenic boat cruise on Lake Lucerne to enjoy stunning views of the surrounding mountains and towns. This is a perfect way to unwind after your first day.",
+          "area": "Lake Lucerne",
+          "lat": 47.0502,
+          "lng": 8.3093
+        },
+        "duration": "3 hours",
+        "estimatedCost": 50,
+        "category": "nature",
+        "tip": "Choose a late afternoon cruise to catch the sunset over the mountains."
+      },
+      "totalDayCost": 150
+    },
+    {
+      "day": 2,
+      "date": "2027-07-09",
+      "theme": "Explore the Heart of Lucerne",
+      "summary": "Dive deeper into Lucerne's culture and natural beauty with a blend of sights and relaxation.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Lion Monument (Löwendenkmal)",
+          "description": "Visit this poignant sculpture commemorating Swiss Guards who died during the French Revolution. The monument is surrounded by a beautiful park, perfect for a leisurely stroll.",
+          "area": "Old Town",
+          "lat": 47.0502,
+          "lng": 8.3082
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early to appreciate the monument without distractions."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Restaurant Balances",
+          "description": "Savor a delightful lunch with a view of the lake. The terrace is perfect for enjoying a summer meal, and the seasonal dishes are a must-try.",
+          "area": "Old Town",
+          "lat": 47.0507,
+          "lng": 8.3091
+        },
+        "duration": "3 hours",
+        "estimatedCost": 120,
+        "category": "food",
+        "tip": "Opt for the daily special for a taste of local flavors."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Richard Wagner Museum",
+          "description": "Explore the life and works of composer Richard Wagner in his former residence. The museum is set in a picturesque location and offers beautiful gardens.",
+          "area": "West Lucerne",
+          "lat": 47.0444,
+          "lng": 8.314
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "culture",
+        "tip": "Visit during the late afternoon for fewer visitors."
+      },
+      "totalDayCost": 140
+    },
+    {
+      "day": 3,
+      "date": "2027-07-10",
+      "theme": "Journey to Interlaken",
+      "summary": "Travel to Interlaken, nestled between two lakes, and embrace outdoor adventures.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Train to Interlaken",
+          "description": "Enjoy a scenic train ride from Lucerne to Interlaken, surrounded by breathtaking Alpine views. Be sure to sit on the right side for the best vistas.",
+          "area": "Train Station",
+          "lat": 47.0501,
+          "lng": 8.3093
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "activity",
+        "tip": "Book first-class tickets for more comfort and panoramic windows."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Harder Kulm",
+          "description": "Take the funicular to this viewpoint for stunning views of Interlaken and the surrounding peaks. The platform is perfect for photographers and nature lovers.",
+          "area": "Interlaken",
+          "lat": 46.6869,
+          "lng": 7.8559
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "sight",
+        "tip": "Visit on a clear day for the best views."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Restaurant Taverne",
+          "description": "Unwind with a Swiss dinner featuring fondue or raclette, perfect for a hearty meal after a day of exploration. The ambiance is cozy and welcoming.",
+          "area": "Interlaken",
+          "lat": 46.6861,
+          "lng": 7.8632
+        },
+        "duration": "3 hours",
+        "estimatedCost": 120,
+        "category": "food",
+        "tip": "Order the fondue for an authentic Swiss experience."
+      },
+      "totalDayCost": 260
+    },
+    {
+      "day": 4,
+      "date": "2027-07-11",
+      "theme": "Adventure Awaits in Interlaken",
+      "summary": "Experience the thrill of the Swiss Alps with hiking and breathtaking landscapes.",
+      "morning": {
+        "time": "8:00 AM - 12:00 PM",
+        "place": {
+          "name": "Hike to Harder Kulm",
+          "description": "Embark on a hike from Interlaken to Harder Kulm, which takes about 1.5 to 2 hours. Enjoy the stunning views of Lake Thun and Lake Brienz along the way.",
+          "area": "Interlaken",
+          "lat": 46.6869,
+          "lng": 7.8559
+        },
+        "duration": "4 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Start early to avoid the heat and crowds."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Lunch at Harder Kulm Restaurant",
+          "description": "Refuel with lunch at the restaurant atop Harder Kulm, offering spectacular views. Try the seasonal salads for a refreshing meal.",
+          "area": "Interlaken",
+          "lat": 46.6869,
+          "lng": 7.8559
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "food",
+        "tip": "Sit outside for the best panoramic views."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Interlaken West",
+          "description": "Explore the charming streets of Interlaken West in the evening. Check out local shops and enjoy the vibrant atmosphere.",
+          "area": "Interlaken",
+          "lat": 46.6861,
+          "lng": 7.8632
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit local shops for unique Swiss souvenirs."
+      },
+      "totalDayCost": 100
+    },
+    {
+      "day": 5,
+      "date": "2027-07-12",
+      "theme": "Scenic Journey to Zermatt",
+      "summary": "Travel to Zermatt, the gateway to the iconic Matterhorn.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Train to Zermatt",
+          "description": "Enjoy a picturesque train journey from Interlaken to Zermatt. The final leg offers some of the most stunning views of the Alps.",
+          "area": "Interlaken",
+          "lat": 46.6861,
+          "lng": 7.8632
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "activity",
+        "tip": "Sit on the left side for the best views of the Matterhorn."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Zermatt Village Exploration",
+          "description": "Wander through the charming streets of Zermatt, filled with shops and restaurants. The view of the Matterhorn from the village is breathtaking.",
+          "area": "Zermatt",
+          "lat": 46.0207,
+          "lng": 7.7491
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Stop by a bakery for delicious Swiss pastries."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Dinner at The Omnia",
+          "description": "Indulge in a fine dining experience at this upscale restaurant offering stunning views of the Matterhorn. The menu features local ingredients and seasonal dishes.",
+          "area": "Zermatt",
+          "lat": 46.0202,
+          "lng": 7.7489
+        },
+        "duration": "3 hours",
+        "estimatedCost": 220,
+        "category": "food",
+        "tip": "Reserve a window seat for an unforgettable view."
+      },
+      "totalDayCost": 300
+    },
+    {
+      "day": 6,
+      "date": "2027-07-13",
+      "theme": "Embrace the Matterhorn",
+      "summary": "Conclude your trip with awe-inspiring views and unforgettable experiences near the Matterhorn.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Gornergrat Railway",
+          "description": "Take the Gornergrat Railway to one of the best viewpoints of the Matterhorn, reaching an elevation of 3,089 meters. The panoramic views are a photographer's dream.",
+          "area": "Zermatt",
+          "lat": 46.0205,
+          "lng": 7.7469
+        },
+        "duration": "3 hours",
+        "estimatedCost": 140,
+        "category": "sight",
+        "tip": "Get there early to avoid the crowds and enjoy the sunrise."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Lunch at Gornergrat Restaurant",
+          "description": "Enjoy lunch at the highest restaurant in the region, with breathtaking views of the Alps. The cheese platters are a must-try.",
+          "area": "Gornergrat",
+          "lat": 46.0205,
+          "lng": 7.7469
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "food",
+        "tip": "Order the cheese platter and a glass of local wine."
+      },
+      "evening": {
+        "time": "4:00 PM - 7:00 PM",
+        "place": {
+          "name": "Zermatt’s Sunset Viewing Point",
+          "description": "End your trip with a sunset view of the Matterhorn from a popular viewpoint. It’s a magical way to conclude your Swiss adventure.",
+          "area": "Zermatt",
+          "lat": 46.0207,
+          "lng": 7.7491
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Arrive early to secure a good spot for the sunset."
+      },
+      "totalDayCost": 240
+    }
+  ],
+  "stays": [
+    {
+      "name": "Hotel des Balances",
+      "area": "Old Town, Lucerne",
+      "type": "Boutique hotel",
+      "why": "This hotel combines historic charm with modern amenities, offering a central location perfect for exploring.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Hotel Interlaken",
+      "area": "Interlaken",
+      "type": "Mid-range hotel",
+      "why": "Located in a picturesque setting, this hotel provides comfortable rooms and is a short walk from the train station.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "Hotel Alpenhof",
+      "area": "Zermatt",
+      "type": "Boutique hotel",
+      "why": "This cozy hotel has stunning views of the Matterhorn and offers a warm, welcoming atmosphere.",
+      "pricePerNight": 180
+    }
+  ],
+  "essentials": {
+    "currency": "Swiss Franc (CHF) — cards widely accepted",
+    "language": "German — English widely spoken",
+    "plugs": "Type C/F, 230V",
+    "tipping": "Round up 5–10% in restaurants",
+    "weather": "Expect warm days and cool evenings, with occasional rain.",
+    "gettingAround": "Public transport is efficient; consider Swiss Travel Pass for unlimited travel.",
+    "phrase": "Grüezi! (Hello!)"
+  },
+  "packing": [
+    "Comfortable hiking shoes",
+    "Lightweight rain jacket",
+    "Sunglasses and sunscreen",
+    "Camera for stunning landscapes",
+    "Reusable water bottle",
+    "Adapter for electrical outlets",
+    "Casual evening wear for dining",
+    "Daypack for hikes"
+  ],
+  "summary": {
+    "totalCost": 1190,
+    "totalDays": 6,
+    "destination": "Lucerne, Interlaken and Zermatt, Switzerland",
+    "overview": "Experience the breathtaking beauty of Switzerland, with charming towns, stunning landscapes, and unforgettable adventures. This trip balances relaxation and exploration, making it perfect for first-time visitors.",
+    "landscape": "mountains",
+    "highlights": [
+      "Iconic Chapel Bridge in Lucerne",
+      "Breathtaking views from Harder Kulm",
+      "Dramatic scenery on the Gornergrat Railway",
+      "Luxurious dining experience at The Omnia"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "hotel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "chapel bridge (kapellbrücke)|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Chapel_Bridge_%28Kapellbr%C3%BCcke%29%2C_Lucerne%2C_Switzerland_02.jpg/1280px-Chapel_Bridge_%28Kapellbr%C3%BCcke%29%2C_Lucerne%2C_Switzerland_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Chapel Bridge (Kapellbrücke)",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chapel_Bridge_(Kapellbr%C3%BCcke),_Lucerne,_Switzerland_02.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "restaurant fritschi|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/22/VBL_NAW_NT_und_GT_Bahnhof_Luzern.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne railway station",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=22798560",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "lion monument (löwendenkmal)|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Lion_Monument.jpg/1280px-Lion_Monument.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Lion Monument",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=15911686",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "lake lucerne boat cruise|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Lake_Lucerne_-_Steamer_%22Gallia%22_%282442274204%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "title": "Lake Lucerne Boat Cruise",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lake_Lucerne_-_Steamer_%22Gallia%22_(2442274204).jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "richard wagner museum|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Tribschen-Wagner-Museum-mit-Pilatus.jpg/1280px-Tribschen-Wagner-Museum-mit-Pilatus.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Richard Wagner Museum, Lucerne",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=72038985",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "train to interlaken|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Matten_bei_Interlaken_railway_station.jpg/1280px-Matten_bei_Interlaken_railway_station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Matten bei Interlaken railway station",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=77791226",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/2/22/VBL_NAW_NT_und_GT_Bahnhof_Luzern.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "harder kulm|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/14_Harder_Kulm_Lac_Thoune_Photo_by_Giles_Laurent.jpg/1280px-14_Harder_Kulm_Lac_Thoune_Photo_by_Giles_Laurent.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Harderkulm",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=32485148",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "restaurant balances|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/22/VBL_NAW_NT_und_GT_Bahnhof_Luzern.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne railway station",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=22798560",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "restaurant taverne|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/2011-07-21-Interlaken_%28Foto_Dietrich_Michael_Weidmann%29_047.JPG/1280px-2011-07-21-Interlaken_%28Foto_Dietrich_Michael_Weidmann%29_047.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Interlaken Monastery",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=34674084",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "interlaken west|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Bahnhof_Interlaken_West.jpg/1280px-Bahnhof_Interlaken_West.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Interlaken West railway station",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=16636779",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "hike to harder kulm|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/WasserwehrInterlaken.jpg/1280px-WasserwehrInterlaken.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Bödeli",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=665741",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "lunch at harder kulm restaurant|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/WasserwehrInterlaken.jpg/1280px-WasserwehrInterlaken.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Bödeli",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=665741",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "train to zermatt|lucerne": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/2011-07-21-Interlaken_%28Foto_Dietrich_Michael_Weidmann%29_047.JPG/1280px-2011-07-21-Interlaken_%28Foto_Dietrich_Michael_Weidmann%29_047.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Interlaken Monastery",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=34674084",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/BOB_Interlaken_Ost_Station.jpg/1280px-BOB_Interlaken_Ost_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "dinner at the omnia|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=184017",
+      "exact": false,
+      "kind": "city"
+    },
+    "zermatt village exploration|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=184017",
+      "exact": false,
+      "kind": "city"
+    },
+    "gornergrat railway|lucerne": {
+      "url": "https://api.openverse.org/v1/images/e1414e84-a788-485e-8b51-2c896aafe404/thumb/",
+      "title": "Ichneumonid wasp",
+      "credit": "Anita363 · Openverse",
+      "sourceUrl": "https://www.flickr.com/photos/61897811@N00/53532382845",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "lunch at gornergrat restaurant|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=184017",
+      "exact": false,
+      "kind": "city"
+    },
+    "zermatt’s sunset viewing point|lucerne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/L%C3%B6wendenkmal_-_panoramio.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Lucerne",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=184017",
+      "exact": false,
+      "kind": "city"
+    }
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-12-12",
+      "theme": "Welcome to Dubai",
+      "summary": "Start your Dubai adventure by soaking in the city's blend of tradition and modernity.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Burj Khalifa",
+          "description": "Begin your journey at the iconic Burj Khalifa, the tallest building in the world. Head up to the observation deck for breathtaking views of the city and beyond.",
+          "area": "Downtown Dubai",
+          "lat": 25.1972,
+          "lng": 55.2744
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "sight",
+        "tip": "Book your tickets online in advance to skip the queues and pick the first slot of the day for fewer crowds."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Dubai Mall",
+          "description": "Explore the vast Dubai Mall, a shopping haven with luxury boutiques and local shops. Don't miss the Dubai Aquarium and the indoor waterfall!",
+          "area": "Downtown Dubai",
+          "lat": 25.1985,
+          "lng": 55.2793
+        },
+        "duration": "2 hours",
+        "estimatedCost": 60,
+        "category": "shopping",
+        "tip": "Try the local street food at the Souk Al Bahar food court for an authentic taste."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Dubai Fountain",
+          "description": "Witness the enchanting Dubai Fountain show, where water dances to music and lights. Grab a seat at one of the nearby cafes for a perfect view.",
+          "area": "Downtown Dubai",
+          "lat": 25.1972,
+          "lng": 55.2758
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "sight",
+        "tip": "Arrive early to secure a good spot for the fountain show, which runs every 30 minutes."
+      },
+      "totalDayCost": 240
+    },
+    {
+      "day": 2,
+      "date": "2026-12-13",
+      "theme": "Cultural Discoveries",
+      "summary": "Immerse yourselves in Dubai's rich culture and history.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Dubai Museum",
+          "description": "Visit the Dubai Museum housed in the Al Fahidi Fort to understand the city’s transformation from a fishing village to a global metropolis. The exhibits are engaging and informative.",
+          "area": "Al Fahidi",
+          "lat": 25.2632,
+          "lng": 55.3043
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "culture",
+        "tip": "Go early to enjoy the museum with fewer visitors and take your time exploring."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Al Seef",
+          "description": "Stroll through Al Seef, a waterfront promenade that showcases the heritage of Dubai. Enjoy lunch with views of the creek and traditional architecture.",
+          "area": "Dubai Creek",
+          "lat": 25.2602,
+          "lng": 55.304
+        },
+        "duration": "2 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Try the local shawarma from one of the street vendors for a delicious meal."
+      },
+      "evening": {
+        "time": "5:00 PM - 8:00 PM",
+        "place": {
+          "name": "Gold Souk",
+          "description": "Explore the famous Gold Souk, a bustling market filled with shops showcasing intricate gold jewelry. It's a great place to shop and experience the local culture.",
+          "area": "Deira",
+          "lat": 25.27,
+          "lng": 55.3055
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "shopping",
+        "tip": "Haggle for the best prices; it’s part of the experience!"
+      },
+      "totalDayCost": 70
+    },
+    {
+      "day": 3,
+      "date": "2026-12-14",
+      "theme": "Adventure Awaits",
+      "summary": "Experience thrilling adventures and breathtaking landscapes.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Desert Safari",
+          "description": "Embark on a morning desert safari that includes dune bashing, camel rides, and sandboarding. The thrill of the dunes is unmatched!",
+          "area": "Dubai Desert",
+          "lat": 24.9998,
+          "lng": 55.2564
+        },
+        "duration": "3 hours",
+        "estimatedCost": 300,
+        "category": "activity",
+        "tip": "Wear comfortable clothing and apply sunscreen to protect yourself from the sun."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Al Marmoom Camel Racing",
+          "description": "Visit Al Marmoom for a unique experience of camel racing. Watch these majestic animals compete and learn about this traditional sport.",
+          "area": "Marmoom",
+          "lat": 24.8972,
+          "lng": 55.2951
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Check the schedule in advance as races occur on specific days."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "BBQ Al Qasr",
+          "description": "Enjoy a delightful dinner at BBQ Al Qasr, known for its flavorful grilled meats and stunning views of the Burj Al Arab. A perfect end to an adventurous day.",
+          "area": "Jumeirah",
+          "lat": 25.1972,
+          "lng": 55.2478
+        },
+        "duration": "3 hours",
+        "estimatedCost": 150,
+        "category": "food",
+        "tip": "Make a reservation for a sunset table to enjoy the view while dining."
+      },
+      "totalDayCost": 450
+    },
+    {
+      "day": 4,
+      "date": "2026-12-15",
+      "theme": "Lasting Impressions",
+      "summary": "Wrap up your trip with a mix of relaxation and last-minute shopping.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Jumeirah Beach",
+          "description": "Relax at Jumeirah Beach, a stunning stretch of white sand with views of the Burj Al Arab. It's the perfect spot for some sunbathing and swimming.",
+          "area": "Jumeirah",
+          "lat": 25.2024,
+          "lng": 55.2462
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Arrive early to secure a good spot on the beach."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Souk Madinat Jumeirah",
+          "description": "Shop and explore the charming Souk Madinat Jumeirah, featuring unique boutiques and traditional crafts. The canals and architecture create a picturesque setting.",
+          "area": "Madinat Jumeirah",
+          "lat": 25.1777,
+          "lng": 55.2566
+        },
+        "duration": "2 hours",
+        "estimatedCost": 70,
+        "category": "shopping",
+        "tip": "Look for local artisans' shops for unique souvenirs."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Pierchic",
+          "description": "Dine at Pierchic, an award-winning seafood restaurant located on a pier with stunning views of the ocean and the Burj Al Arab. It's a luxurious treat for your last night.",
+          "area": "Al Qasr, Madinat Jumeirah",
+          "lat": 25.1754,
+          "lng": 55.2478
+        },
+        "duration": "3 hours",
+        "estimatedCost": 400,
+        "category": "food",
+        "tip": "Make sure to book in advance, especially for a sunset reservation."
+      },
+      "totalDayCost": 470
+    }
+  ],
+  "stays": [
+    {
+      "name": "Rove Downtown",
+      "area": "Downtown Dubai",
+      "type": "Boutique hotel",
+      "why": "Perfectly located near iconic attractions and offers modern amenities with a vibrant atmosphere.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Zabeel House by Jumeirah",
+      "area": "Al Seef",
+      "type": "Boutique hotel",
+      "why": "A stylish hotel that reflects the local culture, providing easy access to the creek and souks.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "Madinat Jumeirah",
+      "area": "Madinat Jumeirah",
+      "type": "Luxury hotel",
+      "why": "Offers luxurious accommodations and stunning views of the Burj Al Arab, ideal for a romantic getaway.",
+      "pricePerNight": 400
+    }
+  ],
+  "essentials": {
+    "currency": "UAE Dirham (AED) — cards widely accepted",
+    "language": "Arabic — English widely spoken",
+    "plugs": "Type G, 230V",
+    "tipping": "Round up 10% in restaurants",
+    "weather": "Expect warm weather, average highs around 26°C (79°F).",
+    "gettingAround": "Taxis and ride-hailing apps like Uber are convenient.",
+    "phrase": "Shukran (شكرا) - Thank you"
+  },
+  "packing": [
+    "Light clothing for warm weather",
+    "Sunscreen",
+    "Swimwear",
+    "Comfortable walking shoes",
+    "Adapters for plugs",
+    "Hat or cap",
+    "Light jacket for cooler evenings",
+    "Camera for capturing memories"
+  ],
+  "summary": {
+    "totalCost": 1230,
+    "totalDays": 4,
+    "destination": "Dubai, UAE",
+    "overview": "Explore the dazzling city of Dubai, where modern skyscrapers meet rich traditions and adventure awaits at every corner. Enjoy iconic landmarks, thrilling activities, and delicious food throughout your stay.",
+    "landscape": "city",
+    "highlights": [
+      "Visit the Burj Khalifa",
+      "Experience a desert safari",
+      "Shop at the Gold Souk",
+      "Dine at Pierchic"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "hotel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "burj khalifa|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/1280px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Burj Khalifa",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=794957",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "dubai mall|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/en/thumb/d/df/Dubai_Mall_10.jpg/1280px-Dubai_Mall_10.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Dubai Mall",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=4328630",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "dubai fountain|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Dubai_Fountain.jpg/1280px-Dubai_Fountain.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Dubai Fountain",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=23626618",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "gold souk|dubai": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/43/Dubai_Gold_Souk_on_31_May_2007_Pict_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Dubai Gold Souk",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=16267884",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Deira_Clocktower.jpg/1280px-Deira_Clocktower.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "al seef|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Wind_Tower_House%2C_Al_Seef%2C_Dubai.jpg/1280px-Wind_Tower_House%2C_Al_Seef%2C_Dubai.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Al Seef",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=71890955",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/The_view_of_Dubai_Creek.jpg/1280px-The_view_of_Dubai_Creek.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "dubai museum|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/UAE_Dubai_Al_Fahidi_Fort_img1_asv2018-01.jpg/1280px-UAE_Dubai_Al_Fahidi_Fort_img1_asv2018-01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Dubai Museum",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=34371004",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "desert safari|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Dubai_Desert_Safari_Liwa.jpg/1280px-Dubai_Desert_Safari_Liwa.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Desert Safari",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dubai_Desert_Safari_Liwa.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "jumeirah beach|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Beach_%40_Jumeirah_Beach_Residence_%40_Dubai_Marina_%2815852332215%29.jpg/1280px-Beach_%40_Jumeirah_Beach_Residence_%40_Dubai_Marina_%2815852332215%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Jumeirah Beach",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=28237629",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/3/30/Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "bbq al qasr|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jumeirah_Archaeological_Site_Office_Building.jpg/1280px-Jumeirah_Archaeological_Site_Office_Building.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Jumeirah Archaeological Site",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=40909525",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/3/30/Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "al marmoom camel racing|dubai": {
+      "url": "https://api.openverse.org/v1/images/7c468d63-351f-4c6e-ac84-fef238c9264d/thumb/",
+      "title": "DCRC Camel racing V, Al Marmoom, 20240319",
+      "credit": "G · RTM · Openverse",
+      "sourceUrl": "https://www.flickr.com/photos/89446016@N00/53616967291",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Al_Qudra_Lakes_at_Al_Marmoom_Desert_Conservation_Reserve.jpg/1280px-Al_Qudra_Lakes_at_Al_Marmoom_Desert_Conservation_Reserve.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "souk madinat jumeirah|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Madinat_Jumeirah_%28C%29.jpg/1280px-Madinat_Jumeirah_%28C%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Madinat Jumeirah",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=20163080",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/1280px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "pierchic|dubai": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Pierchic_Madinat_Jumeirah_%2870758113%29.jpeg/1280px-Pierchic_Madinat_Jumeirah_%2870758113%29.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Pierchic",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pierchic_Madinat_Jumeirah_(70758113).jpeg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Madinat_Jumeirah_%28C%29.jpg/1280px-Madinat_Jumeirah_%28C%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

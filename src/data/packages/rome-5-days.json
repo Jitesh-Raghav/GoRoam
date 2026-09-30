@@ -1,0 +1,456 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-05-03",
+      "theme": "Arrival in the Eternal City",
+      "summary": "Ease into Rome's charm with a leisurely exploration of its historic heart.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Piazza Navona",
+          "description": "Start your Roman adventure at the stunning Piazza Navona, known for its magnificent fountains and vibrant street artists. Enjoy a coffee at one of the outdoor cafes as you soak in the lively atmosphere.",
+          "area": "Navona",
+          "lat": 41.8983,
+          "lng": 12.4731
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Visit early to avoid crowds and grab a seat at a cafe for people-watching."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Trastevere",
+          "description": "Stroll through the charming cobblestone streets of Trastevere, filled with local shops and hidden gems. Stop for a delicious street food lunch at 'Trapizzino', where you can try their famous pizza pockets.",
+          "area": "Trastevere",
+          "lat": 41.8882,
+          "lng": 12.4541
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "food",
+        "tip": "Try the 'Trapizzino' with the classic 'pollo alla cacciatora' filling."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "The Spanish Steps",
+          "description": "End your day at the iconic Spanish Steps, where you can enjoy the sunset and the beautiful view of the city. Afterward, indulge in dinner at 'Ristorante Mario', known for its authentic Roman cuisine.",
+          "area": "Spagna",
+          "lat": 41.9059,
+          "lng": 12.4823
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "sight",
+        "tip": "Visit the steps in the evening when the crowds are fewer and the lights are magical."
+      },
+      "totalDayCost": 140
+    },
+    {
+      "day": 2,
+      "date": "2027-05-04",
+      "theme": "Ancient Rome Awaits",
+      "summary": "Dive deep into Rome's rich history with visits to its most famous ancient landmarks.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "The Colosseum",
+          "description": "Begin your day at the Colosseum, the iconic symbol of Rome. Book a guided tour to skip the lines and learn about the gladiators and the events that took place here.",
+          "area": "Colosseo",
+          "lat": 41.8902,
+          "lng": 12.4922
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "sight",
+        "tip": "Book your tickets online in advance to avoid long queues."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Roman Forum",
+          "description": "Next, explore the Roman Forum, the heart of ancient Rome filled with ruins and temples. Take your time wandering through history and imagining life in ancient times.",
+          "area": "Colosseo",
+          "lat": 41.8925,
+          "lng": 12.4853
+        },
+        "duration": "3 hours",
+        "estimatedCost": 25,
+        "category": "sight",
+        "tip": "Use a guidebook or an audio guide for rich historical context."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Ristorante Aroma",
+          "description": "Dine at Ristorante Aroma, which offers breathtaking views of the Colosseum. Savor exquisite Italian dishes while enjoying the sunset over this historic landmark.",
+          "area": "Colosseo",
+          "lat": 41.8913,
+          "lng": 12.4925
+        },
+        "duration": "3 hours",
+        "estimatedCost": 150,
+        "category": "food",
+        "tip": "Make a reservation for a table with a view for a truly memorable experience."
+      },
+      "totalDayCost": 235
+    },
+    {
+      "day": 3,
+      "date": "2027-05-05",
+      "theme": "Art and Culture Immersion",
+      "summary": "Immerse yourselves in the artistic treasures and cultural richness of Rome.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Vatican Museums",
+          "description": "Start your day with a visit to the Vatican Museums, home to some of the world's most famous art collections. Book a guided tour to fully appreciate the masterpieces, including the Sistine Chapel.",
+          "area": "Vaticano",
+          "lat": 41.9065,
+          "lng": 12.4534
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "sight",
+        "tip": "Visit early in the morning to beat the crowds and enjoy a more personal experience."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "St. Peter's Basilica",
+          "description": "Next, explore the awe-inspiring St. Peter's Basilica, one of the largest churches in the world. Don’t miss Michelangelo’s Pietà and the stunning dome that you can climb for panoramic views.",
+          "area": "Vaticano",
+          "lat": 41.9022,
+          "lng": 12.4539
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "sight",
+        "tip": "Climb to the dome for an unforgettable view of Rome, especially in the afternoon light."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Pizzarium",
+          "description": "For dinner, head to Pizzarium, famous for its gourmet pizza by the slice. Choose from a variety of toppings and enjoy a casual meal at this local favorite.",
+          "area": "Vaticano",
+          "lat": 41.9092,
+          "lng": 12.4557
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Try the potato and rosemary pizza for a unique taste."
+      },
+      "totalDayCost": 140
+    },
+    {
+      "day": 4,
+      "date": "2027-05-06",
+      "theme": "Charming Neighborhoods",
+      "summary": "Explore Rome's picturesque neighborhoods, indulging in local flavors and culture.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Campo de' Fiori",
+          "description": "Begin your day at the vibrant Campo de' Fiori market, where you can browse fresh produce and local delicacies. Enjoy a light breakfast at a nearby bakery, 'Forno Campo de' Fiori'.",
+          "area": "Campo de' Fiori",
+          "lat": 41.8954,
+          "lng": 12.4701
+        },
+        "duration": "3 hours",
+        "estimatedCost": 15,
+        "category": "food",
+        "tip": "Try the pizza bianca from the bakery; it’s a local favorite."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Galleria Borghese",
+          "description": "After lunch, visit the stunning Galleria Borghese, home to an impressive collection of sculptures and paintings. Make sure to book tickets in advance as entries are limited.",
+          "area": "Villa Borghese",
+          "lat": 41.912,
+          "lng": 12.4923
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "sight",
+        "tip": "Plan your visit for early afternoon to enjoy the gardens afterward."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Trattoria Da Enzo al 29",
+          "description": "For dinner, head to Trattoria Da Enzo, known for its authentic Roman dishes and cozy atmosphere. Be sure to try their carbonara, a local classic.",
+          "area": "Trastevere",
+          "lat": 41.8872,
+          "lng": 12.4644
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "food",
+        "tip": "Arrive early as they don’t take reservations and it fills up fast."
+      },
+      "totalDayCost": 135
+    },
+    {
+      "day": 5,
+      "date": "2027-05-07",
+      "theme": "Farewell to Rome",
+      "summary": "Wrap up your Roman holiday with a leisurely morning and a final taste of local cuisine.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Trevi Fountain",
+          "description": "Start your day at the iconic Trevi Fountain, tossing a coin to ensure your return to Rome. Enjoy the morning light on the fountain and take plenty of photos.",
+          "area": "Trevi",
+          "lat": 41.9029,
+          "lng": 12.4964
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early to enjoy the fountain without the crowds."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Gelateria Della Palma",
+          "description": "For a sweet treat, stop by Gelateria Della Palma, known for its vast selection of gelato flavors. Sample a few before choosing your final scoop!",
+          "area": "Pantheon",
+          "lat": 41.8988,
+          "lng": 12.4768
+        },
+        "duration": "3 hours",
+        "estimatedCost": 15,
+        "category": "food",
+        "tip": "Try their pistachio gelato; it’s highly recommended!"
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "La Carbonara",
+          "description": "Enjoy a farewell dinner at La Carbonara, a beloved restaurant known for its traditional Roman dishes. Order the cacio e pepe for a true taste of Rome.",
+          "area": "Monti",
+          "lat": 41.8955,
+          "lng": 12.4935
+        },
+        "duration": "3 hours",
+        "estimatedCost": 70,
+        "category": "food",
+        "tip": "Get there early to secure a table as it’s quite popular."
+      },
+      "totalDayCost": 85
+    }
+  ],
+  "stays": [
+    {
+      "name": "Hotel Artemide",
+      "area": "Monti",
+      "type": "Boutique hotel",
+      "why": "This stylish hotel offers a central location with modern amenities, perfect for exploring Rome.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Hotel De Russie",
+      "area": "Piazza del Popolo",
+      "type": "Boutique hotel",
+      "why": "Luxurious yet intimate, this hotel boasts beautiful gardens and is close to the main attractions.",
+      "pricePerNight": 400
+    },
+    {
+      "name": "Nerva Boutique Hotel",
+      "area": "Monti",
+      "type": "Boutique hotel",
+      "why": "This charming hotel combines classic design with a warm atmosphere, ideally located near the Colosseum.",
+      "pricePerNight": 180
+    }
+  ],
+  "essentials": {
+    "currency": "Euro (EUR) — cards widely accepted",
+    "language": "Italian — English widely spoken",
+    "plugs": "Type C/F, 230V",
+    "tipping": "Round up 5–10% in restaurants",
+    "weather": "Mild temperatures, typically 15-23°C (59-73°F), occasional rain.",
+    "gettingAround": "Best way to get around is walking; public transport is also efficient.",
+    "phrase": "Grazie! (Thank you!)"
+  },
+  "packing": [
+    "Comfortable walking shoes",
+    "Light jacket or sweater",
+    "Umbrella or raincoat",
+    "Sunglasses",
+    "Portable charger",
+    "Travel guidebook",
+    "Reusable water bottle",
+    "Camera"
+  ],
+  "summary": {
+    "totalCost": 735,
+    "totalDays": 5,
+    "destination": "Rome, Italy",
+    "overview": "Discover the timeless beauty and rich history of Rome, from ancient ruins to vibrant neighborhoods. Enjoy memorable culinary experiences and immerse yourself in the city's art and culture.",
+    "landscape": "city",
+    "highlights": [
+      "Explore the Colosseum and Roman Forum",
+      "Visit the Vatican Museums and St. Peter's Basilica",
+      "Stroll through charming Trastevere",
+      "Indulge in authentic Roman cuisine"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "trastevere|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Santa_Maria_in_Trastevere_fountain.jpg/1280px-Santa_Maria_in_Trastevere_fountain.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Trastevere",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1156674",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "piazza navona|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Piazza_Navona_%28Rome%29_at_night.jpg/1280px-Piazza_Navona_%28Rome%29_at_night.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Piazza Navona",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=634993",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "the spanish steps|rome": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Piazza_di_Spagna_%28Rome%29_0004.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Spanish Steps",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=361971",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/7/74/Roma_Spagna_metro_station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "the colosseum|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Colosseum",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=49603",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg/1280px-Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "roman forum|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Foro_Romano_Musei_Capitolini_Roma.jpg/1280px-Foro_Romano_Musei_Capitolini_Roma.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Roman Forum",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=92894",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg/1280px-Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "vatican museums|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Pavelig_karet.jpg/1280px-Pavelig_karet.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Vatican Historical Museum",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=39344301",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "st. peter's basilica|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg/1280px-Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "St. Peter's Basilica",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=73188",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "campo de' fiori|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Campo_dei_Fiori.jpg/1280px-Campo_dei_Fiori.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Campo de' Fiori",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=2423260",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "galleria borghese|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Ingresso_monumentale_di_Villa_Borghese_a_Roma_su_piazzale_Flaminio_2018-02.jpg/1280px-Ingresso_monumentale_di_Villa_Borghese_a_Roma_su_piazzale_Flaminio_2018-02.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Villa Borghese gardens",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=846869",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "ristorante aroma|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Base_of_the_Colossus_of_Nero%2C_Coliseum%2C_Rome%2C_Italy_Wellcome_M0000104.jpg/1280px-Base_of_the_Colossus_of_Nero%2C_Coliseum%2C_Rome%2C_Italy_Wellcome_M0000104.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Colossus of Nero",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=4627898",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg/1280px-Metropolitana_di_Roma_linea_B_-_Colosseo%2C_Rome.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "trevi fountain|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Trevi_Fountain_-_Roma.jpg/1280px-Trevi_Fountain_-_Roma.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Trevi Fountain",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=335740",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "pizzarium|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Station_M%C3%A9tro_Ligne_A_Ottaviano_San_Pietro_-_Rome_%28IT62%29_-_2021-08-29_-_1.jpg/1280px-Station_M%C3%A9tro_Ligne_A_Ottaviano_San_Pietro_-_Rome_%28IT62%29_-_2021-08-29_-_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ottaviano – San Pietro – Musei Vaticani",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=10485633",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "la carbonara|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Monti_Marsicani%2C_Monte_Serrone%2C_Monte_delle_Vitelle%2C_Vallone_Carbonara%2C_Monte_La_Rocca%2C_Pescasseroli%2C_Monte_Schiena_di_Cavallo_-_Abruzzo%2C_Lazio_and_Molise_National_Park_aerial_%28cropped%29.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "La Carbonara",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Monti_Marsicani,_Monte_Serrone,_Monte_delle_Vitelle,_Vallone_Carbonara,_Monte_La_Rocca,_Pescasseroli,_Monte_Schiena_di_Cavallo_-_Abruzzo,_Lazio_and_Molise_National_Park_aerial_(cropped).jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Rome_via_dei_fori_imperiali_20050922.jpg/1280px-Rome_via_dei_fori_imperiali_20050922.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "trattoria da enzo al 29|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Santa_Maria_in_Trastevere_fountain.jpg/1280px-Santa_Maria_in_Trastevere_fountain.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Trastevere",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1156674",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "gelateria della palma|rome": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Pantheon_%28Rome%29_-_Right_side_and_front.jpg/1280px-Pantheon_%28Rome%29_-_Right_side_and_front.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Pantheon, Rome",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=340002",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1280px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

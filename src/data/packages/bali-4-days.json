@@ -1,0 +1,379 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-06-14",
+      "theme": "Welcome to Ubud",
+      "summary": "Arrive in Ubud and immerse yourself in the serene beauty of Bali's cultural heart.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Tegallalang Rice Terraces",
+          "description": "Wander through the stunning green terraces and take in the breathtaking views that define Bali's landscape. Capture the perfect photo while enjoying the tranquility of nature.",
+          "area": "Tegallalang",
+          "lat": -8.4099,
+          "lng": 115.2754
+        },
+        "duration": "3 hours",
+        "estimatedCost": 10,
+        "category": "sight",
+        "tip": "Visit early to avoid crowds and get the best light for photography."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Bali Swing",
+          "description": "Experience the thrill of swinging over the lush jungle with stunning views of the rice fields. It's an adrenaline rush combined with a breathtaking backdrop, perfect for memorable photos.",
+          "area": "Batu Bulan",
+          "lat": -8.5256,
+          "lng": 115.262
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "activity",
+        "tip": "Book a package that includes photos to capture the moment without any hassle."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Locavore",
+          "description": "Indulge in an exquisite dinner at this award-winning restaurant known for its innovative take on Indonesian cuisine. Enjoy the tasting menu for a unique culinary experience.",
+          "area": "Ubud",
+          "lat": -8.5065,
+          "lng": 115.2634
+        },
+        "duration": "3 hours",
+        "estimatedCost": 150,
+        "category": "food",
+        "tip": "Make a reservation in advance to secure a table."
+      },
+      "totalDayCost": 220
+    },
+    {
+      "day": 2,
+      "date": "2027-06-15",
+      "theme": "Wellness and Nature",
+      "summary": "A day dedicated to relaxation, wellness, and exploring Ubud's natural beauty.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Karsa Spa",
+          "description": "Start your day with a rejuvenating spa treatment amidst rice fields. The serene environment enhances the experience, leaving you refreshed.",
+          "area": "Tirta Tawar",
+          "lat": -8.4667,
+          "lng": 115.2848
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "wellness",
+        "tip": "Book a couple's treatment for a romantic experience."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Sacred Monkey Forest Sanctuary",
+          "description": "Stroll through this verdant forest and interact with playful monkeys in their natural habitat. The ancient temples add a touch of culture to the adventure.",
+          "area": "Ubud",
+          "lat": -8.5194,
+          "lng": 115.261
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "nature",
+        "tip": "Avoid bringing food into the forest to prevent monkey antics."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "The Night Rooster",
+          "description": "Enjoy a relaxed dinner at this popular bistro, known for its delicious wood-fired dishes and vibrant atmosphere. The cozy setting is perfect for unwinding after a busy day.",
+          "area": "Ubud",
+          "lat": -8.5075,
+          "lng": 115.2633
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "food",
+        "tip": "Try the wood-fired pizza for a delicious treat."
+      },
+      "totalDayCost": 180
+    },
+    {
+      "day": 3,
+      "date": "2027-06-16",
+      "theme": "Beach Bliss",
+      "summary": "Transition to the coastal charm of Seminyak, enjoying the beach and sunset views.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Ubud Art Market",
+          "description": "Explore the vibrant local market filled with handcrafted souvenirs and traditional Balinese arts. It's a great spot to pick up unique gifts and enjoy the local culture.",
+          "area": "Ubud",
+          "lat": -8.5064,
+          "lng": 115.2623
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "shopping",
+        "tip": "Haggle to get the best prices on your purchases."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Double Six Beach",
+          "description": "Relax on the sandy shores of this popular beach, where you can sunbathe or take a dip in the ocean. The beach clubs nearby offer excellent food and drinks.",
+          "area": "Seminyak",
+          "lat": -8.688,
+          "lng": 115.1576
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "nature",
+        "tip": "Arrive early to secure a good spot on the beach."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "La Plancha",
+          "description": "Dine at this vibrant beach bar known for its colorful bean bags and stunning sunset views. It's the perfect place to unwind with a cocktail while watching the sun go down.",
+          "area": "Seminyak",
+          "lat": -8.6924,
+          "lng": 115.1586
+        },
+        "duration": "3 hours",
+        "estimatedCost": 70,
+        "category": "food",
+        "tip": "Get there early to grab a good spot for sunset."
+      },
+      "totalDayCost": 120
+    },
+    {
+      "day": 4,
+      "date": "2027-06-17",
+      "theme": "Departure Day",
+      "summary": "Savor your last moments in Bali with a leisurely breakfast and a final beach visit.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Nalu Bowls",
+          "description": "Enjoy a healthy breakfast of smoothie bowls made with fresh tropical fruits. The laid-back atmosphere is perfect for a slow morning.",
+          "area": "Seminyak",
+          "lat": -8.6928,
+          "lng": 115.1581
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Try the 'Tropical Bowl' for a refreshing start to your day."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Petitenget Beach",
+          "description": "Spend your afternoon at this less crowded beach, ideal for a relaxing stroll or a swim. The beach's tranquility is perfect for reflecting on your trip.",
+          "area": "Seminyak",
+          "lat": -8.6843,
+          "lng": 115.1579
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Bring a book and enjoy the peaceful atmosphere."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:00 PM",
+        "place": {
+          "name": "Bali Airport",
+          "description": "Prepare for your departure with cherished memories of Bali. Grab a last-minute snack if needed before heading to your flight.",
+          "area": "Ngurah Rai",
+          "lat": -8.7482,
+          "lng": 115.167
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Arrive at least 2 hours before your flight."
+      },
+      "totalDayCost": 50
+    }
+  ],
+  "stays": [
+    {
+      "name": "Alaya Resort Ubud",
+      "area": "Ubud",
+      "type": "Resort",
+      "why": "This resort offers a perfect blend of luxury and Balinese culture, plus an excellent spa.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "The Seminyak Beach Resort & Spa",
+      "area": "Seminyak",
+      "type": "Resort",
+      "why": "Located right on the beach, it provides a stunning ocean view and high-quality amenities.",
+      "pricePerNight": 160
+    },
+    {
+      "name": "Karma Jimbaran",
+      "area": "Jimbaran",
+      "type": "Boutique hotel",
+      "why": "A charming boutique hotel just steps from the beach, perfect for relaxation.",
+      "pricePerNight": 140
+    }
+  ],
+  "essentials": {
+    "currency": "Indonesian Rupiah (IDR) — cards widely accepted",
+    "language": "Bahasa Indonesia — English widely spoken",
+    "plugs": "Type C/F, 230V",
+    "tipping": "Round up 5–10% in restaurants",
+    "weather": "Expect warm temperatures with occasional rain; pack light clothing.",
+    "gettingAround": "Taxis and ride-hailing apps are the best way to get around.",
+    "phrase": "Selamat datang — Welcome"
+  },
+  "packing": [
+    "Lightweight clothing",
+    "Sunscreen",
+    "Swimwear",
+    "Comfortable walking shoes",
+    "Insect repellent",
+    "Reusable water bottle",
+    "Camera",
+    "Beach towel"
+  ],
+  "summary": {
+    "totalCost": 570,
+    "totalDays": 4,
+    "destination": "Ubud and Seminyak, Indonesia",
+    "overview": "Experience the rich culture, stunning nature, and beautiful beaches of Bali. This trip offers a perfect combination of relaxation and adventure, tailored for first-time visitors.",
+    "landscape": "hills",
+    "highlights": [
+      "Stunning rice terraces and nature walks",
+      "Luxurious spa experiences",
+      "Vibrant beach life and sunsets",
+      "Culinary delights at top-rated restaurants"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "resort",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "bali swing|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Young_honeymoon_couple_swings_in_the_jungle_near_the_waterfall%2C_Bali_island%2C_Indonesia._Ubud._%2830146462078%29.jpg/1280px-Young_honeymoon_couple_swings_in_the_jungle_near_the_waterfall%2C_Bali_island%2C_Indonesia._Ubud._%2830146462078%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Bali Swing",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Young_honeymoon_couple_swings_in_the_jungle_near_the_waterfall,_Bali_island,_Indonesia._Ubud._(30146462078).jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "tegallalang rice terraces|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Tegallalang_rice_terraces_SF0001.jpg/1280px-Tegallalang_rice_terraces_SF0001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Tegallalang Rice Terraces",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tegallalang_rice_terraces_SF0001.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "sacred monkey forest sanctuary|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Monkey_Forest.jpg/1280px-Monkey_Forest.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ubud Monkey Forest",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=16178435",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Ubud_Palace_%282022%29.jpg/1280px-Ubud_Palace_%282022%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "locavore|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Ubud_Palace_%282022%29.jpg/1280px-Ubud_Palace_%282022%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ubud Palace",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=45195931",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "ubud art market|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/029_Women_at_Market%2C_Neka_Art_Museum%2C_Ubud%2C_Bali%2C_photograph_by_Anandajoti_Bhikkhu.jpg/1280px-029_Women_at_Market%2C_Neka_Art_Museum%2C_Ubud%2C_Bali%2C_photograph_by_Anandajoti_Bhikkhu.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Ubud Art Market",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:029_Women_at_Market,_Neka_Art_Museum,_Ubud,_Bali,_photograph_by_Anandajoti_Bhikkhu.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Ubud_Palace_%282022%29.jpg/1280px-Ubud_Palace_%282022%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "the night rooster|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Ubud_Palace_%282022%29.jpg/1280px-Ubud_Palace_%282022%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ubud Palace",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=45195931",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "karsa spa|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ubud",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1260484",
+      "exact": false,
+      "kind": "city"
+    },
+    "double six beach|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Sunset-double-six-beach-2023-12-07.jpg/1280px-Sunset-double-six-beach-2023-12-07.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Double Six Beach",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sunset-double-six-beach-2023-12-07.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Seminyak%2C_Bali.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "petitenget beach|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Kuta_Beach_%286924448550%29.jpg/1280px-Kuta_Beach_%286924448550%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Kuta, Bali",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=2371076",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Seminyak%2C_Bali.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "bali airport|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Ngurah_Rai_Internasional_Airport_Welcome_Sign.jpg/1280px-Ngurah_Rai_Internasional_Airport_Welcome_Sign.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ngurah Rai International Airport",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=47784998",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ubud_%2849818456887%29.jpg/1280px-Ubud_%2849818456887%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "nalu bowls|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Legian_Beach.jpg/1280px-Legian_Beach.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Legian",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=8144692",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Seminyak%2C_Bali.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "la plancha|ubud and seminyak": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Legian_Beach.jpg/1280px-Legian_Beach.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Legian",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=8144692",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Seminyak%2C_Bali.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  }
+}

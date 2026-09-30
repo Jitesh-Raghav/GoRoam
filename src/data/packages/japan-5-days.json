@@ -1,0 +1,456 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-04-02",
+      "theme": "Arrival and First Impressions",
+      "summary": "Ease into the vibrant culture of Tokyo with a perfect blend of sights and flavors.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Senso-ji Temple",
+          "description": "As Tokyo's oldest temple, Senso-ji offers stunning architecture and a rich history. Explore the bustling Nakamise Street leading up to the temple, filled with traditional snacks and souvenirs.",
+          "area": "Asakusa",
+          "lat": 35.7148,
+          "lng": 139.7967
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit early to avoid crowds and enjoy the peaceful atmosphere."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Tsukiji Outer Market",
+          "description": "Dive into Tokyo's culinary scene at Tsukiji, where fresh seafood and street food abound. Sample everything from sushi to grilled seafood skewers as you wander the vibrant stalls.",
+          "area": "Tsukiji",
+          "lat": 35.6654,
+          "lng": 139.7701
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "food",
+        "tip": "Try the grilled seafood skewers from the stall closest to the entrance for a must-have treat."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Shibuya Crossing",
+          "description": "Experience the iconic rush of Shibuya Crossing, where hundreds cross at once. Afterward, enjoy dinner at a nearby izakaya for a lively evening atmosphere.",
+          "area": "Shibuya",
+          "lat": 35.6595,
+          "lng": 139.7005
+        },
+        "duration": "3 hours",
+        "estimatedCost": 80,
+        "category": "culture",
+        "tip": "Stand on the corner near Starbucks for the best view of the crossing."
+      },
+      "totalDayCost": 140
+    },
+    {
+      "day": 2,
+      "date": "2027-04-03",
+      "theme": "Cultural Exploration",
+      "summary": "Delve into Tokyo's rich history and modern culture with iconic landmarks.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Meiji Shrine",
+          "description": "Nestled in a lush forest, Meiji Shrine is a serene escape from the city's hustle. Walk along the tranquil paths and witness traditional Shinto rituals.",
+          "area": "Shibuya",
+          "lat": 35.6764,
+          "lng": 139.6993
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Visit during a ceremony to experience authentic Shinto practices."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Harajuku Takeshita Street",
+          "description": "Explore the vibrant Harajuku district, famous for its quirky fashion and lively youth culture. Don't miss the crepes and unique shops along Takeshita Street.",
+          "area": "Harajuku",
+          "lat": 35.6703,
+          "lng": 139.702
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "shopping",
+        "tip": "Try the strawberry shortcake crepe from one of the original crepe shops."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Omoide Yokocho",
+          "description": "Wander through this nostalgic alley filled with tiny izakayas offering grilled yakitori and other delights. Enjoy the cozy atmosphere and interact with local chefs.",
+          "area": "Shinjuku",
+          "lat": 35.693,
+          "lng": 139.7006
+        },
+        "duration": "3 hours",
+        "estimatedCost": 100,
+        "category": "food",
+        "tip": "Order a selection of skewers and sit at the counter for a fun dining experience."
+      },
+      "totalDayCost": 140
+    },
+    {
+      "day": 3,
+      "date": "2027-04-04",
+      "theme": "From Tokyo to Kyoto",
+      "summary": "Travel to Kyoto and immerse in the timeless beauty of its temples and gardens.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Shinkansen to Kyoto",
+          "description": "Take the iconic Shinkansen (bullet train) to Kyoto, experiencing the speed and efficiency of Japan's rail system. Enjoy the scenic views of the countryside during the journey.",
+          "area": "Tokyo Station",
+          "lat": 35.6812,
+          "lng": 139.7671
+        },
+        "duration": "3 hours",
+        "estimatedCost": 250,
+        "category": "activity",
+        "tip": "Book your tickets in advance for the best prices and window seats."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Kinkaku-ji (Golden Pavilion)",
+          "description": "Marvel at the stunning Kinkaku-ji, a Zen temple covered in gold leaf, set against a tranquil pond. The surrounding gardens provide excellent photo opportunities.",
+          "area": "Kyoto",
+          "lat": 35.0394,
+          "lng": 135.7292
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Visit in the afternoon for the best light on the pavilion's reflection."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Pontocho Alley",
+          "description": "Stroll through Pontocho Alley, renowned for its traditional wooden buildings and dining options. Choose a kaiseki restaurant for a multi-course meal that showcases seasonal ingredients.",
+          "area": "Gion",
+          "lat": 35.0049,
+          "lng": 135.7788
+        },
+        "duration": "3 hours",
+        "estimatedCost": 150,
+        "category": "food",
+        "tip": "Make reservations in advance to secure a table at a popular kaiseki restaurant."
+      },
+      "totalDayCost": 420
+    },
+    {
+      "day": 4,
+      "date": "2027-04-05",
+      "theme": "A Day of Temples and Traditions",
+      "summary": "Discover the historic heart of Kyoto through its breathtaking temples and cultural experiences.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Fushimi Inari Taisha",
+          "description": "Explore the famous shrine known for its thousands of vermilion torii gates. Hike up the mountain trails for panoramic views of Kyoto.",
+          "area": "Fushimi",
+          "lat": 35.3606,
+          "lng": 135.6626
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Go early to enjoy the trails with fewer tourists."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Arashiyama Bamboo Grove",
+          "description": "Wander through the enchanting bamboo grove in Arashiyama, where towering stalks create a serene atmosphere. Don't forget to visit the nearby Iwatayama Monkey Park for an extra thrill!",
+          "area": "Arashiyama",
+          "lat": 35.6485,
+          "lng": 135.6703
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "nature",
+        "tip": "Visit the grove in the afternoon when the light filters beautifully through the bamboo."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Dinner at Gion Karyo",
+          "description": "Enjoy a delightful dinner at Gion Karyo, where traditional kaiseki cuisine is served in a refined setting. Experience seasonal flavors and artistic presentation.",
+          "area": "Gion",
+          "lat": 35.0033,
+          "lng": 135.7783
+        },
+        "duration": "3 hours",
+        "estimatedCost": 200,
+        "category": "food",
+        "tip": "Opt for the chef's special course for an unforgettable culinary experience."
+      },
+      "totalDayCost": 230
+    },
+    {
+      "day": 5,
+      "date": "2027-04-06",
+      "theme": "Final Day in Kyoto",
+      "summary": "Wrap up your trip with a blend of relaxation and final explorations before departure.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Nijo Castle",
+          "description": "Visit Nijo Castle, a UNESCO World Heritage site known for its stunning gardens and historical significance. Explore its ornate interiors and beautiful landscapes.",
+          "area": "Nijo",
+          "lat": 35.0115,
+          "lng": 135.7438
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Arrive early for a guided tour to learn about its history."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Kyoto Market",
+          "description": "Experience the local life at Nishiki Market, where you can sample various local delicacies and purchase unique souvenirs. Enjoy the vibrant atmosphere filled with food stalls.",
+          "area": "Nishiki",
+          "lat": 35.0042,
+          "lng": 135.7651
+        },
+        "duration": "3 hours",
+        "estimatedCost": 50,
+        "category": "food",
+        "tip": "Try the yuba (tofu skin) and tsukemono (pickles) for authentic flavors."
+      },
+      "evening": {
+        "time": "6:00 PM - 9:00 PM",
+        "place": {
+          "name": "Gion Corner",
+          "description": "End your trip with an evening performance at Gion Corner, showcasing traditional arts like tea ceremony, kyo-mai dance, and more. It’s a great way to experience Kyoto’s culture.",
+          "area": "Gion",
+          "lat": 35.0045,
+          "lng": 135.7786
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "culture",
+        "tip": "Book your tickets in advance to secure the best seats."
+      },
+      "totalDayCost": 130
+    }
+  ],
+  "stays": [
+    {
+      "name": "Hotel Gracery Shinjuku",
+      "area": "Shinjuku",
+      "type": "Boutique hotel",
+      "why": "Centrally located with easy access to transport and attractions, ideal for first-time visitors.",
+      "pricePerNight": 140
+    },
+    {
+      "name": "Kyoto Century Hotel",
+      "area": "Kyoto Station",
+      "type": "Boutique hotel",
+      "why": "Close to the station for easy travel and offers modern amenities with traditional touches.",
+      "pricePerNight": 150
+    },
+    {
+      "name": "Hotel Granvia Kyoto",
+      "area": "Kyoto Station",
+      "type": "Luxury hotel",
+      "why": "Conveniently located above the train station with stunning views and top-notch service.",
+      "pricePerNight": 200
+    }
+  ],
+  "essentials": {
+    "currency": "Yen (JPY) — cards widely accepted",
+    "language": "Japanese — English widely spoken in tourist areas",
+    "plugs": "Type A/B, 100V",
+    "tipping": "Not customary; service included in prices",
+    "weather": "April is mild with temperatures around 15-20°C (59-68°F).",
+    "gettingAround": "Use the subway and buses; a prepaid Suica card is very convenient.",
+    "phrase": "Arigato gozaimasu (ありがとうございます) — Thank you very much."
+  },
+  "packing": [
+    "Comfortable walking shoes",
+    "Light jacket for cool evenings",
+    "Portable charger for your devices",
+    "Camera for capturing memories",
+    "Reusable water bottle",
+    "Travel umbrella (April can be rainy)",
+    "Adaptable plug for charging devices",
+    "Lightweight backpack for day trips"
+  ],
+  "summary": {
+    "totalCost": 1060,
+    "totalDays": 5,
+    "destination": "Tokyo and Kyoto, Japan",
+    "overview": "Discover the enchanting blend of modernity and tradition in Japan's most iconic cities. From ancient temples to bustling markets, this trip promises a memorable first experience.",
+    "landscape": "city",
+    "highlights": [
+      "Senso-ji Temple's serene beauty",
+      "Culinary delights at Tsukiji Market",
+      "Golden Pavilion's stunning reflection",
+      "Cultural performances in Gion"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "hotel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {
+    "tsukiji outer market|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/2018_Tsukiji_fish_market.jpg/1280px-2018_Tsukiji_fish_market.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Tsukiji fish market",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=525323",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "shibuya crossing|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Shibuya_Crossing%2C_Aerial.jpg/1280px-Shibuya_Crossing%2C_Aerial.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Shibuya Crossing",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=62473330",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Shibuya_skyline_from_Tokyu_Plaza_in_Omotesando%2C_Harajuku%2C_Tokyo%2C_2024_May.jpg/1280px-Shibuya_skyline_from_Tokyu_Plaza_in_Omotesando%2C_Harajuku%2C_Tokyo%2C_2024_May.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "senso-ji temple|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Sensoji_2023.jpg/1280px-Sensoji_2023.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Sensō-ji",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=871044",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Day2-2_%2840909714314%29.jpg/1280px-Day2-2_%2840909714314%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "meiji shrine|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Meiji_Jingu_2023-3.jpg/1280px-Meiji_Jingu_2023-3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Meiji Shrine",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=294236",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Shibuya_skyline_from_Tokyu_Plaza_in_Omotesando%2C_Harajuku%2C_Tokyo%2C_2024_May.jpg/1280px-Shibuya_skyline_from_Tokyu_Plaza_in_Omotesando%2C_Harajuku%2C_Tokyo%2C_2024_May.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "omoide yokocho|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Shinjuku-West_Omoide-Yokocho.jpg/1280px-Shinjuku-West_Omoide-Yokocho.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Omoide Yokocho",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shinjuku-West_Omoide-Yokocho.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "harajuku takeshita street|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Marion_Cr%C3%AApes_in_Harajuku_Takeshita_2.jpg/1280px-Marion_Cr%C3%AApes_in_Harajuku_Takeshita_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Harajuku Takeshita Street",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marion_Cr%C3%AApes_in_Harajuku_Takeshita_2.jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/JRE-Harajuku-Station-07.jpg/1280px-JRE-Harajuku-Station-07.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "shinkansen to kyoto|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Shinkansen_N700_at_Kyoto_Station_%2830332228108%29.jpg/1280px-Shinkansen_N700_at_Kyoto_Station_%2830332228108%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "title": "Shinkansen to Kyoto",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shinkansen_N700_at_Kyoto_Station_(30332228108).jpg",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Tokyo-STA_Marunouchi-Entrance_2023.jpg/1280px-Tokyo-STA_Marunouchi-Entrance_2023.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "kinkaku-ji (golden pavilion)|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Golden_Pavilion_Kinkaku-ji_water_mirror_2024.jpg/1280px-Golden_Pavilion_Kinkaku-ji_water_mirror_2024.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Kinkaku-ji",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=246341",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Kyoto%2C_Japan_%2849667780482%29.jpg/1280px-Kyoto%2C_Japan_%2849667780482%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "pontocho alley|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Pontocho_by_Wolfiewolf_in_Nabeyacho%2C_Kyoto.jpg/1280px-Pontocho_by_Wolfiewolf_in_Nabeyacho%2C_Kyoto.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Ponto-chō",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=2609793",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Machida-Gion_20211003.jpg/1280px-Machida-Gion_20211003.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "fushimi inari taisha|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine%2C_Kyoto%2C_Japan.jpg/1280px-Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine%2C_Kyoto%2C_Japan.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Fushimi Inari-taisha",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1659910",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Monument_of_Meijiishin_Fushimi_no_senseki.jpg/1280px-Monument_of_Meijiishin_Fushimi_no_senseki.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "arashiyama bamboo grove|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Bamboo_Grove%2C_Arashiyama%2C_Kyoto%2C_Japan.jpg/1280px-Bamboo_Grove%2C_Arashiyama%2C_Kyoto%2C_Japan.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Bamboo Forest (Kyoto)",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=48666625",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Saga_Arasiyama%2C_minamiguti%2C_West_Japan_Railway%2C_20090315.jpg/1280px-Saga_Arasiyama%2C_minamiguti%2C_West_Japan_Railway%2C_20090315.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "nijo castle|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/NinomaruPalace.jpg/1280px-NinomaruPalace.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Nijō Castle",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=545743",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/1280px-Skyscrapers_of_Shinjuku_2009_January.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "kyoto market|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Nishiki_Ichiba_by_matsuyuki.jpg/1280px-Nishiki_Ichiba_by_matsuyuki.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Nishiki Market",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=14538385",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://upload.wikimedia.org/wikipedia/commons/3/34/Nishikie.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "gion corner|tokyo and kyoto": {
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/150124_Gion_Kyoto_Japan01s3.jpg/1280px-150124_Gion_Kyoto_Japan01s3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "title": "Gion",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1001170",
+      "exact": true,
+      "kind": "place",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Machida-Gion_20211003.jpg/1280px-Machida-Gion_20211003.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "dinner at gion karyo|tokyo and kyoto": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/Yasaka_jinja.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "title": "Yasaka Shrine",
+      "credit": "Wikipedia",
+      "sourceUrl": "https://en.wikipedia.org/?curid=1584824",
+      "exact": false,
+      "kind": "nearby",
+      "fallback": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Machida-Gion_20211003.jpg/1280px-Machida-Gion_20211003.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    }
+  }
+}

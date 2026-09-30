@@ -108,6 +108,26 @@ Besides `DATABASE_URL`, `NEXTAUTH_SECRET` (also signs share links), `NEXTAUTH_UR
 - `NEXT_PUBLIC_GYG_PARTNER_ID` - GetYourGuide partner id
 - `NEXT_PUBLIC_SKYSCANNER_ASSOCIATE` - Skyscanner associate id
 
+### Google Maps & place photos
+
+Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to turn on the live, dark, zoomable Google map in each day of an itinerary, and Google Places photos for every stop. In Google Cloud, enable **Maps JavaScript API** and **Places API (New)**, turn on billing, and restrict the key to your domains (HTTP referrers). The server sends your site's address as the referrer, so the same key works for photo lookups. `GOOGLE_PLACES_API_KEY` (a server-only key) is used instead if you'd rather keep them separate. Optional: `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` for your own cloud-styled map.
+
+Without a key, days show the illustrated route and photos come from Wikipedia, Wikimedia Commons and Openverse. Found photos are saved on each trip, so every later view is a plain database read.
+
+### Analytics (PostHog)
+
+Set `NEXT_PUBLIC_POSTHOG_KEY` (project API key) to record page views, page leaves, clicks and GoRoam events (`trip_generated`, `itinerary_viewed`, `package_impression`, `package_viewed`, `package_customized`, `booking_partner_clicked`, `directions_clicked`, `share_link_created`, `pdf_downloaded`, `calendar_downloaded`, `checkout_started`). Signed-in travellers are identified by their GoRoam id only. Events go through `/ingest` on your own domain; set `NEXT_PUBLIC_POSTHOG_HOST` (e.g. `https://eu.i.posthog.com`) for an EU project. Without a key, PostHog never loads.
+
+### Travel packages
+
+The ready-made trips in **Dashboard → Travel packages** are defined in `src/lib/packages.ts` and stored in `src/data/packages/`. To add or rebuild one (uses `OPENAI_API_KEY`):
+
+```bash
+npx tsx --env-file=.env.local scripts/generate-packages.ts            # build any missing packages
+npx tsx --env-file=.env.local scripts/generate-packages.ts rome-5-days
+npx tsx --env-file=.env.local scripts/generate-packages.ts --photos   # re-find photos only
+```
+
 ### Payments (Dodo Payments)
 
 Credit packs are sold through [Dodo Payments](https://dodopayments.com) hosted checkout. Credits are added **only** by the webhook, never by the redirect back to the site.

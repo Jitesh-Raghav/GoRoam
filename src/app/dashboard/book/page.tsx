@@ -11,6 +11,7 @@ import { cityOf, isoDay, type BookingKind, type BookingQuery } from "@/lib/booki
 import { titleCase } from "@/lib/trip";
 import { useCachedJson } from "@/lib/cached-json";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 interface TripSummary {
   id: string;
@@ -186,6 +187,7 @@ function BookContent() {
                 href={ready ? p.href : undefined}
                 target="_blank"
                 rel="noopener noreferrer sponsored"
+                onClick={() => track("booking_partner_clicked", { partner: p.id, kind, where: "book" })}
                 aria-disabled={!ready}
                 className="group flex items-center gap-4 rounded-[24px] bg-ink p-5 text-paper transition-colors hover:bg-brand aria-disabled:pointer-events-none aria-disabled:opacity-40"
               >

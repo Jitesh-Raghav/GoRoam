@@ -12,9 +12,11 @@ export default function SharedTripPage() {
   const params = useParams();
   const [trip, setTrip] = useState<ItineraryDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const t = new URLSearchParams(window.location.search).get("t") ?? "";
+    setToken(t);
     fetch(`/api/shared/${params.id}?t=${encodeURIComponent(t)}`)
       .then((r) => r.json())
       .then((d) => (d.success ? setTrip(d.data) : setError(d.error || "This share link is invalid.")))
@@ -48,7 +50,7 @@ export default function SharedTripPage() {
             </div>
           </div>
         ) : trip ? (
-          <TripView it={trip} shared />
+          <TripView it={trip} shared shareToken={token} />
         ) : (
           <div className="mx-auto max-w-[1320px] space-y-4">
             <div className="skeleton h-[min(74vh,660px)] rounded-[32px]" />

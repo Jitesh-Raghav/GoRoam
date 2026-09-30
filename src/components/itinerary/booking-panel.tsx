@@ -15,6 +15,7 @@ import {
   type Partner,
 } from "@/lib/booking";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 export const BOOKING_TABS: { id: BookingKind; label: string; icon: typeof Plane }[] = [
   { id: "flights", label: "Flights", icon: Plane },
@@ -41,6 +42,7 @@ export function PartnerRow({ partner, dark, index = 0 }: { partner: Partner; dar
       href={partner.href}
       target="_blank"
       rel="noopener noreferrer sponsored"
+      onClick={() => track("booking_partner_clicked", { partner: partner.id, where: "trip" })}
       className={cn(
         "group flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-colors",
         dark ? "bg-paper/[0.06] hover:bg-paper hover:text-ink" : "bg-paper/70 ring-1 ring-line hover:bg-ink hover:text-paper"

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { PlanId } from "@/lib/plans";
+import { track } from "@/lib/analytics";
 
 /** Remembered across the redirect so the return page can tell when the credits land. */
 export const CHECKOUT_KEY = "goroam:checkout";
@@ -20,6 +21,7 @@ export function useCheckout(creditsNow: number) {
   const start = async (plan: PlanId, returnTo?: "planner") => {
     setPending(plan);
     setError(null);
+    track("checkout_started", { plan, from: returnTo ?? "credits" });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
