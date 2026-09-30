@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
 import { Scene } from "@/components/scenes/scene";
+import { prefetchJson } from "@/lib/cached-json";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -34,6 +35,12 @@ export const useCredits = () => {
   return context;
 };
 
+/** Data a page needs, fetched ahead when its link is hovered so it opens ready. */
+const PAGE_DATA: Record<string, string> = {
+  "/dashboard/itineraries": "/api/itineraries",
+  "/dashboard/book": "/api/itineraries",
+};
+
 const NAV = [
   { icon: Compass, label: "Plan a trip", href: "/dashboard" },
   { icon: MapIcon, label: "My itineraries", href: "/dashboard/itineraries" },
@@ -44,6 +51,11 @@ const NAV = [
 
 function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const warm = (href: string) => {
+    router.prefetch(href);
+    if (PAGE_DATA[href]) prefetchJson(PAGE_DATA[href]);
+  };
   const { data: session } = useSession();
   const isActive = (href: string) => (href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href));
   const inItinerary = pathname.startsWith("/dashboard/itinerary/");
@@ -76,6 +88,9 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
               key={item.href}
               href={item.href}
               onClick={onNavigate}
+              onMouseEnter={() => warm(item.href)}
+              onFocus={() => warm(item.href)}
+              onTouchStart={() => warm(item.href)}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "relative flex h-11 items-center gap-3 rounded-xl px-3 text-[0.95rem] transition-colors",
@@ -193,6 +208,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     setSidebarOpen(false);
   }, [pathname]);
 
+  // Once signed in, fetch the trips list in idle time so "My itineraries" opens with it ready.
+  const signedIn = status === "authenticated";
+  useEffect(() => {
+    if (!signedIn) return;
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(() => prefetchJson("/api/itineraries"));
+    return () => cancel(id);
+  }, [signedIn]);
+
   if (status !== "authenticated" || !session) {
     return <ShellLoading />;
   }
@@ -260,9 +285,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <main className="min-w-0 flex-1">
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="px-4 py-8 sm:px-8 lg:px-12 lg:py-10"
           >
             {children}

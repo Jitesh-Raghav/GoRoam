@@ -2,7 +2,6 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { TripForm } from "@/components/dashboard/trip-form";
 import { SplitText } from "@/components/motion/split-text";
 
@@ -40,11 +39,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="mx-auto max-w-[1280px]">
-        <Welcome />
-        <TripForm onSubmit={handleFormSubmit} />
-      </div>
-    </DashboardLayout>
+    <div className="mx-auto max-w-[1280px]">
+      <Welcome />
+      <TripForm onSubmit={handleFormSubmit} />
+    </div>
   );
 }

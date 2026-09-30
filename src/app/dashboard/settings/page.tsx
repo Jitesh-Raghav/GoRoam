@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useState, type ReactNode } from "react";
 import { Bell, Download, Palette, Save, Shield, Trash2, User } from "lucide-react";
 import { AvatarPicker } from "@/components/dashboard/avatar-picker";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { SplitText } from "@/components/motion/split-text";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -175,9 +174,5 @@ function SettingsContent() {
 }
 
 export default function SettingsPage() {
-  return (
-    <DashboardLayout>
-      <SettingsContent />
-    </DashboardLayout>
-  );
+  return <SettingsContent />;
 }

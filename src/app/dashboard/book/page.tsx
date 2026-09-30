@@ -2,14 +2,14 @@
 
 import { motion } from "framer-motion";
 import { ArrowLeftRight, ArrowUpRight, Baby, CalendarDays, Navigation, Plane, ShieldCheck, User } from "lucide-react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { useMemo, useState, type ReactNode } from "react";
 import { BOOKING_TABS, partnersFor } from "@/components/itinerary/booking-panel";
 import { SplitText } from "@/components/motion/split-text";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { cityOf, isoDay, type BookingKind, type BookingQuery } from "@/lib/booking";
 import { titleCase } from "@/lib/trip";
+import { useCachedJson } from "@/lib/cached-json";
 import { cn } from "@/lib/utils";
 
 interface TripSummary {
@@ -73,18 +73,9 @@ function BookContent() {
     adults: 2,
     children: 0,
   });
-  const [trips, setTrips] = useState<TripSummary[]>([]);
-
-  useEffect(() => {
-    fetch("/api/itineraries")
-      .then((r) => r.json())
-      .then((d) => {
-        if (!d.success) return;
-        const upcoming = (d.data as TripSummary[]).filter((t) => t.startDate.slice(0, 10) >= today).slice(0, 6);
-        setTrips(upcoming);
-      })
-      .catch(() => {});
-  }, [today]);
+  // Shared with "My itineraries", so it's usually cached already.
+  const saved = useCachedJson<{ data: TripSummary[] }>("/api/itineraries").data?.data;
+  const trips = useMemo(() => (saved ?? []).filter((t) => t.startDate.slice(0, 10) >= today).slice(0, 6), [saved, today]);
 
   const set = <K extends keyof BookingQuery>(k: K, v: BookingQuery[K]) => setQ((prev) => ({ ...prev, [k]: v }));
   const ready = q.destination.trim().length > 1;
@@ -221,9 +212,5 @@ function BookContent() {
 }
 
 export default function BookPage() {
-  return (
-    <DashboardLayout>
-      <BookContent />
-    </DashboardLayout>
-  );
+  return <BookContent />;
 }

@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 
 import { useCredits } from "@/components/dashboard/dashboard-layout";
+import { invalidate } from "@/lib/cached-json";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { GeneratingOverlay } from "@/components/dashboard/generating-overlay";
 import { OutOfCredits, PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
@@ -492,6 +493,8 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
           /* ignore */
         }
         await refreshCredits();
+        // The trips list now has a new card; fetch it fresh next time it's shown.
+        invalidate("/api/itineraries");
         router.push(`/dashboard/itinerary/${result.data.itineraryId}`);
         onSubmit?.(result.data);
       } else {

@@ -1,12 +1,11 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { TripView } from '@/components/itinerary/trip-view';
 import { Scene } from '@/components/scenes/scene';
 import { PillLink } from '@/components/site/pill';
+import { useCachedJson } from '@/lib/cached-json';
 import type { ItineraryDetails } from '@/lib/trip';
 
 function Loading() {
@@ -46,32 +45,10 @@ function NotFound({ message }: { message: string }) {
 
 function ItineraryContent() {
   const params = useParams();
-  const [itinerary, setItinerary] = useState<ItineraryDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchItinerary = async () => {
-      try {
-        const response = await fetch(`/api/itinerary/${params.id}`);
-        const data = await response.json();
-
-        if (data.success) {
-          setItinerary(data.data);
-        } else {
-          setError(data.error || 'Failed to fetch itinerary');
-        }
-      } catch {
-        setError('Failed to fetch itinerary');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (params.id) {
-      fetchItinerary();
-    }
-  }, [params.id]);
+  const id = typeof params.id === 'string' ? params.id : null;
+  // Usually already cached: prefetched when the postcard was hovered.
+  const { data, error, loading } = useCachedJson<{ data: ItineraryDetails }>(id ? `/api/itinerary/${id}` : null);
+  const itinerary = data?.data ?? null;
 
   if (loading) return <Loading />;
   if (error || !itinerary) return <NotFound message={error || 'The requested itinerary could not be found.'} />;
@@ -79,9 +56,5 @@ function ItineraryContent() {
 }
 
 export default function ItineraryPage() {
-  return (
-    <DashboardLayout>
-      <ItineraryContent />
-    </DashboardLayout>
-  );
+  return <ItineraryContent />;
 }

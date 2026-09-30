@@ -1,16 +1,16 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, CalendarDays, Loader2, Plus, Printer, Search, Trash2, Users, Wallet } from "lucide-react";
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { PillLink } from "@/components/site/pill";
 import { SplitText } from "@/components/motion/split-text";
+import { invalidate, prefetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { cn } from "@/lib/utils";
 import { COMPANIONS, VIBES, labelFor, titleCase } from "@/lib/trip";
@@ -41,6 +41,8 @@ const formatDate = (dateString: string, withYear = true) =>
   });
 
 
+const LIST_URL = "/api/itineraries";
+
 function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDelete: (id: string) => Promise<void> }) {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -54,6 +56,9 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
       className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.5)]"
+      // Opening a trip is instant when its data is already on the way.
+      onPointerEnter={() => prefetchJson(`/api/itinerary/${it.id}`)}
+      onFocusCapture={() => prefetchJson(`/api/itinerary/${it.id}`)}
     >
       <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${titleCase(it.destination)} itinerary`}>
         <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
@@ -172,44 +177,22 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
 
 function ItinerariesContent() {
   const { data: session } = useSession();
-  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const list = useCachedJson<{ data: Itinerary[] }>(session?.user?.email ? LIST_URL : null);
+  const itineraries = useMemo(() => list.data?.data ?? [], [list.data]);
+  const loading = list.loading;
+  const error = list.error ?? null;
   const [query, setQuery] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchItineraries = async () => {
-      if (session?.user?.email) {
-        try {
-          const response = await fetch("/api/itineraries");
-          const data = await response.json();
-
-          if (data.success) {
-            setItineraries(data.data);
-          } else {
-            setError(data.error || "Failed to fetch itineraries");
-          }
-        } catch {
-          setError("Failed to fetch itineraries");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    if (session?.user?.email) {
-      fetchItineraries();
-    }
-  }, [session?.user?.email]);
 
   const handleDelete = async (id: string) => {
     setDeleteError(null);
     try {
       const response = await fetch(`/api/itinerary/${id}`, { method: "DELETE" });
       const data = await response.json();
-      if (data.success) setItineraries((list) => list.filter((i) => i.id !== id));
-      else setDeleteError(data.error || "Couldn't delete that itinerary.");
+      if (data.success) {
+        updateCached<{ data: Itinerary[] }>(LIST_URL, (d) => ({ ...d, data: d.data.filter((i) => i.id !== id) }));
+        invalidate(`/api/itinerary/${id}`);
+      } else setDeleteError(data.error || "Couldn't delete that itinerary.");
     } catch {
       setDeleteError("Network error. Please try again.");
     }
@@ -294,7 +277,7 @@ function ItinerariesContent() {
             <p className="mx-auto mt-3 max-w-md text-stone">{error}</p>
             <button
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => invalidate(LIST_URL)}
               className="mt-6 rounded-full bg-ink px-6 py-3 text-sm text-paper transition-colors hover:bg-brand"
             >
               Try again
@@ -340,9 +323,5 @@ function ItinerariesContent() {
 }
 
 export default function ItinerariesPage() {
-  return (
-    <DashboardLayout>
-      <ItinerariesContent />
-    </DashboardLayout>
-  );
+  return <ItinerariesContent />;
 }

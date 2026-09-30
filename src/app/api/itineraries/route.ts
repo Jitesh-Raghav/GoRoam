@@ -14,11 +14,14 @@ export async function GET() {
       }, { status: 401 });
     }
 
-    // Get user
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { id: true }
-    });
+    // The session already carries the user's id; only look it up for older sessions.
+    const sessionId = session.user.id;
+    const user = sessionId
+      ? { id: sessionId }
+      : await prisma.user.findUnique({
+          where: { email: session.user.email },
+          select: { id: true }
+        });
 
     if (!user) {
       return NextResponse.json({
@@ -27,41 +30,49 @@ export async function GET() {
       }, { status: 404 });
     }
 
-    // Fetch user's itineraries
-    const itineraries = await prisma.itinerary.findMany({
-      where: {
-        userId: user.id
-      },
-      select: {
-        id: true,
-        destination: true,
-        startDate: true,
-        endDate: true,
-        numberOfDays: true,
-        budget: true,
-        numberOfPeople: true,
-        tripType: true,
-        interests: true,
-        status: true,
-        createdAt: true,
-        itineraryData: true
-      },
-      orderBy: {
-        createdAt: 'desc' // Show newest first
-      }
-    });
+    // Fetch user's itineraries. The full itinerary JSON stays in the database;
+    // the postcards only need its landscape and place, pulled out alongside.
+    const [itineraries, posters] = await Promise.all([
+      prisma.itinerary.findMany({
+        where: {
+          userId: user.id
+        },
+        select: {
+          id: true,
+          destination: true,
+          startDate: true,
+          endDate: true,
+          numberOfDays: true,
+          budget: true,
+          numberOfPeople: true,
+          tripType: true,
+          interests: true,
+          status: true,
+          createdAt: true
+        },
+        orderBy: {
+          createdAt: 'desc' // Show newest first
+        }
+      }),
+      prisma.$queryRaw<{ id: string; landscape: string | null; place: string | null }[]>`
+        SELECT id,
+          substring("itineraryData" from '"landscape":"([a-z]+)"') AS landscape,
+          substring("itineraryData" from '"destination":"([^"]{1,120})"') AS place
+        FROM "Itinerary"
+        WHERE "userId" = ${user.id}
+      `.catch((error) => {
+        // Postcards fall back to picking their scene from the destination name.
+        console.error('Poster details unavailable:', error);
+        return [];
+      }),
+    ]);
+    const poster = new Map(posters.map((p) => [p.id, p]));
 
     // Format the data for the frontend
-    const formattedItineraries = itineraries.map(itinerary => {
-      // Just what the postcard needs to pick the same poster as the trip page.
-      let summary: { destination?: unknown; landscape?: unknown } = {};
-      try {
-        summary = JSON.parse(itinerary.itineraryData)?.summary ?? {};
-      } catch {}
-      return {
+    const formattedItineraries = itineraries.map(itinerary => ({
       id: itinerary.id,
-      place: typeof summary.destination === 'string' ? summary.destination : undefined,
-      landscape: typeof summary.landscape === 'string' ? summary.landscape : undefined,
+      place: poster.get(itinerary.id)?.place ?? undefined,
+      landscape: poster.get(itinerary.id)?.landscape ?? undefined,
       title: `${itinerary.destination} Adventure`,
       destination: itinerary.destination,
       startDate: itinerary.startDate.toISOString(),
@@ -73,8 +84,7 @@ export async function GET() {
       interests: JSON.parse(itinerary.interests),
       status: itinerary.status,
       createdAt: itinerary.createdAt.toISOString()
-      };
-    });
+    }));
 
     return NextResponse.json({
       success: true,

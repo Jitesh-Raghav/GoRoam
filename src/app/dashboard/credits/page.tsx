@@ -6,7 +6,7 @@ import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus
 import Link from "next/link";
 import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/dashboard/use-checkout";
-import { DashboardLayout, useCredits } from "@/components/dashboard/dashboard-layout";
+import { useCredits } from "@/components/dashboard/dashboard-layout";
 import { Scene } from "@/components/scenes/scene";
 import { SplitText } from "@/components/motion/split-text";
 import { PillButton, PillLink } from "@/components/site/pill";
@@ -14,11 +14,7 @@ import { cn } from "@/lib/utils";
 import { PLANS, freeTrips, perTrip, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
-  return (
-    <DashboardLayout>
-      <CreditsPageContent />
-    </DashboardLayout>
-  );
+  return <CreditsPageContent />;
 }
 
 const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, adventurer: Crown };
