@@ -251,6 +251,16 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ------------------------------------------------------------------ */
+/* Legal / policy pages                                               */
+/* ------------------------------------------------------------------ */
+.legal-copy strong { color: var(--ink); font-weight: 600; }
+.legal-copy a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--brand); text-decoration-thickness: 2px; text-underline-offset: 4px; transition: color 0.3s; }
+.legal-copy a:hover { color: var(--brand); }
+.legal-copy ul { list-style: disc; padding-left: 1.4em; }
+.legal-copy ul { display: flex; flex-direction: column; gap: 0.5em; }
+.legal-copy li::marker { color: var(--brand); }
+
+/* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 @keyframes hero-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
