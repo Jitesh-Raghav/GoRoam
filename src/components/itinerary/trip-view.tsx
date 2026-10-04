@@ -82,7 +82,10 @@ import { SectionTitle } from "./guide/section-title";
 import { useGuide } from "./guide/use-guide";
 import { Videos } from "./guide/videos";
 import { HeroPhoto } from "./hero-photo";
+import { Bookings } from "./bookings";
 import { CurrencyCard } from "./currency-card";
+import { JetLagCard } from "./jetlag-card";
+import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { TripWallet } from "./wallet";
 import { DayForecast, WeatherChip, WeatherOutlook, tripCentre, useLocalTime, useTripWeather } from "./weather";
@@ -184,6 +187,8 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
   const swap = useSwap();
+  const votes = useReactions().get(day, slot.key);
+  const disliked = !!votes && votes.down > votes.up;
   return (
     <motion.li
       initial={{ opacity: 0, y: 18 }}
@@ -277,12 +282,16 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               <button
                 type="button"
                 onClick={() => swap({ day, slot: slot.key, current: activity })}
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-ink ring-1 ring-inset ring-line transition-colors hover:bg-ink hover:text-paper hover:ring-ink"
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 ring-inset transition-colors hover:bg-ink hover:text-paper hover:ring-ink",
+                  disliked ? "bg-sun-soft text-ink ring-sun/40" : "text-ink ring-line"
+                )}
               >
-                <ArrowRightLeft className="size-4" /> Swap
+                <ArrowRightLeft className="size-4" /> {disliked ? "Swap (crew voted no)" : "Swap"}
               </button>
             )}
           </div>
+          <StopReactions day={day} slot={slot.key} />
         </div>
       </article>
     </motion.li>
@@ -798,6 +807,7 @@ export function TripView({
   return (
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
+    <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
     <div className="mx-auto max-w-[1320px]">
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
@@ -1057,6 +1067,15 @@ export function TripView({
         )}
       </section>
 
+      {owner && (
+        <Bookings
+          tripId={it.id}
+          initial={data?.bookings}
+          defaultDate={isoDay(it.startDate, -2)}
+          onSaved={(bookings) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, bookings } } }))}
+        />
+      )}
+
       {/* The local guide */}
       {guide ? (
         <>
@@ -1095,6 +1114,7 @@ export function TripView({
           <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-12 lg:items-start empty:hidden">
             {!!weather?.days.length && <WeatherOutlook days={weather.days} className="lg:col-span-7" />}
             {localCurrency && <CurrencyCard local={localCurrency} budgetUsd={it.budget} className={weather?.days.length ? "lg:col-span-5" : "lg:col-span-6"} />}
+            {!isPackage && weather?.timezone && <JetLagCard timezone={weather.timezone} departure={isoDay(it.startDate, 0)} className="lg:col-span-12" />}
           </div>
         </section>
       )}
@@ -1173,6 +1193,7 @@ export function TripView({
 
       {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
     </div>
+    </ReactionsProvider>
     </SwapProvider>
     </TripPhotosProvider>
   );

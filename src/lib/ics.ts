@@ -69,6 +69,26 @@ export function buildIcs(it: ItineraryDetails) {
       );
     });
   });
+  // The traveller's own bookings: flights, check-ins, tickets.
+  for (const b of it.itineraryData?.bookings ?? []) {
+    if (!b.start) continue;
+    const [d, t] = b.start.split("T");
+    const startHm: [number, number] = t ? [Number(t.slice(0, 2)), Number(t.slice(3, 5))] : [9, 0];
+    const [ed, et] = (b.end ?? b.start).split("T");
+    let endHm: [number, number] = et ? [Number(et.slice(0, 2)), Number(et.slice(3, 5))] : [Math.min(startHm[0] + 1, 23), startHm[1]];
+    if (ed === d && endHm[0] * 60 + endHm[1] <= startHm[0] * 60 + startHm[1]) endHm = [Math.min(startHm[0] + 1, 23), startHm[1]];
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:${it.id}-booking-${b.id}@goroam`,
+      `DTSTAMP:${now}`,
+      `DTSTART:${stamp(d, startHm)}`,
+      `DTEND:${stamp(ed, endHm)}`,
+      `SUMMARY:${esc(b.title)}`,
+      ...(b.location ? [`LOCATION:${esc(b.location)}`] : []),
+      `DESCRIPTION:${esc([b.ref ? `Confirmation: ${b.ref}` : "", b.notes ?? "", "Saved in GoRoam"].filter(Boolean).join("\n"))}`,
+      "END:VEVENT"
+    );
+  }
   lines.push("END:VCALENDAR");
   return lines.map(fold).join("\r\n");
 }
