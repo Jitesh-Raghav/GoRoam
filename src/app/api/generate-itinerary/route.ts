@@ -20,6 +20,8 @@ import {
 } from '@/lib/trip';
 import { FREE_CREDITS } from '@/lib/plans';
 import { isLandscape } from '@/lib/destinations';
+import { generateGuide } from '@/lib/guide';
+import { countryCodeFor } from '@/lib/flags';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -107,7 +109,9 @@ RULES
 10. "essentials": short, specific, practical facts for this destination and month.
 11. "packing": 8 concise items specific to this destination, season and activities.
 12. summary.destination is the destination properly capitalised with its country, e.g. "Berlin, Germany".
-13. summary.landscape is the single word that best describes what the destination looks like: "coast" (beaches, islands, seaside), "mountains" (high, rocky or snowy peaks), "hills" (lush, green, often rainy hill country or rainforest), "lake" (the trip centres on a lake or backwaters), "desert" (sand, dunes, arid), "snow" (arctic, polar, northern lights) or "city" (an urban destination with no dominant landscape).
+13. "dayTip" is one practical trick for that specific day (a transit pass worth buying, how to beat a queue, what to book ahead, where to refill water).
+14. summary.countryCode is the destination country's ISO 3166-1 alpha-2 code in lower case, e.g. "jp".
+15. summary.landscape is the single word that best describes what the destination looks like: "coast" (beaches, islands, seaside), "mountains" (high, rocky or snowy peaks), "hills" (lush, green, often rainy hill country or rainforest), "lake" (the trip centres on a lake or backwaters), "desert" (sand, dunes, arid), "snow" (arctic, polar, northern lights) or "city" (an urban destination with no dominant landscape).
 
 Respond with JSON only, matching this shape exactly:
 {
@@ -127,7 +131,8 @@ Respond with JSON only, matching this shape exactly:
       },
       "afternoon": { ...same shape },
       "evening": { ...same shape },
-      "totalDayCost": 100
+      "totalDayCost": 100,
+      "dayTip": "One practical trick for the day"
     }
   ],
   "stays": [
@@ -147,6 +152,7 @@ Respond with JSON only, matching this shape exactly:
     "totalCost": 0,
     "totalDays": ${data.numberOfDays},
     "destination": "City, Country",
+    "countryCode": "de",
     "overview": "Two sentences selling the trip, written to the traveller",
     "landscape": "hills",
     "highlights": ["4 standout moments from this plan"]
@@ -178,6 +184,7 @@ function tidy(raw: ItineraryData, data: ItineraryRequest): ItineraryData {
       destination: typeof summary.destination === 'string' && summary.destination.trim() ? summary.destination.trim() : data.destination,
       highlights: Array.isArray(summary.highlights) ? summary.highlights.slice(0, 5) : [],
       landscape: isLandscape(summary.landscape) ? summary.landscape : undefined,
+      countryCode: countryCodeFor(typeof summary.destination === 'string' ? summary.destination : data.destination, summary.countryCode) ?? undefined,
     },
   };
 }
@@ -277,6 +284,19 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     // Construct prompt and call OpenAI
     const prompt = constructPrompt(data, prefs);
     
+    // The local guide is written alongside the day plan, so it adds no wait.
+    // If it fails the trip still saves; the itinerary page writes it later.
+    const guidePromise = generateGuide(openai, {
+      destination: data.destination,
+      startDate: data.startDate,
+      numberOfDays: data.numberOfDays,
+      interests: data.interests,
+      preferences: prefs,
+    }).catch((guideError) => {
+      console.error('Guide generation failed:', guideError instanceof Error ? guideError.message : guideError);
+      return undefined;
+    });
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Using the more cost-effective model
       messages: [
@@ -312,6 +332,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       
       itineraryData = tidy(JSON.parse(cleanResponse), data);
       itineraryData.trip = { source: data.source, preferences: prefs };
+      delete itineraryData.guide;
     } catch (parseError) {
       console.error('Failed to parse GPT response:', gptResponse);
       console.error('Parse error:', parseError);
@@ -319,6 +340,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
 
 
+
+    const guide = await guidePromise;
+    if (guide) itineraryData.guide = guide;
 
     // Save itinerary to database
     const savedItinerary = await prisma.itinerary.create({

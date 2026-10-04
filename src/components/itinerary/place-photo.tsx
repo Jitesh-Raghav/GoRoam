@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- remote photos from Wikimedia/Google, already sized by the API. */
 
-import { Camera, type LucideIcon } from "lucide-react";
+import { Camera, Star, type LucideIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { PlacePhoto as Photo } from "@/app/api/place-photo/route";
 import type { ActivitySlot } from "@/lib/trip";
@@ -75,6 +75,16 @@ export function usePlacePhoto(activity: ActivitySlot | undefined, destination: s
   return photo;
 }
 
+/** A photo lookup for something that isn't an itinerary stop (a hotel, a dish, an experience). */
+export const asStop = (name: string, area?: string): ActivitySlot => ({
+  time: "",
+  duration: "",
+  estimatedCost: 0,
+  place: { name, description: "", area },
+});
+
+const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n));
+
 const caption = (p: Photo) => (p.kind === "nearby" ? `Nearby · ${p.title}` : p.kind === "city" ? `${p.title} · ${p.credit}` : `Photo · ${p.credit}`);
 
 /**
@@ -87,6 +97,7 @@ export function PlacePhoto({
   icon: Icon = Camera,
   credit = true,
   eager = false,
+  rating = false,
   className,
   imgClassName,
 }: {
@@ -96,6 +107,8 @@ export function PlacePhoto({
   credit?: boolean;
   /** Load straight away (the print copy, which is hidden until printing). */
   eager?: boolean;
+  /** Show the Google rating chip when there is one. */
+  rating?: boolean;
   className?: string;
   imgClassName?: string;
 }) {
@@ -142,6 +155,20 @@ export function PlacePhoto({
             imgClassName
           )}
         />
+      )}
+      {rating && photo?.rating && loaded && (
+        <a
+          href={photo.mapsUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="print:hidden absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[11px] font-medium text-ink shadow-sm"
+          aria-label={`Rated ${photo.rating} on Google${photo.reviews ? ` from ${photo.reviews} reviews` : ""}`}
+        >
+          <Star className="size-3 fill-sun text-sun" />
+          {photo.rating.toFixed(1)}
+          {photo.reviews ? <span className="font-normal text-stone">· {compact(photo.reviews)}</span> : null}
+        </a>
       )}
       {credit && photo?.url && loaded && (
         <a

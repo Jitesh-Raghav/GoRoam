@@ -19,6 +19,10 @@ export interface PlacePhoto {
   /** false when it's a nearby landmark or the city rather than the place itself. */
   exact?: boolean;
   kind?: 'place' | 'nearby' | 'city';
+  /** Google rating and review count, when the photo came from Google Places. */
+  rating?: number;
+  reviews?: number;
+  mapsUrl?: string;
 }
 
 const UA = 'GoRoam/1.0 (AI travel itinerary planner; place photos)';
@@ -28,7 +32,7 @@ const MAX_CACHE = 3000;
 const NONE: PlacePhoto = { url: null };
 
 // Bump when the source chain changes, so earlier misses aren't served from memory.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const cache = new Map<string, PlacePhoto>();
 const remember = (key: string, value: PlacePhoto) => {
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value!);
@@ -101,7 +105,7 @@ async function fromGoogle(key: string, name: string, city: string, at: [number, 
   if (at) body.locationBias = { circle: { center: { latitude: at[0], longitude: at[1] }, radius: 5000 } };
   const found = await get('https://places.googleapis.com/v1/places:searchText', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key, 'X-Goog-FieldMask': 'places.displayName,places.photos' },
+    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key, 'X-Goog-FieldMask': 'places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri' },
     body: JSON.stringify(body),
   });
   const place = found.places?.[0];
@@ -110,7 +114,17 @@ async function fromGoogle(key: string, name: string, city: string, at: [number, 
   const media = await get(`https://places.googleapis.com/v1/${photo.name}/media?maxWidthPx=1200&skipHttpRedirect=true&key=${key}`);
   if (!media.photoUri) return null;
   const author = photo.authorAttributions?.[0];
-  return { url: media.photoUri, title: place.displayName?.text ?? name, credit: author?.displayName ? `${author.displayName} · Google` : 'Google', sourceUrl: author?.uri, exact: true, kind: 'place' };
+  return {
+    url: media.photoUri,
+    title: place.displayName?.text ?? name,
+    credit: author?.displayName ? `${author.displayName} · Google` : 'Google',
+    sourceUrl: author?.uri,
+    exact: true,
+    kind: 'place',
+    rating: typeof place.rating === 'number' ? place.rating : undefined,
+    reviews: typeof place.userRatingCount === 'number' ? place.userRatingCount : undefined,
+    mapsUrl: typeof place.googleMapsUri === 'string' ? place.googleMapsUri : undefined,
+  };
 }
 
 async function fromWikipedia(name: string, city: string, at: [number, number] | null): Promise<PlacePhoto | null> {

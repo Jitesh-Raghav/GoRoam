@@ -12,6 +12,8 @@ import { PillLink } from "@/components/site/pill";
 import { SplitText } from "@/components/motion/split-text";
 import { invalidate, prefetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { useDestinationScene } from "@/lib/use-destination-scene";
+import { countryCodeFor } from "@/lib/flags";
+import { Flag } from "@/components/itinerary/guide/flag";
 import { cn } from "@/lib/utils";
 import { COMPANIONS, VIBES, labelFor, titleCase } from "@/lib/trip";
 
@@ -21,6 +23,7 @@ interface Itinerary {
   destination: string;
   place?: string;
   landscape?: string;
+  country?: string;
   startDate: string;
   endDate: string;
   numberOfDays: number;
@@ -73,7 +76,10 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
           <p className="eyebrow text-[0.6rem] text-paper/70">
             {formatDate(it.startDate, false)} — {formatDate(it.endDate)}
           </p>
-          <h3 className="display mt-2 truncate text-[2.2rem] leading-none">{titleCase(it.destination)}</h3>
+          <h3 className="display mt-2 flex items-center gap-2.5 text-[2.2rem] leading-none">
+            <Flag code={countryCodeFor(it.place || it.destination, it.country)} className="h-[0.6em]" />
+            <span className="truncate">{titleCase(it.destination)}</span>
+          </h3>
         </div>
       </Link>
 
