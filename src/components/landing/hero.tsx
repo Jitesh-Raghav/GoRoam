@@ -10,6 +10,7 @@ import {
   type MotionStyle,
 } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Moon, Sun, Sunrise } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MANIFESTO } from "@/lib/copy";
@@ -18,7 +19,7 @@ import { Scene } from "@/components/scenes/scene";
 import { ScrambleText } from "@/components/motion/scramble-text";
 import { ScrollWords } from "@/components/motion/scroll-words";
 import { SplitText } from "@/components/motion/split-text";
-import { TripPrompt } from "@/components/site/trip-prompt";
+import { PillLink } from "@/components/site/pill";
 import { useIntro } from "@/components/site/use-intro";
 
 const SLIDE_MS = 6500;
@@ -167,45 +168,46 @@ export function Hero() {
   const stageStyle = (desktop ? { "--e": expand } : undefined) as MotionStyle | undefined;
 
   return (
-    <section ref={sectionRef} className="relative lg:h-[270vh]" aria-label="Introduction">
+    <section ref={sectionRef} className="relative lg:h-[270vh]" aria-label="Destinations showcase">
       <motion.div style={stageStyle} className="hero-stage relative overflow-hidden lg:sticky lg:top-0 lg:h-svh">
         {/* Copy */}
         <motion.div
           style={desktop ? { opacity: textOpacity, y: textY } : undefined}
-          className="container-x relative z-10 pt-28 sm:pt-32 lg:flex lg:h-full lg:items-center lg:pt-10"
+          className="container-x relative z-10 pt-20 sm:pt-24 lg:flex lg:h-full lg:items-center lg:pt-10"
         >
           <div className="hero-copy">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
-              animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 1, ease, delay: delay + 0.1 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 1, ease, delay: 0.1 }}
               className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-white/60 py-1.5 pl-2 pr-4 text-sm text-ink/80"
             >
               <span className="relative grid size-5 place-items-center">
                 <span className="animate-ping-soft absolute inset-0 rounded-full bg-brand/40" />
                 <span className="relative size-2 rounded-full bg-brand" />
               </span>
-              Your AI travel concierge
+              A window to anywhere
             </motion.div>
 
-            <h1 className="display text-[clamp(3.4rem,13vw,5.6rem)] leading-[0.88] text-ink lg:text-[clamp(4.2rem,calc(9.3vw_-_19px),8.4rem)]">
+            <h2 className="display text-[clamp(3.4rem,13vw,5.6rem)] leading-[0.88] text-ink lg:text-[clamp(4.2rem,calc(9.3vw_-_19px),8.4rem)]">
               <span className="block">
-                <SplitText text="Plan less." trigger="mount" ready={intro.ready} delay={delay + 0.15} />
+                <SplitText text="Plan less." trigger="inView" delay={0.15} />
               </span>
               <span className="block">
                 <SplitText
                   segments={[{ text: "Wander ", className: "italic text-brand" }, { text: "more." }]}
-                  trigger="mount"
-                  ready={intro.ready}
-                  delay={delay + 0.3}
+                  trigger="inView"
+                  delay={0.3}
                 />
               </span>
-            </h1>
+            </h2>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
-              animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 1.1, ease, delay: delay + 0.55 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 1.1, ease, delay: 0.55 }}
               className="mt-7 max-w-[34rem] text-lg leading-relaxed text-stone sm:text-xl"
             >
               Tell GoRoam where you&apos;re dreaming of. In seconds you&apos;ll have a day-by-day itinerary — real places,
@@ -214,24 +216,26 @@ export function Hero() {
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
-              animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 1.1, ease, delay: delay + 0.7 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 1.1, ease, delay: 0.7 }}
               className="mt-9 max-w-[36rem]"
             >
-              <TripPrompt
-                quickPicks={[
-                  { label: "Kyoto", value: "Kyoto, Japan" },
-                  { label: "Santorini", value: "Santorini, Greece" },
-                  { label: "Rome", value: "Rome, Italy" },
-                  { label: "Bali", value: "Bali, Indonesia" },
-                ]}
-              />
+              <div className="flex flex-wrap items-center gap-3">
+                <PillLink href="/dashboard" variant="ink" size="lg">
+                  Start planning — it&apos;s free
+                </PillLink>
+                <Link href="/#how" className="group inline-flex items-center gap-2 px-2 text-sm text-ink/70 transition-colors hover:text-ink">
+                  How it works <ArrowRight className="size-4 transition-transform duration-500 ease-out-expo group-hover:translate-x-1" />
+                </Link>
+              </div>
             </motion.div>
 
             <motion.ul
               initial={{ opacity: 0 }}
-              animate={intro.ready ? { opacity: 1 } : undefined}
-              transition={{ duration: 1.2, delay: delay + 0.95 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 1.2, delay: 0.95 }}
               className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone"
             >
               {["First trip free", "No card needed", "Ready in seconds"].map((t) => (
@@ -247,8 +251,9 @@ export function Hero() {
         <motion.div style={{ opacity: chromeOpacity }} className="hero-arch pointer-events-none z-20 hidden lg:block">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
-            animate={intro.ready ? { opacity: 1, x: 0 } : undefined}
-            transition={{ duration: 1.2, ease, delay: delay + 0.9 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 1.2, ease, delay: 0.9 }}
             className={cn("pointer-events-auto absolute -left-16 bottom-10 w-[17.5rem] rounded-3xl border border-white/60 bg-paper/95 p-5 shadow-[0_30px_70px_-35px_rgba(10,30,44,0.55)]", expanded && "pointer-events-none")}
           >
             <div className="flex items-center justify-between">
@@ -305,8 +310,9 @@ export function Hero() {
 
           <motion.div
             initial={{ opacity: 0, x: 24 }}
-            animate={intro.ready ? { opacity: 1, x: 0 } : undefined}
-            transition={{ duration: 1.2, ease, delay: delay + 1.05 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 1.2, ease, delay: 1.05 }}
             className="absolute -right-8 top-[16%] hidden xl:block"
           >
             <div className="animate-float flex w-[17rem] items-center gap-3 rounded-2xl border border-white/60 bg-paper/95 p-3 pr-4 shadow-[0_24px_60px_-30px_rgba(10,30,44,0.5)]">
@@ -332,8 +338,9 @@ export function Hero() {
 
           <motion.div
             initial={{ opacity: 0, scale: 0.6 }}
-            animate={intro.ready ? { opacity: 1, scale: 1 } : undefined}
-            transition={{ duration: 1.4, ease, delay: delay + 1.15 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 1.4, ease, delay: 1.15 }}
             className="absolute -left-[66px] top-[7%]"
           >
             <PassportStamp dest={dest} index={index} />
@@ -343,8 +350,9 @@ export function Hero() {
         {/* The scene window: an arch on load that opens to full-bleed as you scroll. */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 1.4, ease, delay: delay + 0.35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 1.4, ease, delay: 0.35 }}
           className="hero-frame relative mx-4 mt-12 h-[66svh] min-h-[420px] overflow-hidden rounded-b-[28px] rounded-t-[999px] bg-paper-2 sm:mx-8 lg:absolute lg:inset-0 lg:m-0 lg:h-auto lg:min-h-0 lg:rounded-none"
         >
           <div className="hero-frame-inner absolute inset-0">
