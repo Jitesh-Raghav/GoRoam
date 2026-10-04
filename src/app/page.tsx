@@ -8,6 +8,7 @@ import { HowItWorks } from "@/components/landing/how-it-works";
 import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
 import { MobileManifesto, Ticker } from "@/components/landing/ticker";
+import { PanoramaHero } from "@/components/landing/panorama-hero";
 import { Wonders } from "@/components/landing/wonders";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { Intro } from "@/components/site/intro";
@@ -21,9 +22,10 @@ export default function Home() {
       <SmoothScroll />
       <SiteHeader />
       <main>
+        <PanoramaHero />
+        <Ticker />
         <Hero />
         <MobileManifesto />
-        <Ticker />
         <Wonders />
         <HowItWorks />
         <GlobeSection />

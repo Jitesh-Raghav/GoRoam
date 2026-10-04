@@ -2,8 +2,8 @@
 
 /* eslint-disable @next/next/no-img-element -- remote photos from Wikimedia/Google/Openverse, already sized by the API. */
 
-import { Camera, type LucideIcon } from "lucide-react";
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { Camera, Star, type LucideIcon } from "lucide-react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { photoKey, type ActivitySlot, type PlacePhoto as Photo } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
@@ -26,16 +26,70 @@ export function TripPhotosProvider({ value, children }: { value: TripPhotos; chi
   return <PhotosContext.Provider value={value}>{children}</PhotosContext.Provider>;
 }
 
-/** The photo for a stop, `undefined` while the trip's photos are still loading. */
-export function usePlacePhoto(activity: ActivitySlot | undefined): Photo | undefined {
+/* Things that aren't trip stops (hotels, dishes, experiences) are looked up one at a time, once per page. */
+const lookups = new Map<string, Promise<Photo>>();
+const ownLookup = new WeakSet<ActivitySlot>();
+
+function lookup(name: string, area: string | undefined, city: string): Promise<Photo> {
+  const params = new URLSearchParams({ name, city });
+  if (area) params.set("area", area);
+  const key = params.toString();
+  let hit = lookups.get(key);
+  if (!hit) {
+    hit = fetch(`/api/place-photo?${key}`)
+      .then((r) => (r.ok ? r.json() : { url: null }))
+      .catch(() => ({ url: null }));
+    lookups.set(key, hit);
+    // A miss is usually a passing network error: let the next view ask again.
+    hit.then((p) => !p.url && lookups.delete(key));
+  }
+  return hit;
+}
+
+/** A photo lookup for something that isn't an itinerary stop (a hotel, a dish, an experience). */
+export const asStop = (name: string, area?: string): ActivitySlot => {
+  const slot: ActivitySlot = { time: "", duration: "", estimatedCost: 0, place: { name, description: "", area } };
+  ownLookup.add(slot);
+  return slot;
+};
+
+/** The photo for a stop, `undefined` while it's still loading. */
+export function usePlacePhoto(activity: ActivitySlot | undefined, destination?: string): Photo | undefined {
   const ctx = useContext(PhotosContext);
   const name = activity?.place?.name;
-  if (!ctx || !name) return { url: null };
+  const area = activity?.place?.area;
+  const city = ctx?.city || destination || "";
+  const own = !!activity && ownLookup.has(activity);
+  const ownKey = own && name ? `${name}|${area ?? ""}|${city}` : null;
+  const [found, setFound] = useState<{ key: string; photo: Photo } | null>(null);
+
+  useEffect(() => {
+    if (!ownKey || !name) return;
+    let live = true;
+    lookup(name, area, city).then((photo) => live && setFound({ key: ownKey, photo }));
+    return () => {
+      live = false;
+    };
+    // ownKey covers the name, area and city.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownKey]);
+
+  const cityShot = (): Photo => (ctx?.fallback ? { url: ctx.fallback, kind: "city", title: ctx.city, credit: "Wikipedia" } : { url: null });
+
+  if (!name) return { url: null };
+  if (own) {
+    const photo = found?.key === ownKey ? found.photo : undefined;
+    if (!photo) return undefined;
+    return photo.url ? photo : cityShot();
+  }
+  if (!ctx) return { url: null };
   const photo = ctx.photos[photoKey(name, ctx.city)];
   if (photo?.url) return photo;
   if (ctx.loading) return undefined;
-  return ctx.fallback ? { url: ctx.fallback, kind: "city", title: ctx.city, credit: "Wikipedia" } : { url: null };
+  return cityShot();
 }
+
+const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n));
 
 const caption = (p: Photo) => (p.kind === "nearby" ? `Nearby · ${p.title}` : p.kind === "city" ? `${p.title} · ${p.credit}` : `Photo · ${p.credit}`);
 
@@ -46,23 +100,27 @@ const caption = (p: Photo) => (p.kind === "nearby" ? `Nearby · ${p.title}` : p.
  */
 export function PlacePhoto({
   activity,
+  destination,
   icon: Icon = Camera,
   credit = true,
   eager = false,
+  rating = false,
   className,
   imgClassName,
 }: {
   activity: ActivitySlot | undefined;
-  /** Kept for call sites; the city now comes from the trip's photo context. */
+  /** Used for lookups outside a trip's photo context. */
   destination?: string;
   icon?: LucideIcon;
   credit?: boolean;
   /** Load straight away (the print copy, which is hidden until printing). */
   eager?: boolean;
+  /** Show the Google rating chip when there is one. */
+  rating?: boolean;
   className?: string;
   imgClassName?: string;
 }) {
-  const photo = usePlacePhoto(activity);
+  const photo = usePlacePhoto(activity, destination);
   const ctx = useContext(PhotosContext);
   // Try the stop's photo, then the fallbacks, in order, skipping any that fail to load.
   const candidates = photo ? [photo.url, photo.fallback, ctx?.fallback].filter((u, i, all): u is string => !!u && all.indexOf(u) === i) : [];
@@ -108,6 +166,20 @@ export function PlacePhoto({
             imgClassName
           )}
         />
+      )}
+      {rating && photo?.rating && loaded && !usingFallback && (
+        <a
+          href={photo.mapsUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="print:hidden absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[11px] font-medium text-ink shadow-sm"
+          aria-label={`Rated ${photo.rating} on Google${photo.reviews ? ` from ${photo.reviews} reviews` : ""}`}
+        >
+          <Star className="size-3 fill-sun text-sun" />
+          {photo.rating.toFixed(1)}
+          {photo.reviews ? <span className="font-normal text-stone">· {compact(photo.reviews)}</span> : null}
+        </a>
       )}
       {credit && photo?.url && loaded && !usingFallback && (
         <a

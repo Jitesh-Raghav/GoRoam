@@ -148,7 +148,7 @@ async function fromGoogle(key: string, ctx: Context, at: At): Promise<PlacePhoto
   if (at) body.locationBias = { circle: { center: { latitude: at[0], longitude: at[1] }, radius: 5000 } };
   const found = await get('https://places.googleapis.com/v1/places:searchText', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key, 'X-Goog-FieldMask': 'places.displayName,places.photos', ...googleHeaders() },
+    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key, 'X-Goog-FieldMask': 'places.displayName,places.photos,places.rating,places.userRatingCount,places.googleMapsUri', ...googleHeaders() },
     body: JSON.stringify(body),
   });
   const place = found.places?.[0];
@@ -162,6 +162,9 @@ async function fromGoogle(key: string, ctx: Context, at: At): Promise<PlacePhoto
     sourceUrl: author?.uri,
     exact: true,
     kind: 'place',
+    rating: typeof place.rating === 'number' ? place.rating : undefined,
+    reviews: typeof place.userRatingCount === 'number' ? place.userRatingCount : undefined,
+    mapsUrl: typeof place.googleMapsUri === 'string' ? place.googleMapsUri : undefined,
   };
 }
 

@@ -83,6 +83,7 @@ model Itinerary {
   itineraryData   String   // JSON string of the complete itinerary
   status          String   @default("completed") // 'pending', 'completed', 'failed'
   pdfUrl          String?
+  chatCount       Int      @default(0) // questions asked to the trip's AI concierge
   userId          String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

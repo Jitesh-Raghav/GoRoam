@@ -7,6 +7,7 @@ import { normalizePreferences, titleCase, type ItineraryData } from '@/lib/trip'
 import { SYSTEM_PROMPT, constructPrompt, tidy, type ItineraryRequest } from '@/lib/itinerary-ai';
 import { FREE_CREDITS } from '@/lib/plans';
 import { photosForItinerary } from '@/lib/place-photos';
+import { generateGuide } from '@/lib/guide';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -141,6 +142,19 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     // Construct prompt and call OpenAI
     const prompt = constructPrompt(data, prefs);
     
+    // The local guide is written alongside the day plan, so it adds no wait.
+    // If it fails the trip still saves; the itinerary page writes it later.
+    const guidePromise = generateGuide(openai, {
+      destination: data.destination,
+      startDate: data.startDate,
+      numberOfDays: data.numberOfDays,
+      interests: data.interests,
+      preferences: prefs,
+    }).catch((guideError) => {
+      console.error('Guide generation failed:', guideError instanceof Error ? guideError.message : guideError);
+      return undefined;
+    });
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Using the more cost-effective model
       messages: [
@@ -176,6 +190,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       
       itineraryData = tidy(JSON.parse(cleanResponse), data);
       itineraryData.trip = { source: data.source, preferences: prefs };
+      delete itineraryData.guide;
     } catch (parseError) {
       console.error('Failed to parse GPT response:', gptResponse);
       console.error('Parse error:', parseError);
@@ -183,6 +198,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
 
 
+
+    const guide = await guidePromise;
+    if (guide) itineraryData.guide = guide;
 
     // Save itinerary to database
     const savedItinerary = await prisma.itinerary.create({

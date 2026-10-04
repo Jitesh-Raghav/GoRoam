@@ -31,7 +31,13 @@ export const PLANS: Plan[] = [
     credits: 10,
     price: 9.99,
     tagline: "For the next getaway or two",
-    features: ["10 AI-planned itineraries", "Flight, stay & activity booking links", "PDF export & calendar sync", "Email support"],
+    features: [
+      "10 AI-planned itineraries",
+      "Local guide: phrases with audio, food, culture & events",
+      "AI concierge for every trip",
+      "Flight, stay & adventure booking links",
+      "PDF, email & calendar export",
+    ],
   },
   {
     id: "explorer",
@@ -42,6 +48,7 @@ export const PLANS: Plan[] = [
     features: [
       "30 AI-planned itineraries",
       "Everything in Starter",
+      "Adventure & sports packages for every trip",
       "Shareable trip links",
       "Packing lists & pre-trip checklists",
       "Priority support",
@@ -63,6 +70,9 @@ export const PLANS: Plan[] = [
     ],
   },
 ];
+
+/** Questions the AI concierge answers per trip (keeps each itinerary's cost bounded). */
+export const CHAT_LIMIT = 30;
 
 export const usd = (n: number) => `$${n.toFixed(2)}`;
 export const perTrip = (p: Plan) => usd(p.price / p.credits);

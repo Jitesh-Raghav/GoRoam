@@ -33,6 +33,7 @@ import {
   TramFront,
   TreePine,
   UtensilsCrossed,
+  Wand2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -61,12 +62,24 @@ import {
   type StaySuggestion,
 } from "@/lib/trip";
 import { cn } from "@/lib/utils";
+import { countryCodeFor } from "@/lib/flags";
 import { BookingPanel } from "./booking-panel";
 import { Checklist } from "./checklist";
-import { PlacePhoto, TripPhotosProvider } from "./place-photo";
 import { useCachedJson } from "@/lib/cached-json";
 import { track } from "@/lib/analytics";
 import { hasMapsKey, locatedStops } from "@/lib/maps";
+import { Concierge } from "./concierge";
+import { EmailButton } from "./email-button";
+import { Experiences } from "./guide/experiences";
+import { Flag } from "./guide/flag";
+import { FlyThere } from "./guide/fly-there";
+import { GuidePending } from "./guide/guide-pending";
+import { LocalGuide } from "./guide/local-guide";
+import { CoolFacts, Events } from "./guide/moments";
+import { SectionTitle } from "./guide/section-title";
+import { useGuide } from "./guide/use-guide";
+import { Videos } from "./guide/videos";
+import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
 
@@ -182,7 +195,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager }: { sl
         className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
         <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[300px]">
-          <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} />
+          <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
             <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/35 px-3 py-1.5 text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">
@@ -379,6 +392,23 @@ function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary;
         ))}
       </ol>
 
+      {day.dayTip && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.35 }}
+          className="print-avoid mt-6 flex gap-4 rounded-[24px] bg-sun-soft/70 p-5 ring-1 ring-sun/25 sm:ml-[4.25rem]"
+        >
+          <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-sun text-ink">
+            <Wand2 className="size-5" />
+          </span>
+          <span>
+            <span className="eyebrow block text-[0.6rem] text-ink/60">Today&apos;s trick</span>
+            <span className="mt-1 block leading-relaxed text-ink">{day.dayTip}</span>
+          </span>
+        </motion.div>
+      )}
+
       {onJump && total > 1 && (
         <div className="no-print mt-8 flex items-center justify-between gap-3">
           <button
@@ -534,54 +564,46 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.8, ease, delay: index * 0.08 }}
-      className="print-avoid flex h-full flex-col rounded-[26px] bg-white/85 p-6 ring-1 ring-line"
+      className="print-avoid group flex h-full flex-col overflow-hidden rounded-[26px] bg-white/85 ring-1 ring-line"
     >
-      <div className="flex items-start justify-between gap-3">
-        <span className="font-mono text-xs text-brand">{pad(index + 1)}</span>
+      <div className="relative h-48 overflow-hidden print:h-32">
+        <PlacePhoto activity={asStop(stay.name, stay.area)} destination={query.destination} icon={BedDouble} rating imgClassName="group-hover:scale-[1.05]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink/50 to-transparent" />
+        <span className="absolute left-3 top-3 rounded-full bg-ink/40 px-2.5 py-1 font-mono text-xs text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">{pad(index + 1)}</span>
         {stay.pricePerNight ? (
-          <span className="text-right">
-            <span className="display text-3xl leading-none text-ink">{money(stay.pricePerNight)}</span>
-            <span className="block text-[11px] text-stone">per night</span>
+          <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-right text-ink shadow-sm">
+            <span className="display text-xl leading-none">{money(stay.pricePerNight)}</span>
+            <span className="ml-1 text-[11px] text-stone">/ night</span>
           </span>
         ) : null}
       </div>
-      <h4 className="display mt-4 text-[1.9rem] leading-[1.02] text-ink">{stay.name}</h4>
-      <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-stone">
-        <MapPin className="size-3.5 text-brand" /> {stay.area}
-        {stay.type && <span>· {stay.type}</span>}
-      </p>
-      <p className="mt-3 flex-1 leading-relaxed text-stone">{stay.why}</p>
-      <div className="no-print mt-5 flex flex-wrap gap-2">
-        <a
-          href={primary.href}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
-        >
-          Check dates on {primary.name} <ArrowUpRight className="size-4" />
-        </a>
-        <a
-          href={mapsSearchUrl(stay.name, query.destination)}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
-        >
-          <MapPin className="size-4" /> Map
-        </a>
+      <div className="flex flex-1 flex-col p-6">
+        <h4 className="display text-[1.9rem] leading-[1.02] text-ink">{stay.name}</h4>
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-stone">
+          <MapPin className="size-3.5 text-brand" /> {stay.area}
+          {stay.type && <span>· {stay.type}</span>}
+        </p>
+        <p className="mt-3 flex-1 leading-relaxed text-stone">{stay.why}</p>
+        <div className="no-print mt-5 flex flex-wrap gap-2">
+          <a
+            href={primary.href}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
+          >
+            Check dates on {primary.name} <ArrowUpRight className="size-4" />
+          </a>
+          <a
+            href={mapsSearchUrl(stay.name, query.destination)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
+          >
+            <MapPin className="size-4" /> Map
+          </a>
+        </div>
       </div>
     </motion.article>
-  );
-}
-
-function SectionTitle({ eyebrow, title, children }: { eyebrow: string; title: ReactNode; children?: ReactNode }) {
-  return (
-    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <p className="eyebrow text-stone">{eyebrow}</p>
-        <h2 className="display mt-3 text-[clamp(2.4rem,5vw,3.8rem)] leading-[0.95] text-ink">{title}</h2>
-      </div>
-      {children}
-    </div>
   );
 }
 
@@ -651,6 +673,9 @@ export function TripView({
   };
 
   const essentials = ESSENTIALS.filter((e) => data?.essentials?.[e.key]);
+  const flag = countryCodeFor(data?.summary?.destination || it.destination, data?.summary?.countryCode);
+  const { guide, state: guideState } = useGuide(it.id, data?.guide, !shared && !isPackage);
+  const city = cityOf(title);
   const similar = `/dashboard?${new URLSearchParams({ destination: title, days: String(it.numberOfDays), budget: String(Math.round(it.budget)) })}`;
 
   // Browsers name a saved PDF after the page title: "New York Itinerary-By GoRoam".
@@ -720,6 +745,7 @@ export function TripView({
           )}
           <div className="flex flex-wrap gap-2">
             {!shared && !isPackage && <ShareButton tripId={it.id} title={title} className={cn(btn, "bg-paper text-ink hover:bg-brand hover:text-white")} />}
+            {!shared && !isPackage && <EmailButton tripId={it.id} className={cn(glass, "disabled:opacity-70")} />}
             <button
               type="button"
               onClick={() => {
@@ -748,6 +774,7 @@ export function TripView({
               transition={{ duration: 1.1, ease, delay: 0.4 }}
               className={cn("display mt-3 text-[clamp(3.4rem,9vw,8.5rem)] leading-[0.86]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
             >
+              {flag && <Flag code={flag} className="mr-[0.2em] h-[0.4em] -translate-y-[0.12em] align-middle" />}
               {title}
             </motion.h1>
             {data?.summary?.overview && (
@@ -859,6 +886,8 @@ export function TripView({
             </div>
           </section>
 
+          <FlyThere query={query} className="mt-10" />
+
           {(data?.summary?.highlights?.length ?? 0) > 0 && (
             <section className="print-avoid mt-14 rounded-[28px] bg-ocean p-7 text-paper sm:p-10">
               <p className="eyebrow flex items-center gap-2 text-paper/60">
@@ -933,6 +962,19 @@ export function TripView({
           </div>
         )}
       </section>
+
+      {/* The local guide */}
+      {guide ? (
+        <>
+          <Experiences items={guide.experiences} destination={title} />
+          <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} />
+          <LocalGuide guide={guide} destination={title} />
+          <CoolFacts facts={guide.facts} city={city} />
+          <Videos videos={guide.videos} queries={guide.videoQueries} destination={title} />
+        </>
+      ) : (
+        guideState === "writing" && <GuidePending />
+      )}
 
       {/* Essentials */}
       {essentials.length > 0 && (
@@ -1019,6 +1061,8 @@ export function TripView({
           </div>
         </div>
       </section>
+
+      {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
     </div>
     </TripPhotosProvider>
   );

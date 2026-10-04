@@ -10,10 +10,12 @@ import {
   Landmark,
   MapPin,
   Moon,
+  Sparkles,
   Sun,
   Sunrise,
   TreePine,
   UtensilsCrossed,
+  Volume2,
   Waves,
 } from "lucide-react";
 import { useRef, type ReactNode } from "react";
@@ -197,6 +199,78 @@ function PdfVisual() {
   );
 }
 
+const PHRASES = [
+  { en: "Thank you", local: "ありがとう", say: "Arigatō", flag: "jp" },
+  { en: "How much?", local: "Quanto costa?", say: "KWAHN-toh KOH-stah", flag: "it" },
+  { en: "Hello", local: "नमस्ते", say: "Namaste", flag: "in" },
+];
+
+function GuideVisual() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.5, once: true });
+  return (
+    <div ref={ref} className="absolute inset-0 flex flex-col justify-center gap-2.5 px-6">
+      {PHRASES.map((p, i) => (
+        <motion.div
+          key={p.en}
+          initial={{ opacity: 0, x: i % 2 ? 30 : -30 }}
+          animate={inView ? { opacity: 1, x: 0 } : undefined}
+          transition={{ duration: 0.9, ease, delay: 0.2 + i * 0.18 }}
+          className={cn("flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_14px_30px_-22px_rgba(10,30,44,0.6)] ring-1 ring-line", i === 1 && "ml-8")}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- tiny flag */}
+          <img src={`https://flagcdn.com/${p.flag}.svg`} alt="" className="h-3.5 w-5 rounded-[2px] object-cover ring-1 ring-black/10" />
+          <span className="min-w-0 flex-1">
+            <span className="display block truncate text-xl leading-none text-ink">{p.local}</span>
+            <span className="mt-1 block truncate text-[11px] text-stone">
+              {p.en} · “{p.say}”
+            </span>
+          </span>
+          <span className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand">
+            <Volume2 className="size-3.5" />
+          </span>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function ConciergeVisual() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.5, once: true });
+  return (
+    <div ref={ref} className="absolute inset-0 flex flex-col justify-center gap-2.5 bg-ocean px-6 text-sm">
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={inView ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 0.7, ease, delay: 0.2 }}
+        className="ml-auto max-w-[80%] rounded-[18px] rounded-br-md bg-paper px-4 py-2.5 text-ink"
+      >
+        It&apos;s raining on day 2 — what now?
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={inView ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 0.7, ease, delay: 0.9 }}
+        className="max-w-[86%] rounded-[18px] rounded-bl-md bg-paper/10 px-4 py-2.5 leading-relaxed text-paper ring-1 ring-inset ring-paper/15"
+      >
+        Swap the garden walk for the Nishiki Market food crawl — it&apos;s covered, and 6 minutes from your afternoon stop.
+      </motion.p>
+      <motion.span
+        initial={{ scale: 0 }}
+        animate={inView ? { scale: 1 } : undefined}
+        transition={{ type: "spring", stiffness: 300, damping: 16, delay: 1.4 }}
+        className="inline-flex items-center gap-2 self-start rounded-full bg-paper py-1.5 pl-1.5 pr-3.5 text-xs text-ink"
+      >
+        <span className="grid size-6 place-items-center rounded-full bg-gradient-to-br from-brand-2 to-brand">
+          <Sparkles className="size-3 text-white" />
+        </span>
+        Ask GoRoam
+      </motion.span>
+    </div>
+  );
+}
+
 const STYLES = [
   { icon: Landmark, label: "Iconic sights" },
   { icon: UtensilsCrossed, label: "Food & drink" },
@@ -266,8 +340,8 @@ export function Features() {
             className="lg:col-span-2"
             delay={0.08}
             visual={<PdfVisual />}
-            title="Share, sync, print"
-            body="Send the crew a private link, add every stop to your calendar, or save a beautiful PDF for offline days."
+            title="Share, email, sync, print"
+            body="Send the crew a private link, email the plan to yourself, add every stop to your calendar, or save a beautiful PDF."
           />
           <Tile
             className="md:col-span-2 lg:col-span-2"
@@ -275,6 +349,19 @@ export function Features() {
             visual={<StylesVisual />}
             title="Made for how you travel"
             body="Solo or with the kids, slow or full throttle, vegan or anything goes — twelve interests and every preference shape the plan."
+          />
+          <Tile
+            className="md:col-span-1 lg:col-span-3"
+            visual={<GuideVisual />}
+            title="A local in your pocket"
+            body="Five phrases with audio, the dishes to order, culture do's and don'ts, souvenirs worth carrying home, events that week and three facts to impress at dinner."
+          />
+          <Tile
+            className="md:col-span-1 lg:col-span-3"
+            delay={0.08}
+            visual={<ConciergeVisual />}
+            title="Ask anything, anytime"
+            body="Every trip comes with its own AI concierge that knows your days, stays and budget — for rainy-day swaps, what to wear or how to get there."
           />
         </div>
       </div>

@@ -377,8 +377,37 @@ html.lenis, html.lenis body { height: auto; }
 .scene-drive { animation: scene-drive 19s linear infinite; animation-delay: -6s; }
 @keyframes scene-drive { from { transform: translateX(-220px); } to { transform: translateX(1820px); } }
 @keyframes scene-rain { from { transform: translate(7px, -48px); } to { transform: translate(-7px, 48px); } }
+/* Landing panorama */
+.pano-sway { transform-box: view-box; animation: pano-sway 7s ease-in-out infinite alternate; }
+@keyframes pano-sway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.6deg); } }
+.pano-plane { animation: pano-plane 34s linear infinite; animation-delay: -6s; }
+@keyframes pano-plane {
+  0% { transform: translate(-260px, 40px); }
+  62% { transform: translate(1980px, -70px); }
+  100% { transform: translate(1980px, -70px); }
+}
 .scene[data-paused="true"] * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
   .scene * { animation: none !important; }
   .scene-layer { transition: none; transform: none; }
 }
+
+/* Hand-painted texture over the landing panorama: a coarse paper grain, multiplied in. */
+.pano-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.16;
+  /* Fade in from the top so the grain sits on the land, not as a band across the sky. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 30%, #000 70%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 30%, #000 70%);
+}
+
+/* On narrow screens the panorama is wider than the viewport, so it slowly pans across. */
+@media (max-width: 1023px) {
+  .pano-track { animation: pano-pan 70s ease-in-out infinite alternate; animation-delay: -35s; }
+}
+@keyframes pano-pan { from { transform: translateX(0); } to { transform: translateX(calc(100vw - 100%)); } }
+@media (prefers-reduced-motion: reduce) {
+  .pano-track { animation: none; transform: translateX(calc((100vw - 100%) / 2)); }
+}
+

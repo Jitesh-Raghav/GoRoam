@@ -14,10 +14,12 @@ const DREAMS = [
   "Goa, just the two of us",
 ];
 
-function useTypewriter(active: boolean) {
+/** Types each line out, pauses, deletes it and moves on — for animated placeholders. Pass a stable array. */
+export function useTypewriter(active: boolean, lines: readonly string[] = DREAMS) {
   const [text, setText] = useState("");
   useEffect(() => {
     if (!active) return;
+    const DREAMS = lines;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setText(DREAMS[0]);
       return;
@@ -51,7 +53,7 @@ function useTypewriter(active: boolean) {
     };
     t = window.setTimeout(tick, 600);
     return () => window.clearTimeout(t);
-  }, [active]);
+  }, [active, lines]);
   return text;
 }
 

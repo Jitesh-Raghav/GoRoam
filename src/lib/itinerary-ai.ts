@@ -16,6 +16,7 @@ import {
   type TripPreferences,
 } from '@/lib/trip';
 import { isLandscape } from '@/lib/destinations';
+import { countryCodeFor } from '@/lib/flags';
 
 export interface ItineraryRequest {
   source: string;
@@ -69,7 +70,9 @@ RULES
 10. "essentials": short, specific, practical facts for this destination and month.
 11. "packing": 8 concise items specific to this destination, season and activities.
 12. summary.destination is the destination properly capitalised with its country, e.g. "Berlin, Germany".
-13. summary.landscape is the single word that best describes what the destination looks like: "coast" (beaches, islands, seaside), "mountains" (high, rocky or snowy peaks), "hills" (lush, green, often rainy hill country or rainforest), "lake" (the trip centres on a lake or backwaters), "desert" (sand, dunes, arid), "snow" (arctic, polar, northern lights) or "city" (an urban destination with no dominant landscape).
+13. "dayTip" is one practical trick for that specific day (a transit pass worth buying, how to beat a queue, what to book ahead, where to refill water).
+14. summary.countryCode is the destination country's ISO 3166-1 alpha-2 code in lower case, e.g. "jp".
+15. summary.landscape is the single word that best describes what the destination looks like: "coast" (beaches, islands, seaside), "mountains" (high, rocky or snowy peaks), "hills" (lush, green, often rainy hill country or rainforest), "lake" (the trip centres on a lake or backwaters), "desert" (sand, dunes, arid), "snow" (arctic, polar, northern lights) or "city" (an urban destination with no dominant landscape).
 
 Respond with JSON only, matching this shape exactly:
 {
@@ -89,7 +92,8 @@ Respond with JSON only, matching this shape exactly:
       },
       "afternoon": { ...same shape },
       "evening": { ...same shape },
-      "totalDayCost": 100
+      "totalDayCost": 100,
+      "dayTip": "One practical trick for the day"
     }
   ],
   "stays": [
@@ -109,6 +113,7 @@ Respond with JSON only, matching this shape exactly:
     "totalCost": 0,
     "totalDays": ${data.numberOfDays},
     "destination": "City, Country",
+    "countryCode": "de",
     "overview": "Two sentences selling the trip, written to the traveller",
     "landscape": "hills",
     "highlights": ["4 standout moments from this plan"]
@@ -140,6 +145,7 @@ export function tidy(raw: ItineraryData, data: ItineraryRequest): ItineraryData 
       destination: typeof summary.destination === 'string' && summary.destination.trim() ? summary.destination.trim() : data.destination,
       highlights: Array.isArray(summary.highlights) ? summary.highlights.slice(0, 5) : [],
       landscape: isLandscape(summary.landscape) ? summary.landscape : undefined,
+      countryCode: countryCodeFor(typeof summary.destination === 'string' ? summary.destination : data.destination, summary.countryCode) ?? undefined,
     },
   };
 }

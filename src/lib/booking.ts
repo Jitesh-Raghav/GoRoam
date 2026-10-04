@@ -82,6 +82,9 @@ const IATA: Record<string, string> = {
   queenstown: "ZQN", "new zealand": "AKL",
 };
 
+/** Every city and country we know by name, lower-case (also used to spot places in free text). */
+export const KNOWN_PLACES = Object.keys(IATA);
+
 /** Best-effort airport code for free text like "Kyoto, Japan"; null when unsure. */
 export function airportCode(place?: string) {
   if (!place) return null;
