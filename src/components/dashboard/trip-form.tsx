@@ -374,7 +374,8 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     const q = new URLSearchParams(window.location.search);
     try {
       const raw = window.sessionStorage.getItem(PLANNER_DRAFT_KEY);
-      if (raw && !q.get("destination")) {
+      const prefilled = ["destination", "days", "budget", "start", "with", "vibes", "diet", "notes"].some((k) => q.get(k));
+      if (raw && !prefilled) {
         const draft = JSON.parse(raw);
         if (draft?.formData) setFormData((prev) => ({ ...prev, ...draft.formData }));
         if (draft?.prefs) setPrefs((prev) => ({ ...prev, ...draft.prefs }));
@@ -387,12 +388,36 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     const d = q.get("destination");
     const days = Number(q.get("days"));
     const budget = Number(q.get("budget"));
+    const start = q.get("start") ?? "";
+    const vibes = (q.get("vibes") ?? "").split(",").filter((v) => VIBES.some((o) => o.id === v)).slice(0, 5);
     setFormData((prev) => ({
       ...prev,
       ...(d ? { destination: d.slice(0, 120) } : {}),
       ...(days >= 1 && days <= 30 ? { numberOfDays: Math.round(days) } : {}),
       ...(budget >= 100 ? { budget: Math.round(budget) } : {}),
+      ...(/^\d{4}-\d{2}-\d{2}$/.test(start) && start >= today ? { startDate: start } : {}),
+      ...(vibes.length ? { interests: vibes } : {}),
     }));
+
+    // From the landing page's free-form trip description.
+    const who = COMPANIONS.find((c) => c.id === q.get("with"))?.id;
+    const diet = (q.get("diet") ?? "").split(",").filter((v) => DIETS.some((o) => o.id === v));
+    const notes = q.get("notes")?.trim().slice(0, 400);
+    if (who || diet.length || notes) {
+      setPrefs((prev) => ({
+        ...prev,
+        ...(who
+          ? {
+              companions: who,
+              adults: who === "solo" ? 1 : who === "couple" ? 2 : Math.max(prev.adults, 2),
+              children: who === "family" ? Math.max(prev.children, 1) : 0,
+            }
+          : {}),
+        ...(diet.length ? { diet } : {}),
+        ...(notes ? { notes } : {}),
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- read the URL once, on arrival
   }, []);
 
   const people = prefs.adults + prefs.children;
