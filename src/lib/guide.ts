@@ -43,6 +43,7 @@ RULES
 - experiences: 6 bookable experiences and packages: at least 2 adventure activities, at least 1 sport (to play or to watch live), plus tours, classes or wellness that match their interests. "priceFrom" is a realistic per-person USD price.
 - videoQueries: 4 YouTube search phrases that would find great videos about visiting ${ctx.destination} (a guide, a food tour, a walking tour, things to know).
 - currencyCode: the ISO 4217 code of the local currency.
+- health: tapWater (is tap water safe to drink, one short sentence), vaccines (commonly recommended vaccinations or "none beyond routine", ending with "check with a travel clinic"), pharmacy (the local word for pharmacy and how to spot one), note (one sentence on sun, altitude, air quality or mosquitoes if relevant, else empty).
 - arrival: 2 or 3 ways to get from the main airport (or station, if there's no airport) into the centre, each with a realistic time, a cost and one tip.
 - emergency: the local emergency phone numbers (police, ambulance, fire, a tourist police or helpline if one exists, and the general number like 112).
 - scams: 3 common tourist scams or traps there and exactly how to avoid each.
@@ -65,7 +66,8 @@ Respond with JSON only:
   "arrival": [{ "mode": "Airport express train", "time": "75 min", "cost": "$25", "tip": "One tip" }],
   "emergency": { "police": "110", "ambulance": "119", "fire": "119", "tourist": "050-3816-2787", "general": "" },
   "scams": [{ "name": "Scam", "avoid": "How to avoid it" }],
-  "entry": { "summary": "Two short sentences.", "from": "India" }
+  "entry": { "summary": "Two short sentences.", "from": "India" },
+  "health": { "tapWater": "Safe to drink everywhere.", "vaccines": "None beyond routine; check with a travel clinic.", "pharmacy": "Yakkyoku (薬局), look for a green cross.", "note": "" }
 }`;
 }
 
@@ -139,6 +141,11 @@ export function tidyGuide(raw: unknown): TripGuide {
       .map((x) => ({ name: str(x.name, 80), avoid: str(x.avoid, 240) }))
       .filter((x) => x.name && x.avoid)
       .slice(0, 4),
+    health: (() => {
+      const h = (g.health && typeof g.health === "object" ? g.health : {}) as Record<string, unknown>;
+      const out = { tapWater: str(h.tapWater, 200) || undefined, vaccines: str(h.vaccines, 240) || undefined, pharmacy: str(h.pharmacy, 160) || undefined, note: str(h.note, 240) || undefined };
+      return Object.values(out).some(Boolean) ? out : undefined;
+    })(),
     entry: (() => {
       const e = (g.entry && typeof g.entry === "object" ? g.entry : {}) as Record<string, unknown>;
       const summary = str(e.summary, 360);

@@ -13,7 +13,6 @@ import {
   Bike,
   Building,
   Building2,
-  CalendarDays,
   Camera,
   Car,
   Check,
@@ -48,6 +47,8 @@ import {
 
 import { useCredits } from "@/components/dashboard/dashboard-layout";
 import { invalidate } from "@/lib/cached-json";
+import { DateRangePicker } from "./date-range-picker";
+import { Inspire } from "./inspire";
 import { track } from "@/lib/analytics";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { GeneratingOverlay } from "@/components/dashboard/generating-overlay";
@@ -626,8 +627,34 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                         <ArrowLeftRight className="size-4" />
                       </button>
                     </div>
+                    <Inspire
+                      className="-mt-4"
+                      from={formData.source}
+                      companions={prefs.companions}
+                      budget={Number(formData.budget) || 2000}
+                      days={formData.numberOfDays}
+                      interests={formData.interests}
+                      onPick={(destination, month) => {
+                        set("destination", destination);
+                        // The 1st of that month (or a week from now, if it's this month).
+                        const now = new Date();
+                        const year = month - 1 < now.getMonth() ? now.getFullYear() + 1 : now.getFullYear();
+                        const first = new Date(year, month - 1, 1);
+                        const start = first <= now ? new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7) : first;
+                        set("startDate", `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`);
+                      }}
+                    />
                     <div className="grid gap-3 md:grid-cols-2">
-                      <TextField id="trip-date" label="Start date" icon={CalendarDays} type="date" min={today} value={formData.startDate} onChange={(v) => set("startDate", v)} error={errors.startDate} />
+                      <DateRangePicker
+                        start={formData.startDate}
+                        days={formData.numberOfDays}
+                        min={today}
+                        error={errors.startDate}
+                        onChange={(startDate, numberOfDays) => {
+                          set("startDate", startDate);
+                          set("numberOfDays", numberOfDays);
+                        }}
+                      />
                       <div>
                         <Stepper label="Duration" icon={Clock3} value={formData.numberOfDays} onChange={(v) => set("numberOfDays", v)} min={1} max={30} suffix={(v) => (v === 1 ? "day" : "days")} error={errors.numberOfDays} />
                         <QuickPicks values={[2, 4, 7, 10, 14]} current={formData.numberOfDays} onPick={(v) => set("numberOfDays", v)} format={(v) => (v === 2 ? "Weekend" : v === 7 ? "A week" : v === 14 ? "Two weeks" : `${v} days`)} />

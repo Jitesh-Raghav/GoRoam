@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
+import { OfflineSupport } from "@/components/site/offline";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,6 +74,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <OfflineSupport />
         <div aria-hidden className="grain" />
       </body>
     </html>

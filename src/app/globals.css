@@ -126,6 +126,22 @@
   button,
   [role="button"],
   [role="tab"],
+  [role="radio"],
+  [role="checkbox"],
+  [role="switch"],
+  [role="option"],
+  [role="menuitem"],
+  [role="link"],
+  [role="gridcell"],
+  [data-clickable],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  input[type="date"],
+  input[type="color"],
+  input[type="file"],
+  label:has(input[type="checkbox"]),
+  label:has(input[type="radio"]),
   [type="button"],
   [type="submit"],
   [type="reset"],
@@ -439,5 +455,93 @@ html.lenis, html.lenis body { height: auto; }
   .hero-kenburns {
     animation: none;
     transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* ------------------------------------------------------------------ */
+.footer-twinkle {
+  animation: footer-twinkle 3.6s ease-in-out infinite;
+  opacity: 0.25;
+}
+@keyframes footer-twinkle {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* The plane follows the dashed route, pointing where it flies. */
+.footer-plane {
+  offset-rotate: auto;
+  offset-distance: 0%;
+  animation: footer-fly 14s cubic-bezier(0.45, 0, 0.55, 1) 2.4s infinite;
+  opacity: 0;
+}
+@keyframes footer-fly {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* Giant wordmark: a sheen sweeps across, and a soft spotlight follows the pointer. */
+.footer-wordmark {
+  --fx: 50%;
+  --fy: 50%;
+  --fo: 0;
+}
+.footer-letter {
+  color: transparent;
+  background-image:
+    radial-gradient(260px circle at var(--fx) var(--fy), rgba(52, 209, 191, calc(0.55 * var(--fo))), transparent 70%),
+    linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.22) 50%, transparent 60%),
+    linear-gradient(to bottom, rgba(244, 248, 249, 0.17), transparent 85%);
+  background-size:
+    100% 100%,
+    250% 100%,
+    100% 100%;
+  background-attachment: fixed, scroll, scroll;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: footer-sheen 7s ease-in-out infinite;
+}
+@keyframes footer-sheen {
+  0% {
+    background-position:
+      0 0,
+      150% 0,
+      0 0;
+  }
+  60%,
+  100% {
+    background-position:
+      0 0,
+      -50% 0,
+      0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-twinkle,
+  .footer-letter {
+    animation: none;
+  }
+  .footer-plane {
+    display: none;
   }
 }

@@ -5,7 +5,7 @@ import { limiter, ownedItinerary } from '@/lib/owned-trip';
 import { CHAT_LIMIT } from '@/lib/plans';
 import { refundAiRequest, takeAiRequest, tripContext } from '@/lib/trip-context';
 import { undash } from '@/lib/text';
-import type { ActivitySlot, ItineraryData } from '@/lib/trip';
+import { reactionKey, type ActivitySlot, type ItineraryData } from '@/lib/trip';
 
 /**
  * Swap one stop of a plan without regenerating the trip.
@@ -133,6 +133,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const day = { ...data.itinerary[t.day], [t.slot]: stop };
   day.totalDayCost = SLOTS.reduce((sum, s) => sum + (Number(day[s]?.estimatedCost) || 0), 0);
   data.itinerary[t.day] = day;
+  // Votes were about the old stop, not this one.
+  if (data.reactions) delete data.reactions[reactionKey(t.day, t.slot)];
   data.summary = { ...data.summary, totalCost: data.itinerary.reduce((s, d) => s + (d.totalDayCost || 0), 0) };
 
   await prisma.itinerary.update({ where: { id }, data: { itineraryData: JSON.stringify(data) } });

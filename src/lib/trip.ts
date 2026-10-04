@@ -287,6 +287,8 @@ export interface TripGuide {
   scams?: { name: string; avoid: string }[];
   /** Entry basics for travellers from the trip's home country. */
   entry?: { summary: string; from?: string };
+  /** Health basics: water, jabs, pharmacies, and anything about sun, altitude or air. */
+  health?: { tapWater?: string; vaccines?: string; pharmacy?: string; note?: string };
   /** Filled by the server from YouTube, never by the model. */
   videos?: TripVideo[];
 }
@@ -319,6 +321,35 @@ export interface Wallet {
   expenses: WalletExpense[];
 }
 
+export const BOOKING_KINDS = ["flight", "stay", "train", "car", "activity", "insurance", "other"] as const;
+export type BookingKind = (typeof BOOKING_KINDS)[number];
+
+/** Something the traveller actually booked, kept with the trip so it's all in one place. */
+export interface TripBooking {
+  id: string;
+  kind: BookingKind;
+  /** "AI 314 Mumbai → Osaka", "Hotel The Celestine". */
+  title: string;
+  /** Confirmation / PNR / policy number. */
+  ref?: string;
+  /** Local date-time, "YYYY-MM-DDTHH:mm" (or just a date). */
+  start?: string;
+  end?: string;
+  /** Address, terminal or meeting point. */
+  location?: string;
+  notes?: string;
+}
+
+/** What friends on a shared link think of one stop. */
+export interface StopReaction {
+  up: number;
+  down: number;
+  notes: { name: string; text: string; vote: "up" | "down"; at: string }[];
+}
+
+/** Key for a stop's reactions: "0-morning". */
+export const reactionKey = (day: number, slot: string) => `${day}-${slot}`;
+
 export interface ItineraryData {
   itinerary: DayItinerary[];
   /** Real photos found for the stops, saved so later views need no lookups. */
@@ -341,6 +372,10 @@ export interface ItineraryData {
   guide?: TripGuide;
   /** Shared expenses, added by the traveller during the trip. */
   wallet?: Wallet;
+  /** Flights, stays and tickets the traveller booked. */
+  bookings?: TripBooking[];
+  /** Friends' votes and notes from shared links, by reactionKey. */
+  reactions?: Record<string, StopReaction>;
   /** What the traveller asked for (added when the planner got richer fields). */
   trip?: { source?: string; preferences?: TripPreferences };
 }

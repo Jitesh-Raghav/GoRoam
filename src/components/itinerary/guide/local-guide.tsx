@@ -18,6 +18,11 @@ import {
   Wifi,
   X,
   PlaneLanding,
+  HeartPulse,
+  Droplets,
+  Syringe,
+  Pill,
+  Info,
   Phone,
   Siren,
   TriangleAlert,
@@ -288,6 +293,33 @@ function Safety({ guide }: { guide: TripGuide }) {
             <p className="relative mt-3 text-[11px] text-paper/50">Save these before you fly. Tap to call.</p>
           </div>
         )}
+        {guide.health && (
+          <div className="rounded-[24px] bg-white p-6 ring-1 ring-line">
+            <p className="eyebrow flex items-center gap-2 text-stone">
+              <HeartPulse className="size-4 text-brand" /> Health & water
+            </p>
+            <dl className="mt-4 space-y-3 text-sm">
+              {(
+                [
+                  ["Tap water", guide.health.tapWater, Droplets],
+                  ["Vaccinations", guide.health.vaccines, Syringe],
+                  ["Pharmacy", guide.health.pharmacy, Pill],
+                  ["Good to know", guide.health.note, Info],
+                ] as const
+              )
+                .filter(([, v]) => v)
+                .map(([label, value, Icon]) => (
+                  <div key={label} className="flex gap-3">
+                    <Icon className="mt-0.5 size-4 shrink-0 text-brand" />
+                    <div>
+                      <dt className="eyebrow text-[0.55rem] text-stone">{label}</dt>
+                      <dd className="mt-1 leading-relaxed text-ink">{value}</dd>
+                    </div>
+                  </div>
+                ))}
+            </dl>
+          </div>
+        )}
         {guide.entry && (
           <div className="rounded-[24px] bg-sun-soft/60 p-6 ring-1 ring-sun/25">
             <p className="eyebrow flex items-center gap-2 text-ink/60">
@@ -334,7 +366,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
           : t.id === "souvenirs"
             ? guide.souvenirs.length
             : t.id === "safety"
-              ? (guide.arrival?.length ?? 0) + (guide.scams?.length ?? 0) + (guide.emergency ? 1 : 0) + (guide.entry ? 1 : 0)
+              ? (guide.arrival?.length ?? 0) + (guide.scams?.length ?? 0) + (guide.emergency ? 1 : 0) + (guide.entry ? 1 : 0) + (guide.health ? 1 : 0)
               : guide.tips.length
   );
   const [tab, setTab] = useState<TabId>(tabs[0]?.id ?? "phrases");
