@@ -65,7 +65,8 @@ export async function GET(
         tripType: itinerary.tripType,
         interests,
         itineraryData,
-        createdAt: itinerary.createdAt.toISOString()
+        createdAt: itinerary.createdAt.toISOString(),
+        chatCount: itinerary.chatCount
       }
     });
 

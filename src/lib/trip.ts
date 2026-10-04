@@ -174,6 +174,8 @@ export interface DayItinerary {
   afternoon: ActivitySlot;
   evening: ActivitySlot;
   totalDayCost: number;
+  /** One practical trick for the day (a transit pass, a queue hack). */
+  dayTip?: string;
 }
 
 export interface StaySuggestion {
@@ -194,6 +196,70 @@ export interface Essentials {
   phrase?: string;
 }
 
+export interface Phrase {
+  english: string;
+  local: string;
+  romanized?: string;
+  pronunciation?: string;
+}
+
+export interface Dish {
+  name: string;
+  localName?: string;
+  what: string;
+  whereToTry?: string;
+  veg?: boolean;
+}
+
+export interface Souvenir {
+  name: string;
+  why: string;
+  where?: string;
+  priceRange?: string;
+}
+
+export interface TripEvent {
+  name: string;
+  when: string;
+  what: string;
+  where?: string;
+}
+
+export type TipCategory = "money" | "transport" | "safety" | "timing" | "connectivity" | "etiquette";
+export type ExperienceKind = "adventure" | "sport" | "tour" | "class" | "wellness";
+
+export interface Experience {
+  name: string;
+  kind: ExperienceKind;
+  duration?: string;
+  priceFrom?: number;
+  why: string;
+}
+
+export interface TripVideo {
+  id: string;
+  title: string;
+  channel?: string;
+  thumb: string;
+}
+
+export interface TripGuide {
+  /** BCP-47 tag for reading the phrases aloud, e.g. "ja-JP". */
+  languageCode?: string;
+  language?: string;
+  phrases: Phrase[];
+  etiquette: { dos: string[]; donts: string[] };
+  food: Dish[];
+  souvenirs: Souvenir[];
+  facts: { title: string; fact: string }[];
+  events: TripEvent[];
+  tips: { category: TipCategory; tip: string }[];
+  experiences: Experience[];
+  videoQueries: string[];
+  /** Filled by the server from YouTube, never by the model. */
+  videos?: TripVideo[];
+}
+
 export interface ItineraryData {
   itinerary: DayItinerary[];
   summary: {
@@ -204,10 +270,14 @@ export interface ItineraryData {
     overview?: string;
     /** What the place looks like (coast, hills, city…), for picking its poster. */
     landscape?: string;
+    /** ISO 3166-1 alpha-2 code of the destination's country, lower case. */
+    countryCode?: string;
   };
   stays?: StaySuggestion[];
   essentials?: Essentials;
   packing?: string[];
+  /** The local guide: phrases, food, culture, events and more (added later, so optional). */
+  guide?: TripGuide;
   /** What the traveller asked for (added when the planner got richer fields). */
   trip?: { source?: string; preferences?: TripPreferences };
 }
@@ -224,6 +294,8 @@ export interface ItineraryDetails {
   interests: string[];
   itineraryData: ItineraryData;
   createdAt: string;
+  /** Concierge questions already asked (owner views only). */
+  chatCount?: number;
 }
 
 /* -------------------------------------------------------------------------- */
