@@ -27,7 +27,7 @@ const TESTIMONIALS = [
     name: "Emma Rodriguez",
     role: "Business Traveler",
     content:
-      "As someone who travels frequently for work, GoRoam saves me hours of planning time. The credit system is perfect — I only pay for what I actually use.",
+      "As someone who travels frequently for work, GoRoam saves me hours of planning time. The credit system is perfect: I only pay for what I actually use.",
     initials: "ER",
     tint: "bg-[#B9CCEB]",
   },

@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>Trip details you give us</strong>: source and destination, dates, budget, who&apos;s travelling, pace, interests, dietary
-            needs, occasion and any notes you type — used to generate your itinerary.
+            needs, occasion and any notes you type, used to generate your itinerary.
           </li>
           <li>
             <strong>Generated itineraries</strong>: the day-by-day plan, stays, tips and packing lists GoRoam creates for you, stored to your
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>Credit and purchase records</strong>: your credit balance, and for each purchase the pack, amount, currency and status.
-            We do not collect or store your card number, UPI ID or other payment credentials — those go directly to Dodo Payments.
+            We do not collect or store your card number, UPI ID or other payment credentials. Those go directly to Dodo Payments.
           </li>
           <li>
             <strong>Basic technical data</strong>: standard server logs (like IP address and browser type) kept for security and debugging.
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
         <p>We keep this deliberately small:</p>
         <ul>
           <li>
-            <strong>A session cookie</strong> from our sign-in provider, so you stay signed in. This is essential — GoRoam doesn&apos;t work
+            <strong>A session cookie</strong> from our sign-in provider, so you stay signed in. This is essential: GoRoam doesn&apos;t work
             without it.
           </li>
           <li>
@@ -62,10 +62,10 @@ export default function PrivacyPage() {
       <LegalSection title="3. Who we share it with">
         <ul>
           <li>
-            <strong>Google</strong> — to sign you in.
+            <strong>Google</strong>: to sign you in.
           </li>
           <li>
-            <strong>OpenAI</strong> — the trip details you submit are sent to OpenAI&apos;s API to generate your itinerary. OpenAI processes
+            <strong>OpenAI</strong>: the trip details you submit are sent to OpenAI&apos;s API to generate your itinerary. OpenAI processes
             this to return the result to us; see{" "}
             <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noreferrer">
               OpenAI&apos;s privacy policy
@@ -73,11 +73,11 @@ export default function PrivacyPage() {
             .
           </li>
           <li>
-            <strong>Dodo Payments</strong> — handles checkout, payment processing and, for supported payment methods, acts as merchant of
+            <strong>Dodo Payments</strong>: handles checkout, payment processing and, for supported payment methods, acts as merchant of
             record. They receive your email, name and purchase details to process payment; we never see your card or bank details.
           </li>
           <li>
-            <strong>Our hosting and database providers</strong> (Vercel and our database host) — to run the Service and store your data.
+            <strong>Our hosting and database providers</strong> (Vercel and our database host), to run the Service and store your data.
           </li>
         </ul>
         <p>We don&apos;t sell your personal data, to anyone, ever.</p>
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
       <LegalSection title="5. How long we keep it">
         <p>
           We keep your account and itineraries for as long as your account exists. Delete your account (see Contact) and we&apos;ll delete
-          your personal data and itineraries, except records we&apos;re required to keep for tax, accounting or fraud-prevention purposes —
+          your personal data and itineraries, except records we&apos;re required to keep for tax, accounting or fraud-prevention purposes;
           typically purchase records, which we retain for as long as the law requires.
         </p>
       </LegalSection>
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
       <LegalSection title="6. Your rights">
         <p>
           Depending on where you live, you may have the right to access, correct, export or delete your personal data, or to object to
-          certain processing. To exercise any of these, contact us — see below. If you&apos;re in the EU or UK, you also have the right to
+          certain processing. To exercise any of these, contact us (see below). If you&apos;re in the EU or UK, you also have the right to
           lodge a complaint with your local data protection authority.
         </p>
       </LegalSection>

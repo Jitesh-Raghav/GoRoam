@@ -32,7 +32,7 @@ const STEPS = [
   {
     icon: Sparkles,
     title: "We craft the days.",
-    body: "GoRoam's AI weighs your budget, pace and interests to build a morning, afternoon and evening for every day — real places, not placeholders.",
+    body: "GoRoam's AI weighs your budget, pace and interests to build a morning, afternoon and evening for every day: real places, not placeholders.",
     points: ["Icons and hidden gems, geographically grouped", "Costs and an insider tip for every stop", "Where to stay, what to pack, local essentials"],
   },
   {
@@ -261,7 +261,7 @@ function PlannerMock({ step, className }: { step: number; className?: string }) 
             <span className="size-2.5 rounded-full bg-[#ff5f57]" />
             <span className="size-2.5 rounded-full bg-[#febc2e]" />
             <span className="size-2.5 rounded-full bg-[#28c840]" />
-            <span className="mx-auto font-mono text-[11px] text-stone">GoRoam — New trip</span>
+            <span className="mx-auto font-mono text-[11px] text-stone">GoRoam · New trip</span>
             <span className="eyebrow text-[0.6rem] text-brand">0{step + 1}/03</span>
           </div>
           <div className="h-[430px] p-5 sm:p-6">

@@ -34,6 +34,8 @@ import {
   TreePine,
   UtensilsCrossed,
   Wand2,
+  ArrowRightLeft,
+  Map as MapIcon,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -44,6 +46,7 @@ import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
+import { useDestinationPhoto } from "@/lib/use-destination-photo";
 import { downloadIcs } from "@/lib/ics";
 import {
   COMPANIONS,
@@ -65,7 +68,6 @@ import { cn } from "@/lib/utils";
 import { countryCodeFor } from "@/lib/flags";
 import { BookingPanel } from "./booking-panel";
 import { Checklist } from "./checklist";
-import { useCachedJson } from "@/lib/cached-json";
 import { track } from "@/lib/analytics";
 import { hasMapsKey, locatedStops } from "@/lib/maps";
 import { Concierge } from "./concierge";
@@ -79,6 +81,15 @@ import { CoolFacts, Events } from "./guide/moments";
 import { SectionTitle } from "./guide/section-title";
 import { useGuide } from "./guide/use-guide";
 import { Videos } from "./guide/videos";
+import { HeroPhoto } from "./hero-photo";
+import { CurrencyCard } from "./currency-card";
+import { SwapProvider, useSwap } from "./swap-dialog";
+import { TripWallet } from "./wallet";
+import { DayForecast, WeatherChip, WeatherOutlook, tripCentre, useLocalTime, useTripWeather } from "./weather";
+import type { DayWeather } from "@/app/api/weather/route";
+import { currencyFor } from "@/lib/currency";
+import { downloadKml, hasMappableStops } from "@/lib/kml";
+import { updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
@@ -169,9 +180,10 @@ function Countdown({ start, days }: { start: string; days: number }) {
 
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
-function StopCard({ slot, activity, index, day, destination, last, eager }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean }) {
+function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
+  const swap = useSwap();
   return (
     <motion.li
       initial={{ opacity: 0, y: 18 }}
@@ -188,6 +200,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager }: { sl
           )}
         >
           {index + 1}
+          {live && <span aria-hidden className="absolute inset-[-6px] animate-ping rounded-full ring-2 ring-brand/50 [animation-duration:2.4s]" />}
         </span>
       </div>
       <article
@@ -259,6 +272,15 @@ function StopCard({ slot, activity, index, day, destination, last, eager }: { sl
               >
                 <Ticket className="size-4" /> Tickets & tours
               </a>
+            )}
+            {swap && (
+              <button
+                type="button"
+                onClick={() => swap({ day, slot: slot.key, current: activity })}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-ink ring-1 ring-inset ring-line transition-colors hover:bg-ink hover:text-paper hover:ring-ink"
+              >
+                <ArrowRightLeft className="size-4" /> Swap
+              </button>
             )}
           </div>
         </div>
@@ -348,7 +370,26 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
   );
 }
 
-function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary; index: number; it: ItineraryDetails; total: number; onJump?: (i: number) => void; print?: boolean }) {
+function DayPanel({
+  day,
+  index,
+  it,
+  total,
+  onJump,
+  print,
+  weather,
+  nowSlot,
+}: {
+  day: DayItinerary;
+  index: number;
+  it: ItineraryDetails;
+  total: number;
+  onJump?: (i: number) => void;
+  print?: boolean;
+  weather?: DayWeather;
+  /** Today, during the trip: the slot happening now (or next). */
+  nowSlot?: string | null;
+}) {
   const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
@@ -357,15 +398,19 @@ function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary;
   );
   return (
     <div className="print-break">
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <div className="flex flex-col gap-5">
         <div className="min-w-0">
-          <p className="eyebrow text-stone">
+          <p className="eyebrow flex flex-wrap items-center gap-2 text-stone">
             Day {pad(index + 1)} · {dayLabel(it.startDate, index)}
+            {nowSlot !== undefined && (
+              <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
+            )}
           </p>
           <h3 className="display mt-3 text-[clamp(2.4rem,5vw,3.6rem)] leading-[0.95] text-ink">{day.theme || `Day ${index + 1}`}</h3>
           {day.summary && <p className="mt-3 max-w-xl text-stone">{day.summary}</p>}
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 text-sm">
+          <DayForecast day={weather} />
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3.5 py-2 text-ink ring-1 ring-line">
             <Banknote className="size-4 text-brand" /> {money(day.totalDayCost)}
           </span>
@@ -388,7 +433,7 @@ function DayPanel({ day, index, it, total, onJump, print }: { day: DayItinerary;
 
       <ol className="mt-8">
         {stops.map((s, k) => (
-          <StopCard key={s.key} slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} />
+          <StopCard key={s.key} slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.key} />
         ))}
       </ol>
 
@@ -652,6 +697,8 @@ export function TripView({
     data?.summary?.landscape
   );
   const dark = SCENES[scene]?.dark ?? true;
+  // A real photo of the place, faded in over the illustration once it loads.
+  const heroPhoto = useDestinationPhoto(data?.summary?.destination || it.destination);
   const adults = prefs?.adults ?? it.numberOfPeople;
   const children = prefs?.children ?? 0;
   const people = adults + children;
@@ -677,6 +724,34 @@ export function TripView({
   const { guide, state: guideState } = useGuide(it.id, data?.guide, !shared && !isPackage);
   const city = cityOf(title);
   const similar = `/dashboard?${new URLSearchParams({ destination: title, days: String(it.numberOfDays), budget: String(Math.round(it.budget)) })}`;
+  const owner = !shared && !isPackage;
+
+  // Live forecast (or last year's weather on these dates) and the destination's clock.
+  const centre = useMemo(() => (isPackage ? null : tripCentre(days)), [days, isPackage]);
+  const { weather, byDate } = useTripWeather(centre, it.startDate, it.numberOfDays);
+  const localTime = useLocalTime(weather?.timezone);
+  const localCurrency = guide?.currencyCode || currencyFor(flag);
+
+  // During the trip, open on today and point at what's happening now.
+  const [todayIndex, setTodayIndex] = useState<number | null>(null);
+  const [nowSlot, setNowSlot] = useState<string | null>(null);
+  useEffect(() => {
+    if (isPackage) return;
+    const n = daysUntil(it.startDate);
+    if (n > 0 || -n >= it.numberOfDays) return;
+    setTodayIndex(-n);
+    setActive(-n);
+    const pick = () => {
+      let hour = new Date().getHours();
+      try {
+        if (weather?.timezone) hour = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: weather.timezone }).format(new Date()));
+      } catch {}
+      setNowSlot(hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening");
+    };
+    pick();
+    const t = window.setInterval(pick, 5 * 60_000);
+    return () => window.clearInterval(t);
+  }, [it.startDate, it.numberOfDays, isPackage, weather?.timezone]);
 
   // Browsers name a saved PDF after the page title: "New York Itinerary-By GoRoam".
   useEffect(() => {
@@ -722,13 +797,15 @@ export function TripView({
 
   return (
     <TripPhotosProvider value={tripPhotos}>
+    <SwapProvider it={it} enabled={owner}>
     <div className="mx-auto max-w-[1320px]">
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
           {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
+        <HeroPhoto photo={heroPhoto} />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
           {isPackage ? (
             <Link href="/dashboard/packages" className={glass}>
@@ -756,6 +833,11 @@ export function TripView({
             >
               <CalendarPlus className="size-4" /> <span className="hidden sm:inline">Calendar</span>
             </button>
+            {hasMappableStops(it) && (
+              <button type="button" onClick={() => downloadKml(it)} className={glass} title="Every stop as an offline map for Google My Maps, Organic Maps or Maps.me">
+                <MapIcon className="size-4" /> <span className="hidden sm:inline">Offline map</span>
+              </button>
+            )}
             <button type="button" onClick={printPdf} className={glass}>
               <Printer className="size-4" /> <span className="hidden sm:inline">PDF</span>
             </button>
@@ -796,8 +878,8 @@ export function TripView({
       </section>
 
       {/* Facts */}
-      <section className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-[28px] bg-line ring-1 ring-line md:grid-cols-5">
-        <Fact label="From" value={data?.trip?.source ? titleCase(data.trip.source) : "—"} sub={`to ${title}`} />
+      <section className={cn("mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-[28px] bg-line ring-1 ring-line", localTime ? "md:grid-cols-3 lg:grid-cols-6" : "md:grid-cols-5")}>
+        <Fact label="From" value={data?.trip?.source ? titleCase(data.trip.source) : "Anywhere"} sub={`to ${title}`} />
         <Fact
           label="Travellers"
           value={`${people} ${people === 1 ? "traveller" : "travellers"}`}
@@ -805,8 +887,9 @@ export function TripView({
         />
         <Fact label="Pace" value={prefs ? labelFor(PACES, prefs.pace) : "Balanced"} sub={prefs ? `${labelFor(SPEND, prefs.spend)} spending` : undefined} />
         <Fact label="Staying in" value={prefs ? labelFor(STAYS, prefs.stay) : "Your pick"} sub={`${nights} ${nights === 1 ? "night" : "nights"}`} />
+        {localTime && <Fact label="Local time" value={localTime.time} sub={localTime.relative} />}
         <Fact
-          className="col-span-2 md:col-span-1"
+          className={localTime ? undefined : "col-span-2 md:col-span-1"}
           label="Into"
           value={it.interests.length ? it.interests.slice(0, 2).map((i) => labelFor(VIBES, i)).join(", ") : "A bit of everything"}
           sub={it.interests.length > 2 ? `+${it.interests.length - 2} more` : undefined}
@@ -858,7 +941,8 @@ export function TripView({
                       <span className="relative block h-20 overflow-hidden">
                         <PlacePhoto activity={d.morning ?? d.afternoon ?? d.evening} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-                        <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">DAY {pad(i + 1)}</span>
+                        <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
+                        <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
                         <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{money(d.totalDayCost)}</span>
                       </span>
                       <span className="relative block p-3.5 pt-3">
@@ -875,12 +959,22 @@ export function TripView({
               {/* On screen: one day at a time. In print: every day. */}
               <AnimatePresence mode="wait">
                 <motion.div key={active} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease }} className="print:hidden">
-                  {days[active] && <DayPanel day={days[active]} index={active} it={it} total={days.length} onJump={jump} />}
+                  {days[active] && (
+                    <DayPanel
+                      day={days[active]}
+                      index={active}
+                      it={it}
+                      total={days.length}
+                      onJump={jump}
+                      weather={byDate.get(isoDay(it.startDate, active))}
+                      nowSlot={todayIndex === active ? nowSlot : undefined}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
               <div className="hidden space-y-14 print:block">
                 {days.map((d, i) => (
-                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} print />
+                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} />
                 ))}
               </div>
             </div>
@@ -977,7 +1071,7 @@ export function TripView({
       )}
 
       {/* Essentials */}
-      {essentials.length > 0 && (
+      {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
         <section className="mt-20">
           <SectionTitle eyebrow="Good to know" title={<>The <span className="italic text-brand">essentials.</span></>} />
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -998,7 +1092,22 @@ export function TripView({
               </motion.div>
             ))}
           </div>
+          <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-12 lg:items-start empty:hidden">
+            {!!weather?.days.length && <WeatherOutlook days={weather.days} className="lg:col-span-7" />}
+            {localCurrency && <CurrencyCard local={localCurrency} budgetUsd={it.budget} className={weather?.days.length ? "lg:col-span-5" : "lg:col-span-6"} />}
+          </div>
         </section>
+      )}
+
+      {owner && (
+        <TripWallet
+          tripId={it.id}
+          initial={data?.wallet}
+          people={people}
+          budgetUsd={it.budget}
+          localCurrency={localCurrency}
+          onSaved={(wallet) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, wallet } } }))}
+        />
       )}
 
       {/* Checklist */}
@@ -1030,7 +1139,7 @@ export function TripView({
               {isPackage
                 ? "Change the dates, budget, pace or who's coming, and GoRoam re-plans every day around you."
                 : shared
-                  ? "GoRoam plans a day-by-day trip like this one in under a minute — flights, stays and all."
+                  ? "GoRoam plans a day-by-day trip like this one in under a minute, flights, stays and all."
                   : "Take it offline, send it to the crew, or start dreaming about the next one."}
             </p>
           </div>
@@ -1046,7 +1155,7 @@ export function TripView({
               </>
             ) : shared ? (
               <PillLink href="/dashboard" variant="brand" size="lg">
-                Plan my trip — free
+                Plan my trip for free
               </PillLink>
             ) : (
               <>
@@ -1064,6 +1173,7 @@ export function TripView({
 
       {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
     </div>
+    </SwapProvider>
     </TripPhotosProvider>
   );
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { undash } from '@/lib/text';
 
 export async function GET(
   request: NextRequest,
@@ -49,7 +50,7 @@ export async function GET(
     }
 
     // Parse the stored data
-    const itineraryData = JSON.parse(itinerary.itineraryData);
+    const itineraryData = undash(JSON.parse(itinerary.itineraryData));
     const interests = JSON.parse(itinerary.interests);
 
     return NextResponse.json({

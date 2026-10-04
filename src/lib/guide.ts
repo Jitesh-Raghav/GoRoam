@@ -1,5 +1,6 @@
 import type OpenAI from "openai";
 import { COMPANIONS, DIETS, VIBES, type ExperienceKind, type TipCategory, type TripGuide, type TripPreferences } from "./trip";
+import { undash } from "./text";
 import { findVideos } from "./videos";
 
 /**
@@ -10,6 +11,8 @@ import { findVideos } from "./videos";
 
 export interface GuideContext {
   destination: string;
+  /** Where they're travelling from, for visa basics. */
+  source?: string;
   startDate: string;
   numberOfDays: number;
   interests: string[];
@@ -25,7 +28,7 @@ export function buildGuidePrompt(ctx: GuideContext) {
   const vibes = ctx.interests.map((i) => label(VIBES, i)).join("; ") || "a bit of everything";
   const diet = p?.diet.length ? p.diet.map((d) => label(DIETS, d)).join(", ") : "";
 
-  return `Write a local guide for ${who} visiting ${ctx.destination} for ${ctx.numberOfDays} days from ${ctx.startDate} (${month}). They love: ${vibes}.${diet ? ` Dietary needs: ${diet} — every dish must suit them.` : ""}
+  return `Write a local guide for ${who} visiting ${ctx.destination} for ${ctx.numberOfDays} days from ${ctx.startDate} (${month}). They love: ${vibes}.${diet ? ` Dietary needs: ${diet}. Every dish must suit them.` : ""}
 
 RULES
 - Be specific to ${ctx.destination}, never generic travel advice.
@@ -39,6 +42,11 @@ RULES
 - tips: 6 practical tips and tricks for everyday travel there, one per category: money, transport, safety, timing, connectivity, etiquette.
 - experiences: 6 bookable experiences and packages: at least 2 adventure activities, at least 1 sport (to play or to watch live), plus tours, classes or wellness that match their interests. "priceFrom" is a realistic per-person USD price.
 - videoQueries: 4 YouTube search phrases that would find great videos about visiting ${ctx.destination} (a guide, a food tour, a walking tour, things to know).
+- currencyCode: the ISO 4217 code of the local currency.
+- arrival: 2 or 3 ways to get from the main airport (or station, if there's no airport) into the centre, each with a realistic time, a cost and one tip.
+- emergency: the local emergency phone numbers (police, ambulance, fire, a tourist police or helpline if one exists, and the general number like 112).
+- scams: 3 common tourist scams or traps there and exactly how to avoid each.
+- entry: ${ctx.source ? `entry and visa basics for someone travelling from ${ctx.source} (their nationality is likely that country's), in two short sentences, ending with a reminder to confirm on the official government site.` : 'general entry and visa basics in two short sentences, ending with a reminder to confirm on the official government site.'}${ctx.source ? ` "from" is the traveller's likely country.` : ''}
 
 Respond with JSON only:
 {
@@ -52,7 +60,12 @@ Respond with JSON only:
   "events": [{ "name": "Event", "when": "Usually mid-October", "what": "One sentence", "where": "Venue or area" }],
   "tips": [{ "category": "money", "tip": "One specific tip" }],
   "experiences": [{ "name": "Experience", "kind": "adventure", "duration": "4 hours", "priceFrom": 60, "why": "One sentence" }],
-  "videoQueries": ["..."]
+  "videoQueries": ["..."],
+  "currencyCode": "JPY",
+  "arrival": [{ "mode": "Airport express train", "time": "75 min", "cost": "$25", "tip": "One tip" }],
+  "emergency": { "police": "110", "ambulance": "119", "fire": "119", "tourist": "050-3816-2787", "general": "" },
+  "scams": [{ "name": "Scam", "avoid": "How to avoid it" }],
+  "entry": { "summary": "Two short sentences.", "from": "India" }
 }`;
 }
 
@@ -69,7 +82,7 @@ const price = (v: unknown) => {
 
 /** Coerce whatever the model returned into a guide that's safe to render. */
 export function tidyGuide(raw: unknown): TripGuide {
-  const g = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+  const g = (raw && typeof raw === "object" ? undash(raw) : {}) as Record<string, unknown>;
   const etiquette = (g.etiquette && typeof g.etiquette === "object" ? g.etiquette : {}) as Record<string, unknown>;
   const code = str(g.languageCode, 20);
   return {
@@ -111,6 +124,26 @@ export function tidyGuide(raw: unknown): TripGuide {
       .filter((e) => e.name && e.why)
       .slice(0, 8),
     videoQueries: strings(g.videoQueries, 4, 100),
+    currencyCode: /^[A-Z]{3}$/.test(str(g.currencyCode, 3)) ? str(g.currencyCode, 3) : undefined,
+    arrival: list(g.arrival)
+      .map((a) => ({ mode: str(a.mode, 60), time: str(a.time, 30) || undefined, cost: str(a.cost, 30) || undefined, tip: str(a.tip, 200) || undefined }))
+      .filter((a) => a.mode)
+      .slice(0, 3),
+    emergency: (() => {
+      const e = (g.emergency && typeof g.emergency === "object" ? g.emergency : {}) as Record<string, unknown>;
+      const num = (v: unknown) => (/^[\d\s+()-]{2,20}$/.test(str(v, 20)) ? str(v, 20) : undefined);
+      const out = { police: num(e.police), ambulance: num(e.ambulance), fire: num(e.fire), tourist: num(e.tourist), general: num(e.general) };
+      return Object.values(out).some(Boolean) ? out : undefined;
+    })(),
+    scams: list(g.scams)
+      .map((x) => ({ name: str(x.name, 80), avoid: str(x.avoid, 240) }))
+      .filter((x) => x.name && x.avoid)
+      .slice(0, 4),
+    entry: (() => {
+      const e = (g.entry && typeof g.entry === "object" ? g.entry : {}) as Record<string, unknown>;
+      const summary = str(e.summary, 360);
+      return summary ? { summary, from: str(e.from, 60) || undefined } : undefined;
+    })(),
   };
 }
 
@@ -126,7 +159,7 @@ export async function generateGuide(openai: OpenAI, ctx: GuideContext): Promise<
         {
           role: "system",
           content:
-            "You are a well-travelled local host. You give accurate, specific, culturally respectful advice about real places, real dishes and real customs. Never invent events or facts you are unsure of. Always respond with valid JSON only.",
+            "You are a well-travelled local host. You give accurate, specific, culturally respectful advice about real places, real dishes and real customs. Never invent events or facts you are unsure of. Never use em dashes (—); use commas, colons or full stops instead. Always respond with valid JSON only.",
         },
         { role: "user", content: buildGuidePrompt(ctx) },
       ],

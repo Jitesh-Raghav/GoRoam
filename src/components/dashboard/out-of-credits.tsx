@@ -75,7 +75,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
 
         <div className="p-5 sm:p-8">
           <p className="text-stone">
-            You&apos;ve used your free itinerary. Pick a pack to keep planning — your answers are saved, so you&apos;ll come straight back to this trip.
+            You&apos;ve used your free itinerary. Pick a pack to keep planning. Your answers are saved, so you&apos;ll come straight back to this trip.
           </p>
 
           <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
@@ -124,7 +124,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
           </ul>
 
           <button type="button" onClick={onClose} className="mt-5 text-sm text-stone underline decoration-line underline-offset-4 transition-colors hover:text-ink">
-            Maybe later — keep editing
+            Maybe later, keep editing
           </button>
         </div>
       </motion.div>

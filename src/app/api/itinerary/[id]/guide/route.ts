@@ -27,6 +27,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     const it = owned.itinerary;
     job = generateGuide(openai, {
       destination: data.summary?.destination || it.destination,
+      source: data.trip?.source,
       startDate: it.startDate.toISOString().slice(0, 10),
       numberOfDays: it.numberOfDays,
       interests: JSON.parse(it.interests),

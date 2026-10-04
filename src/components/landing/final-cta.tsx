@@ -22,7 +22,7 @@ export function FinalCta() {
         <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/20 to-ink/60" />
         <div className="container-x relative py-28 text-center text-paper">
           <Reveal y={12}>
-            <p className="eyebrow text-paper/70">(09) — Your move</p>
+            <p className="eyebrow text-paper/70">(09) / Your move</p>
           </Reveal>
           <h2 className="display mt-8 text-[clamp(3.4rem,9vw,9rem)] leading-[0.88]">
             <SplitText text="The world is waiting." className="block" />

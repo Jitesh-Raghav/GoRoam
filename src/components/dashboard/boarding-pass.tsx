@@ -20,7 +20,7 @@ function useDebounced<T>(value: T, ms: number) {
 
 const code = (place: string) => {
   const letters = place.split(",")[0].replace(/[^a-zA-Z]/g, "").toUpperCase();
-  return letters.length >= 3 ? letters.slice(0, 3) : "———";
+  return letters.length >= 3 ? letters.slice(0, 3) : "···";
 };
 
 function Barcode({ seed }: { seed: string }) {
@@ -75,7 +75,7 @@ export function BoardingPass({
   const scene = fixed ?? (dest.trim() ? guessed : "peaks");
   const date = data.startDate
     ? new Date(`${data.startDate}T00:00:00`).toLocaleDateString("en-US", { day: "2-digit", month: "short" }).toUpperCase()
-    : "— — —";
+    : "· · ·";
   const serial = `GR-${(hashString(`${data.source}${data.destination}${data.startDate}`) % 900000) + 100000}`;
 
   return (
@@ -123,9 +123,9 @@ export function BoardingPass({
         <dl className="mt-7 grid grid-cols-4 gap-3 border-t border-line pt-5">
           {[
             ["Date", date],
-            ["Days", String(data.numberOfDays || "—")],
-            ["Guests", String(data.numberOfPeople || "—")],
-            ["Budget", data.budget ? `$${data.budget.toLocaleString("en-US")}` : "—"],
+            ["Days", String(data.numberOfDays || "-")],
+            ["Guests", String(data.numberOfPeople || "-")],
+            ["Budget", data.budget ? `$${data.budget.toLocaleString("en-US")}` : "-"],
           ].map(([k, v]) => (
             <div key={k} className="min-w-0">
               <dt className="eyebrow text-[0.58rem] text-stone">{k}</dt>

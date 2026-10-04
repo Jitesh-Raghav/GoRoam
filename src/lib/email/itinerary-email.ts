@@ -89,7 +89,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
     .join("");
 
   const food = (guide?.food ?? [])
-    .map((f) => `<li style="margin:0 0 8px;font:14px/1.5 ${SANS};color:${C.ink}"><b>${esc(f.name)}</b>${f.whereToTry ? ` <span style="color:${C.stone}">— try it at ${esc(f.whereToTry)}</span>` : ""}</li>`)
+    .map((f) => `<li style="margin:0 0 8px;font:14px/1.5 ${SANS};color:${C.ink}"><b>${esc(f.name)}</b>${f.whereToTry ? ` <span style="color:${C.stone}">· try it at ${esc(f.whereToTry)}</span>` : ""}</li>`)
     .join("");
 
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} · GoRoam</title></head>
@@ -103,7 +103,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
     ${data.summary?.overview ? `<p style="margin:16px 0 0;font:15px/1.6 ${SANS};color:#d8e6ea">${esc(data.summary.overview)}</p>` : ""}
     <p style="margin:26px 0 0"><a href="${esc(link)}" style="display:inline-block;padding:13px 22px;border-radius:999px;background:${C.sun};font:600 14px ${SANS};color:${C.ink};text-decoration:none">Open the full itinerary →</a></p>
   </td></tr>
-  ${block(`<p style="margin:24px 0 0;font:15px/1.6 ${SANS};color:${C.stone}">Hi${name ? ` ${esc(name.split(" ")[0])}` : ""} — here's your ${esc(city)} plan, ready for offline. The calendar file attached adds every stop to your calendar.</p>`)}
+  ${block(`<p style="margin:24px 0 0;font:15px/1.6 ${SANS};color:${C.stone}">Hi${name ? ` ${esc(name.split(" ")[0])}` : ""}, here's your ${esc(city)} plan, ready for offline. The calendar file attached adds every stop to your calendar.</p>`)}
   ${block(heading("The plan", "Day by day") + days)}
     ${stays ? block(heading("Where to stay", "Pick your base") + `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${stays}</table>`) : ""}
     ${phrases ? block(heading(guide?.language ? `Speak ${guide.language}` : "Phrases", "Five phrases") + `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${phrases}</table>`) : ""}
@@ -114,7 +114,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
 </body></html>`;
 
   const text = [
-    `${title} — ${dates}`,
+    `${title} · ${dates}`,
     "",
     ...(data.itinerary ?? []).flatMap((d, i) => [
       `Day ${i + 1}: ${d.theme ?? ""}`,

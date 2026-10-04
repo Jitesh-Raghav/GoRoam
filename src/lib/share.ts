@@ -1,6 +1,7 @@
 // Server-only: imports node crypto and reads the auth secret.
 import { createHmac, timingSafeEqual } from "crypto";
 import type { Itinerary } from "@prisma/client";
+import { undash } from "./text";
 
 /**
  * Share links are signed rather than stored: the token is an HMAC of the
@@ -36,7 +37,7 @@ export function toDetails(itinerary: Itinerary) {
     numberOfPeople: itinerary.numberOfPeople,
     tripType: itinerary.tripType,
     interests: JSON.parse(itinerary.interests),
-    itineraryData: JSON.parse(itinerary.itineraryData),
+    itineraryData: undash(JSON.parse(itinerary.itineraryData)),
     createdAt: itinerary.createdAt.toISOString(),
   };
 }

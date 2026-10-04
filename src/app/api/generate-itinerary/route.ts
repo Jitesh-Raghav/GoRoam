@@ -146,6 +146,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     // If it fails the trip still saves; the itinerary page writes it later.
     const guidePromise = generateGuide(openai, {
       destination: data.destination,
+      source: data.source,
       startDate: data.startDate,
       numberOfDays: data.numberOfDays,
       interests: data.interests,

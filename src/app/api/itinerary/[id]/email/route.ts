@@ -21,10 +21,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const key = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
   if (!key || !from) {
-    return NextResponse.json({ success: false, error: "Email isn't set up yet — download the PDF instead." }, { status: 503 });
+    return NextResponse.json({ success: false, error: "Email isn't set up yet. Download the PDF instead." }, { status: 503 });
   }
   if (!allow(owned.userId)) {
-    return NextResponse.json({ success: false, error: 'Easy there — try again in a minute.' }, { status: 429 });
+    return NextResponse.json({ success: false, error: 'Easy there, try again in a minute.' }, { status: 429 });
   }
 
   try {

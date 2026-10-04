@@ -32,7 +32,7 @@ export const DESTINATIONS: Destination[] = [
     code: "AGR",
     bestTime: "Oct – Mar",
     days: "2–3 days",
-    blurb: "Ivory marble that blushes pink at dawn — see it again at dusk from Mehtab Bagh across the Yamuna.",
+    blurb: "Ivory marble that blushes pink at dawn. See it again at dusk from Mehtab Bagh across the Yamuna.",
     moment: { slot: "Morning", time: "6:00 AM", title: "Sunrise at the Taj Mahal" },
   },
   {
@@ -158,7 +158,7 @@ export const DESTINATIONS: Destination[] = [
     code: "NYC",
     bestTime: "Apr – Jun",
     days: "5 days",
-    blurb: "Green copper, golden torch — and the best view is from the free Staten Island Ferry.",
+    blurb: "Green copper, golden torch, and the best view is from the free Staten Island Ferry.",
     moment: { slot: "Evening", time: "7:00 PM", title: "Staten Island Ferry at dusk" },
   },
   {

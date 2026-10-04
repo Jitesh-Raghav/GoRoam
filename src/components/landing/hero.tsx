@@ -210,7 +210,7 @@ export function Hero() {
               transition={{ duration: 1.1, ease, delay: 0.55 }}
               className="mt-7 max-w-[34rem] text-lg leading-relaxed text-stone sm:text-xl"
             >
-              Tell GoRoam where you&apos;re dreaming of. In seconds you&apos;ll have a day-by-day itinerary — real places,
+              Tell GoRoam where you&apos;re dreaming of. In seconds you&apos;ll have a day-by-day itinerary: real places,
               honest budgets and the quiet corners guidebooks forget.
             </motion.p>
 
@@ -223,7 +223,7 @@ export function Hero() {
             >
               <div className="flex flex-wrap items-center gap-3">
                 <PillLink href="/dashboard" variant="ink" size="lg">
-                  Start planning — it&apos;s free
+                  Start planning for free
                 </PillLink>
                 <Link href="/#how" className="group inline-flex items-center gap-2 px-2 text-sm text-ink/70 transition-colors hover:text-ink">
                   How it works <ArrowRight className="size-4 transition-transform duration-500 ease-out-expo group-hover:translate-x-1" />
@@ -381,7 +381,7 @@ export function Hero() {
           <motion.div style={{ opacity: overlayOpacity }} className="pointer-events-none absolute inset-0 z-10 hidden bg-[radial-gradient(ellipse_at_center,rgba(10,30,44,0.62),rgba(10,30,44,0.42))] lg:block" />
           <motion.div style={{ opacity: manifestoOpacity }} className="pointer-events-none absolute inset-0 z-20 hidden items-center justify-center lg:flex">
             <div className="container-x max-w-6xl text-center">
-              <p className="eyebrow mb-8 text-paper/70">(01) — Why GoRoam</p>
+              <p className="eyebrow mb-8 text-paper/70">(01) / Why GoRoam</p>
               <ScrollWords
                 tokens={[MANIFESTO]}
                 progress={manifesto}

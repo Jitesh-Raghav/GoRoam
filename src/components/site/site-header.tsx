@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { UserRound } from "lucide-react";
 import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -88,7 +89,13 @@ export function SiteHeader() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth" className="hidden px-3 text-sm text-ink/70 transition-colors hover:text-ink sm:inline">
+                  <Link
+                    href="/auth"
+                    className="group hidden h-12 items-center gap-2.5 rounded-full border border-line bg-white/75 pl-1.5 pr-5 text-[0.95rem] font-medium tracking-[-0.01em] text-ink shadow-[0_10px_28px_-18px_rgba(10,30,44,0.55)] backdrop-blur-md transition-[background-color,color,border-color] duration-500 ease-out-expo hover:border-ink hover:bg-ink hover:text-paper sm:inline-flex"
+                  >
+                    <span className="grid size-9 place-items-center rounded-full bg-brand-soft text-brand transition-colors duration-500 group-hover:bg-paper/15 group-hover:text-paper">
+                      <UserRound className="size-4" />
+                    </span>
                     Sign in
                   </Link>
                   <PillLink href="/dashboard" size="md" className="hidden sm:inline-flex">

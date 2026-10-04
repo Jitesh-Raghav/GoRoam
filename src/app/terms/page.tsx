@@ -25,13 +25,13 @@ export default function TermsPage() {
 
       <LegalSection title="1. What GoRoam is">
         <p>
-          GoRoam uses artificial intelligence to generate travel itineraries from the details you provide — your route, dates, budget, who&apos;s
+          GoRoam uses artificial intelligence to generate travel itineraries from the details you provide: your route, dates, budget, who&apos;s
           coming, your pace and interests, and any notes you add. It also links out to third-party travel providers so you can book flights,
           stays, tickets and transport.
         </p>
         <p>
           Itineraries are AI-generated suggestions. Opening hours, prices, availability and even whether a place still exists can change after
-          the plan is made. <strong>Always verify details — especially opening hours, prices and booking requirements — before you rely on
+          the plan is made. <strong>Always verify details, especially opening hours, prices and booking requirements, before you rely on
           them or travel.</strong> GoRoam is not a travel agency and doesn&apos;t guarantee the accuracy of anything it generates.
         </p>
       </LegalSection>
@@ -46,12 +46,12 @@ export default function TermsPage() {
       <LegalSection title="3. Credits and payment">
         <p>
           Every new account gets a small number of free credits. Beyond that, generating an itinerary costs one credit, and credit packs are
-          sold as one-time purchases — there&apos;s no subscription. Credits don&apos;t expire.
+          sold as one-time purchases. There&apos;s no subscription. Credits don&apos;t expire.
         </p>
         <p>
           Payments are processed by <strong>Dodo Payments</strong>, who act as our payment processor and, for card and other supported
           payment methods, our authorized reseller and merchant of record. That means your payment is legally made to Dodo Payments, not
-          directly to GoRoam, and Dodo Payments — not us — is responsible for processing your payment, applicable taxes on the transaction,
+          directly to GoRoam, and Dodo Payments, not us, is responsible for processing your payment, applicable taxes on the transaction,
           and payment-related customer service. We never see or store your full card details. See our{" "}
           <a href="/refunds">Refund policy</a> for how refunds work.
         </p>
@@ -59,9 +59,9 @@ export default function TermsPage() {
 
       <LegalSection title="4. Booking with third parties">
         <p>
-          Flight, hotel, activity and transport links on GoRoam take you to third-party sites — Google Flights, Skyscanner, Kayak,
+          Flight, hotel, activity and transport links on GoRoam take you to third-party sites: Google Flights, Skyscanner, Kayak,
           Booking.com, Expedia, Airbnb, Hostelworld, GetYourGuide, Viator, Klook, Rome2Rio and others. Any booking, payment, cancellation or
-          dispute you make through one of them is a contract between you and that provider, governed by their own terms — GoRoam is not a
+          dispute you make through one of them is a contract between you and that provider, governed by their own terms. GoRoam is not a
           party to it and isn&apos;t responsible for what happens there.
         </p>
         <p>Some of these are affiliate links: GoRoam may earn a commission if you book through them, at no extra cost to you.</p>
@@ -104,7 +104,7 @@ export default function TermsPage() {
       <LegalSection title="9. Governing law">
         <p>
           These Terms are governed by the laws of <strong>[country/state]</strong>, without regard to conflict-of-law rules, and any dispute
-          will be handled in the courts of <strong>[city, country]</strong> — subject to any consumer-protection rights you have where you
+          will be handled in the courts of <strong>[city, country]</strong>, subject to any consumer-protection rights you have where you
           live that can&apos;t be waived by contract.
         </p>
       </LegalSection>

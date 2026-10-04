@@ -28,7 +28,7 @@ export default function RefundsPage() {
             Once approved, we refund the <strong>full amount</strong> you paid, through Dodo Payments, back to your original payment method.
           </li>
           <li>
-            The credits from that pack are removed from your balance (never taking it below zero — if you&apos;ve already used some, your
+            The credits from that pack are removed from your balance (never taking it below zero, if you&apos;ve already used some, your
             balance just goes to whatever it would otherwise be, not negative). Any itinerary you&apos;ve already generated is yours to keep.
           </li>
           <li>
@@ -40,9 +40,9 @@ export default function RefundsPage() {
 
       <LegalSection title="What this doesn't cover">
         <ul>
-          <li>The free credit every new account gets — there&apos;s nothing paid to refund.</li>
+          <li>The free credit every new account gets. There&apos;s nothing paid to refund.</li>
           <li>
-            Anything you spent through a third-party booking link (flights, hotels, tickets, transport) — that payment goes directly to that
+            Anything you spent through a third-party booking link (flights, hotels, tickets, transport): that payment goes directly to that
             provider, not through GoRoam, so their own refund and cancellation policy applies. See our <a href="/terms">Terms</a>.
           </li>
         </ul>
@@ -50,7 +50,7 @@ export default function RefundsPage() {
 
       <LegalSection title="Chargebacks">
         <p>
-          If something&apos;s wrong with a purchase, please email us first — we&apos;d rather sort it out directly and quickly than have your
+          If something&apos;s wrong with a purchase, please email us first. We&apos;d rather sort it out directly and quickly than have your
           bank or card network get involved. Filing a chargeback without contacting us first can result in your account being suspended
           while it&apos;s investigated.
         </p>

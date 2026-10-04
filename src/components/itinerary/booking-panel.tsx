@@ -64,7 +64,7 @@ export function BookingPanel({ query, className, dark = true }: { query: Booking
   const [tab, setTab] = useState<BookingKind>("flights");
   const partners = partnersFor(tab, query);
   const people = query.adults + (query.children ?? 0);
-  const from = airportCode(query.origin) ?? (query.origin ? cityOf(query.origin).slice(0, 3).toUpperCase() : "—");
+  const from = airportCode(query.origin) ?? (query.origin ? cityOf(query.origin).slice(0, 3).toUpperCase() : "ANY");
   const to = airportCode(query.destination) ?? cityOf(query.destination).slice(0, 3).toUpperCase();
 
   return (

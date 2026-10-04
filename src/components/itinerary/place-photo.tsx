@@ -53,6 +53,12 @@ export const asStop = (name: string, area?: string): ActivitySlot => {
   return slot;
 };
 
+/** A stop added after the trip's photos were fetched (a swap) looks up its own. */
+export function lookUpOwnPhoto<T extends ActivitySlot>(slot: T): T {
+  ownLookup.add(slot);
+  return slot;
+}
+
 /** The photo for a stop, `undefined` while it's still loading. */
 export function usePlacePhoto(activity: ActivitySlot | undefined, destination?: string): Photo | undefined {
   const ctx = useContext(PhotosContext);

@@ -50,7 +50,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** JSON fetch with a timeout and two polite retries when a service is busy (429) or hiccups (5xx). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- third-party JSON, narrowed where used
-async function get(url: string, init?: RequestInit, attempt = 0): Promise<any> {
+export async function get(url: string, init?: RequestInit, attempt = 0): Promise<any> {
   const res = await fetch(url, { ...init, headers: { 'User-Agent': UA, ...init?.headers }, signal: AbortSignal.timeout(TIMEOUT) });
   if ((res.status === 429 || res.status >= 500) && attempt < 2) {
     await sleep((attempt + 1) * 900 + Math.random() * 600);
@@ -120,7 +120,7 @@ interface WikiPage {
 }
 
 // Logos, flags, maps and diagrams make poor travel photos.
-const BAD = /(logo|flag|map|locator|location|coat.of.arms|seal|menu|receipt|document|plan|diagram|chart|montage|collage)/i;
+export const BAD = /(logo|flag|map|locator|location|coat.of.arms|seal|menu|receipt|document|plan|diagram|chart|montage|collage)/i;
 const fileName = (url: string) => decodeURIComponent(url.split('/').pop()?.split('?')[0] ?? '').replace(/^\d+px-/, '').replace(/[_.,]/g, ' ');
 // Real photographs are JPEGs; PNG/SVG/GIF page images are maps, diagrams and logos.
 const usable = (p: WikiPage) => !!p.thumbnail?.source && /\.jpe?g/i.test(p.thumbnail.source) && !BAD.test(decodeURIComponent(p.thumbnail.source));

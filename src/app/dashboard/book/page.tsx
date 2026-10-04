@@ -207,7 +207,7 @@ function BookContent() {
 
       <p className="mt-6 flex items-start gap-2 text-sm text-stone">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" />
-        You book directly with trusted partners, so payments, changes and refunds stay with them. GoRoam may earn a small commission — never a markup.
+        You book directly with trusted partners, so payments, changes and refunds stay with them. GoRoam may earn a small commission, never a markup.
       </p>
     </div>
   );
