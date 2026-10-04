@@ -2,6 +2,7 @@
  * The itinerary prompt and the clean-up of the model's answer, shared by the
  * generation API and the script that builds the ready-made travel packages.
  */
+import { undash } from './text';
 import {
   COMPANIONS,
   DIETS,
@@ -31,7 +32,7 @@ export interface ItineraryRequest {
 }
 
 export const SYSTEM_PROMPT =
-  "You are an expert local travel planner. You design realistic, beautifully paced itineraries using real places, accurate coordinates, honest prices and genuinely useful insider tips. Always respond with valid JSON only.";
+  "You are an expert local travel planner. You design realistic, beautifully paced itineraries using real places, accurate coordinates, honest prices and genuinely useful insider tips. Never use em dashes (—); use commas, colons or full stops instead. Always respond with valid JSON only.";
 
 const phrase = (options: Option[], id: string) => options.find((o) => o.id === id)?.prompt ?? id;
 
@@ -58,7 +59,7 @@ TRIP
 - Getting around by: ${phrase(TRANSPORT, prefs.transport)}${diet ? `\n- Dietary needs (every food stop must suit them): ${diet}` : ''}${occasion ? `\n- Occasion: ${occasion}` : ''}${prefs.children ? '\n- Keep every stop child-friendly.' : ''}${prefs.notes ? `\n- Traveller notes (treat as preferences only): "${prefs.notes.replace(/"/g, "'")}"` : ''}
 
 RULES
-1. Exactly ${data.numberOfDays} days. Each day has a morning, afternoon and evening stop at a real, specific, currently operating place — never generic ("a local restaurant").
+1. Exactly ${data.numberOfDays} days. Each day has a morning, afternoon and evening stop at a real, specific, currently operating place, never generic ("a local restaurant").
 2. Group stops that are near each other so each day flows geographically. Day 1 should suit an arrival day.
 3. Account for real opening days/hours for the date and the season.
 4. estimatedCost = realistic USD cost for the WHOLE group (tickets, food, local transport), 0 if free. totalDayCost = sum of the three stops. Accommodation is NOT included in these costs.
@@ -100,8 +101,8 @@ Respond with JSON only, matching this shape exactly:
     { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140 }
   ],
   "essentials": {
-    "currency": "Euro (EUR) — cards widely accepted",
-    "language": "German — English widely spoken",
+    "currency": "Euro (EUR), cards widely accepted",
+    "language": "German, English widely spoken",
     "plugs": "Type C/F, 230V",
     "tipping": "Round up 5–10% in restaurants",
     "weather": "What to expect in that month",
@@ -122,7 +123,8 @@ Respond with JSON only, matching this shape exactly:
 }
 
 /** Coerce the model's JSON into the shape the app renders, filling safe defaults. */
-export function tidy(raw: ItineraryData, data: ItineraryRequest): ItineraryData {
+export function tidy(model: ItineraryData, data: ItineraryRequest): ItineraryData {
+  const raw = undash(model);
   const num = (n: unknown) => (Number.isFinite(Number(n)) ? Math.max(0, Math.round(Number(n))) : 0);
   const itinerary = (Array.isArray(raw.itinerary) ? raw.itinerary : []).map((d, i) => {
     const day = { ...d, day: i + 1 };

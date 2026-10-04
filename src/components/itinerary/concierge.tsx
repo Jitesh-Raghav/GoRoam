@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, RotateCcw, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CHAT_LIMIT } from "@/lib/plans";
+import { undashText } from "@/lib/text";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -86,9 +87,9 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
         const { done, value } = await reader.read();
         if (done) break;
         answer += decoder.decode(value, { stream: true });
-        setMessages([...history, { role: "assistant", content: answer }]);
+        setMessages([...history, { role: "assistant", content: undashText(answer) }]);
       }
-      const final: Msg[] = [...history, { role: "assistant", content: answer.trim() || "Sorry — I didn't catch that. Try asking another way?" }];
+      const final: Msg[] = [...history, { role: "assistant", content: undashText(answer.trim()) || "Sorry, I didn't catch that. Try asking another way?" }];
       setMessages(final);
       save(tripId, final);
     } catch (e) {
@@ -176,7 +177,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
               {messages.length === 0 ? (
                 <div>
                   <p className="px-1 text-sm leading-relaxed text-stone">
-                    I know every day of this plan. Ask about what to wear, getting around, swaps for a rainy day, where to eat — anything.
+                    I know every day of this plan. Ask about what to wear, getting around, swaps for a rainy day, where to eat, anything.
                   </p>
                   <div className="mt-4 space-y-2">
                     {suggestions.map((s, i) => (
@@ -231,7 +232,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                   }}
                   rows={1}
                   disabled={left <= 0}
-                  placeholder={left > 0 ? "Ask anything about this trip…" : "You've used every question for this trip"}
+                  placeholder={left > 0 ? "Ask anything about this trip…" : "You've used every AI request for this trip"}
                   className="max-h-28 min-h-[2.5rem] flex-1 resize-none bg-transparent py-2 text-sm text-ink outline-none placeholder:text-stone-2"
                   aria-label="Your question"
                 />
@@ -245,7 +246,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                 </button>
               </div>
               <p className="mt-2 px-2 text-[11px] text-stone">
-                {left} of {CHAT_LIMIT} questions left on this trip · double-check live details
+                {left} of {CHAT_LIMIT} AI requests left (questions and swaps) · double-check live details
               </p>
             </form>
           </motion.section>

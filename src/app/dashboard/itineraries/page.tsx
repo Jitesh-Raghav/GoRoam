@@ -12,6 +12,8 @@ import { PillLink } from "@/components/site/pill";
 import { SplitText } from "@/components/motion/split-text";
 import { invalidate, prefetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { useDestinationScene } from "@/lib/use-destination-scene";
+import { useDestinationPhoto } from "@/lib/use-destination-photo";
+import { HeroPhoto } from "@/components/itinerary/hero-photo";
 import { countryCodeFor } from "@/lib/flags";
 import { Flag } from "@/components/itinerary/guide/flag";
 import { cn } from "@/lib/utils";
@@ -50,6 +52,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { scene } = useDestinationScene([it.destination, it.place].filter(Boolean).join(", "), it.landscape);
+  const photo = useDestinationPhoto(it.place || it.destination);
 
   return (
     <motion.article
@@ -66,6 +69,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
       <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${titleCase(it.destination)} itinerary`}>
         <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
           <LazyScene id={scene} tint={SCENES[scene].tint} />
+          <HeroPhoto photo={photo} credit={false} lazy drift={false} />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
         <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/15 px-2.5 py-1.5 text-center text-paper backdrop-blur-sm">
@@ -74,7 +78,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
         </span>
         <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
           <p className="eyebrow text-[0.6rem] text-paper/70">
-            {formatDate(it.startDate, false)} — {formatDate(it.endDate)}
+            {formatDate(it.startDate, false)} – {formatDate(it.endDate)}
           </p>
           <h3 className="display mt-2 flex items-center gap-2.5 text-[2.2rem] leading-none">
             <Flag code={countryCodeFor(it.place || it.destination, it.country)} className="h-[0.6em]" />

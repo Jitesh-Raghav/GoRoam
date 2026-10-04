@@ -35,6 +35,8 @@ export const PLANS: Plan[] = [
       "10 AI-planned itineraries",
       "Local guide: phrases with audio, food, culture & events",
       "AI concierge for every trip",
+      "Live weather, money converter & offline maps",
+      "Swap any stop with AI, split costs in a trip wallet",
       "Flight, stay & adventure booking links",
       "PDF, email & calendar export",
     ],

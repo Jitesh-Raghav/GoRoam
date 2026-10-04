@@ -42,7 +42,7 @@ export function EmailButton({ tripId, className }: { tripId: string; className?:
           >
             {state.kind === "sent" ? (
               <>
-                On its way to <span className="font-medium">{state.to}</span> — with a calendar file attached.
+                On its way to <span className="font-medium">{state.to}</span>, with a calendar file attached.
               </>
             ) : (
               state.message

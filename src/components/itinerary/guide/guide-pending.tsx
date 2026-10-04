@@ -20,7 +20,7 @@ export function GuidePending() {
       <h2 className="display mt-3 text-[clamp(2rem,4vw,3rem)] leading-[0.95] text-ink">
         Writing your <span className="italic text-brand">local guide…</span>
       </h2>
-      <p className="mt-3 max-w-lg text-stone">Phrases, food, culture, events, adventures and videos for this trip — about twenty seconds, and it&apos;s saved for next time.</p>
+      <p className="mt-3 max-w-lg text-stone">Phrases, food, culture, events, adventures and videos for this trip. It takes about twenty seconds, and it&apos;s saved for next time.</p>
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {ITEMS.map((it, i) => (
           <motion.div

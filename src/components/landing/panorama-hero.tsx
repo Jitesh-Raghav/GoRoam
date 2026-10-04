@@ -16,9 +16,9 @@ import { PanoramaLandscape, PanoramaSky } from "./panorama";
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const EXAMPLES = [
-  "7 days in Japan this October — food markets, quiet temples and a hike or two, away from the crowds.",
+  "7 days in Japan this October, food markets, quiet temples and a hike or two, away from the crowds.",
   "A 5-day honeymoon in Bali with sunsets, a spa day and great seafood.",
-  "Long weekend in Lisbon with friends, around $1,200 — nightlife and pastéis de nata.",
+  "Long weekend in Lisbon with friends, around $1,200, nightlife and pastéis de nata.",
   "10 days in Rajasthan with the kids: forts, palaces and vegetarian food.",
 ];
 
@@ -252,7 +252,7 @@ export function PanoramaHero() {
           transition={{ duration: 1.1, ease, delay: delay + 0.42 }}
           className="mx-auto mt-4 max-w-[36rem] text-base leading-relaxed text-ink/70 sm:text-lg"
         >
-          Describe the trip you&apos;re dreaming of. GoRoam turns it into a day-by-day plan — real places, honest budgets and stays ready to book.
+          Describe the trip you&apos;re dreaming of. GoRoam turns it into a day-by-day plan: real places, honest budgets and stays ready to book.
         </motion.p>
 
         <div className="mt-7">

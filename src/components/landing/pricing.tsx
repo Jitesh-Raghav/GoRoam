@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 import { PillLink } from "@/components/site/pill";
 import { PLANS, freeTrips, perTrip } from "@/lib/plans";
+import { Brackets } from "./guides";
 import { SectionHeading } from "./section-heading";
 
 export function Pricing() {
@@ -14,7 +15,7 @@ export function Pricing() {
             index="08"
             label="Pricing"
             title={[[{ text: "Pay once." }], [{ text: "Wander ", className: "italic text-brand" }, { text: "for ages." }]]}
-            description="No subscriptions and no hidden fees. Buy credits once and use them whenever you're ready — they never expire."
+            description="No subscriptions and no hidden fees. Buy credits once and use them whenever you're ready. They never expire."
           />
           <Reveal delay={0.2} className="lg:mb-2">
             <p className="flex items-center gap-2 text-sm text-stone">
@@ -23,7 +24,8 @@ export function Pricing() {
           </Reveal>
         </div>
 
-        <div className="mt-16 grid gap-4 lg:grid-cols-3 lg:items-stretch">
+        <div className="relative mt-16 grid gap-4 lg:grid-cols-3 lg:items-stretch">
+          <Brackets />
           {PLANS.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.08} className="h-full">
               <div
@@ -85,7 +87,7 @@ export function Pricing() {
               </span>
               <div>
                 <p className="display text-3xl leading-none text-ink">Start free.</p>
-                <p className="mt-1.5 text-stone">Every new account gets {freeTrips()} — see a complete plan before you pay a cent.</p>
+                <p className="mt-1.5 text-stone">Every new account gets {freeTrips()}: see a complete plan before you pay a cent.</p>
               </div>
             </div>
             <PillLink href="/auth" variant="outline" className="w-full justify-between sm:w-auto">

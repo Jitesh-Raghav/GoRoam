@@ -19,7 +19,7 @@ export default function NotFound() {
             Off the <span className="italic text-brand-2">map.</span>
           </h1>
           <p className="mt-5 max-w-md text-lg text-paper/75">
-            Even the best explorers take a wrong turn. This page doesn&apos;t exist — but your next adventure does.
+            Even the best explorers take a wrong turn. This page doesn&apos;t exist, but your next adventure does.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PillLink href="/" variant="paper">

@@ -9,12 +9,14 @@ import { googleHeaders, googleKey } from '@/lib/place-photos';
 export async function GET(request: NextRequest) {
   const ref = request.nextUrl.searchParams.get('ref') ?? '';
   const key = googleKey();
+  // Stop cards use the default; the trip hero asks for a wider shot.
+  const width = Math.max(400, Math.min(2400, Math.round(Number(request.nextUrl.searchParams.get('w')) || 1200)));
   if (!key || !/^places\/[\w-]+\/photos\/[\w-]+$/.test(ref)) {
     return new NextResponse(null, { status: 404 });
   }
 
   try {
-    const res = await fetch(`https://places.googleapis.com/v1/${ref}/media?maxWidthPx=1200&skipHttpRedirect=true&key=${key}`, {
+    const res = await fetch(`https://places.googleapis.com/v1/${ref}/media?maxWidthPx=${width}&skipHttpRedirect=true&key=${key}`, {
       headers: googleHeaders(),
       signal: AbortSignal.timeout(6000),
     });

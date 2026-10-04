@@ -7,7 +7,7 @@ type Variant = "ink" | "paper" | "brand" | "outline" | "glass";
 type Size = "md" | "lg";
 
 const base =
-  "group/pill relative isolate inline-flex shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full font-medium tracking-[-0.01em] transition-[color,background-color,box-shadow,transform] duration-500 ease-out-expo active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30";
+  "group/pill relative isolate inline-flex cursor-pointer shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full font-medium tracking-[-0.01em] transition-[color,background-color,box-shadow,transform] duration-500 ease-out-expo active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30";
 
 const variants: Record<Variant, string> = {
   ink: "bg-ink text-paper hover:text-white shadow-[0_10px_30px_-12px_rgba(10,30,44,0.6)]",

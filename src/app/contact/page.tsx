@@ -11,20 +11,20 @@ const ROUTES = [
   {
     icon: MessageCircleQuestion,
     title: "General & support",
-    body: "Questions about planning a trip, a bug, or anything else — we read every email.",
+    body: "Questions about planning a trip, a bug, or anything else. We read every email.",
     action: { label: "hello@goroam.com", href: "mailto:hello@goroam.com" },
   },
   {
     icon: Receipt,
     title: "Billing & refunds",
-    body: "For a purchase, a refund, or anything about your credits — see our refund policy for how it works.",
+    body: "For a purchase, a refund, or anything about your credits: see our refund policy for how it works.",
     action: { label: "See refund policy", href: "/refunds" },
   },
 ];
 
 export default function ContactPage() {
   return (
-    <LegalLayout eyebrow="Get in touch" title="We're a small team — say hello.">
+    <LegalLayout eyebrow="Get in touch" title="We're a small team. Say hello.">
       <p>Every message reaches a real person. We usually reply within a couple of business days.</p>
 
       <div className="grid gap-3 sm:grid-cols-2">

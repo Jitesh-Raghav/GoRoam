@@ -50,7 +50,7 @@ export function Ticker() {
 export function MobileManifesto() {
   return (
     <section className="container-x py-24 lg:hidden">
-      <p className="eyebrow mb-8 text-stone">(01) — Why GoRoam</p>
+      <p className="eyebrow mb-8 text-stone">(01) / Why GoRoam</p>
       <ScrollWords tokens={[MANIFESTO]} className="display text-[clamp(2.2rem,8vw,3.2rem)] leading-[1.06] text-ink" />
     </section>
   );

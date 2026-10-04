@@ -90,7 +90,7 @@ export function ShareButton({ tripId, title, className }: { tripId: string; titl
                   <X className="size-4" />
                 </button>
               </div>
-              <p className="mt-3 text-sm text-stone">Anyone with this link can view the full plan — no account needed. They can&apos;t edit or delete it.</p>
+              <p className="mt-3 text-sm text-stone">Anyone with this link can view the full plan, no account needed. They can&apos;t edit or delete it.</p>
 
               <div className="mt-5 flex items-center gap-2 rounded-2xl bg-white p-1.5 pl-4 ring-1 ring-line">
                 <Link2 className="size-4 shrink-0 text-brand" />

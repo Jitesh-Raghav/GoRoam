@@ -58,7 +58,7 @@ const faqs = [
   },
   {
     q: "Can I get a refund?",
-    a: "Yes — there's a 30-day money-back guarantee. Email hello@goroam.com and we'll refund the pack; its unused credits are removed.",
+    a: "Yes, there's a 30-day money-back guarantee. Email hello@goroam.com and we'll refund the pack; its unused credits are removed.",
   },
   {
     q: "Do credits expire?",
@@ -169,7 +169,7 @@ function CreditsPageContent() {
           href="/dashboard"
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-soft px-4 py-2 text-sm text-ink ring-1 ring-brand/20 transition-colors hover:bg-ink hover:text-paper"
         >
-          <ArrowLeft className="size-4" /> Your {savedTrip} plan is saved — back to it
+          <ArrowLeft className="size-4" /> Your {savedTrip} plan is saved. Back to it
         </Link>
       )}
 
@@ -193,7 +193,7 @@ function CreditsPageContent() {
               <div>
                 <p className="font-medium">
                   {returned === "confirming" && "Confirming your payment…"}
-                  {returned === "confirmed" && `Payment received — ${added} credits added.`}
+                  {returned === "confirmed" && `Payment received, ${added} credits added.`}
                   {returned === "delayed" && "Your payment is still being confirmed."}
                   {returned === "cancelled" && "Checkout cancelled. You haven't been charged."}
                   {returned === "failed" && "That payment didn't go through."}
@@ -201,7 +201,7 @@ function CreditsPageContent() {
                 <p className={cn("mt-0.5 text-sm", returned === "confirmed" ? "text-paper/65" : "text-stone")}>
                   {returned === "confirming" && "This usually takes a few seconds."}
                   {returned === "confirmed" && "A receipt is on its way to your inbox."}
-                  {returned === "delayed" && "Credits appear automatically as soon as it clears — you can keep browsing. Check your inbox for the receipt."}
+                  {returned === "delayed" && "Credits appear automatically as soon as it clears, you can keep browsing. Check your inbox for the receipt."}
                   {returned === "cancelled" && "Pick a pack whenever you're ready."}
                   {returned === "failed" && "You haven't been charged. Try again, or use another card or UPI."}
                 </p>

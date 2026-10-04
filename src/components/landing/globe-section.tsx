@@ -13,7 +13,7 @@ const TOUR = ["taj-mahal", "santorini", "big-ben", "statue-of-liberty", "christ-
 const FOCUS = ["taj-mahal", "eiffel-tower", "mount-fuji", "santorini", "machu-picchu", "christ-the-redeemer", "sydney-opera-house", "statue-of-liberty"];
 
 const STATS = [
-  { value: 30, suffix: "", label: "days — the longest trip we'll map out" },
+  { value: 30, suffix: "", label: "days: the longest trip we'll map out" },
   { value: 3, suffix: "", label: "curated moments in every single day" },
   { value: 20, suffix: "", label: "travellers in one shared plan" },
   { value: 8, suffix: "", label: "travel styles to mix and match" },
@@ -188,7 +188,7 @@ export function GlobeSection() {
               <Globe focus={focus} />
               <div className="-mt-4 text-center">
                 <p className="eyebrow h-4 text-paper/60">
-                  {active ? `Now over — ${active.place} · ${formatCoords(active.lat, active.lng)}` : "Drag to spin · tap a wonder to fly there"}
+                  {active ? `Now over: ${active.place} · ${formatCoords(active.lat, active.lng)}` : "Drag to spin · tap a wonder to fly there"}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                   {FOCUS.map((slug) => {

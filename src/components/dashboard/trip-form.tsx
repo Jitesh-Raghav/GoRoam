@@ -105,7 +105,7 @@ const STEPS = [
   { id: "route", label: "Route", title: "Where & when?", subtitle: "Your starting point, the place you keep daydreaming about, and your dates." },
   { id: "people", label: "Who & budget", title: "Who's coming?", subtitle: "Who's on the trip and the total budget for everyone, in US dollars." },
   { id: "style", label: "Style", title: "How do you travel?", subtitle: "Your pace, what you're into and where you like to wake up." },
-  { id: "details", label: "Details", title: "The fine print.", subtitle: "Optional — but it's what makes the plan feel like yours." },
+  { id: "details", label: "Details", title: "The fine print.", subtitle: "Optional, but it's what makes the plan feel like yours." },
 ] as const;
 
 export interface TripFormData {

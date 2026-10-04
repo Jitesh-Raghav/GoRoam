@@ -156,7 +156,7 @@ export function Wonders() {
                 <br />
                 <span className="italic text-brand-2">your rules.</span>
               </p>
-              <p className="mt-4 text-paper/70">From a weekend in Jaipur to a month across Patagonia — if it&apos;s on Earth, GoRoam can plan it.</p>
+              <p className="mt-4 text-paper/70">From a weekend in Jaipur to a month across Patagonia. If it&apos;s on Earth, GoRoam can plan it.</p>
               <PillLink href="/dashboard" variant="paper" className="mt-8">
                 Plan your own
               </PillLink>

@@ -19,7 +19,7 @@ const TABS = [
   { id: "transport", label: "Transport", icon: TrainFront },
 ] as const;
 
-const POINTS = ["Your route, dates and party filled in for you", "Compare the best partners side by side", "Book direct with them — never a markup"];
+const POINTS = ["Your route, dates and party filled in for you", "Compare the best partners side by side", "Book direct with them, never a markup"];
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -130,7 +130,7 @@ export function BookingSection() {
             tone="paper"
             size="md"
             title={[[{ text: "Plan it here." }], [{ text: "Book it ", className: "italic text-brand-2" }, { text: "in two taps.", className: "italic text-brand-2" }]]}
-            description="Every itinerary comes with flights, stays, tickets and transfers ready to book — prefilled with your dates and group, from the partners travellers already trust."
+            description="Every itinerary comes with flights, stays, tickets and transfers ready to book, prefilled with your dates and group, from the partners travellers already trust."
           />
           <ul className="mt-8 space-y-3">
             {POINTS.map((p, i) => (

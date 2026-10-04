@@ -21,7 +21,7 @@ export function Events({ events, month }: { events: TripEvent[]; month: string }
         }
       >
         <p className="flex max-w-xs items-start gap-2 text-xs leading-relaxed text-stone">
-          <Info className="mt-px size-3.5 shrink-0 text-brand" /> Dates shift from year to year — check the official listing before you plan around one.
+          <Info className="mt-px size-3.5 shrink-0 text-brand" /> Dates shift from year to year, so check the official listing before you plan around one.
         </p>
       </SectionTitle>
       <ol className="mt-8 grid gap-3 md:grid-cols-2">

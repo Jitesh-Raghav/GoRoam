@@ -17,12 +17,17 @@ import {
   UtensilsCrossed,
   Volume2,
   Waves,
+  ArrowRightLeft,
+  CloudSun,
+  Map as MapIcon,
+  Wallet,
 } from "lucide-react";
 import { useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
 import { LazyScene } from "@/components/scenes/lazy-scene";
+import { Brackets } from "./guides";
 import { SectionHeading } from "./section-heading";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -246,7 +251,7 @@ function ConciergeVisual() {
         transition={{ duration: 0.7, ease, delay: 0.2 }}
         className="ml-auto max-w-[80%] rounded-[18px] rounded-br-md bg-paper px-4 py-2.5 text-ink"
       >
-        It&apos;s raining on day 2 — what now?
+        It&apos;s raining on day 2, what now?
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 12 }}
@@ -254,7 +259,7 @@ function ConciergeVisual() {
         transition={{ duration: 0.7, ease, delay: 0.9 }}
         className="max-w-[86%] rounded-[18px] rounded-bl-md bg-paper/10 px-4 py-2.5 leading-relaxed text-paper ring-1 ring-inset ring-paper/15"
       >
-        Swap the garden walk for the Nishiki Market food crawl — it&apos;s covered, and 6 minutes from your afternoon stop.
+        Swap the garden walk for the Nishiki Market food crawl: it&apos;s covered, and 6 minutes from your afternoon stop.
       </motion.p>
       <motion.span
         initial={{ scale: 0 }}
@@ -267,6 +272,40 @@ function ConciergeVisual() {
         </span>
         Ask GoRoam
       </motion.span>
+    </div>
+  );
+}
+
+const TOOLS = [
+  { icon: CloudSun, label: "Day 2 · Kyoto", value: "18° / 9°", note: "Live forecast, rain at 4 pm" },
+  { icon: ArrowRightLeft, label: "Swap a stop", value: "3 ideas", note: "“Something indoors”, nearby" },
+  { icon: Wallet, label: "Trip wallet", value: "Sam → you", note: "$42.50 settles it" },
+  { icon: MapIcon, label: "Offline map", value: "9 stops", note: "Opens in Organic Maps" },
+];
+
+function ToolsVisual() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.4, once: true });
+  return (
+    <div ref={ref} className="absolute inset-0 grid grid-cols-2 gap-2.5 p-4 sm:p-5 lg:grid-cols-4">
+      {TOOLS.map((t, i) => (
+        <motion.div
+          key={t.label}
+          initial={{ opacity: 0, y: 18 }}
+          animate={inView ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.1 }}
+          className="flex flex-col justify-between rounded-2xl bg-white p-4 shadow-[0_14px_30px_-24px_rgba(10,30,44,0.6)] ring-1 ring-line"
+        >
+          <span className="flex items-center justify-between">
+            <span className="eyebrow text-[0.55rem] text-stone">{t.label}</span>
+            <t.icon className="size-4 text-brand" />
+          </span>
+          <span>
+            <span className="display block text-3xl leading-none text-ink">{t.value}</span>
+            <span className="mt-1 block truncate text-[11px] text-stone">{t.note}</span>
+          </span>
+        </motion.div>
+      ))}
     </div>
   );
 }
@@ -316,12 +355,13 @@ export function Features() {
           label="Built for travellers"
           title={[[{ text: "Everything a trip needs." }], [{ text: "Nothing it ", className: "italic text-brand" }, { text: "doesn't.", className: "italic text-brand" }]]}
         />
-        <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+          <Brackets />
           <Tile
             className="md:col-span-2 lg:col-span-4"
             visual={<DaysVisual />}
             title="Every day, beautifully paced"
-            body="A morning, afternoon and evening for each day, with times, durations and a theme — so days flow instead of scramble."
+            body="A morning, afternoon and evening for each day, with times, durations and a theme, so days flow instead of scramble."
           />
           <Tile
             className="lg:col-span-2"
@@ -348,7 +388,7 @@ export function Features() {
             delay={0.16}
             visual={<StylesVisual />}
             title="Made for how you travel"
-            body="Solo or with the kids, slow or full throttle, vegan or anything goes — twelve interests and every preference shape the plan."
+            body="Solo or with the kids, slow or full throttle, vegan or anything goes: twelve interests and every preference shape the plan."
           />
           <Tile
             className="md:col-span-1 lg:col-span-3"
@@ -361,7 +401,13 @@ export function Features() {
             delay={0.08}
             visual={<ConciergeVisual />}
             title="Ask anything, anytime"
-            body="Every trip comes with its own AI concierge that knows your days, stays and budget — for rainy-day swaps, what to wear or how to get there."
+            body="Every trip comes with its own AI concierge that knows your days, stays and budget, for rainy-day swaps, what to wear or how to get there."
+          />
+          <Tile
+            className="md:col-span-2 lg:col-span-6"
+            visual={<ToolsVisual />}
+            title="Built for the road, not just the planning"
+            body="Live weather for every day, a money converter, swap any stop you don't fancy, split costs with your crew in the trip wallet, and download the whole plan as an offline map."
           />
         </div>
       </div>

@@ -114,7 +114,15 @@
       radial-gradient(ellipse 80% 60% at 0% 0%, rgba(52, 209, 191, 0.12), transparent 60%),
       radial-gradient(ellipse 70% 55% at 100% 100%, rgba(244, 163, 64, 0.1), transparent 60%);
   }
-  /* Tailwind v4 dropped the pointer cursor on buttons; bring it back for everything clickable. */
+  ::selection {
+    background: var(--brand);
+    color: #fff;
+  }
+}
+
+/* Tailwind v4 dropped the pointer cursor on buttons. In the components layer: above any base
+   style, while a utility like cursor-wait can still say otherwise. */
+@layer components {
   button,
   [role="button"],
   [role="tab"],
@@ -130,10 +138,6 @@
   :disabled,
   [aria-disabled="true"] {
     cursor: not-allowed;
-  }
-  ::selection {
-    background: var(--brand);
-    color: #fff;
   }
 }
 
@@ -411,3 +415,29 @@ html.lenis, html.lenis body { height: auto; }
   .pano-track { animation: none; transform: translateX(calc((100vw - 100%) / 2)); }
 }
 
+
+/* Trip hero photo: a slow drift so a still photo feels alive. */
+.hero-kenburns {
+  transform-origin: 60% 40%;
+  animation: hero-kenburns 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.13) translate3d(-1.5%, -1%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns {
+    animation: none;
+  }
+}
+@media print {
+  .hero-kenburns {
+    animation: none;
+    transform: none;
+  }
+}

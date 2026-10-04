@@ -17,6 +17,11 @@ import {
   Volume2,
   Wifi,
   X,
+  PlaneLanding,
+  Phone,
+  Siren,
+  TriangleAlert,
+  Stamp,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,12 +32,13 @@ import { SectionTitle } from "./section-title";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-type TabId = "phrases" | "culture" | "food" | "souvenirs" | "tips";
+type TabId = "phrases" | "culture" | "food" | "souvenirs" | "tips" | "safety";
 const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
   { id: "phrases", label: "Phrases", icon: Languages },
   { id: "food", label: "Must-try food", icon: UtensilsCrossed },
   { id: "culture", label: "Culture", icon: HandHeart },
   { id: "souvenirs", label: "Souvenirs", icon: Gift },
+  { id: "safety", label: "Arrive & stay safe", icon: PlaneLanding },
   { id: "tips", label: "Tips & tricks", icon: Lightbulb },
 ];
 
@@ -81,7 +87,7 @@ function Phrases({ guide }: { guide: TripGuide }) {
     <div>
       {guide.language && (
         <p className="mb-4 text-sm text-stone">
-          Five phrases in <span className="text-ink">{guide.language}</span> that open doors{canSpeak ? " — tap the speaker to hear them." : "."}
+          Five phrases in <span className="text-ink">{guide.language}</span> that open doors{canSpeak ? ". Tap the speaker to hear them." : "."}
         </p>
       )}
       <ol className="divide-y divide-line overflow-hidden rounded-[24px] bg-white ring-1 ring-line">
@@ -211,6 +217,90 @@ function Souvenirs({ guide }: { guide: TripGuide }) {
   );
 }
 
+const EMERGENCY: { key: keyof NonNullable<TripGuide["emergency"]>; label: string }[] = [
+  { key: "general", label: "Emergency" },
+  { key: "police", label: "Police" },
+  { key: "ambulance", label: "Ambulance" },
+  { key: "fire", label: "Fire" },
+  { key: "tourist", label: "Tourist helpline" },
+];
+
+/** Landing, staying safe and getting in: the practical stuff people google at the airport. */
+function Safety({ guide }: { guide: TripGuide }) {
+  const numbers = EMERGENCY.filter((e) => guide.emergency?.[e.key]);
+  return (
+    <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+      <div className="space-y-3 lg:col-span-7">
+        {!!guide.arrival?.length && (
+          <div className="rounded-[24px] bg-white p-6 ring-1 ring-line">
+            <p className="eyebrow flex items-center gap-2 text-stone">
+              <PlaneLanding className="size-4 text-brand" /> From the airport
+            </p>
+            <ol className="mt-4 divide-y divide-line">
+              {guide.arrival.map((a, i) => (
+                <li key={i} className="print-avoid grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 py-3.5 first:pt-0 last:pb-0">
+                  <span className="text-ink">{a.mode}</span>
+                  <span className="text-right font-mono text-xs text-ink">
+                    {[a.time, a.cost].filter(Boolean).join(" · ")}
+                  </span>
+                  {a.tip && <span className="col-span-2 text-sm leading-relaxed text-stone">{a.tip}</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+        {!!guide.scams?.length && (
+          <div className="rounded-[24px] bg-white p-6 ring-1 ring-line">
+            <p className="eyebrow flex items-center gap-2 text-stone">
+              <TriangleAlert className="size-4 text-sun" /> Watch out for
+            </p>
+            <ul className="mt-4 space-y-4">
+              {guide.scams.map((x, i) => (
+                <li key={i} className="print-avoid">
+                  <p className="text-ink">{x.name}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-stone">{x.avoid}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="space-y-3 lg:col-span-5">
+        {numbers.length > 0 && (
+          <div className="relative overflow-hidden rounded-[24px] bg-ocean p-6 text-paper">
+            <div className="pointer-events-none absolute -right-12 -top-16 size-44 rounded-full bg-destructive/25 blur-3xl" />
+            <p className="eyebrow relative flex items-center gap-2 text-paper/60">
+              <Siren className="size-4 text-sun-2" /> Emergency numbers
+            </p>
+            <ul className="relative mt-4 grid grid-cols-2 gap-2">
+              {numbers.map((n) => (
+                <li key={n.key}>
+                  <a href={`tel:${guide.emergency![n.key]!.replace(/[^\d+]/g, "")}`} className="flex flex-col rounded-2xl bg-paper/[0.07] px-4 py-3 transition-colors hover:bg-paper hover:text-ink">
+                    <span className="eyebrow text-[0.55rem] opacity-60">{n.label}</span>
+                    <span className="display mt-1 flex items-center gap-2 text-2xl leading-none">
+                      <Phone className="size-4 opacity-70" />
+                      {guide.emergency![n.key]}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="relative mt-3 text-[11px] text-paper/50">Save these before you fly. Tap to call.</p>
+          </div>
+        )}
+        {guide.entry && (
+          <div className="rounded-[24px] bg-sun-soft/60 p-6 ring-1 ring-sun/25">
+            <p className="eyebrow flex items-center gap-2 text-ink/60">
+              <Stamp className="size-4 text-ink" /> Entry & visas{guide.entry.from ? ` · from ${guide.entry.from}` : ""}
+            </p>
+            <p className="mt-3 leading-relaxed text-ink">{guide.entry.summary}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Tips({ guide }: { guide: TripGuide }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -243,13 +333,15 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
           ? guide.etiquette.dos.length + guide.etiquette.donts.length
           : t.id === "souvenirs"
             ? guide.souvenirs.length
-            : guide.tips.length
+            : t.id === "safety"
+              ? (guide.arrival?.length ?? 0) + (guide.scams?.length ?? 0) + (guide.emergency ? 1 : 0) + (guide.entry ? 1 : 0)
+              : guide.tips.length
   );
   const [tab, setTab] = useState<TabId>(tabs[0]?.id ?? "phrases");
   if (!tabs.length) return null;
 
   const body = (id: TabId) =>
-    id === "phrases" ? <Phrases guide={guide} /> : id === "food" ? <Food guide={guide} destination={destination} /> : id === "culture" ? <Culture guide={guide} /> : id === "souvenirs" ? <Souvenirs guide={guide} /> : <Tips guide={guide} />;
+    id === "phrases" ? <Phrases guide={guide} /> : id === "food" ? <Food guide={guide} destination={destination} /> : id === "culture" ? <Culture guide={guide} /> : id === "souvenirs" ? <Souvenirs guide={guide} /> : id === "safety" ? <Safety guide={guide} /> : <Tips guide={guide} />;
 
   return (
     <section className="mt-20">

@@ -31,9 +31,9 @@ export const COMPANIONS: Option<Companions>[] = [
 ];
 
 export const PACES: Option<Pace>[] = [
-  { id: "relaxed", label: "Slow", hint: "Long lunches, lie-ins, room to wander", prompt: "relaxed — few transfers, unhurried stops and downtime" },
-  { id: "balanced", label: "Balanced", hint: "A good mix of seeing and being", prompt: "balanced — a full but comfortable day" },
-  { id: "packed", label: "Full throttle", hint: "Up early, see it all", prompt: "packed — early starts and as much as possible" },
+  { id: "relaxed", label: "Slow", hint: "Long lunches, lie-ins, room to wander", prompt: "relaxed: few transfers, unhurried stops and downtime" },
+  { id: "balanced", label: "Balanced", hint: "A good mix of seeing and being", prompt: "balanced: a full but comfortable day" },
+  { id: "packed", label: "Full throttle", hint: "Up early, see it all", prompt: "packed: early starts and as much as possible" },
 ];
 
 export const SPEND: Option<Spend>[] = [
@@ -82,11 +82,11 @@ export const TRANSPORT: Option<Transport>[] = [
 
 export const OCCASIONS: Option<Occasion>[] = [
   { id: "none", label: "Just because", hint: "", prompt: "" },
-  { id: "honeymoon", label: "Honeymoon", hint: "", prompt: "a honeymoon — add romantic moments" },
-  { id: "anniversary", label: "Anniversary", hint: "", prompt: "an anniversary — add one special celebration" },
-  { id: "birthday", label: "Birthday", hint: "", prompt: "a birthday — plan one memorable celebration" },
-  { id: "first", label: "First visit", hint: "", prompt: "a first visit — cover the essentials well" },
-  { id: "workation", label: "Workation", hint: "", prompt: "a workation — keep mornings light and include work-friendly cafés" },
+  { id: "honeymoon", label: "Honeymoon", hint: "", prompt: "a honeymoon: add romantic moments" },
+  { id: "anniversary", label: "Anniversary", hint: "", prompt: "an anniversary: add one special celebration" },
+  { id: "birthday", label: "Birthday", hint: "", prompt: "a birthday: plan one memorable celebration" },
+  { id: "first", label: "First visit", hint: "", prompt: "a first visit: cover the essentials well" },
+  { id: "workation", label: "Workation", hint: "", prompt: "a workation: keep mornings light and include work-friendly cafés" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -277,8 +277,46 @@ export interface TripGuide {
   tips: { category: TipCategory; tip: string }[];
   experiences: Experience[];
   videoQueries: string[];
+  /** ISO 4217 code of the local currency, e.g. "JPY". */
+  currencyCode?: string;
+  /** Getting from the main airport or station into town. */
+  arrival?: { mode: string; time?: string; cost?: string; tip?: string }[];
+  /** Local emergency numbers. */
+  emergency?: { police?: string; ambulance?: string; fire?: string; tourist?: string; general?: string };
+  /** Common tourist scams and how to avoid them. */
+  scams?: { name: string; avoid: string }[];
+  /** Entry basics for travellers from the trip's home country. */
+  entry?: { summary: string; from?: string };
   /** Filled by the server from YouTube, never by the model. */
   videos?: TripVideo[];
+}
+
+export interface WalletPerson {
+  id: string;
+  name: string;
+}
+
+export const EXPENSE_CATEGORIES = ["food", "stay", "transport", "activities", "shopping", "other"] as const;
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
+
+export interface WalletExpense {
+  id: string;
+  title: string;
+  /** In the wallet's currency. */
+  amount: number;
+  paidBy: string;
+  /** Who shares it (person ids); everyone splits equally. */
+  split: string[];
+  category: ExpenseCategory;
+  /** YYYY-MM-DD */
+  date: string;
+}
+
+/** The trip's shared spending: who paid for what, and who owes whom. */
+export interface Wallet {
+  currency: string;
+  people: WalletPerson[];
+  expenses: WalletExpense[];
 }
 
 export interface ItineraryData {
@@ -301,6 +339,8 @@ export interface ItineraryData {
   packing?: string[];
   /** The local guide: phrases, food, culture, events and more (added later, so optional). */
   guide?: TripGuide;
+  /** Shared expenses, added by the traveller during the trip. */
+  wallet?: Wallet;
   /** What the traveller asked for (added when the planner got richer fields). */
   trip?: { source?: string; preferences?: TripPreferences };
 }
