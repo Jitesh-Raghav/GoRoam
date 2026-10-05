@@ -499,46 +499,8 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Giant wordmark: a sheen sweeps across, and a soft spotlight follows the pointer. */
-.footer-wordmark {
-  --fx: 50%;
-  --fy: 50%;
-  --fo: 0;
-}
-.footer-letter {
-  color: transparent;
-  background-image:
-    radial-gradient(260px circle at var(--fx) var(--fy), rgba(52, 209, 191, calc(0.55 * var(--fo))), transparent 70%),
-    linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.22) 50%, transparent 60%),
-    linear-gradient(to bottom, rgba(244, 248, 249, 0.17), transparent 85%);
-  background-size:
-    100% 100%,
-    250% 100%,
-    100% 100%;
-  background-attachment: fixed, scroll, scroll;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: footer-sheen 7s ease-in-out infinite;
-}
-@keyframes footer-sheen {
-  0% {
-    background-position:
-      0 0,
-      150% 0,
-      0 0;
-  }
-  60%,
-  100% {
-    background-position:
-      0 0,
-      -50% 0,
-      0 0;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .footer-twinkle,
-  .footer-letter {
+  .footer-twinkle {
     animation: none;
   }
   .footer-plane {
@@ -668,76 +630,73 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Footer finale: stickers bob, a plane weaves through the wordmark, the pin pulses. */
-.sticker-bob {
-  animation: sticker-bob 7s ease-in-out infinite;
+/* Footer harbour plate: ferries cross, the sloop rides the swell, the moon's path glints. */
+.plate-ferry-a {
+  animation: plate-ferry-a 60s linear infinite;
 }
-@keyframes sticker-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-9px) rotate(3deg);
-  }
+.plate-ferry-b {
+  animation: plate-ferry-b 90s linear -35s infinite;
 }
-.sticker-needle {
-  transform-origin: 50px 50px;
-  animation: sticker-needle 5s ease-in-out infinite;
-}
-@keyframes sticker-needle {
-  0%,
-  100% {
-    transform: rotate(-18deg);
-  }
-  45% {
-    transform: rotate(24deg);
-  }
-  70% {
-    transform: rotate(8deg);
-  }
-}
-.footer-weave {
-  offset-rotate: auto;
-  offset-distance: 0%;
-  animation: footer-weave 11s cubic-bezier(0.45, 0, 0.55, 1) 2.6s infinite;
-  opacity: 0;
-}
-@keyframes footer-weave {
+@keyframes plate-ferry-a {
   0% {
-    offset-distance: 0%;
+    transform: translateX(-40px);
     opacity: 0;
   }
-  6%,
-  90% {
+  8%,
+  92% {
     opacity: 1;
   }
   100% {
-    offset-distance: 100%;
+    transform: translateX(320px);
     opacity: 0;
   }
 }
-.footer-pin-pulse {
-  animation: footer-pin-pulse 2.4s ease-out 2.4s infinite;
-  opacity: 0;
-}
-@keyframes footer-pin-pulse {
+@keyframes plate-ferry-b {
   0% {
-    transform: translateX(-50%) scale(0.6);
-    opacity: 0.9;
+    transform: translateX(380px);
+    opacity: 0;
+  }
+  8%,
+  92% {
+    opacity: 1;
   }
   100% {
-    transform: translateX(-50%) scale(2.6);
+    transform: translateX(-340px);
     opacity: 0;
+  }
+}
+.plate-bob {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: plate-bob 5.5s ease-in-out infinite;
+}
+@keyframes plate-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(3px) rotate(1.5deg);
+  }
+}
+.plate-glint {
+  animation: plate-glint 4.2s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes plate-glint {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sticker-bob,
-  .sticker-needle,
-  .footer-pin-pulse {
+  .plate-ferry-a,
+  .plate-ferry-b,
+  .plate-bob,
+  .plate-glint {
     animation: none;
-  }
-  .footer-weave {
-    display: none;
   }
 }

@@ -238,7 +238,7 @@ const taj: SceneDef = {
           <path d={mid.d} fill="#5A9791" />
         </Layer>
         <Layer depth={0.5}>
-          <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} />
+          <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} detailed />
         </Layer>
         <Layer depth={0.7}>
           <rect x="0" y={ground} width={VIEW_W} height={1000 - ground} fill="#1F5654" />
@@ -308,7 +308,7 @@ const eiffel: SceneDef = {
           <path d={farRoofs.body} fill="#7C4E74" />
         </Layer>
         <Layer depth={0.45}>
-          <Monument id="eiffel" x={800} y={baseY} scale={s} tones={{ body: "#241D3D", shade: "#191330" }} />
+          <Monument id="eiffel" x={800} y={baseY} scale={s} tones={{ body: "#241D3D", shade: "#191330" }} detailed />
           <g transform={`translate(800 ${r1(topY)}) scale(${s})`} fill="#FFE9B0">
             {sparkles.map((p) => (
               <circle key={p.i} cx={p.x} cy={p.y} r={1.9} className="scene-sparkle" style={{ animationDelay: `${p.d}s` }} />
@@ -360,7 +360,7 @@ const colosseum: SceneDef = {
           <path d={pines.d + pineRow} fill="#D6A06D" />
         </Layer>
         <Layer depth={0.5}>
-          <Monument id="colosseum" x={800} y={834} scale={1.26} tones={{ body: "#CB8052", shade: "#8B4A2E", light: "#E9B07C" }} />
+          <Monument id="colosseum" x={800} y={834} scale={1.26} tones={{ body: "#CB8052", shade: "#8B4A2E", light: "#E9B07C" }} detailed />
         </Layer>
         <Layer depth={0.72}>
           <path d={front.d} fill="#9A5B39" />
@@ -485,7 +485,7 @@ const fuji: SceneDef = {
         </Layer>
         <Layer depth={0.48}>
           <path d={hill + forestOnRidge({ d: "", at: hillAt }, { seed: 9, from: 0, to: 1600, density: 0.05, minH: 20, maxH: 46, gapChance: 0.35 })} fill="#6F5470" />
-          <Monument id="pagoda" x={690} y={782} scale={0.9} tones={{ body: "#AB4A43", shade: "#7A2E33", glow: "#FFDDBE" }} />
+          <Monument id="pagoda" x={690} y={782} scale={0.9} tones={{ body: "#AB4A43", shade: "#7A2E33", glow: "#FFDDBE" }} detailed />
         </Layer>
         <Layer depth={0.85}>
           {[left1, right1].map((tree, i) => (
@@ -781,7 +781,7 @@ const rio: SceneDef = {
             </radialGradient>
           </defs>
           <circle cx={790} cy={350} r={120} fill={`url(#${uid}-halo2)`} className="scene-breathe" />
-          <Monument id="christ" x={790} y={436} scale={1.55} tones={{ body: "#EFE7D6", shade: "#CFC4AF" }} />
+          <Monument id="christ" x={790} y={436} scale={1.55} tones={{ body: "#EFE7D6", shade: "#CFC4AF" }} detailed />
         </Layer>
         <Layer depth={0.64}>
           <Water uid={uid} y={800} top="#3E7580" bottom="#16333D" sunX={1240} sunColor="#FFD2A0" lines={30} />
@@ -842,7 +842,7 @@ const sydney: SceneDef = {
           <path d={bridge.truss} stroke="#44507E" strokeWidth={2} />
         </Layer>
         <Layer depth={0.45}>
-          <Monument id="opera" x={700} y={800} scale={0.8} tones={tones} />
+          <Monument id="opera" x={700} y={800} scale={0.8} tones={tones} detailed />
         </Layer>
         <Layer depth={0.6}>
           <Water uid={uid} y={800} top="#303F70" bottom="#161E3E" lines={40} lineColor="#FFE2C0" />
@@ -901,7 +901,7 @@ const newyork: SceneDef = {
             </radialGradient>
           </defs>
           <circle cx={724} cy={236} r={60} fill={`url(#${uid}-torch)`} className="scene-breathe" />
-          <Monument id="liberty" x={760} y={792} scale={0.92} tones={tones} />
+          <Monument id="liberty" x={760} y={792} scale={0.92} tones={tones} detailed />
           <Reflection uid={uid} y={804} opacity={0.22}>
             <Monument id="liberty" x={760} y={792} scale={0.92} tones={tones} />
           </Reflection>
@@ -992,7 +992,7 @@ const london: SceneDef = {
         <Layer depth={0.4}>
           <path d={palace.d} fill="#3B3251" />
           <path d={palace.lit} fill="#FFD9A0" opacity={0.55} />
-          <Monument id="bigben" x={bb.x} y={bb.y} scale={bb.s} tones={tones} />
+          <Monument id="bigben" x={bb.x} y={bb.y} scale={bb.s} tones={tones} detailed />
           <LondonClock cx={clock.cx} cy={clock.cy} r={clock.r} color="#2E2641" />
         </Layer>
         <Layer depth={0.58}>
@@ -1043,7 +1043,7 @@ const dubai: SceneDef = {
           <path d={city.lit} fill="#FFCF8C" opacity={0.6} />
         </Layer>
         <Layer depth={0.5}>
-          <Monument id="burj" x={800} y={870} scale={1.14} tones={{ body: "#1B1432", glow: "#FFD9A0" }} />
+          <Monument id="burj" x={800} y={870} scale={1.14} tones={{ body: "#1B1432", glow: "#FFD9A0" }} detailed />
           <circle cx={800} cy={r1(870 - 600 * 1.14)} r={3.4} fill="#FF4D4D" className="scene-blink" />
         </Layer>
         <Layer depth={0.8}>
@@ -1109,7 +1109,7 @@ const angkor: SceneDef = {
           <path d={jungle.d} fill="#C88B6A" />
         </Layer>
         <Layer depth={0.4}>
-          <Monument id="angkor" x={800} y={748} scale={1} tones={tones} />
+          <Monument id="angkor" x={800} y={748} scale={1} tones={tones} detailed />
           <rect x="0" y={744} width={VIEW_W} height={14} fill="#7A4E45" />
         </Layer>
         <Layer depth={0.55}>

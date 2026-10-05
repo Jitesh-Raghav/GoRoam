@@ -1,6 +1,7 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useId, type CSSProperties, type ReactNode } from "react";
+import { mix } from "./color";
 import { BIRD_PATH, cloudPath, mulberry32, r1, starField } from "./geometry";
-import { getMonument, type MonumentId, type Tone } from "./monuments";
+import { getMonument, type MonumentId, type MonumentLayer, type Tone } from "./monuments";
 
 export const VIEW_W = 1600;
 export const VIEW_H = 1000;
@@ -128,6 +129,8 @@ export function Monument({
   scale = 1,
   tones,
   className,
+  detailed = false,
+  light = "right",
 }: {
   id: MonumentId;
   x: number;
@@ -135,16 +138,54 @@ export function Monument({
   scale?: number;
   tones: Partial<Record<Tone, string>>;
   className?: string;
+  /** Draw the fine architectural layers, a shade wash and a sunlit rim. For monuments shown large. */
+  detailed?: boolean;
+  /** Which side the sun is on. */
+  light?: "left" | "right";
 }) {
+  const uid = "m" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const m = getMonument(id);
+  const base = m.layers.filter((l) => !l.detail);
+  const detail = detailed ? m.layers.filter((l) => l.detail) : [];
+  const silhouette = base.filter((l) => !l.stroke);
+  const body = tones.body ?? "#888888";
+  const shade = tones.shade ?? mix(body, "#0A1E2C", 0.35);
+  const lit = tones.light ?? mix(body, "#FFFFFF", 0.5);
+  const half = m.width;
+  const H = m.height + 40;
+  const draw = (l: MonumentLayer, i: number) =>
+    l.stroke ? (
+      <path key={i} d={l.d} fill="none" stroke={tones[l.tone] ?? body} strokeWidth={l.stroke} opacity={l.opacity} strokeLinecap="round" />
+    ) : (
+      <path key={i} d={l.d} fill={tones[l.tone] ?? body} fillRule={l.rule ?? "nonzero"} opacity={l.opacity} />
+    );
   return (
     <g transform={`translate(${r1(x)} ${r1(y - m.ground * scale)}) scale(${scale})`} className={className}>
-      {m.layers.map((l, i) =>
-        l.stroke ? (
-          <path key={i} d={l.d} fill="none" stroke={tones[l.tone] ?? tones.body} strokeWidth={l.stroke} />
-        ) : (
-          <path key={i} d={l.d} fill={tones[l.tone] ?? tones.body} fillRule={l.rule ?? "nonzero"} />
-        )
+      {base.map(draw)}
+      {detailed && (
+        <>
+          <defs>
+            <clipPath id={`${uid}-s`}>
+              {silhouette.map((l, i) => (
+                <path key={i} d={l.d} clipRule={l.rule ?? "nonzero"} />
+              ))}
+            </clipPath>
+            <clipPath id={`${uid}-l`}>
+              <rect x={light === "right" ? 0 : -half} y={-40} width={half} height={H} />
+            </clipPath>
+          </defs>
+          <g clipPath={`url(#${uid}-s)`}>
+            {/* The side away from the sun falls into shade. */}
+            <rect x={light === "right" ? -half : 0} y={-40} width={half} height={H} fill={shade} opacity={0.2} />
+            {detail.map(draw)}
+            {/* A thin sunlit rim along the lit edge. */}
+            <g clipPath={`url(#${uid}-l)`}>
+              {silhouette.slice(0, 2).map((l, i) => (
+                <path key={i} d={l.d} fill="none" stroke={lit} strokeWidth={r1(5 / scale)} opacity={0.55} />
+              ))}
+            </g>
+          </g>
+        </>
       )}
     </g>
   );
