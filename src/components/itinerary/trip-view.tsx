@@ -79,6 +79,7 @@ import { LocalGuide } from "./guide/local-guide";
 import { CoolFacts, Events } from "./guide/moments";
 import { SectionTitle } from "./guide/section-title";
 import { Band } from "./band";
+import { ChapterNav, type Chapter } from "./chapter-nav";
 import { useGuide } from "./guide/use-guide";
 import { Videos } from "./guide/videos";
 import { HeroPhoto } from "./hero-photo";
@@ -798,10 +799,23 @@ export function TripView({
     const next = Math.max(0, Math.min(days.length - 1, i));
     setActive(next);
     const top = planRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0) window.scrollTo({ top: window.scrollY + top - 24, behavior: "smooth" });
+    if (top < 0) window.scrollTo({ top: window.scrollY + top - 112, behavior: "smooth" });
   };
 
   const btn = "inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm transition-colors";
+
+  // Chapters for the sticky bar: only the ones this trip actually has.
+  const hasDo = !!guide && (guide.experiences.length > 0 || guide.events.length > 0 || (guide.videos?.length ?? 0) > 0 || guide.videoQueries.length > 0);
+  const chapters: Chapter[] = [
+    { id: "chapter-plan", label: "Plan" },
+    { id: "chapter-stay", label: "Stay" },
+    ...(hasDo ? [{ id: "chapter-do", label: "Do & see" }] : []),
+    ...(guide ? [{ id: "chapter-local", label: "Local guide" }] : []),
+    { id: "chapter-before", label: "Before you go" },
+    ...(owner ? [{ id: "chapter-tools", label: "Trip tools" }] : []),
+  ];
+  // A chapter's first section sits flush with it, so a jump lands on the heading.
+  const chapterBox = "mt-24 scroll-mt-28 [&>*:first-child]:mt-0";
   const glass = cn(btn, "bg-paper/15 text-paper ring-1 ring-inset ring-paper/25 hover:bg-paper hover:text-ink");
 
   return (
@@ -932,7 +946,47 @@ export function TripView({
         />
       </section>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-8">
+      {/* The trip at a glance: its big moments, before the detail. */}
+      {(data?.summary?.highlights?.length ?? 0) > 0 && (
+        <section className="print-avoid relative mt-3 overflow-hidden rounded-[32px] bg-ocean p-5 text-paper sm:p-10 print:bg-none print:p-0 print:text-ink">
+          <div className="pointer-events-none absolute -right-24 -top-28 size-80 rounded-full bg-brand-2/30 blur-3xl print:hidden" />
+          <div className="pointer-events-none absolute -bottom-32 -left-16 size-72 rounded-full bg-sun/25 blur-3xl print:hidden" />
+          <div className="relative flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
+                <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
+              </p>
+              <h3 className="display mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[0.95]">
+                The <span className="italic text-brand-2 print:text-brand">big moments.</span>
+              </h3>
+            </div>
+            <span className="rounded-full bg-paper/10 px-3 py-1.5 font-mono text-[11px] text-paper/70 ring-1 ring-inset ring-paper/15 print:hidden">
+              {data.summary.highlights.length} highlights
+            </span>
+          </div>
+          <ol className="relative mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {data.summary.highlights.map((h, i) => (
+              <motion.li
+                key={i}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.6, ease, delay: i * 0.06 }}
+                className="glass-dark group flex min-w-0 items-start gap-4 rounded-[22px] p-4 sm:p-5"
+              >
+                <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--sun-2),var(--sun))] font-mono text-sm font-medium text-ink shadow-[0_10px_24px_-12px_rgba(244,163,64,0.9)] transition-transform duration-500 group-hover:-rotate-6">
+                  {pad(i + 1)}
+                </span>
+                <span className="min-w-0 pt-1 text-[1.02rem] leading-snug text-paper/90 print:text-ink">{h}</span>
+              </motion.li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <ChapterNav chapters={chapters} className={cn("mt-6", shared ? "top-3" : "top-[calc(4.75rem+env(safe-area-inset-top))] lg:top-4")} />
+
+      <div id="chapter-plan" className="mt-10 grid scroll-mt-28 gap-10 lg:grid-cols-12 lg:gap-8">
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
           <section ref={planRef} className="scroll-mt-6">
@@ -997,42 +1051,6 @@ export function TripView({
             </div>
           </section>
 
-          {(data?.summary?.highlights?.length ?? 0) > 0 && (
-            <section className="print-avoid relative mt-16 overflow-hidden rounded-[32px] bg-ocean p-5 text-paper sm:p-10 print:bg-none print:p-0 print:text-ink">
-              <div className="pointer-events-none absolute -right-24 -top-28 size-80 rounded-full bg-brand-2/30 blur-3xl print:hidden" />
-              <div className="pointer-events-none absolute -bottom-32 -left-16 size-72 rounded-full bg-sun/25 blur-3xl print:hidden" />
-              <div className="relative flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
-                    <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
-                  </p>
-                  <h3 className="display mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[0.95]">
-                    The <span className="italic text-brand-2 print:text-brand">big moments.</span>
-                  </h3>
-                </div>
-                <span className="rounded-full bg-paper/10 px-3 py-1.5 font-mono text-[11px] text-paper/70 ring-1 ring-inset ring-paper/15 print:hidden">
-                  {data.summary.highlights.length} highlights
-                </span>
-              </div>
-              <ol className="relative mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {data.summary.highlights.map((h, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.6, ease, delay: i * 0.06 }}
-                    className="glass-dark group flex min-w-0 items-start gap-4 rounded-[22px] p-4 sm:p-5"
-                  >
-                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--sun-2),var(--sun))] font-mono text-sm font-medium text-ink shadow-[0_10px_24px_-12px_rgba(244,163,64,0.9)] transition-transform duration-500 group-hover:-rotate-6">
-                      {pad(i + 1)}
-                    </span>
-                    <span className="min-w-0 pt-1 text-[1.02rem] leading-snug text-paper/90 print:text-ink">{h}</span>
-                  </motion.li>
-                ))}
-              </ol>
-            </section>
-          )}
         </main>
 
         {/* Rail */}
@@ -1057,7 +1075,7 @@ export function TripView({
       </div>
 
       {/* Stays */}
-      <Band tone="brand">
+      <Band tone="brand" id="chapter-stay">
         <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="italic text-brand">base.</span></>}>
           <p className="max-w-sm text-sm text-stone">
             Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })} → {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
@@ -1093,28 +1111,27 @@ export function TripView({
         )}
       </Band>
 
-      {owner && (
-        <Bookings
-          tripId={it.id}
-          initial={data?.bookings}
-          defaultDate={isoDay(it.startDate, -2)}
-          onSaved={(bookings) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, bookings } } }))}
-        />
-      )}
 
       {/* The local guide */}
       {guide ? (
         <>
-          <Experiences items={guide.experiences} destination={title} />
-          <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} />
-          <CoolFacts facts={guide.facts} city={city} />
-          <LocalGuide guide={guide} destination={title} />
-          <Videos videos={guide.videos} queries={guide.videoQueries} destination={title} />
+          {hasDo && (
+            <div id="chapter-do" className={chapterBox}>
+              <Experiences items={guide.experiences} destination={title} />
+              <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} />
+              <Videos videos={guide.videos} queries={guide.videoQueries} destination={title} />
+            </div>
+          )}
+          <div id="chapter-local" className={chapterBox}>
+            <LocalGuide guide={guide} destination={title} />
+            <CoolFacts facts={guide.facts} city={city} />
+          </div>
         </>
       ) : (
         guideState === "writing" && <GuidePending />
       )}
 
+      <div id="chapter-before" className={chapterBox}>
       {/* Essentials */}
       {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
         <Band>
@@ -1145,7 +1162,22 @@ export function TripView({
         </Band>
       )}
 
+
+      {/* Checklist */}
+      <section className="mt-24">
+        <Checklist tripId={it.id} packing={data?.packing} />
+      </section>
+      </div>
+
+      {/* Your trip tools: the bookings vault and the shared wallet. */}
       {owner && (
+        <div id="chapter-tools" className={chapterBox}>
+        <Bookings
+          tripId={it.id}
+          initial={data?.bookings}
+          defaultDate={isoDay(it.startDate, -2)}
+          onSaved={(bookings) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, bookings } } }))}
+        />
         <TripWallet
           tripId={it.id}
           initial={data?.wallet}
@@ -1154,12 +1186,8 @@ export function TripView({
           localCurrency={localCurrency}
           onSaved={(wallet) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, wallet } } }))}
         />
+        </div>
       )}
-
-      {/* Checklist */}
-      <section className="mt-24">
-        <Checklist tripId={it.id} packing={data?.packing} />
-      </section>
 
       {/* Outro */}
       <section className="no-print relative mt-6 overflow-hidden rounded-[32px] bg-ocean p-8 text-paper sm:p-12">

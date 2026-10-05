@@ -9,6 +9,7 @@
 import {
   C,
   L,
+
   PathBuilder,
   Q,
   circle,
@@ -31,6 +32,9 @@ export interface MonumentLayer {
   stroke?: number;
   /** Skip in line-art mode (tiny details that turn into noise). */
   noLine?: boolean;
+  /** Fine architectural detail, drawn only when a monument is shown large (`<Monument detailed>`). */
+  detail?: boolean;
+  opacity?: number;
 }
 
 export interface Monument {
@@ -56,6 +60,69 @@ export type MonumentId =
   | "goldengate"
   | "angkor"
   | "brandenburg";
+
+/* --------------------------------- detail kit -------------------------------- */
+
+/** Points along a cubic Bézier, for reading an edge's x at a given y. */
+function cubicPts(p0: Pt, p1: Pt, p2: Pt, p3: Pt, n = 24): Pt[] {
+  const pts: Pt[] = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const u = 1 - t;
+    pts.push([
+      u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0],
+      u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1],
+    ]);
+  }
+  return pts;
+}
+
+/** x of a polyline edge at height y (linear between samples, clamped at the ends). */
+function edgeAt(pts: Pt[], y: number) {
+  const s = [...pts].sort((a, b) => a[1] - b[1]);
+  if (y <= s[0][1]) return s[0][0];
+  for (let i = 1; i < s.length; i++) {
+    if (y <= s[i][1]) {
+      const [x0, y0] = s[i - 1];
+      const [x1, y1] = s[i];
+      return x0 + ((x1 - x0) * (y - y0)) / Math.max(y1 - y0, 1e-6);
+    }
+  }
+  return s[s.length - 1][0];
+}
+
+/** X-bracing between two edges, from y0 to y1: the riveted lattice of iron towers and bridges. */
+function lattice(a: (y: number) => number, b: (y: number) => number, y0: number, y1: number, step: number, mirror = true) {
+  let d = "";
+  const one = (sx: number) => {
+    let z1 = "";
+    let z2 = "";
+    let k = 0;
+    for (let y = y0; y <= y1 + 0.01; y += step, k++) {
+      const p = k % 2 ? [b(y), y] : [a(y), y];
+      const q = k % 2 ? [a(y), y] : [b(y), y];
+      z1 += `${k ? "L" : "M"}${r1(p[0] * sx)} ${r1(p[1])}`;
+      z2 += `${k ? "L" : "M"}${r1(q[0] * sx)} ${r1(q[1])}`;
+      d += `M${r1(a(y) * sx)} ${r1(y)}L${r1(b(y) * sx)} ${r1(y)}`;
+    }
+    d += z1 + z2;
+  };
+  one(1);
+  if (mirror) one(-1);
+  return d;
+}
+
+/** An open polyline. */
+function polyline(pts: Pt[]) {
+  return pts.map(([x, y], i) => `${i ? "L" : "M"}${r1(x)} ${r1(y)}`).join("");
+}
+
+/** Evenly spaced short verticals: railings, balusters, louvres. */
+function ticks(x0: number, x1: number, y0: number, y1: number, gap: number) {
+  let d = "";
+  for (let x = x0; x <= x1 + 0.01; x += gap) d += `M${r1(x)} ${r1(y0)}V${r1(y1)}`;
+  return d;
+}
 
 /* ---------------------------------- Eiffel --------------------------------- */
 
@@ -86,13 +153,34 @@ function eiffel(): Monument {
       C(50, 545, 27, 531, 0, 530),
     ]
   );
-  const lattice =
+  const openings =
     "M-44 486C-30 445-14 424 0 418C14 424 30 445 44 486Z" +
     "M-19 374L-2.5 262L2.5 262L19 374Z";
   // Faint cross-bracing hints on the legs.
   const bracing =
     "M-96 588L-74 548L-70 551L-91 590Z M96 588L74 548L70 551L91 590Z" +
     "M-52 481L-44 452L-41 454L-48 482Z M52 481L44 452L41 454L48 482Z";
+  // Fine detail: riveted X-lattice in every section, platform railings and the lace under level one.
+  const legOut = cubicPts([62, 507], [76, 540], [92, 575], [114, 600]);
+  const legIn = [[68, 600] as Pt, ...cubicPts([61, 578], [50, 545], [27, 531], [0, 530])];
+  const midOut = cubicPts([35, 394], [40, 430], [49, 468], [58, 489]);
+  const hole = cubicPts([44, 486], [30, 445], [14, 424], [0, 418]);
+  const topOut = cubicPts([10.5, 104], [13, 190], [20, 310], [33, 378]);
+  const slit = (y: number) => 2.5 + ((19 - 2.5) * (y - 262)) / (374 - 262);
+  const legs = lattice(
+    (y) => edgeAt(legOut, y) - 3,
+    (y) => Math.max(edgeAt(legIn, y) + 3, edgeAt(legOut, y) - 34),
+    540,
+    594,
+    9
+  );
+  const mid = lattice((y) => edgeAt(midOut, y) - 2.5, (y) => edgeAt(hole, y) + 2.5, 424, 484, 8);
+  const upperA = lattice((y) => edgeAt(topOut, y) - 1.5, () => 1.2, 112, 256, 12);
+  const upperB = lattice((y) => edgeAt(topOut, y) - 2, (y) => slit(y) + 2, 268, 372, 9);
+  const rails = ticks(-67, 67, 492, 504, 3.4) + ticks(-38, 38, 381, 391, 3) + ticks(-13, 13, 96, 101, 2.6);
+  const lace = cubicPts([61, 572], [50, 539], [27, 525], [0, 524]);
+  const archLace = polyline(lace) + polyline(lace.map(([px, py]) => [-px, py] as Pt));
+  const level = rect(-69, 497, 138, 1.6) + rect(-40, 386, 80, 1.4);
   return {
     id: "eiffel",
     name: "Eiffel Tower",
@@ -100,8 +188,12 @@ function eiffel(): Monument {
     height: 600,
     ground: 600,
     layers: [
-      { d: outline + lattice, tone: "body", rule: "evenodd" },
+      { d: outline + openings, tone: "body", rule: "evenodd" },
       { d: bracing, tone: "shade", noLine: true },
+      { d: legs + mid + upperA + upperB, tone: "shade", stroke: 1.3, detail: true, opacity: 0.85 },
+      { d: rails, tone: "shade", stroke: 1, detail: true },
+      { d: archLace, tone: "shade", stroke: 1.4, detail: true, opacity: 0.8 },
+      { d: level, tone: "light", detail: true, opacity: 0.7 },
     ],
   };
 }
@@ -209,6 +301,17 @@ function taj(): Monument {
   ].join("");
   // Band where the drum meets the dome + plinth line.
   const bands = rect(-59, 238, 118, 3) + rect(-296, 462, 592, 3);
+  // Detail: the pishtaq's calligraphy frame, framed side bays, the plinth's blind arcade,
+  // the dome's lotus crown, minaret rings and chhatri columns.
+  const frames =
+    rect(-62, 290, 124, 168) + rect(-55, 297, 110, 161) +
+    [-122, 122].map((cx) => rect(cx - 27, 380, 54, 80) + rect(cx - 25, 300, 50, 76)).join("") +
+    [-158, 158].map((cx) => rect(cx - 10, 392, 20, 68) + rect(cx - 9, 326, 18, 52)).join("");
+  let arcade = "";
+  for (let x = -284; x <= 284; x += 24) arcade += pointedArch(x, 498, 7, 480, 472);
+  const lotus = "M-18 71Q-9 64 0 70Q9 64 18 71M-12 74Q-6 69 0 73Q6 69 12 74";
+  const rings = [-268, 268].map((x) => [300, 350, 420].map((y) => `M${x - 8} ${y}H${x + 8}`).join("") + `M${x} 226V456`).join("");
+  const chhatri = [-120, 120].map((cx) => ticks(cx - 18, cx + 18, 261, 278, 6)).join("");
 
   return {
     id: "taj",
@@ -220,6 +323,9 @@ function taj(): Monument {
       { d: outline + openings, tone: "body", rule: "evenodd" },
       { d: recesses, tone: "shade" },
       { d: bands, tone: "shade", noLine: true },
+      { d: frames, tone: "shade", stroke: 1.3, detail: true, opacity: 0.7 },
+      { d: arcade, tone: "shade", detail: true, opacity: 0.55 },
+      { d: lotus + rings + chhatri, tone: "shade", stroke: 1.2, detail: true, opacity: 0.7 },
     ],
   };
 }
@@ -355,6 +461,31 @@ function colosseum(): Monument {
     }
   }
 
+  // Detail: engaged half-columns between the arches, the attic's corbels, and weathered stone.
+  let pilasters = "";
+  for (let k = 0; k < 4; k++) {
+    for (let t = -tMax + dT; t < tMax; t += dT) {
+      const top = k < 3 ? lv[k + 1] - 4 : lv[4] - 4;
+      if (topAt(t) < top + 2) continue;
+      const [x0, y0] = proj(t, lv[k] + 4);
+      const [x1, y1] = proj(t, top);
+      if (Math.abs(x1 - x0) > 40) continue;
+      pilasters += `M${r1(x0)} ${r1(y0)}L${r1(x1)} ${r1(y1)}`;
+    }
+  }
+  let corbels = "";
+  for (let t = -tMax + dT / 2; t < tMax; t += dT / 2) {
+    if (topAt(t) < lv[4] - 6) continue;
+    const [x, y] = proj(t, lv[4] - 10);
+    corbels += `M${r1(x)} ${r1(y)}v4`;
+  }
+  let weather = "";
+  for (let i = 0; i < 220; i++) {
+    const t = -tMax + rand() * tMax * 2;
+    const h = 6 + rand() * (topAt(t) - 10);
+    const [x, y] = proj(t, h);
+    weather += rect(x, y, 1.6 + rand() * 3, 1 + rand() * 1.4);
+  }
   return {
     id: "colosseum",
     name: "Colosseum",
@@ -367,6 +498,9 @@ function colosseum(): Monument {
       { d: outer, tone: "body" },
       { d: cornices, tone: "light", noLine: true },
       { d: arches, tone: "shade" },
+      { d: pilasters, tone: "shade", stroke: 1.6, detail: true, opacity: 0.55 },
+      { d: corbels, tone: "shade", stroke: 1.4, detail: true, opacity: 0.6 },
+      { d: weather, tone: "shade", detail: true, opacity: 0.35 },
     ],
   };
 }
@@ -472,6 +606,18 @@ function pagoda(): Monument {
   }
   let lines = "";
   for (let i = 0; i < 5; i++) lines += rect(-bw[i] * 0.02 - 0.6, bodyTop[i] + 3, 1.2, bodyBottom[i] - bodyTop[i] - 6);
+  // Detail: tile ends along every eave, bracket rows, corner posts, balcony balusters.
+  let tiles = "";
+  let brackets = "";
+  let posts = "";
+  let rails = "";
+  for (let i = 0; i < 5; i++) {
+    tiles += ticks(-rw[i] + 6, rw[i] - 6, bodyTop[i] - 11, bodyTop[i] - 5, 3.4);
+    brackets += ticks(-bw[i] + 2, bw[i] - 2, bodyTop[i] + 1, bodyTop[i] + 4, 3);
+    posts += `M${-bw[i] + 3} ${bodyTop[i] + 4}V${bodyBottom[i]}M${bw[i] - 3} ${bodyTop[i] + 4}V${bodyBottom[i]}`;
+    if (i > 0) rails += ticks(-bw[i] - 6, bw[i] + 6, bodyBottom[i] - 6, bodyBottom[i], 3) + `M${-bw[i] - 7} ${bodyBottom[i] - 6}H${bw[i] + 7}`;
+  }
+  const base = [492, 496].map((y) => `M-72 ${y}H72`).join("");
   return {
     id: "pagoda",
     name: "Chureito Pagoda",
@@ -482,6 +628,10 @@ function pagoda(): Monument {
       { d: outline, tone: "body" },
       { d: details, tone: "glow" },
       { d: lines, tone: "body", noLine: true },
+      { d: tiles, tone: "shade", stroke: 1.1, detail: true, opacity: 0.8 },
+      { d: brackets + rails, tone: "shade", stroke: 1, detail: true },
+      { d: posts, tone: "shade", stroke: 1.6, detail: true, opacity: 0.6 },
+      { d: base, tone: "shade", stroke: 1, detail: true },
     ],
   };
 }
@@ -512,6 +662,9 @@ function christ(): Monument {
     ]
   );
   const sash = "M-6.9 45L6.9 45L7 47.4L-7 47.4Z";
+  // Detail: the robe's long folds and the creases along the outstretched arms.
+  const folds = "M-4.6 48Q-4 66-5.6 83M-1.6 48Q-1 66-1.8 83M1.8 48Q2.4 66 2 83M5 48Q5.6 66 6.8 83M-3 22Q-2 32-3 44M2.6 22Q3 32 2.4 44";
+  const creases = "M10 16.2H34M12 17.6H30M-10 16.2H-34M-12 17.6H-30";
   return {
     id: "christ",
     name: "Christ the Redeemer",
@@ -521,6 +674,8 @@ function christ(): Monument {
     layers: [
       { d: outline, tone: "body" },
       { d: sash, tone: "shade", noLine: true },
+      { d: folds, tone: "shade", stroke: 0.45, detail: true, opacity: 0.8 },
+      { d: creases, tone: "shade", stroke: 0.35, detail: true, opacity: 0.7 },
     ],
   };
 }
@@ -675,6 +830,13 @@ function liberty(): Monument {
     "M-4 298Q-3 262 0 226L2 226Q-0.5 262-1 298Z" +
     "M14 298Q14 262 18 236L20 236Q16.5 264 17 298Z";
   const panels = [-38, -13, 12].map((x) => rect(x, 364, 26, 52)).join("") + rect(-50, 352, 100, 5);
+  // Detail: more robe folds, the tablet's edge, the torch cup, granite courses on the pedestal.
+  const robe = "M-28 250Q-26 200-24 170M-12 296Q-10 240-6 196M6 296Q6 250 10 206M24 296Q24 262 26 236M-20 160Q-6 150 12 156M-22 186Q-4 176 16 182";
+  const tablet = "M30 168L39 164L44 234L34 238Z";
+  const torch = "M-46 41H-30M-44 47H-32";
+  let granite = "";
+  for (let y = 432; y < 520; y += 11) granite += `M-54 ${y}H54`;
+  for (let y = 528; y < 600; y += 9) granite += `M${y < 544 ? -62 : y < 562 ? -72 : -150} ${y}H${y < 544 ? 62 : y < 562 ? 72 : 150}`;
   return {
     id: "liberty",
     name: "Statue of Liberty",
@@ -685,6 +847,8 @@ function liberty(): Monument {
       { d: pedestal + figure + head + crown, tone: "body" },
       { d: folds + panels, tone: "shade", noLine: true },
       { d: flame, tone: "glow" },
+      { d: robe + tablet + torch, tone: "shade", stroke: 1.3, detail: true, opacity: 0.85 },
+      { d: granite, tone: "shade", stroke: 1, detail: true, opacity: 0.6 },
     ],
   };
 }
@@ -730,6 +894,18 @@ function bigben(): Monument {
   }
   const face = circle(0, 256, 27);
   const rim = circle(0, 256, 30) + circle(0, 256, 27);
+  // Detail: hour marks and hands, gothic panelling, belfry louvres, spire ribs and stone courses.
+  let marks = "";
+  for (let h = 0; h < 12; h++) {
+    const a = (h / 12) * Math.PI * 2;
+    const r0 = h % 3 ? 22.5 : 20;
+    marks += `M${r1(Math.sin(a) * r0)} ${r1(256 - Math.cos(a) * r0)}L${r1(Math.sin(a) * 25.5)} ${r1(256 - Math.cos(a) * 25.5)}`;
+  }
+  const hands = `M0 256L${r1(Math.sin(-1.05) * 12)} ${r1(256 - Math.cos(-1.05) * 12)}M0 256L${r1(Math.sin(0.35) * 19)} ${r1(256 - Math.cos(0.35) * 19)}`;
+  const mullions = [-36, -18, 0, 18, 36].map((x) => `M${x} 304V552`).join("") + [312, 368, 424, 480, 536].map((y) => `M-39 ${y}H39`).join("");
+  const louvres = [-22, 0, 22].map((x) => [193, 197.5, 202].map((y) => `M${x - 4} ${y}H${x + 4}`).join("")).join("");
+  const spire = [-40, -26, -12, 12, 26, 40].map((x) => `M0 64L${x} 164`).join("") + "M-30 120H30M-20 96H20";
+  const courses = [566, 574, 582, 590].map((y) => `M-44 ${y}H44`).join("") + ticks(-40, 40, 222, 228, 4);
   return {
     id: "bigben",
     name: "Big Ben",
@@ -741,6 +917,11 @@ function bigben(): Monument {
       { d: belfry + panels, tone: "shade" },
       { d: rim, tone: "shade", rule: "evenodd", noLine: true },
       { d: face, tone: "glow" },
+      { d: marks, tone: "shade", stroke: 1.4, detail: true },
+      { d: hands, tone: "shade", stroke: 2, detail: true },
+      { d: mullions + courses, tone: "shade", stroke: 1, detail: true, opacity: 0.7 },
+      { d: louvres, tone: "light", stroke: 1.2, detail: true },
+      { d: spire, tone: "shade", stroke: 1, detail: true, opacity: 0.75 },
     ],
   };
 }
@@ -800,6 +981,15 @@ function burj(): Monument {
     const w = y < 300 ? 8 : y < 420 ? 20 : 34;
     for (let x = -w; x < w; x += 6) if (rand() > 0.62) lights += rect(x, y, 2.2, 2.6);
   }
+  // Detail: the central spine, the setback edges carried down each wing, and floor bands.
+  let fins = "M0 140V600";
+  for (const [x, y] of right) if (x > 4) fins += `M${r1(x - 2)} ${y}V600M${r1(-x + 2)} ${y}V600`;
+  let floors = "";
+  for (let y = 206; y < 600; y += 12) {
+    const w = right.find(([, ry]) => ry >= y)?.[0] ?? 42;
+    floors += `M${r1(-w + 1)} ${y}H${r1(w - 1)}`;
+  }
+  const spireRings = [30, 56, 84, 110].map((y) => `M-2.4 ${y}H2.4`).join("");
   return {
     id: "burj",
     name: "Burj Khalifa",
@@ -809,6 +999,9 @@ function burj(): Monument {
     layers: [
       { d: b.toString(), tone: "body" },
       { d: lights, tone: "glow", noLine: true },
+      { d: fins, tone: "shade", stroke: 1.1, detail: true, opacity: 0.7 },
+      { d: floors, tone: "light", stroke: 0.7, detail: true, opacity: 0.6 },
+      { d: spireRings, tone: "shade", stroke: 1, detail: true },
     ],
   };
 }
@@ -919,6 +1112,20 @@ function angkor(): Monument {
   for (let x = -330; x <= 330; x += 11) colonnade += rect(x, 272, 5, 20);
   for (let x = -250; x <= 250; x += 11) colonnade += rect(x, 244, 5, 14);
   for (let x = -184; x <= 184; x += 11) colonnade += rect(x, 206, 5, 22);
+  // Detail: tier lines on the towers, roof tiles on each gallery, and the great central stair.
+  const tierLines = (cx: number, baseY: number, h: number, w: number) => {
+    let d = "";
+    for (let i = 1; i < 7; i++) {
+      const y = baseY - h + (h * i) / 7;
+      const hw = w * (0.12 + 0.88 * Math.sin(Math.min((i / 7) * 1.25, 1) * Math.PI * 0.5)) * 0.92;
+      d += `M${r1(cx - hw)} ${r1(y + 1.5)}H${r1(cx + hw)}`;
+    }
+    return d + `M${cx} ${baseY - h + 4}V${baseY}`;
+  };
+  const towerDetail = tierLines(0, 196, 196, 36) + tierLines(-158, 206, 124, 27) + tierLines(158, 206, 124, 27) + tierLines(-96, 200, 118, 26) + tierLines(96, 200, 118, 26);
+  const roofTiles = ticks(-340, 340, 263, 270, 4) + ticks(-258, 258, 237, 243, 4) + ticks(-190, 190, 199, 205, 4);
+  let stair = "";
+  for (let y = 204; y < 300; y += 4) stair += `M-9 ${y}H9`;
   return {
     id: "angkor",
     name: "Angkor Wat",
@@ -935,6 +1142,9 @@ function angkor(): Monument {
         tone: "body",
       },
       { d: colonnade, tone: "shade", noLine: true },
+      { d: towerDetail, tone: "shade", stroke: 1.2, detail: true, opacity: 0.75 },
+      { d: roofTiles, tone: "shade", stroke: 1, detail: true, opacity: 0.6 },
+      { d: stair, tone: "light", stroke: 1.2, detail: true },
     ],
   };
 }
@@ -1041,6 +1251,8 @@ export function getMonument(id: MonumentId): Monument {
   let m = cache.get(id);
   if (!m) {
     m = builders[id]();
+    // Detail never belongs in the line drawings.
+    m.layers = m.layers.map((l) => (l.detail ? { ...l, noLine: true } : l));
     cache.set(id, m);
   }
   return m;

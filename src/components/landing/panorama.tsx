@@ -30,17 +30,19 @@ interface Placed {
 
 // Left to right, Paris to Rio. Scales keep heights varied, so the skyline reads as a rhythm.
 const MONUMENTS: Placed[] = [
-  { id: "eiffel", x: 190, scale: 0.8, label: "Eiffel Tower", tones: { body: "#6B5650", shade: "#4D3D3C" } },
-  { id: "bigben", x: 395, scale: 0.58, label: "Big Ben", tones: { body: "#CDA874", shade: "#9A7647", glow: "#FFF4DC" } },
+  { id: "eiffel", x: 190, scale: 0.8, label: "Eiffel Tower", tones: { body: "#6B5650", shade: "#45363A", light: "#B58E78" } },
+  { id: "bigben", x: 395, scale: 0.58, label: "Big Ben", tones: { body: "#CDA874", shade: "#8E6B3E", glow: "#FFF4DC", light: "#F2D7A6" } },
   { id: "colosseum", x: 640, scale: 0, label: "Colosseum", tones: { body: "#DDA674", shade: "#A9703F", light: "#F0C99C" } },
-  { id: "pagoda", x: 905, scale: 0.62, label: "Yasaka Pagoda", tones: { body: "#C0503E", glow: "#F6E3C9" } },
-  { id: "angkor", x: 1200, scale: 0.5, label: "Angkor Wat", tones: { body: "#C9B087", shade: "#98815B" } },
-  { id: "taj", x: 1545, scale: 0.6, label: "Taj Mahal", tones: { body: "#F7F1E7", shade: "#D9CCB5" } },
-  { id: "liberty", x: 1815, scale: 0.55, label: "Statue of Liberty", tones: { body: "#7DBAA8", shade: "#5A9786", glow: "#F4A340" } },
-  { id: "burj", x: 1985, scale: 0.78, label: "Burj Khalifa", tones: { body: "#B2CBD5", glow: "#EAF3F6" } },
+  { id: "pagoda", x: 905, scale: 0.62, label: "Yasaka Pagoda", tones: { body: "#C0503E", shade: "#7E2F2C", glow: "#F6E3C9", light: "#E9846C" } },
+  { id: "angkor", x: 1200, scale: 0.5, label: "Angkor Wat", tones: { body: "#C9B087", shade: "#8C7651", light: "#EAD6AE" } },
+  { id: "taj", x: 1545, scale: 0.6, label: "Taj Mahal", tones: { body: "#F7F1E7", shade: "#CDBFA6", light: "#FFFFFF" } },
+  { id: "liberty", x: 1815, scale: 0.55, label: "Statue of Liberty", tones: { body: "#7DBAA8", shade: "#4F8A79", glow: "#F4A340", light: "#B4E0D2" } },
+  { id: "burj", x: 1985, scale: 0.78, label: "Burj Khalifa", tones: { body: "#B2CBD5", shade: "#7F9EAC", glow: "#EAF3F6", light: "#E6F2F6" } },
 ];
 
 const CHRIST_X = 2235;
+/** Where the sun sits over the landscape: monuments east of it are lit from the left. */
+const SUN_X = 1720;
 
 /** Short brush strokes over a slope — the grass and rock texture of a painted hillside. */
 function hatch(at: (x: number) => number, seed: number, count: number, depth: number, len: number, x0 = 0, x1 = PANO_W) {
@@ -155,6 +157,23 @@ function useLandscape(uid: string) {
       { x: 2210, h: 140, b: 0.2, s: 9 },
     ].map((p) => ({ ...p, y: front.at(p.x) + 6 }));
 
+    // Hamlets of tiny houses on the far meadow.
+    const houses = [748, 768, 790, 1436, 1458, 1478, 2050, 2070].map((x, i) => {
+      const y = hill.at(x) + 5;
+      const w = 12 + (i % 3) * 2;
+      return { wall: rect(x - w / 2, y - 9, w, 9), roof: `M${r1(x - w / 2 - 2)} ${r1(y - 9)}L${r1(x)} ${r1(y - 17)}L${r1(x + w / 2 + 2)} ${r1(y - 9)}Z` };
+    });
+
+    // Wildflowers across the front meadow.
+    const flowerRand = mulberry32(77);
+    const flowers: Record<string, string> = { "#FFF4DC": "", "#F6B6C1": "", "#FFC876": "", "#FFFFFF": "" };
+    const keys = Object.keys(flowers);
+    for (let i = 0; i < 340; i++) {
+      const x = flowerRand() * PANO_W;
+      const y = front.at(x) + 10 + flowerRand() * (PANO_H - front.at(x) - 10);
+      flowers[keys[i % keys.length]] += circle(x, y, 1.6 + flowerRand() * 1.8);
+    }
+
     // Big foreground leaves framing the bottom corners.
     const leavesL = [
       leaf(40, PANO_H + 10, 230, 0.35, 46),
@@ -188,6 +207,8 @@ function useLandscape(uid: string) {
       palms,
       leavesL,
       leavesR,
+      houses,
+      flowers,
       uid,
     };
   }, [uid]);
@@ -283,15 +304,21 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
       <Layer depth={0.3}>
         <path d={s.corcovado} fill="#5E9C82" />
         <path d={s.corcovadoLines} fill="none" stroke="#86BCA2" strokeOpacity={0.6} strokeWidth={2.4} strokeLinecap="round" />
-        <Monument id="christ" x={s.christ.x} y={s.christ.y} scale={1.75} tones={{ body: "#F1EBDF", shade: "#C9BEA9" }} />
+        <Monument id="christ" x={s.christ.x} y={s.christ.y} scale={1.75} tones={{ body: "#F1EBDF", shade: "#C9BEA9", light: "#FFFFFF" }} detailed light="left" />
       </Layer>
 
       {/* The wonders on their meadow. */}
       <Layer depth={0.4}>
         <path d={s.hill} fill={`url(#${uid}-hill)`} />
         <path d={s.hillHatch} fill="none" stroke="#E2F0C9" strokeOpacity={0.6} strokeWidth={2} strokeLinecap="round" />
+        {s.houses.map((h, i) => (
+          <g key={i}>
+            <path d={h.wall} fill="#F3E9D8" />
+            <path d={h.roof} fill={i % 2 ? "#C8664B" : "#B25A44"} />
+          </g>
+        ))}
         {s.monuments.map((m) => (
-          <Monument key={m.id} id={m.id} x={m.x} y={m.y} scale={m.scale} tones={m.tones} />
+          <Monument key={m.id} id={m.id} x={m.x} y={m.y} scale={m.scale} tones={m.tones} detailed light={m.x > SUN_X ? "left" : "right"} />
         ))}
       </Layer>
 
@@ -311,6 +338,9 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
       <Layer depth={0.7}>
         <path d={s.front} fill={`url(#${uid}-front)`} />
         <path d={s.frontHatch} fill="none" stroke="#9BD0AC" strokeOpacity={0.55} strokeWidth={2.4} strokeLinecap="round" />
+        {Object.entries(s.flowers).map(([c, d]) => (
+          <path key={c} d={d} fill={c} opacity={0.9} />
+        ))}
         {s.palms.map((p, i) => (
           <Sway key={p.x} delay={-i * 1.7} origin={`${p.x}px ${r1(p.y)}px`}>
             <path d={palmTree(p.x, p.y, p.h, p.b, p.s)} fill="#2C6E5A" />
@@ -372,6 +402,7 @@ export function PanoramaSky({ className }: { className?: string }) {
         <Clouds color="#FFFFFF" opacity={0.96} items={clouds} />
       </Layer>
       <Birds x={900} y={560} count={4} color="#3E6170" scale={0.85} duration={56} delay={-14} />
+      <Birds x={260} y={360} count={3} color="#3E6170" scale={0.7} duration={64} delay={-30} seed={11} />
       <g className="pano-plane">
         <g transform="translate(0 150)">
           <path d="M-360 0H-34" stroke={`url(#${uid}-trail)`} strokeWidth={4} strokeLinecap="round" strokeDasharray="1 0" />
