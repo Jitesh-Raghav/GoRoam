@@ -161,7 +161,7 @@ export function TripWallet({
   const money = (n: number) => formatMoney(n, wallet.currency);
 
   return (
-    <section className="no-print mt-20" id="wallet">
+    <section className="no-print mt-24 scroll-mt-6" id="wallet">
       <SectionTitle
         eyebrow="Trip wallet"
         title={
@@ -194,7 +194,7 @@ export function TripWallet({
       <div className="mt-8 grid grid-cols-1 gap-3 lg:grid-cols-12">
         {/* Log + list */}
         <div className="min-w-0 space-y-3 lg:col-span-7">
-          <form onSubmit={add} className="rounded-[26px] bg-white p-5 ring-1 ring-line sm:p-6">
+          <form onSubmit={add} className="glass rounded-[26px] p-5 sm:p-6">
             <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_9rem]">
               <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What was it? e.g. Dinner at Pontocho" className="rounded-2xl bg-paper-2/70 px-4 py-3 text-ink outline-none ring-1 ring-transparent placeholder:text-stone-2 focus:ring-brand" aria-label="Expense" />
               <label className="flex items-center gap-2 rounded-2xl bg-paper-2/70 px-4 py-3 ring-1 ring-transparent focus-within:ring-brand">
@@ -281,7 +281,7 @@ export function TripWallet({
 
         {/* Summary */}
         <div className="min-w-0 space-y-3 lg:col-span-5">
-          <div className="relative overflow-hidden rounded-[26px] bg-ocean p-6 text-paper">
+          <div className="glass-dark relative overflow-hidden rounded-[26px] bg-ocean p-6 text-paper">
             <div className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-brand/30 blur-3xl" />
             <p className="eyebrow relative flex items-center gap-2 text-paper/55">
               <WalletIcon className="size-3.5 text-sun-2" /> Spent so far
@@ -311,7 +311,7 @@ export function TripWallet({
             )}
           </div>
 
-          <div className="rounded-[26px] bg-white p-6 ring-1 ring-line">
+          <div className="glass rounded-[26px] p-6">
             <p className="eyebrow text-stone">Settle up</p>
             {transfers.length ? (
               <ul className="mt-4 space-y-2">

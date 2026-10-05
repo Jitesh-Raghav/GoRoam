@@ -562,7 +562,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         {paywall && <OutOfCredits destination={formData.destination} days={formData.numberOfDays} onClose={() => setPaywall(false)} />}
       </AnimatePresence>
 
-      <form onSubmit={handleSubmit} noValidate className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
+      <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
         <div className="min-w-0 space-y-4">
           {/* Progress */}
           <nav aria-label="Planner steps" className="rounded-[22px] bg-white/80 p-1.5 ring-1 ring-line">

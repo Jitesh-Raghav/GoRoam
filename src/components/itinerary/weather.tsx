@@ -142,7 +142,7 @@ export function WeatherOutlook({ days, className }: { days: DayWeather[]; classN
   const cold = Math.min(...days.map((d) => d.min));
   const span = Math.max(hot - cold, 1);
   return (
-    <div className={cn("print-avoid rounded-[24px] bg-white/80 p-5 ring-1 ring-line", className)}>
+    <div className={cn("glass print-avoid rounded-[24px] p-5", className)}>
       <div className="flex items-start justify-between gap-3">
         <span className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
           <CloudSun className="size-5" />

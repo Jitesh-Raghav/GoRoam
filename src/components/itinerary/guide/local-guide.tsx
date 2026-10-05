@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import {
   Banknote,
   Check,
@@ -27,12 +27,16 @@ import {
   Siren,
   TriangleAlert,
   Stamp,
+  Hand,
+  ChevronLeft,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { TipCategory, TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto, asStop } from "../place-photo";
+import { Band } from "../band";
 import { SectionTitle } from "./section-title";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -354,29 +358,52 @@ function Tips({ guide }: { guide: TripGuide }) {
   );
 }
 
+/** How many items each tab holds (0 hides the tab). */
+function countFor(id: TabId, guide: TripGuide) {
+  if (id === "phrases") return guide.phrases.length;
+  if (id === "food") return guide.food.length;
+  if (id === "culture") return guide.etiquette.dos.length + guide.etiquette.donts.length;
+  if (id === "souvenirs") return guide.souvenirs.length;
+  if (id === "safety") return (guide.arrival?.length ?? 0) + (guide.scams?.length ?? 0) + (guide.emergency ? 1 : 0) + (guide.entry ? 1 : 0) + (guide.health ? 1 : 0);
+  return guide.tips.length;
+}
+
 /** Phrases, food, culture, souvenirs and tips behind one tab bar, so the page stays calm. */
 export function LocalGuide({ guide, destination }: { guide: TripGuide; destination: string }) {
-  const tabs = TABS.filter((t) =>
-    t.id === "phrases"
-      ? guide.phrases.length
-      : t.id === "food"
-        ? guide.food.length
-        : t.id === "culture"
-          ? guide.etiquette.dos.length + guide.etiquette.donts.length
-          : t.id === "souvenirs"
-            ? guide.souvenirs.length
-            : t.id === "safety"
-              ? (guide.arrival?.length ?? 0) + (guide.scams?.length ?? 0) + (guide.emergency ? 1 : 0) + (guide.entry ? 1 : 0) + (guide.health ? 1 : 0)
-              : guide.tips.length
-  );
+  const tabs = TABS.map((t) => ({ ...t, count: countFor(t.id, guide) })).filter((t) => t.count > 0);
   const [tab, setTab] = useState<TabId>(tabs[0]?.id ?? "phrases");
+  const [touched, setTouched] = useState(false);
+  const bar = useRef<HTMLDivElement>(null);
+  const seen = useInView(bar, { once: true, amount: 0.8 });
+  const reduce = useReducedMotion();
+  const [edges, setEdges] = useState({ left: false, right: false });
+
+  const measure = useCallback(() => {
+    const el = bar.current;
+    if (!el) return;
+    setEdges({ left: el.scrollLeft > 4, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+  }, []);
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure, tabs.length]);
+
   if (!tabs.length) return null;
+
+  const pick = (id: TabId) => {
+    setTab(id);
+    setTouched(true);
+    bar.current?.querySelector<HTMLElement>(`[data-tab="${id}"]`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  };
+  const nudge = (dir: number) => bar.current?.scrollBy({ left: dir * bar.current.clientWidth * 0.6, behavior: "smooth" });
 
   const body = (id: TabId) =>
     id === "phrases" ? <Phrases guide={guide} /> : id === "food" ? <Food guide={guide} destination={destination} /> : id === "culture" ? <Culture guide={guide} /> : id === "souvenirs" ? <Souvenirs guide={guide} /> : id === "safety" ? <Safety guide={guide} /> : <Tips guide={guide} />;
+  const current = tabs.find((t) => t.id === tab) ?? tabs[0];
 
   return (
-    <section className="mt-20">
+    <Band tone="aurora">
       <SectionTitle
         eyebrow="Your local guide"
         title={
@@ -384,29 +411,86 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
             Arrive like a <span className="italic text-brand">local.</span>
           </>
         }
-      />
-      <div role="tablist" aria-label="Local guide" className="no-print no-scrollbar -mx-4 mt-8 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        {tabs.map((t) => {
-          const on = tab === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              onClick={() => setTab(t.id)}
-              className={cn("relative inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm transition-colors", on ? "text-paper" : "bg-white text-ink ring-1 ring-line hover:ring-ink/30")}
-            >
-              {on && <motion.span layoutId="guide-tab" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
-              <t.icon className={cn("relative size-4", on ? "text-sun-2" : "text-brand")} />
-              <span className="relative">{t.label}</span>
+      >
+        <p className="no-print inline-flex items-center gap-2 self-start rounded-full bg-ink/80 px-3.5 py-2 text-xs text-paper shadow-lg ring-1 ring-inset ring-paper/15 backdrop-blur sm:self-auto">
+          <motion.span
+            aria-hidden
+            animate={touched || reduce ? undefined : { x: [0, 4, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-flex"
+          >
+            <Hand className="size-3.5 -rotate-12 text-sun-2" />
+          </motion.span>
+          {tabs.length} topics · tap to explore
+        </p>
+      </SectionTitle>
+
+      <div className="no-print relative mt-8">
+        <div className="glass rounded-[26px] p-1.5">
+          <div ref={bar} role="tablist" aria-label="Local guide" onScroll={measure} className="no-scrollbar relative flex gap-1 overflow-x-auto scroll-px-10">
+            {/* A one-time sweep of light across the bar when it scrolls into view. */}
+            {seen && !reduce && (
+              <motion.span
+                aria-hidden
+                initial={{ x: "-120%" }}
+                animate={{ x: "420%" }}
+                transition={{ duration: 1.6, ease: "easeInOut", delay: 0.2 }}
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-1/4 bg-gradient-to-r from-transparent via-white/80 to-transparent"
+              />
+            )}
+            {tabs.map((t, i) => {
+              const on = tab === t.id;
+              return (
+                <motion.button
+                  key={t.id}
+                  data-tab={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => pick(t.id)}
+                  animate={seen && !reduce && !touched ? { y: [0, -5, 0] } : undefined}
+                  transition={{ duration: 0.5, delay: 0.5 + i * 0.09, ease: "easeOut" }}
+                  className={cn(
+                    "relative flex shrink-0 items-center gap-2.5 rounded-[20px] py-2 pl-2 pr-3 text-sm transition-colors sm:flex-1 sm:justify-center sm:pr-3.5",
+                    on ? "text-paper" : "text-ink hover:bg-white/70"
+                  )}
+                >
+                  {on && <motion.span layoutId="guide-tab" className="absolute inset-0 rounded-[20px] bg-ink shadow-[0_14px_30px_-14px_rgba(10,30,44,0.8)]" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+                  <span className={cn("relative grid size-8 shrink-0 place-items-center rounded-xl transition-colors", on ? "bg-paper/10 text-sun-2" : "bg-brand-soft text-brand")}>
+                    <t.icon className="size-4" />
+                  </span>
+                  <span className="relative whitespace-nowrap font-medium">{t.label}</span>
+                  <span className={cn("relative grid h-5 min-w-5 place-items-center rounded-full px-1.5 font-mono text-[10px]", on ? "bg-sun-2 text-ink" : "bg-ink/[0.07] text-ink/70")}>{t.count}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+        {/* Edge fades and arrows when the bar scrolls sideways (phones). */}
+        {edges.left && (
+          <>
+            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 left-1.5 w-12 rounded-l-[20px] bg-gradient-to-r from-white/95 to-transparent" />
+            <button type="button" onClick={() => nudge(-1)} aria-label="Earlier topics" className="absolute left-0 top-1/2 grid size-8 -translate-x-1/3 -translate-y-1/2 place-items-center rounded-full bg-ink text-paper shadow-lg">
+              <ChevronLeft className="size-4" />
             </button>
-          );
-        })}
+          </>
+        )}
+        {edges.right && (
+          <>
+            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 right-1.5 w-12 rounded-r-[20px] bg-gradient-to-l from-white/95 to-transparent" />
+            <button type="button" onClick={() => nudge(1)} aria-label="More topics" className="absolute right-0 top-1/2 grid size-8 -translate-y-1/2 translate-x-1/3 place-items-center rounded-full bg-ink text-paper shadow-lg">
+              <ChevronRight className="size-4" />
+            </button>
+          </>
+        )}
       </div>
-      <div className="mt-5 print:hidden">
+
+      <div className="glass mt-3 rounded-[30px] p-3 sm:p-6 print:hidden">
+        <p className="eyebrow mb-4 flex items-center gap-2 px-1 text-[0.6rem] text-stone">
+          <current.icon className="size-3.5 text-brand" /> {current.label} · {current.count} {current.count === 1 ? "pick" : "picks"}
+        </p>
         <AnimatePresence mode="wait">
-          <motion.div key={tab} role="tabpanel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3, ease }}>
+          <motion.div key={tab} role="tabpanel" aria-label={current.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3, ease }}>
             {body(tab)}
           </motion.div>
         </AnimatePresence>
@@ -420,6 +504,6 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
           </div>
         ))}
       </div>
-    </section>
+    </Band>
   );
 }

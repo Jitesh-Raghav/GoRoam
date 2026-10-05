@@ -55,7 +55,7 @@ export function CurrencyCard({ local, budgetUsd, className }: { local: string; b
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={cn("print-avoid rounded-[24px] bg-white/80 p-5 ring-1 ring-line", className)}
+      className={cn("glass print-avoid rounded-[24px] p-5", className)}
     >
       <div className="flex items-start justify-between gap-3">
         <span className="grid size-10 place-items-center rounded-xl bg-sun-soft text-ink">

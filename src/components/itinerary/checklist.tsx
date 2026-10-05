@@ -97,7 +97,7 @@ export function Checklist({ tripId, packing }: { tripId: string; packing?: strin
   };
 
   return (
-    <div className="rounded-[28px] bg-white/80 p-6 ring-1 ring-line sm:p-8">
+    <div className="glass rounded-[28px] p-6 sm:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow text-stone">Before you go</p>

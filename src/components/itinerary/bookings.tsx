@@ -107,7 +107,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
   const sorted = [...items].sort(order);
 
   return (
-    <section className="mt-20" id="bookings">
+    <section className="mt-24 scroll-mt-6" id="bookings">
       <SectionTitle
         eyebrow="Bookings & documents"
         title={
@@ -139,7 +139,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
             transition={{ duration: 0.4, ease }}
             className="no-print overflow-hidden"
           >
-            <div className="mt-8 rounded-[26px] bg-white p-5 ring-1 ring-line sm:p-6">
+            <div className="glass mt-8 rounded-[26px] p-5 sm:p-6">
               <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="What did you book?">
                 {BOOKING_KINDS.map((k) => {
                   const K = KIND[k];
@@ -186,7 +186,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
                   <span className="relative z-[1] mt-4 grid size-12 shrink-0 place-items-center rounded-2xl bg-ink text-paper shadow-[0_10px_24px_-12px_rgba(10,30,44,0.7)]">
                     <K.icon className="size-5" />
                   </span>
-                  <div className="min-w-0 flex-1 rounded-[22px] bg-white p-5 ring-1 ring-line">
+                  <div className="glass min-w-0 flex-1 rounded-[22px] p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="eyebrow text-[0.55rem] text-brand">

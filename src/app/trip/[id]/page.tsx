@@ -31,7 +31,7 @@ export default function SharedTripPage() {
           Plan your own
         </PillLink>
       </header>
-      <main className="px-4 pb-10 sm:px-6 lg:px-8">
+      <main className="px-3 pb-10 min-[400px]:px-4 sm:px-6 lg:px-8">
         {error ? (
           <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-ink">
             <div className="absolute inset-0">
