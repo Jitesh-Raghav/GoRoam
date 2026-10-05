@@ -74,11 +74,11 @@ import { Concierge } from "./concierge";
 import { EmailButton } from "./email-button";
 import { Experiences } from "./guide/experiences";
 import { Flag } from "./guide/flag";
-import { FlyThere } from "./guide/fly-there";
 import { GuidePending } from "./guide/guide-pending";
 import { LocalGuide } from "./guide/local-guide";
 import { CoolFacts, Events } from "./guide/moments";
 import { SectionTitle } from "./guide/section-title";
+import { Band } from "./band";
 import { useGuide } from "./guide/use-guide";
 import { Videos } from "./guide/videos";
 import { HeroPhoto } from "./hero-photo";
@@ -335,7 +335,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
   return (
     <div
       className={cn(
-        "no-print no-scrollbar -mx-4 mt-6 flex snap-x gap-2 overflow-x-auto px-4 sm:mx-0 sm:grid sm:h-[380px] sm:gap-3 sm:overflow-visible sm:px-0",
+        "no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 sm:mx-0 sm:grid sm:h-[380px] sm:gap-3 sm:overflow-visible sm:px-0",
         stops.length === 1 && "sm:grid-cols-1",
         stops.length === 2 && "sm:grid-cols-2",
         stops.length >= 3 && "sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] sm:grid-rows-2"
@@ -522,7 +522,7 @@ function BudgetCard({
   const maxDay = Math.max(...dayCosts, 1);
 
   return (
-    <div className="rounded-[28px] bg-white/80 p-5 ring-1 ring-line sm:p-6">
+    <div className="glass rounded-[28px] p-5 sm:p-6">
       <p className="eyebrow text-stone">Budget</p>
       <div className="mt-4 flex items-center gap-5">
         <div className="relative size-[112px] shrink-0">
@@ -578,7 +578,7 @@ function BudgetCard({
             <span className={cn("font-mono text-xs", over ? "text-destructive" : "text-ink")}>{money(Math.abs(left))}</span>
           </li>
         </ul>
-      <p className="mt-4 rounded-2xl bg-paper-2/70 px-4 py-3 text-xs leading-relaxed text-stone">
+      <p className="mt-4 rounded-2xl bg-white/60 px-4 py-3 ring-1 ring-inset ring-white text-xs leading-relaxed text-stone">
         ≈ <span className="text-ink">{money(planned / Math.max(people, 1) / Math.max(days, 1))}</span> per person per day on the ground
         {stay === null ? ", before accommodation." : ", stay included."}
       </p>
@@ -618,7 +618,7 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.8, ease, delay: index * 0.08 }}
-      className="print-avoid group flex h-full flex-col overflow-hidden rounded-[26px] bg-white/85 ring-1 ring-line"
+      className="glass print-avoid group flex h-full w-[84%] shrink-0 snap-start flex-col overflow-hidden rounded-[26px] sm:w-[60%] md:w-auto"
     >
       <div className="relative h-48 overflow-hidden print:h-32">
         <PlacePhoto activity={asStop(stay.name, stay.area)} destination={query.destination} icon={BedDouble} rating imgClassName="group-hover:scale-[1.05]" />
@@ -808,7 +808,14 @@ export function TripView({
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
-    <div className="mx-auto max-w-[1320px]">
+    <div className="trip-sections relative isolate mx-auto max-w-[1320px]">
+      {/* Soft colour behind the page, so the glass cards have something to frost. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden print:hidden">
+        <div className="absolute -right-32 top-[9%] size-[34rem] rounded-full bg-brand-2/15 blur-3xl" />
+        <div className="absolute -left-40 top-[24%] size-[30rem] rounded-full bg-sun-2/20 blur-3xl" />
+        <div className="absolute -right-24 top-[58%] size-[30rem] rounded-full bg-brand-2/15 blur-3xl" />
+        <div className="absolute -left-32 top-[80%] size-[32rem] rounded-full bg-sun-2/15 blur-3xl" />
+      </div>
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
@@ -932,7 +939,7 @@ export function TripView({
             <SectionTitle eyebrow="The plan" title={<>Day by <span className="italic text-brand">day.</span></>} />
 
             {days.length > 1 && (
-              <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-4 mt-6 flex snap-x gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+              <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 pb-1 sm:mx-0 sm:px-0">
                 {days.map((d, i) => {
                   const on = i === active;
                   return (
@@ -990,19 +997,38 @@ export function TripView({
             </div>
           </section>
 
-          <FlyThere query={query} className="mt-10" />
-
           {(data?.summary?.highlights?.length ?? 0) > 0 && (
-            <section className="print-avoid mt-14 rounded-[28px] bg-ocean p-7 text-paper sm:p-10">
-              <p className="eyebrow flex items-center gap-2 text-paper/60">
-                <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
-              </p>
-              <ol className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+            <section className="print-avoid relative mt-16 overflow-hidden rounded-[32px] bg-ocean p-5 text-paper sm:p-10 print:bg-none print:p-0 print:text-ink">
+              <div className="pointer-events-none absolute -right-24 -top-28 size-80 rounded-full bg-brand-2/30 blur-3xl print:hidden" />
+              <div className="pointer-events-none absolute -bottom-32 -left-16 size-72 rounded-full bg-sun/25 blur-3xl print:hidden" />
+              <div className="relative flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
+                    <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
+                  </p>
+                  <h3 className="display mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[0.95]">
+                    The <span className="italic text-brand-2 print:text-brand">big moments.</span>
+                  </h3>
+                </div>
+                <span className="rounded-full bg-paper/10 px-3 py-1.5 font-mono text-[11px] text-paper/70 ring-1 ring-inset ring-paper/15 print:hidden">
+                  {data.summary.highlights.length} highlights
+                </span>
+              </div>
+              <ol className="relative mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {data.summary.highlights.map((h, i) => (
-                  <li key={i} className="flex gap-4 border-t border-paper/10 pt-5">
-                    <span className="display text-3xl leading-none text-sun-2">{pad(i + 1)}</span>
-                    <span className="text-[1.05rem] leading-snug text-paper/90">{h}</span>
-                  </li>
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.6, ease, delay: i * 0.06 }}
+                    className="glass-dark group flex min-w-0 items-start gap-4 rounded-[22px] p-4 sm:p-5"
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--sun-2),var(--sun))] font-mono text-sm font-medium text-ink shadow-[0_10px_24px_-12px_rgba(244,163,64,0.9)] transition-transform duration-500 group-hover:-rotate-6">
+                      {pad(i + 1)}
+                    </span>
+                    <span className="min-w-0 pt-1 text-[1.02rem] leading-snug text-paper/90 print:text-ink">{h}</span>
+                  </motion.li>
                 ))}
               </ol>
             </section>
@@ -1024,21 +1050,21 @@ export function TripView({
               onPick={jump}
             />
             <div className="no-print">
-              <BookingPanel query={query} />
+              <BookingPanel query={query} className="glass-dark" />
             </div>
           </div>
         </aside>
       </div>
 
       {/* Stays */}
-      <section className="mt-20">
+      <Band tone="brand">
         <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="italic text-brand">base.</span></>}>
           <p className="max-w-sm text-sm text-stone">
             Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })} → {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
           </p>
         </SectionTitle>
         {data?.stays?.length ? (
-          <div className="mt-8 grid gap-3 md:grid-cols-3">
+          <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-2 min-[400px]:-mx-4 min-[400px]:px-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
             {data.stays.map((s, i) => (
               <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={query} />
             ))}
@@ -1051,7 +1077,7 @@ export function TripView({
                 href={p.href}
                 target="_blank"
                 rel="noopener noreferrer sponsored"
-                className="group flex items-center gap-4 rounded-[26px] bg-white/85 p-6 ring-1 ring-line transition-colors hover:bg-ink hover:text-paper"
+                className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
               >
                 <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
                   <BedDouble className="size-5" />
@@ -1065,7 +1091,7 @@ export function TripView({
             ))}
           </div>
         )}
-      </section>
+      </Band>
 
       {owner && (
         <Bookings
@@ -1081,8 +1107,8 @@ export function TripView({
         <>
           <Experiences items={guide.experiences} destination={title} />
           <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} />
-          <LocalGuide guide={guide} destination={title} />
           <CoolFacts facts={guide.facts} city={city} />
+          <LocalGuide guide={guide} destination={title} />
           <Videos videos={guide.videos} queries={guide.videoQueries} destination={title} />
         </>
       ) : (
@@ -1091,7 +1117,7 @@ export function TripView({
 
       {/* Essentials */}
       {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
-        <section className="mt-20">
+        <Band>
           <SectionTitle eyebrow="Good to know" title={<>The <span className="italic text-brand">essentials.</span></>} />
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {essentials.map((e, i) => (
@@ -1101,7 +1127,7 @@ export function TripView({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, ease, delay: i * 0.05 }}
-                className={cn("print-avoid rounded-[24px] bg-white/80 p-5 ring-1 ring-line", e.key === "weather" && "sm:col-span-2 bg-ocean text-paper ring-ink")}
+                className={cn("print-avoid rounded-[24px] p-5", e.key === "weather" ? "glass-dark bg-ocean text-paper sm:col-span-2" : "glass")}
               >
                 <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "bg-paper/10 text-sun-2" : "bg-brand-soft text-brand")}>
                   <e.icon className="size-5" />
@@ -1116,7 +1142,7 @@ export function TripView({
             {localCurrency && <CurrencyCard local={localCurrency} budgetUsd={it.budget} className={weather?.days.length ? "lg:col-span-5" : "lg:col-span-6"} />}
             {!isPackage && weather?.timezone && <JetLagCard timezone={weather.timezone} departure={isoDay(it.startDate, 0)} className="lg:col-span-12" />}
           </div>
-        </section>
+        </Band>
       )}
 
       {owner && (
@@ -1131,12 +1157,12 @@ export function TripView({
       )}
 
       {/* Checklist */}
-      <section className="mt-20">
+      <section className="mt-24">
         <Checklist tripId={it.id} packing={data?.packing} />
       </section>
 
       {/* Outro */}
-      <section className="no-print relative mt-4 overflow-hidden rounded-[32px] bg-ocean p-8 text-paper sm:p-12">
+      <section className="no-print relative mt-6 overflow-hidden rounded-[32px] bg-ocean p-8 text-paper sm:p-12">
         <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-sun/20 blur-3xl" />
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>

@@ -11,6 +11,7 @@ import { DESTINATIONS } from "@/lib/destinations";
 import { parseTripPrompt, plannerHref } from "@/lib/prompt-parse";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
+import { BalloonSticker, CameraSticker, CompassSticker, PalmSticker, PinSticker, PostcardSticker, StampSticker, TagSticker } from "./footer-stickers";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -288,8 +289,7 @@ const SOCIAL: { label: string; href: string; icon: LucideIcon }[] = [
 /* -------------------------------------------------------------------------- */
 
 /** The giant GoRoam: letters rise in, a sheen sweeps across, and a spotlight follows the pointer. */
-function Wordmark() {
-  const ref = useRef<HTMLDivElement>(null);
+function Wordmark({ letterRef }: { letterRef?: (i: number, el: HTMLSpanElement | null) => void }) {
   const word = "GoRoam".split("");
   // The spotlight layer is fixed to the viewport, so it takes viewport coordinates.
   const move = (e: PointerEvent<HTMLDivElement>) => {
@@ -299,7 +299,6 @@ function Wordmark() {
   };
   return (
     <div
-      ref={ref}
       onPointerMove={move}
       onPointerLeave={(e) => e.currentTarget.style.setProperty("--fo", "0")}
       aria-hidden
@@ -308,6 +307,7 @@ function Wordmark() {
       {word.map((ch, i) => (
         <motion.span
           key={i}
+          ref={(el) => letterRef?.(i, el)}
           initial={{ y: "70%" }}
           whileInView={{ y: "22%" }}
           whileHover={{ y: "14%" }}
@@ -318,6 +318,123 @@ function Wordmark() {
           {ch}
         </motion.span>
       ))}
+    </div>
+  );
+}
+
+type Sticker = { id: string; Art: (p: { className?: string }) => React.ReactElement; left: string; top: string; size: string; rot: number; depth: number; dur: number; phone?: boolean };
+
+/* Positions are percentages of the finale, so the arrangement holds at every width. */
+const STICKERS: Sticker[] = [
+  { id: "stamp", Art: StampSticker, left: "3%", top: "6%", size: "w-[17vw] sm:w-[9vw]", rot: -14, depth: 14, dur: 6.4, phone: true },
+  { id: "tag", Art: TagSticker, left: "22%", top: "-2%", size: "w-[21vw] sm:w-[10.5vw]", rot: 6, depth: 9, dur: 7.2, phone: true },
+  { id: "balloon", Art: BalloonSticker, left: "47%", top: "-6%", size: "w-[13vw] sm:w-[6.5vw]", rot: -4, depth: 20, dur: 8, phone: true },
+  { id: "compass", Art: CompassSticker, left: "64%", top: "8%", size: "w-[8vw] sm:w-[6vw]", rot: 8, depth: 11, dur: 6.8 },
+  { id: "postcard", Art: PostcardSticker, left: "79%", top: "3%", size: "w-[20vw] sm:w-[11vw]", rot: 9, depth: 15, dur: 7.6, phone: true },
+  { id: "palm", Art: PalmSticker, left: "0.5%", top: "46%", size: "w-[8vw] sm:w-[7vw]", rot: -6, depth: 7, dur: 9 },
+  { id: "camera", Art: CameraSticker, left: "91%", top: "50%", size: "w-[8vw] sm:w-[7vw]", rot: 12, depth: 10, dur: 7 },
+];
+
+/**
+ * The footer's last flourish: travel stickers bob around the wordmark and lean
+ * towards the pointer, a paper plane loops through the letters, and a pin drops
+ * onto the "o" to say you are here.
+ */
+function Finale() {
+  const ref = useRef<HTMLDivElement>(null);
+  const letters = useRef<(HTMLSpanElement | null)[]>([]);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+  const reduce = useReducedMotion();
+  const [box, setBox] = useState<{ w: number; h: number; pin: { x: number; y: number } | null }>({ w: 0, h: 0, pin: null });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => {
+      const o = letters.current[1];
+      let pin = null;
+      if (o) {
+        const a = el.getBoundingClientRect();
+        const wm = o.parentElement!.getBoundingClientRect();
+        // Layout box, not the animated transform: the letter settles 22% down.
+        pin = { x: wm.left - a.left + o.offsetLeft + o.offsetWidth / 2, y: wm.top - a.top + o.offsetTop + o.offsetHeight * 0.5 };
+      }
+      setBox({ w: el.clientWidth, h: el.clientHeight, pin });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const tilt = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || reduce) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--px", (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3));
+    e.currentTarget.style.setProperty("--py", (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3));
+  };
+  const untilt = (e: PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty("--px", "0");
+    e.currentTarget.style.setProperty("--py", "0");
+  };
+
+  const { w, h } = box;
+  const weave = w ? `M ${-0.06 * w} ${0.3 * h} C ${0.12 * w} ${0.02 * h}, ${0.22 * w} ${0.95 * h}, ${0.38 * w} ${0.66 * h} S ${0.6 * w} ${0.12 * h}, ${0.7 * w} ${0.58 * h} S ${0.9 * w} ${0.92 * h}, ${1.06 * w} ${0.22 * h}` : "";
+
+  return (
+    <div ref={ref} onPointerMove={tilt} onPointerLeave={untilt} className="relative pt-[30vw] sm:pt-[14vw]" style={{ ["--px" as string]: 0, ["--py" as string]: 0 }}>
+      <Wordmark letterRef={(i, el) => (letters.current[i] = el)} />
+
+      {/* The paper plane's dashed loop through the letters. */}
+      {w > 0 && (
+        <svg viewBox={`0 0 ${w} ${h}`} className="pointer-events-none absolute inset-0 z-10 size-full overflow-visible" aria-hidden>
+          <motion.path d={weave} fill="none" stroke="#F4F8F9" strokeOpacity={0.28} strokeWidth={1.4} strokeDasharray="4 8" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : undefined} transition={{ duration: 2.4, ease, delay: 0.6 }} />
+          {inView && !reduce && (
+            <g className="footer-weave" style={{ offsetPath: `path("${weave}")` }}>
+              <path d="M-40 0H-4" stroke="#34D1BF" strokeOpacity={0.7} strokeWidth={1.6} strokeDasharray="2 4" />
+              <path d="M14 0L-10 -9L-6 -1L-18 -4L-14 0L-18 4L-6 1L-10 9Z" fill="#F4F8F9" stroke="#0A1E2C" strokeOpacity={0.3} strokeWidth={0.8} strokeLinejoin="round" />
+              <path d="M14 0L-6 -1L-10 9Z" fill="#CFE3E6" />
+            </g>
+          )}
+        </svg>
+      )}
+
+      {STICKERS.map((s, i) => (
+        <motion.div
+          key={s.id}
+          aria-hidden
+          initial={{ opacity: 0, y: 40, scale: 0.5, rotate: s.rot - 25 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1, rotate: s.rot } : undefined}
+          transition={{ type: "spring", stiffness: 140, damping: 13, delay: 0.3 + i * 0.12 }}
+          className={cn("pointer-events-none absolute z-20", s.size, !s.phone && "hidden sm:block")}
+          style={{ left: s.left, top: s.top }}
+        >
+          <div
+            className="transition-transform duration-700 ease-out-expo"
+            style={{ transform: `translate3d(calc(var(--px) * ${s.depth}px), calc(var(--py) * ${s.depth * 0.7}px), 0) rotate(calc(var(--px) * ${s.depth * 0.4}deg))` }}
+          >
+            <div className="sticker-bob drop-shadow-[0_14px_22px_rgba(0,0,0,0.45)]" style={{ animationDuration: `${s.dur}s`, animationDelay: `${-i * 1.3}s` }}>
+              <s.Art className="h-auto w-full" />
+            </div>
+          </div>
+        </motion.div>
+      ))}
+
+      {/* "You are here", dropped onto the o. */}
+      {box.pin && (
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0, y: -160 }}
+          animate={inView ? { opacity: 1, y: 0 } : undefined}
+          transition={{ type: "spring", stiffness: 260, damping: 14, delay: 1.6 }}
+          className="pointer-events-none absolute z-20 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+          style={{ left: box.pin.x, top: box.pin.y }}
+        >
+          <span className="mb-1 whitespace-nowrap rounded-full bg-paper px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink shadow-lg sm:text-[11px]">You are here</span>
+          <PinSticker className="h-auto w-[7vw] drop-shadow-[0_10px_16px_rgba(0,0,0,0.45)] sm:w-[3.2vw]" />
+          <span className="footer-pin-pulse absolute -bottom-1 left-1/2 h-2 w-8 -translate-x-1/2 rounded-[50%] bg-sun/50" />
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -429,7 +546,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <Wordmark />
+      <Finale />
     </footer>
   );
 }

@@ -11,6 +11,7 @@ import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
 import { Scene } from "@/components/scenes/scene";
 import { prefetchJson } from "@/lib/cached-json";
+import { getLenis } from "@/components/motion/smooth-scroll";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -50,7 +51,7 @@ const NAV = [
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
-function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?: () => void }) {
+function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onNavigate?: () => void; onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const warm = (href: string) => {
@@ -62,12 +63,22 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
   const inItinerary = pathname.startsWith("/dashboard/itinerary/");
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-20 items-center px-6">
+    <div className="no-scrollbar flex h-full flex-col overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
+      <div className="flex h-20 shrink-0 items-center justify-between gap-3 px-6">
         <Logo />
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close menu"
+            className="grid size-10 shrink-0 place-items-center rounded-full bg-ink/[0.06] text-ink transition-colors hover:bg-ink hover:text-paper"
+          >
+            <X className="size-4" />
+          </button>
+        )}
       </div>
 
-      <div className="px-4">
+      <div className="shrink-0 px-4">
         <Link
           href="/dashboard"
           onClick={onNavigate}
@@ -80,7 +91,7 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
         </Link>
       </div>
 
-      <nav aria-label="Dashboard" className="mt-6 space-y-1 px-4">
+      <nav aria-label="Dashboard" className="mt-6 shrink-0 space-y-1 px-4">
         <p className="eyebrow px-3 pb-2 text-[0.62rem] text-stone-2">Menu</p>
         {NAV.map((item) => {
           const active = isActive(item.href) || (item.href === "/dashboard/itineraries" && inItinerary);
@@ -112,7 +123,7 @@ function SidebarContent({ credits, onNavigate }: { credits: number; onNavigate?:
         })}
       </nav>
 
-      <div className="mt-auto space-y-3 p-4">
+      <div className="mt-auto shrink-0 space-y-3 p-4 pt-6">
         <Link
           href="/dashboard/credits"
           onClick={onNavigate}
@@ -209,6 +220,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     setSidebarOpen(false);
   }, [pathname]);
 
+  // While the drawer is open the page behind it stays put, and Escape closes it.
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    getLenis()?.stop();
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setSidebarOpen(false);
+    window.addEventListener("keydown", esc);
+    return () => {
+      html.style.overflow = prev;
+      getLenis()?.start();
+      window.removeEventListener("keydown", esc);
+    };
+  }, [sidebarOpen]);
+
   // Once signed in, fetch the trips list in idle time so "My itineraries" opens with it ready.
   const signedIn = status === "authenticated";
   useEffect(() => {
@@ -232,21 +259,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </aside>
 
         {/* Mobile top bar */}
-        <header className="no-print sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-paper/80 px-4 backdrop-blur-xl lg:hidden">
-          <Logo />
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard/credits" className="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.06] px-3 py-1.5 text-sm text-ink">
-              <CreditCard className="size-3.5 text-brand" />
-              {credits}
-            </Link>
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open menu"
-              className="grid size-10 place-items-center rounded-full bg-ink text-paper"
-            >
-              <Menu className="size-4" />
-            </button>
+        <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:hidden">
+          <div className="flex h-16 items-center justify-between gap-3 px-3 min-[400px]:px-4">
+            <Logo />
+            <div className="flex shrink-0 items-center gap-2">
+              <Link href="/dashboard/credits" aria-label={`${credits} credits`} className="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.06] px-3 py-1.5 text-sm text-ink">
+                <CreditCard className="size-3.5 text-brand" />
+                {credits}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+                aria-expanded={sidebarOpen}
+                className="grid size-10 place-items-center rounded-full bg-ink text-paper"
+              >
+                <Menu className="size-4" />
+              </button>
+            </div>
           </div>
         </header>
 
@@ -266,17 +296,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", stiffness: 380, damping: 40 }}
-                className="fixed inset-y-0 left-0 z-50 w-[86vw] max-w-xs bg-paper shadow-2xl lg:hidden"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Menu"
+                className="fixed left-0 top-0 z-50 h-[100dvh] w-full bg-paper pt-[env(safe-area-inset-top)] shadow-2xl min-[400px]:w-[86vw] min-[400px]:max-w-sm lg:hidden"
               >
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen(false)}
-                  aria-label="Close menu"
-                  className="absolute right-4 top-5 grid size-10 place-items-center rounded-full bg-ink/[0.06] text-ink"
-                >
-                  <X className="size-4" />
-                </button>
-                <SidebarContent credits={credits} onNavigate={() => setSidebarOpen(false)} />
+                <SidebarContent credits={credits} onNavigate={() => setSidebarOpen(false)} onClose={() => setSidebarOpen(false)} />
               </motion.aside>
             </>
           )}
@@ -289,7 +314,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="px-4 py-8 sm:px-8 lg:px-12 lg:py-10"
+            className="px-3 py-6 min-[400px]:px-4 min-[400px]:py-8 sm:px-8 lg:px-12 lg:py-10"
           >
             {children}
           </motion.div>

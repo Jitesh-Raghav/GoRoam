@@ -22,7 +22,7 @@ export function JetLagCard({ timezone, departure, className }: { timezone?: stri
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={cn("print-avoid relative overflow-hidden rounded-[24px] bg-ocean p-6 text-paper", className)}
+      className={cn("glass-dark print-avoid relative overflow-hidden rounded-[24px] bg-ocean p-6 text-paper", className)}
     >
       <div className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-brand/30 blur-3xl" />
       <div className="relative grid gap-6 lg:grid-cols-12 lg:items-center">

@@ -65,13 +65,19 @@ function useTyped(text: string, speed = 70) {
   return out;
 }
 
-function Field({ label, value, icon: Icon, active }: { label: string; value: React.ReactNode; icon: typeof MapPin; active?: boolean }) {
+function Field({ label, value, icon: Icon, active, compact }: { label: string; value: React.ReactNode; icon: typeof MapPin; active?: boolean; compact?: boolean }) {
   return (
-    <div className={cn("rounded-2xl border px-4 py-3 transition-colors", active ? "border-brand/50 bg-brand-soft/40" : "border-line bg-white")}>
-      <p className="eyebrow text-[0.6rem] text-stone">{label}</p>
-      <p className="mt-1.5 flex items-center gap-2 text-[0.95rem] text-ink">
-        <Icon className="size-4 text-brand" />
-        {value}
+    <div
+      className={cn(
+        "min-w-0 rounded-2xl border px-3.5 py-2.5 transition-colors sm:px-4 sm:py-3",
+        compact && "max-[399px]:flex max-[399px]:items-center max-[399px]:justify-between max-[399px]:gap-3 max-[399px]:py-2",
+        active ? "border-brand/50 bg-brand-soft/40" : "border-line bg-white"
+      )}
+    >
+      <p className="eyebrow shrink-0 text-[0.6rem] text-stone">{label}</p>
+      <p className={cn("mt-1.5 flex min-w-0 items-center gap-2 text-[0.88rem] text-ink sm:text-[0.95rem]", compact && "max-[399px]:mt-0 max-[399px]:text-[0.82rem]")}>
+        <Icon className="size-4 shrink-0 text-brand" />
+        <span className="truncate">{value}</span>
       </p>
     </div>
   );
@@ -92,13 +98,13 @@ function FormState() {
           </span>
         }
       />
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="From" icon={Navigation} value="Mumbai, India" />
-        <Field label="When" icon={CalendarDays} value="12 Apr · 5 days" />
-        <Field label="Who" icon={Users} value="Couple · Slow pace" />
-        <Field label="Budget" icon={Wallet} value="$2,400" />
+      <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2 sm:gap-3">
+        <Field compact label="From" icon={Navigation} value="Mumbai, India" />
+        <Field compact label="When" icon={CalendarDays} value="12 Apr · 5 days" />
+        <Field compact label="Who" icon={Users} value="Couple · Slow pace" />
+        <Field compact label="Budget" icon={Wallet} value="$2,400" />
       </div>
-      <div className="flex flex-wrap gap-2 pt-1">
+      <div className="flex flex-wrap gap-1.5 pt-1 sm:gap-2">
         {[
           ["History", true],
           ["Food & drink", true],
@@ -112,8 +118,9 @@ function FormState() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.35 + i * 0.07, duration: 0.4 }}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm",
-              on ? "bg-ink text-paper" : "bg-paper-2 text-ink/70"
+              "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm",
+              on ? "bg-ink text-paper" : "bg-paper-2 text-ink/70",
+              i > 3 && "max-[399px]:hidden"
             )}
           >
             {on && <Check className="size-3.5" />}
@@ -121,8 +128,8 @@ function FormState() {
           </motion.span>
         ))}
       </div>
-      <div className="mt-auto">
-        <div className="relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-brand py-3.5 text-sm font-medium text-white">
+      <div className="mt-auto pt-1">
+        <div className="relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-brand py-3 text-sm font-medium text-white sm:py-3.5">
           <span className="animate-ping-soft absolute inset-0 rounded-full bg-brand/40" />
           <Sparkles className="relative size-4" />
           <span className="relative">Generate itinerary</span>
@@ -142,9 +149,9 @@ function GeneratingState() {
   }, []);
   return (
     <motion.div {...stateMotion} className="flex h-full flex-col">
-      <div className="flex items-center gap-5">
-        <div className="relative size-20 shrink-0">
-          <svg viewBox="0 0 80 80" className="size-20 -rotate-90">
+      <div className="flex items-center gap-4 sm:gap-5">
+        <div className="relative size-16 shrink-0 sm:size-20">
+          <svg viewBox="0 0 80 80" className="size-16 -rotate-90 sm:size-20">
             <circle cx="40" cy="40" r="34" fill="none" stroke="var(--paper-2)" strokeWidth="6" />
             <motion.circle
               cx="40"
@@ -161,22 +168,22 @@ function GeneratingState() {
           </svg>
           <Sparkles className="absolute inset-0 m-auto size-6 text-brand" />
         </div>
-        <div>
-          <p className="display text-3xl leading-none">Crafting Kyoto…</p>
-          <p className="mt-2 text-sm text-stone">5 days · 2 travellers · Culture, Food, Photography</p>
+        <div className="min-w-0">
+          <p className="display text-[1.7rem] leading-none sm:text-3xl">Crafting Kyoto…</p>
+          <p className="mt-2 text-xs text-stone sm:text-sm">5 days · 2 travellers · Culture, Food, Photography</p>
         </div>
       </div>
-      <ul className="mt-6 space-y-2.5">
+      <ul className="mt-5 space-y-2.5 sm:mt-6">
         {STATUS.map((s, i) => (
-          <li key={s} className={cn("flex items-center gap-3 text-sm transition-colors duration-500", i < done ? "text-ink" : "text-stone-2")}>
-            <span className={cn("grid size-5 place-items-center rounded-full transition-colors duration-500", i < done ? "bg-brand text-white" : "bg-paper-2")}>
+          <li key={s} className={cn("flex items-center gap-3 text-[0.82rem] transition-colors duration-500 sm:text-sm", i < done ? "text-ink" : "text-stone-2")}>
+            <span className={cn("grid size-5 shrink-0 place-items-center rounded-full transition-colors duration-500", i < done ? "bg-brand text-white" : "bg-paper-2")}>
               {i < done && <Check className="size-3" />}
             </span>
             {s}
           </li>
         ))}
       </ul>
-      <div className="mt-auto space-y-2.5">
+      <div className="mt-auto space-y-2.5 pt-5">
         {[88, 72, 80].map((w, i) => (
           <div key={i} className="flex items-center gap-3">
             <div className="skeleton size-9 rounded-xl" />
@@ -200,23 +207,23 @@ const DAY = [
 function ResultState() {
   return (
     <motion.div {...stateMotion} className="flex h-full flex-col">
-      <div className="relative h-28 shrink-0 overflow-hidden rounded-2xl">
+      <div className="relative h-24 shrink-0 overflow-hidden rounded-2xl sm:h-28">
         <Scene id="fuji" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between text-paper">
-          <p className="display text-3xl leading-none">5 days in Kyoto</p>
-          <span className="eyebrow rounded-full bg-paper/15 px-2.5 py-1.5 backdrop-blur">$2,380</span>
+        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-2 text-paper">
+          <p className="display text-[1.6rem] leading-none sm:text-3xl">5 days in Kyoto</p>
+          <span className="eyebrow shrink-0 rounded-full bg-paper/15 px-2.5 py-1.5 backdrop-blur">$2,380</span>
         </div>
       </div>
-      <div className="mt-4 flex gap-1.5">
+      <div className="mt-4 flex gap-1 sm:gap-1.5">
         {["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"].map((d, i) => (
-          <span key={d} className={cn("rounded-full px-3 py-1 text-xs", i === 0 ? "bg-ink text-paper" : "bg-paper-2 text-ink/60")}>
+          <span key={d} className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] sm:px-3 sm:text-xs", i === 0 ? "bg-ink text-paper" : "bg-paper-2 text-ink/60")}>
             {d}
           </span>
         ))}
       </div>
       <p className="mt-4 eyebrow text-stone">Temples & tea</p>
-      <ol className="relative mt-3 space-y-3 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-line">
+      <ol className="relative mt-3 space-y-2.5 sm:space-y-3 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-line">
         {DAY.map((r, i) => (
           <motion.li
             key={r.title}
@@ -239,10 +246,10 @@ function ResultState() {
         ))}
       </ol>
       <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
-        <span className="inline-flex items-center justify-center gap-2 rounded-full bg-paper-2 py-3 text-sm text-ink">
+        <span className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-paper-2 py-3 text-[0.8rem] text-ink sm:gap-2 sm:text-sm">
           <ExternalLink className="size-4" /> Open in Maps
         </span>
-        <span className="inline-flex items-center justify-center gap-2 rounded-full bg-ink py-3 text-sm text-paper">
+        <span className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-ink py-3 text-[0.8rem] text-paper sm:gap-2 sm:text-sm">
           <Download className="size-4" /> Download PDF
         </span>
       </div>
@@ -252,19 +259,19 @@ function ResultState() {
 
 function PlannerMock({ step, className }: { step: number; className?: string }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-[36px] bg-paper-2 ring-1 ring-line", className)}>
+    <div className={cn("relative overflow-hidden rounded-[28px] bg-paper-2 ring-1 ring-line sm:rounded-[36px]", className)}>
       <LazyScene id="fuji" className="opacity-95" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink/20" />
-      <div className="relative flex h-full items-center justify-center p-5 sm:p-10">
-        <div className="w-full max-w-[460px] rounded-[26px] bg-white/[0.96] shadow-[0_40px_90px_-40px_rgba(10,30,44,0.6)] ring-1 ring-black/5 backdrop-blur-xl">
-          <div className="flex items-center gap-2 border-b border-line px-5 py-3.5">
+      <div className="relative flex h-full items-center justify-center px-3 py-8 sm:p-10">
+        <div className="w-full max-w-[460px] overflow-hidden rounded-[22px] sm:rounded-[26px] bg-white/[0.96] shadow-[0_40px_90px_-40px_rgba(10,30,44,0.6)] ring-1 ring-black/5 backdrop-blur-xl">
+          <div className="flex items-center gap-2 border-b border-line px-4 py-3 sm:px-5 sm:py-3.5">
             <span className="size-2.5 rounded-full bg-[#ff5f57]" />
             <span className="size-2.5 rounded-full bg-[#febc2e]" />
             <span className="size-2.5 rounded-full bg-[#28c840]" />
             <span className="mx-auto font-mono text-[11px] text-stone">GoRoam · New trip</span>
             <span className="eyebrow text-[0.6rem] text-brand">0{step + 1}/03</span>
           </div>
-          <div className="h-[430px] p-5 sm:p-6">
+          <div className="h-[408px] overflow-hidden p-4 sm:h-[430px] sm:p-6">
             <AnimatePresence mode="wait">
               {step === 0 && <FormState key="form" />}
               {step === 1 && <GeneratingState key="gen" />}
@@ -325,7 +332,7 @@ export function HowItWorks() {
         />
 
         <div ref={mobileRef} className="mt-12 lg:hidden">
-          <PlannerMock step={step} className="h-[600px]" />
+          <PlannerMock step={step} />
         </div>
 
         <div className="mt-12 grid gap-10 lg:mt-8 lg:grid-cols-12 lg:gap-16">
@@ -350,7 +357,7 @@ export function HowItWorks() {
                   </div>
                   <h3 className="display mt-6 text-[2.6rem] leading-[0.98] lg:text-[3.4rem]">{s.title}</h3>
                   <p className="mt-4 max-w-md text-lg leading-relaxed text-stone">{s.body}</p>
-                  <ul className="mt-6 space-y-2.5">
+                  <ul className="mt-5 space-y-2.5 sm:mt-6">
                     {s.points.map((p) => (
                       <li key={p} className="flex items-center gap-3 text-ink/80">
                         <span className="size-1.5 rounded-full bg-brand" />

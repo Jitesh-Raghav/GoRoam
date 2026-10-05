@@ -10,15 +10,15 @@ import { cn } from "@/lib/utils";
 
 function Panel({ icon: Icon, title, description, children, tone = "default" }: { icon: typeof User; title: string; description: string; children: ReactNode; tone?: "default" | "danger" }) {
   return (
-    <section className="grid gap-6 border-t border-line py-10 lg:grid-cols-12 lg:gap-12">
-      <div className="lg:col-span-4">
+    <section className="grid grid-cols-1 gap-6 border-t border-line py-10 lg:grid-cols-12 lg:gap-12">
+      <div className="min-w-0 lg:col-span-4">
         <span className={cn("grid size-11 place-items-center rounded-2xl", tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-brand-soft text-brand")}>
           <Icon className="size-5" />
         </span>
         <h2 className="display mt-5 text-3xl text-ink">{title}</h2>
         <p className="mt-2 max-w-xs text-sm leading-relaxed text-stone">{description}</p>
       </div>
-      <div className="space-y-3 lg:col-span-8">{children}</div>
+      <div className="min-w-0 space-y-3 lg:col-span-8">{children}</div>
     </section>
   );
 }

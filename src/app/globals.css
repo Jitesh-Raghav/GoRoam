@@ -545,3 +545,199 @@ html.lenis, html.lenis body { height: auto; }
     display: none;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Glass cards: frosted fill, a gradient hairline, a top highlight and a      */
+/*  sheen that slides across on hover. Use without ring-* utilities.          */
+/* -------------------------------------------------------------------------- */
+@layer components {
+  .glass,
+  .glass-dark {
+    position: relative;
+    isolation: isolate;
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+  }
+  .glass {
+    background: linear-gradient(155deg, rgb(255 255 255 / 0.86), rgb(255 255 255 / 0.58) 55%, rgb(255 255 255 / 0.72));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.95),
+      inset 0 -1px 0 rgb(10 30 44 / 0.03),
+      0 28px 60px -38px rgb(10 30 44 / 0.45),
+      0 2px 8px -4px rgb(10 30 44 / 0.1);
+  }
+  .glass-dark {
+    background: linear-gradient(155deg, rgb(19 52 70 / 0.72), rgb(10 30 44 / 0.5) 60%, rgb(10 30 44 / 0.66));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 30px 70px -40px rgb(0 0 0 / 0.7);
+  }
+  .glass::before,
+  .glass-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(150deg, rgb(255 255 255 / 1), rgb(52 209 191 / 0.28) 38%, rgb(10 30 44 / 0.1) 68%, rgb(244 163 64 / 0.3));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .glass-dark::before {
+    background: linear-gradient(150deg, rgb(255 255 255 / 0.32), rgb(52 209 191 / 0.22) 40%, rgb(255 255 255 / 0.04) 70%, rgb(255 200 118 / 0.22));
+  }
+  .glass::after,
+  .glass-dark::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.4) 50%, transparent 62%) no-repeat;
+    background-size: 260% 100%;
+    background-position: 160% 0;
+    transition: background-position 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .glass-dark::after {
+    background-image: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.12) 50%, transparent 62%);
+  }
+  .glass:hover::after,
+  .glass-dark:hover::after {
+    background-position: -60% 0;
+  }
+
+  /* Section numbers count themselves, so they stay right when a section is missing. */
+  .trip-sections {
+    counter-reset: trip-section;
+  }
+  .sec-num::before {
+    counter-increment: trip-section;
+    content: counter(trip-section, decimal-leading-zero);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass::after,
+  .glass-dark::after {
+    transition: none;
+    display: none;
+  }
+}
+
+@media print {
+  .glass,
+  .glass-dark {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #dde6e8;
+  }
+  .glass::before,
+  .glass-dark::before,
+  .glass::after,
+  .glass-dark::after {
+    display: none;
+  }
+}
+
+/* The concierge launcher's halo. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+.animate-breathe {
+  animation: breathe 3.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe {
+    animation: none;
+  }
+}
+
+/* Footer finale: stickers bob, a plane weaves through the wordmark, the pin pulses. */
+.sticker-bob {
+  animation: sticker-bob 7s ease-in-out infinite;
+}
+@keyframes sticker-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(3deg);
+  }
+}
+.sticker-needle {
+  transform-origin: 50px 50px;
+  animation: sticker-needle 5s ease-in-out infinite;
+}
+@keyframes sticker-needle {
+  0%,
+  100% {
+    transform: rotate(-18deg);
+  }
+  45% {
+    transform: rotate(24deg);
+  }
+  70% {
+    transform: rotate(8deg);
+  }
+}
+.footer-weave {
+  offset-rotate: auto;
+  offset-distance: 0%;
+  animation: footer-weave 11s cubic-bezier(0.45, 0, 0.55, 1) 2.6s infinite;
+  opacity: 0;
+}
+@keyframes footer-weave {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  6%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+.footer-pin-pulse {
+  animation: footer-pin-pulse 2.4s ease-out 2.4s infinite;
+  opacity: 0;
+}
+@keyframes footer-pin-pulse {
+  0% {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticker-bob,
+  .sticker-needle,
+  .footer-pin-pulse {
+    animation: none;
+  }
+  .footer-weave {
+    display: none;
+  }
+}

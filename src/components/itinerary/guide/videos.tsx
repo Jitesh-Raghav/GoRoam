@@ -8,6 +8,7 @@ import { useState } from "react";
 import type { TripVideo } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto, asStop } from "../place-photo";
+import { Band } from "../band";
 import { SectionTitle } from "./section-title";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -77,7 +78,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
   if (!list.length && !queries.length) return null;
 
   return (
-    <section className="no-print mt-20">
+    <Band tone="ink" className="no-print">
       <SectionTitle
         eyebrow="Watch before you go"
         title={
@@ -90,7 +91,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
           href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${city} travel`)}`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 self-start rounded-full bg-white px-4 py-2.5 text-sm text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-full bg-paper/10 px-4 py-2.5 text-sm text-paper ring-1 ring-inset ring-paper/20 backdrop-blur transition-colors hover:bg-paper hover:text-ink sm:self-auto"
         >
           <YouTubeGlyph className="h-3.5 w-5" /> More on YouTube <ArrowUpRight className="size-4" />
         </a>
@@ -99,7 +100,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
       {list.length ? (
         <div className="mt-8 grid gap-3 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)]">
           <Player video={list[active]} playing={playing} onPlay={() => setPlaying(true)} />
-          <ul className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:flex-col lg:overflow-visible">
+          <ul className="no-scrollbar -mx-3 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 sm:mx-0 sm:px-0 lg:flex-col lg:overflow-visible">
             {list.map((v, i) => {
               const on = i === active;
               return (
@@ -112,7 +113,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
                     }}
                     className={cn(
                       "group flex w-full flex-col gap-3 rounded-[20px] p-2 text-left transition-colors lg:flex-row lg:items-center",
-                      on ? "bg-ink text-paper" : "bg-white ring-1 ring-line hover:bg-paper-2"
+                      on ? "bg-paper text-ink" : "glass-dark text-paper hover:bg-paper/10"
                     )}
                   >
                     <span className="relative block aspect-video w-full shrink-0 overflow-hidden rounded-[14px] bg-ink lg:w-36">
@@ -123,7 +124,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
                     </span>
                     <span className="min-w-0 px-1 pb-1 lg:pb-0">
                       <span className="line-clamp-2 block text-sm leading-snug">{v.title}</span>
-                      {v.channel && <span className={cn("mt-1 block truncate text-[11px]", on ? "text-paper/60" : "text-stone")}>{v.channel}</span>}
+                      {v.channel && <span className={cn("mt-1 block truncate text-[11px]", on ? "text-stone" : "text-paper/55")}>{v.channel}</span>}
                     </span>
                   </button>
                 </li>
@@ -166,6 +167,6 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
           ))}
         </div>
       )}
-    </section>
+    </Band>
   );
 }

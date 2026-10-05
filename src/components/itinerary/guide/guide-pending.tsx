@@ -15,7 +15,7 @@ const ITEMS = [
 /** Shown while the local guide is being written for an older trip. */
 export function GuidePending() {
   return (
-    <section className="no-print mt-20 overflow-hidden rounded-[32px] bg-white p-7 ring-1 ring-line sm:p-10" aria-live="polite">
+    <section className="no-print mt-24 overflow-hidden rounded-[32px] bg-white p-7 ring-1 ring-line sm:p-10" aria-live="polite">
       <p className="eyebrow text-stone">Your local guide</p>
       <h2 className="display mt-3 text-[clamp(2rem,4vw,3rem)] leading-[0.95] text-ink">
         Writing your <span className="italic text-brand">local guide…</span>
