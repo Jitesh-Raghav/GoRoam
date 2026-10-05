@@ -25,11 +25,12 @@ export default function Home() {
       <main>
         <PanoramaHero />
         {/* Everything below the panorama sits on hairline rails, YC-style. */}
-        <div className="relative">
+        <div className="relative isolate">
           <GuideRails />
           <Ticker />
           <Hero />
           <MobileManifesto />
+          <SectionRule label="36.1069° N · 112.1129° W" />
           <Wonders />
           <SectionRule label="48.8584° N · 2.2945° E" />
           <HowItWorks />
@@ -39,6 +40,7 @@ export default function Home() {
           <Features />
           <SectionRule label="29.9792° N · 31.1342° E" />
           <BookingSection />
+          <SectionRule label="35.3606° N · 138.7274° E" />
           <Testimonials />
           <SectionRule label="13.4125° N · 103.8670° E" />
           <Pricing />

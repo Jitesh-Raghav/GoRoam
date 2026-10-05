@@ -8,7 +8,7 @@ import { SectionHeading } from "./section-heading";
 
 export function Pricing() {
   return (
-    <section id="pricing" className="relative scroll-mt-10 bg-paper py-24 lg:py-36">
+    <section id="pricing" className="relative scroll-mt-10 py-24 lg:py-36">
       <div className="container-x">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
