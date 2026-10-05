@@ -12,7 +12,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const LINE = "#DCEFEA"; // theme paper with a breath of brand mint
+const LINE = "#5E8790"; // a dim sea-teal: quiet texture under the footer's gold wordmark
 const BG = "#0A1E2C"; // the footer's ink
 
 const W = 2400;
@@ -560,19 +560,17 @@ function shoreRight() {
 /* ---------------------------------- build --------------------------------- */
 
 // No background: the sky stays transparent so the footer's wordmark can rise behind the scene.
-cloud(520, 150, 520, 9);
-cloud(1180, 96, 380, 6);
-cloud(1560, 230, 300, 5);
-cloud(2140, 120, 260, 4);
-moon(2010, 214, 42);
-gulls([[760, 260, 1], [792, 244, 0.8], [1720, 330, 0.9], [1752, 318, 0.7], [610, 360, 0.7]]);
+// The band where the wordmark stands (x 300 to 2100, y 90 to 520) is kept clear: one small
+// cloud at the far left, the moon out past the last letter, the gulls low over the water.
+cloud(150, 70, 220, 4);
+moon(2290, 150, 34);
+gulls([[400, 560, 0.8], [428, 548, 0.6], [2180, 380, 0.7]]);
 skyline();
 
 // Bright forms that light the water beneath them.
-glints.push([1384, 1932, 0.32], [270, 330, 0.28], [910, 970, 0.28], [1968, 2052, 0.55], [430, 820, 0.12], [1010, 1380, 0.14]);
+glints.push([1384, 1932, 0.32], [270, 330, 0.28], [910, 970, 0.28], [430, 820, 0.12], [1010, 1380, 0.14]);
 water();
 reflection(1390, 1930, 120, 0.45);
-reflection(1980, 2040, 190, 0.7);
 reflection(276, 326, 70, 0.6);
 reflection(916, 966, 70, 0.6);
 
