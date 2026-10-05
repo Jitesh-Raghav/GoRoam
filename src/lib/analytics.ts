@@ -52,7 +52,8 @@ export type AnalyticsEvent =
   | "share_link_created"
   | "pdf_downloaded"
   | "calendar_downloaded"
-  | "checkout_started";
+  | "checkout_started"
+  | "film_played";
 
 export function track(event: AnalyticsEvent, properties?: Record<string, string | number | boolean | null | undefined>) {
   withClient((ph) => ph.capture(event, properties));

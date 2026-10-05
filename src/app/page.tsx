@@ -9,6 +9,7 @@ import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
 import { MobileManifesto, Ticker } from "@/components/landing/ticker";
 import { PanoramaHero } from "@/components/landing/panorama-hero";
+import { ProductFilm } from "@/components/landing/product-film";
 import { Wonders } from "@/components/landing/wonders";
 import { GuideRails, SectionRule } from "@/components/landing/guides";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
@@ -30,6 +31,8 @@ export default function Home() {
           <Ticker />
           <Hero />
           <MobileManifesto />
+          <SectionRule label="35.7148° N · 139.7967° E" />
+          <ProductFilm />
           <SectionRule label="36.1069° N · 112.1129° W" />
           <Wonders />
           <SectionRule label="48.8584° N · 2.2945° E" />

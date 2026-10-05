@@ -18,6 +18,7 @@ const eslintConfig = [
       "node_modules/**/*",
       "build/**/*",
       "dist/**/*",
+      "video/**/*",
       "**/*.js", // Ignore all JS files to focus on TS files
       "**/*.mjs",
       "**/*.cjs"

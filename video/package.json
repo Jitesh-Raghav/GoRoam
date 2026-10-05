@@ -1,0 +1,38 @@
+{
+  "name": "goroam-film",
+  "private": true,
+  "version": "1.0.0",
+  "description": "GoRoam product film: motion graphics in Remotion, voice, music and SFX by ElevenLabs.",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "audio": "tsx scripts/generate-audio.ts",
+    "voices": "tsx scripts/generate-audio.ts --list-voices",
+    "still": "remotion still",
+    "render:film": "remotion render Film-16x9 out/goroam-film-16x9.mp4 --crf=18 --pixel-format=yuv420p && remotion render Film-9x16 out/goroam-film-9x16.mp4 --crf=18 --pixel-format=yuv420p",
+    "render:teaser": "remotion render Teaser-16x9 out/goroam-teaser-16x9.mp4 --crf=18 --pixel-format=yuv420p && remotion render Teaser-9x16 out/goroam-teaser-9x16.mp4 --crf=18 --pixel-format=yuv420p",
+    "render:all": "npm run render:film && npm run render:web && npm run render:teaser && npm run finish",
+    "finish": "tsx scripts/finish.ts",
+    "timeline": "tsx scripts/timeline.ts",
+    "typecheck": "tsc --noEmit",
+    "remix": "tsx scripts/remix.ts && npm run finish",
+    "render:web": "remotion render Film-16x9-Captioned out/goroam-film-16x9-captioned.mp4 --crf=18 --pixel-format=yuv420p"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.533",
+    "@remotion/google-fonts": "4.0.533",
+    "@remotion/media-utils": "4.0.533",
+    "@remotion/motion-blur": "4.0.533",
+    "lucide-react": "^0.524.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "4.0.533"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}
