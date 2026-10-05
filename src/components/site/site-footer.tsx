@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, ArrowUp, ArrowUpRight, Github, Instagram, Linkedin, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -333,6 +333,9 @@ function HarbourPlate() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.25 });
   const reduce = useReducedMotion();
+  // The wordmark rises from behind the harbour as the plate scrolls into view.
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
+  const rise = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [150, 0]);
   const glints = [
     [1992, 640, 18],
     [2016, 668, 26],
@@ -349,6 +352,44 @@ function HarbourPlate() {
         transition={{ duration: 2.4, ease }}
         className="relative aspect-[12/5] overflow-hidden sm:aspect-[3/1]"
       >
+        {/* Behind the plate: a giant engraved "GoRoam", its lower half hidden by the city and the water. */}
+        <svg viewBox="0 0 2400 800" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 size-full" aria-hidden>
+          <defs>
+            <pattern id="wordmark-hatch" width="6" height="6" patternUnits="userSpaceOnUse">
+              <path d="M0 3H6" stroke={PLATE_LINE} strokeWidth={1.1} />
+            </pattern>
+          </defs>
+          <motion.g style={{ y: rise }}>
+            <text
+              x={1200}
+              y={652}
+              textAnchor="middle"
+              textLength={1820}
+              lengthAdjust="spacingAndGlyphs"
+              fontSize={560}
+              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontVariationSettings: '"SOFT" 50, "WONK" 0, "opsz" 144', fontWeight: 430, letterSpacing: "-0.04em" }}
+            >
+              {/* An offset outline first, like the shadow line of an engraved letter. */}
+              <tspan fill="none" stroke={PLATE_LINE} strokeWidth={1.2} strokeOpacity={0.55} dx={0}>
+                GoRoam
+              </tspan>
+            </text>
+            <text
+              x={1188}
+              y={640}
+              textAnchor="middle"
+              textLength={1820}
+              lengthAdjust="spacingAndGlyphs"
+              fontSize={560}
+              fill="url(#wordmark-hatch)"
+              stroke={PLATE_LINE}
+              strokeWidth={1.6}
+              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontVariationSettings: '"SOFT" 50, "WONK" 0, "opsz" 144', fontWeight: 430, letterSpacing: "-0.04em" }}
+            >
+              GoRoam
+            </text>
+          </motion.g>
+        </svg>
         {/* eslint-disable-next-line @next/next/no-img-element -- a static vector plate, already sized */}
         <img
           src="/art/harbour-engraving.svg"

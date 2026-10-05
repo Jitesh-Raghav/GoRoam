@@ -2,21 +2,27 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Hairline construction lines for the landing page: two rails along the content
- * edges, rules with crosshairs between sections, and corner brackets on a few
- * blocks. Purely decorative overlays (no layout change, hidden from screen readers,
- * never in the way of a click), shown from tablet width up.
+ * Hairline construction lines for the landing page: two rails in the gutters,
+ * textured rules between sections, and corner brackets on a few blocks. Purely
+ * decorative (no layout change, hidden from screen readers, never in the way of
+ * a click); the rails show from tablet width up.
  */
 
 const EDGE = "clamp(1rem,4vw,3rem)"; // container-x's padding, i.e. where content starts
+/** The rails sit out in the gutter, a clear step away from the content edge. */
+const RAIL = `max(6px, calc(${EDGE} - 1.25rem))`;
 
-/** Two vertical rails down the content edges of everything inside a `relative` parent. */
+/**
+ * Two vertical rails down the gutters of everything inside a `relative isolate`
+ * parent. They sit behind the sections, so any illustration, card or dark band
+ * simply covers them; they only show over the bare page.
+ */
 export function GuideRails() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 z-[5] hidden md:block">
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden md:block">
       <div className="container-x relative h-full">
-        <span className="absolute inset-y-0 w-px bg-ink/[0.07]" style={{ left: EDGE }} />
-        <span className="absolute inset-y-0 w-px bg-ink/[0.07]" style={{ right: EDGE }} />
+        <span className="absolute inset-y-0 w-px bg-ink/[0.08]" style={{ left: RAIL }} />
+        <span className="absolute inset-y-0 w-px bg-ink/[0.08]" style={{ right: RAIL }} />
       </div>
     </div>
   );
@@ -24,7 +30,7 @@ export function GuideRails() {
 
 function Cross({ side }: { side: "left" | "right" }) {
   return (
-    <span className="absolute top-0 size-[11px] -translate-y-1/2" style={side === "left" ? { left: `calc(${EDGE} - 5px)` } : { right: `calc(${EDGE} - 5px)` }}>
+    <span className="absolute top-0 size-[11px] -translate-y-1/2" style={side === "left" ? { left: `calc(${RAIL} - 5px)` } : { right: `calc(${RAIL} - 5px)` }}>
       <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-ink/35" />
       <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-ink/35" />
     </span>
@@ -32,18 +38,19 @@ function Cross({ side }: { side: "left" | "right" }) {
 }
 
 /**
- * A full-width hairline between two sections, with crosshairs where it meets the
- * rails. Zero height, so the sections either side don't move.
+ * A textured rule between two sections, drawn like a map's scale bar: a hairline
+ * with fine and major ticks hanging from it and a dotted base, fading out at both
+ * ends, with crosshairs where it meets the rails. Zero height, so nothing moves.
  */
 export function SectionRule({ label, className }: { label?: ReactNode; className?: string }) {
   return (
-    <div aria-hidden className={cn("pointer-events-none relative z-[6] hidden h-0 md:block", className)}>
-      <span className="absolute inset-x-0 top-0 h-px bg-ink/[0.08]" />
-      <div className="container-x relative">
+    <div aria-hidden className={cn("pointer-events-none relative z-[6] h-0", className)}>
+      <span className="landing-rule absolute inset-x-0 top-0" />
+      <div className="container-x relative hidden md:block">
         <Cross side="left" />
         <Cross side="right" />
         {label && (
-          <span className="eyebrow absolute top-2 hidden text-[0.55rem] text-ink/30 lg:block" style={{ right: `calc(${EDGE} + 14px)` }}>
+          <span className="eyebrow absolute top-3.5 hidden text-[0.55rem] text-ink/35 lg:block" style={{ right: `calc(${RAIL} + 14px)` }}>
             {label}
           </span>
         )}

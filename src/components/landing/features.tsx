@@ -348,7 +348,7 @@ function StylesVisual() {
 
 export function Features() {
   return (
-    <section className="relative bg-paper py-24 lg:py-36">
+    <section className="relative py-24 lg:py-36">
       <div className="container-x">
         <SectionHeading
           index="05"

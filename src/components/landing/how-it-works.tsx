@@ -322,7 +322,7 @@ export function HowItWorks() {
   }, [desktop, mobileInView]);
 
   return (
-    <section id="how" className="relative scroll-mt-10 bg-paper py-24 lg:py-36">
+    <section id="how" className="relative scroll-mt-10 py-24 lg:py-36">
       <div className="container-x">
         <SectionHeading
           index="03"

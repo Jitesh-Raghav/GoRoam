@@ -46,7 +46,7 @@ export const FAQS = [
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" className="relative scroll-mt-10 border-t border-line bg-paper py-24 lg:py-36">
+    <section id="faq" className="relative scroll-mt-10 py-24 lg:py-36">
       <div className="container-x grid gap-14 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <SectionHeading

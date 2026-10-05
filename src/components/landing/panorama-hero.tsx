@@ -237,12 +237,12 @@ export function PanoramaHero() {
           AI trip planner · your first itinerary is free
         </motion.div>
 
-        <h1 className="display mx-auto max-w-[14ch] text-[clamp(3rem,8.6vw,5.6rem)] leading-[0.9] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.4rem]">
+        <h1 className="display-hero mx-auto max-w-[14ch] text-[clamp(2.8rem,8vw,5.2rem)] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.2rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
           </span>
           <span className="block">
-            <SplitText segments={[{ text: "wander ", className: "italic text-brand" }, { text: "next?" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
+            <SplitText segments={[{ text: "wander ", className: "display-hero-italic italic text-brand" }, { text: "next?" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
           </span>
         </h1>
 

@@ -559,7 +559,7 @@ function shoreRight() {
 
 /* ---------------------------------- build --------------------------------- */
 
-add(`<rect width="${W}" height="${H}" fill="${BG}"/>`);
+// No background: the sky stays transparent so the footer's wordmark can rise behind the scene.
 cloud(520, 150, 520, 9);
 cloud(1180, 96, 380, 6);
 cloud(1560, 230, 300, 5);
