@@ -74,7 +74,7 @@ export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: numbe
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
           <span className="absolute left-4 top-4 grid place-items-center rounded-2xl bg-white/95 px-3 py-2 text-center text-ink shadow-sm">
-            <span className="display text-2xl leading-none">{pkg.days}</span>
+            <span className="display text-xl leading-none">{pkg.days}</span>
             <span className="eyebrow mt-0.5 text-[0.5rem] text-stone">days</span>
           </span>
           <span className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-white/90 text-ink opacity-0 transition-all duration-500 ease-out-expo group-hover:opacity-100">
@@ -84,7 +84,7 @@ export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: numbe
             <p className="eyebrow flex items-center gap-1.5 text-[0.6rem] text-sun-2">
               <MapPin className="size-3" /> {pkg.country}
             </p>
-            <h3 className="display mt-1.5 text-[2.2rem] leading-[0.95]">{pkg.title}</h3>
+            <h3 className="display mt-1.5 text-[1.87rem] leading-[0.95]">{pkg.title}</h3>
           </div>
         </div>
         <div className="flex flex-1 flex-col p-5">
@@ -104,7 +104,7 @@ export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: numbe
             <div>
               <p className="eyebrow text-[0.58rem] text-stone">From</p>
               <p className="mt-1 text-ink">
-                <span className="display text-3xl leading-none">{money(Math.round(pkg.budget / 2))}</span>
+                <span className="display text-2xl leading-none">{money(Math.round(pkg.budget / 2))}</span>
                 <span className="ml-1 text-xs text-stone">per person</span>
               </p>
             </div>

@@ -74,7 +74,7 @@ export function BookingPanel({ query, className, dark = true }: { query: Booking
         <p className={cn("eyebrow", dark ? "text-paper/55" : "text-stone")}>Book this trip</p>
         <div className="mt-4 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="display flex items-center gap-2.5 text-4xl leading-none">
+            <p className="display flex items-center gap-2.5 text-3xl leading-none">
               <span>{from}</span>
               <Plane className={cn("size-5 shrink-0", dark ? "text-brand-2" : "text-brand")} />
               <span>{to}</span>

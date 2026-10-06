@@ -46,7 +46,7 @@ export function Pricing() {
                 )}
                 <p className={cn("eyebrow", p.popular ? "text-paper/60" : "text-stone")}>{p.name}</p>
                 <div className="mt-6 flex items-baseline gap-2">
-                  <span className="display text-7xl leading-none">${p.price}</span>
+                  <span className="display text-6xl leading-none">${p.price}</span>
                   <span className={cn("text-sm", p.popular ? "text-paper/60" : "text-stone")}>one-time</span>
                 </div>
                 <p className={cn("mt-4 font-medium", p.popular ? "text-brand-2" : "text-brand")}>
@@ -86,7 +86,7 @@ export function Pricing() {
                 <Gift className="size-5" />
               </span>
               <div>
-                <p className="display text-3xl leading-none text-ink">Start free.</p>
+                <p className="display text-2xl leading-none text-ink">Start free.</p>
                 <p className="mt-1.5 text-stone">Every new account gets {freeTrips()}: see a complete plan before you pay a cent.</p>
               </div>
             </div>

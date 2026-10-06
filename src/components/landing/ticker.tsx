@@ -22,8 +22,8 @@ export function Ticker() {
             <span
               className={
                 i % 2
-                  ? "display text-[clamp(3rem,7.5vw,7rem)] italic leading-none text-transparent [-webkit-text-stroke:1.2px_var(--ink)]"
-                  : "display text-[clamp(3rem,7.5vw,7rem)] leading-none text-ink"
+                  ? "display text-[clamp(2.55rem,6.38vw,5.95rem)] italic leading-none text-transparent [-webkit-text-stroke:1.2px_var(--ink)]"
+                  : "display text-[clamp(2.55rem,6.38vw,5.95rem)] leading-none text-ink"
               }
             >
               {p}
@@ -51,7 +51,7 @@ export function MobileManifesto() {
   return (
     <section className="container-x py-24 lg:hidden">
       <p className="eyebrow mb-8 text-stone">(01) / Why GoRoam</p>
-      <ScrollWords tokens={[MANIFESTO]} className="display text-[clamp(2.2rem,8vw,3.2rem)] leading-[1.06] text-ink" />
+      <ScrollWords tokens={[MANIFESTO]} className="display text-[clamp(1.87rem,6.8vw,2.72rem)] leading-[1.06] text-ink" />
     </section>
   );
 }

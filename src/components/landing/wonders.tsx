@@ -36,7 +36,7 @@ function WonderCard({ d, i }: { d: Destination; i: number }) {
       </div>
       <div className="absolute inset-x-0 bottom-0 p-6 text-paper">
         <p className="font-mono text-[11px] tracking-wide text-paper/65">{formatCoords(d.lat, d.lng)}</p>
-        <h3 className="display mt-2 text-[2.6rem] leading-[0.95]">{d.name}</h3>
+        <h3 className="display mt-2 text-[2.21rem] leading-[0.95]">{d.name}</h3>
         <p className="mt-1 text-sm text-paper/75">{d.place}</p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-paper/12 px-3 py-1.5 ring-1 ring-inset ring-paper/15 backdrop-blur-md">
@@ -108,7 +108,7 @@ export function Wonders() {
             <span className="h-px w-8 bg-ink/20" />
             <span>Wonders of the world</span>
           </p>
-          <h2 className="display mt-6 text-[clamp(2.8rem,11vw,4.4rem)] leading-[0.92]">
+          <h2 className="display mt-6 text-[clamp(2.38rem,9.35vw,3.74rem)] leading-[0.92]">
             <SplitText text="Ten wonders." className="block" />
             <SplitText segments={[{ text: "One tap ", className: "italic text-brand" }, { text: "away." }]} className="block" delay={0.12} />
           </h2>
@@ -128,7 +128,7 @@ export function Wonders() {
               <span className="h-px w-8 bg-ink/20" />
               <span>Wonders of the world</span>
             </p>
-            <h2 className="display mt-6 text-[clamp(3.4rem,5.6vw,6rem)] leading-[0.9]">
+            <h2 className="display mt-6 text-[clamp(2.89rem,4.76vw,5.1rem)] leading-[0.9]">
               <SplitText text="Ten wonders." className="block" />
               <SplitText segments={[{ text: "One tap ", className: "italic text-brand" }, { text: "away." }]} className="block" delay={0.12} />
             </h2>
@@ -136,7 +136,7 @@ export function Wonders() {
               Every icon here is a trip GoRoam can plan tonight. Pick one and we&apos;ll start your itinerary from there.
             </p>
             <div className="mt-10 flex items-end gap-4">
-              <span className="display text-7xl leading-none tabular-nums">{pad(active)}</span>
+              <span className="display text-6xl leading-none tabular-nums">{pad(active)}</span>
               <span className="mb-2 font-mono text-sm text-stone">/ {pad(WONDERS.length)}</span>
             </div>
             <div className="mt-4 h-px w-56 bg-ink/15">
@@ -151,7 +151,7 @@ export function Wonders() {
           <div className="flex h-[500px] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
             <p className="eyebrow text-paper/60">And everywhere else</p>
             <div>
-              <p className="display text-[2.8rem] leading-[0.95]">
+              <p className="display text-[2.38rem] leading-[0.95]">
                 Your map,
                 <br />
                 <span className="italic text-brand-2">your rules.</span>

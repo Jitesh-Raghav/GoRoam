@@ -40,7 +40,7 @@ export function Events({ events, month }: { events: TripEvent[]; month: string }
             </span>
             <div className="min-w-0">
               <p className="eyebrow text-[0.6rem] text-brand">{e.when}</p>
-              <h3 className="display mt-1.5 text-[1.65rem] leading-[1.02] text-ink">{e.name}</h3>
+              <h3 className="display mt-1.5 text-[1.4rem] leading-[1.02] text-ink">{e.name}</h3>
               <p className="mt-2 text-sm leading-relaxed text-stone">{e.what}</p>
               {e.where && (
                 <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-ink/80">
@@ -66,7 +66,7 @@ export function CoolFacts({ facts, city }: { facts: { title: string; fact: strin
         <p className="eyebrow flex items-center gap-2 text-paper/55">
           <Sparkles className="size-3.5 text-sun-2" /> {facts.length} things you didn&apos;t know
         </p>
-        <h2 className="display mt-3 text-[clamp(2.4rem,5vw,3.8rem)] leading-[0.95]">
+        <h2 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.23rem)] leading-[0.95]">
           {city}, <span className="italic text-brand-2">unexpectedly.</span>
         </h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
@@ -79,8 +79,8 @@ export function CoolFacts({ facts, city }: { facts: { title: string; fact: strin
               transition={{ duration: 0.8, ease, delay: i * 0.12 }}
               className="border-t border-paper/15 pt-5"
             >
-              <span className="display block text-[4.5rem] leading-[0.8] text-sun-2">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="display mt-4 text-[1.6rem] leading-[1.05]">{f.title}</h3>
+              <span className="display block text-[3.82rem] leading-[0.8] text-sun-2">{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="display mt-4 text-[1.36rem] leading-[1.05]">{f.title}</h3>
               <p className="mt-2 leading-relaxed text-paper/75">{f.fact}</p>
             </motion.li>
           ))}

@@ -158,7 +158,7 @@ function CreditsPageContent() {
     <div className="mx-auto max-w-[1280px]">
       <header>
         <p className="eyebrow text-stone">Credits</p>
-        <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="More trips," trigger="mount" className="block" />
           <SplitText segments={[{ text: "fewer spreadsheets.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
         </h1>
@@ -225,7 +225,7 @@ function CreditsPageContent() {
         <div className="relative flex flex-col gap-8 p-8 sm:p-12 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow text-paper/60">Current balance</p>
-            <p className="display mt-4 text-[clamp(5rem,12vw,9rem)] leading-[0.8]">{credits}</p>
+            <p className="display mt-4 text-[clamp(4.25rem,10.2vw,7.65rem)] leading-[0.8]">{credits}</p>
             <p className="mt-4 max-w-sm text-paper/70">
               {credits === 1 ? "credit" : "credits"} left · each credit plans one complete itinerary, and they never expire.
             </p>
@@ -239,7 +239,7 @@ function CreditsPageContent() {
       {/* Plans */}
       <section className="mt-16">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-          <h2 className="display text-4xl text-ink">Choose a credit pack</h2>
+          <h2 className="display text-3xl text-ink">Choose a credit pack</h2>
           <p className="text-sm text-stone">One-time payments · no subscription</p>
         </div>
 
@@ -295,7 +295,7 @@ function CreditsPageContent() {
                 </span>
                 <p className={cn("eyebrow mt-6", plan.popular ? "text-paper/60" : "text-stone")}>{plan.name}</p>
                 <div className="mt-4 flex items-baseline gap-2">
-                  <span className="display text-6xl leading-none">${plan.price}</span>
+                  <span className="display text-5xl leading-none">${plan.price}</span>
                   <span className={cn("text-sm", plan.popular ? "text-paper/60" : "text-stone")}>one-time</span>
                 </div>
                 <p className={cn("mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
@@ -336,7 +336,7 @@ function CreditsPageContent() {
 
       {payments.length > 0 && (
         <section className="mt-16">
-          <h2 className="display text-4xl text-ink">Purchases</h2>
+          <h2 className="display text-3xl text-ink">Purchases</h2>
           <ul className="mt-6 divide-y divide-line overflow-hidden rounded-[24px] bg-white/80 ring-1 ring-line">
             {payments.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
@@ -359,7 +359,7 @@ function CreditsPageContent() {
       <section className="mt-16 grid gap-3 md:grid-cols-2">
         {faqs.map((f) => (
           <div key={f.q} className="rounded-3xl bg-white/80 p-6 ring-1 ring-line">
-            <h3 className="display text-2xl text-ink">{f.q}</h3>
+            <h3 className="display text-xl text-ink">{f.q}</h3>
             <p className="mt-2 leading-relaxed text-stone">{f.a}</p>
           </div>
         ))}

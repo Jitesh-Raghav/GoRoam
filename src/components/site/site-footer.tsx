@@ -207,7 +207,7 @@ function ClosingPrompt() {
             <p className="eyebrow flex items-center gap-2 text-paper/50">
               <Sparkles className="size-3.5 text-sun-2" /> Ready when you are
             </p>
-            <h2 className="display mt-4 text-[clamp(2.6rem,5.4vw,4.6rem)] leading-[0.92]">
+            <h2 className="display mt-4 text-[clamp(2.21rem,4.59vw,3.91rem)] leading-[0.92]">
               Your next trip is <span className="italic text-brand-2">one sentence</span> away.
             </h2>
             <p className="mt-5 flex h-6 min-w-0 items-center gap-2 overflow-hidden text-sm text-paper/55">

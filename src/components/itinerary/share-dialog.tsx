@@ -82,7 +82,7 @@ export function ShareButton({ tripId, title, className }: { tripId: string; titl
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="eyebrow text-stone">Share trip</p>
-                  <h2 id="share-title" className="display mt-2 text-4xl leading-none text-ink">
+                  <h2 id="share-title" className="display mt-2 text-3xl leading-none text-ink">
                     Bring the crew.
                   </h2>
                 </div>

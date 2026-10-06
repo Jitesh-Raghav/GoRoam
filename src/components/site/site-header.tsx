@@ -143,7 +143,7 @@ export function SiteHeader() {
                       onClick={() => setOpen(false)}
                       className="flex items-baseline justify-between border-b border-line py-4"
                     >
-                      <span className="display text-5xl">{l.label}</span>
+                      <span className="display text-4xl">{l.label}</span>
                       <span className="eyebrow text-stone">0{i + 1}</span>
                     </Link>
                   </motion.div>

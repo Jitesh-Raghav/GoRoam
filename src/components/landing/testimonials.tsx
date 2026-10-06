@@ -58,7 +58,7 @@ export function Testimonials() {
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-paper-2/60 py-24 lg:py-36">
-      <span aria-hidden className="display pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 select-none text-[28rem] leading-none text-ink/[0.04]">
+      <span aria-hidden className="display pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 select-none text-[23.8rem] leading-none text-ink/[0.04]">
         &ldquo;
       </span>
       <div className="container-x relative">
@@ -83,7 +83,7 @@ export function Testimonials() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -16, filter: "blur(10px)" }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="display text-[clamp(1.9rem,3.6vw,3.3rem)] leading-[1.12] text-ink"
+                className="display text-[clamp(1.61rem,3.06vw,2.8rem)] leading-[1.12] text-ink"
               >
                 &ldquo;{t.content}&rdquo;
               </motion.blockquote>

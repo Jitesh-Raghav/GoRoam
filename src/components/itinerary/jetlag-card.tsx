@@ -30,7 +30,7 @@ export function JetLagCard({ timezone, departure, className }: { timezone?: stri
           <p className="eyebrow flex items-center gap-2 text-paper/55">
             <Moon className="size-3.5 text-sun-2" /> Beat the jet lag
           </p>
-          <p className="display mt-3 text-[2rem] leading-[1]">
+          <p className="display mt-3 text-[1.7rem] leading-[1]">
             {hours}h {plan.direction === "east" ? "ahead" : "behind"}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-paper/65">

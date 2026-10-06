@@ -15,7 +15,7 @@ function Panel({ icon: Icon, title, description, children, tone = "default" }: {
         <span className={cn("grid size-11 place-items-center rounded-2xl", tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-brand-soft text-brand")}>
           <Icon className="size-5" />
         </span>
-        <h2 className="display mt-5 text-3xl text-ink">{title}</h2>
+        <h2 className="display mt-5 text-2xl text-ink">{title}</h2>
         <p className="mt-2 max-w-xs text-sm leading-relaxed text-stone">{description}</p>
       </div>
       <div className="min-w-0 space-y-3 lg:col-span-8">{children}</div>
@@ -58,7 +58,7 @@ function SettingsContent() {
     <div className="mx-auto max-w-[1100px]">
       <header className="mb-10">
         <p className="eyebrow text-stone">Settings</p>
-        <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="Make it" trigger="mount" className="inline" />{" "}
           <SplitText segments={[{ text: "yours.", className: "italic text-brand" }]} trigger="mount" delay={0.1} className="inline" />
         </h1>

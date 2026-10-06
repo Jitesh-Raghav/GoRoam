@@ -6,7 +6,9 @@ export function Logo({ className, tone = "ink", href = "/" }: { className?: stri
   return (
     <Link href={href} className={cn("group inline-flex items-center gap-2.5", className)} aria-label="GoRoam home">
       <LogoMark className="size-9 shrink-0 rounded-[11px] shadow-[0_8px_20px_-10px_rgba(10,30,44,0.6)] transition-transform duration-500 ease-out-expo group-hover:rotate-[-8deg]" />
-      <span className={cn("display text-[1.7rem] leading-none", tone === "paper" ? "text-paper" : "text-ink")}>GoRoam</span>
+      <span className={cn("display text-[1.44rem] leading-none", tone === "paper" ? "text-paper" : "text-ink")}>
+        <span className={tone === "paper" ? "text-brand-2" : "text-brand"}>Go</span>Roam
+      </span>
     </Link>
   );
 }

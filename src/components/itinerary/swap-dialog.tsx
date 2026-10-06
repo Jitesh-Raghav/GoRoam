@@ -115,7 +115,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
                   <p className="eyebrow flex items-center gap-2 text-stone">
                     <ArrowRightLeft className="size-3.5 text-brand" /> Day {target.day + 1} · {target.slot}
                   </p>
-                  <h3 className="display mt-2 text-[2rem] leading-[1] text-ink">
+                  <h3 className="display mt-2 text-[1.7rem] leading-[1] text-ink">
                     Swap <span className="italic text-brand">{target.current.place.name}</span>
                   </h3>
                 </div>
@@ -158,7 +158,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
                           <span className="font-mono text-xs text-brand">0{i + 1}</span>
                           <span className="rounded-full bg-paper-2 px-2.5 py-1 font-mono text-xs text-ink">{o.estimatedCost ? money(o.estimatedCost) : "Free"}</span>
                         </div>
-                        <h4 className="display mt-3 text-[1.5rem] leading-[1.02] text-ink">{o.place.name}</h4>
+                        <h4 className="display mt-3 text-[1.27rem] leading-[1.02] text-ink">{o.place.name}</h4>
                         <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone">
                           {o.place.area && (
                             <span className="inline-flex items-center gap-1">

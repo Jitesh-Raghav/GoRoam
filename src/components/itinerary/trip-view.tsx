@@ -175,7 +175,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
     <div className="rounded-3xl bg-paper/10 px-5 py-4 text-paper ring-1 ring-inset ring-paper/20">
       <p className="eyebrow text-[0.6rem] text-paper/60">{eyebrow}</p>
       <p className="mt-1 flex items-baseline gap-2">
-        <span className="display text-5xl leading-none">{big}</span>
+        <span className="display text-4xl leading-none">{big}</span>
         <span className="text-sm text-paper/70">{small}</span>
       </p>
     </div>
@@ -234,7 +234,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               </span>
             )}
           </div>
-          <h4 className="display mt-2 text-[clamp(1.7rem,3vw,2.2rem)] leading-[1.02] text-ink">{activity.place.name}</h4>
+          <h4 className="display mt-2 text-[clamp(1.44rem,2.55vw,1.87rem)] leading-[1.02] text-ink">{activity.place.name}</h4>
           {(cat || activity.place.area) && (
             <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
               {cat && (
@@ -368,7 +368,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
               <span className="eyebrow flex items-center gap-1.5 text-[0.6rem] text-sun-2">
                 <slot.icon className="size-3.5" /> {slot.label}
               </span>
-              <span className={cn("display mt-1.5 line-clamp-2 block leading-[1]", stops.length >= 3 && k === 0 ? "text-[clamp(1.8rem,3vw,2.6rem)]" : "text-[1.6rem]")}>
+              <span className={cn("display mt-1.5 line-clamp-2 block leading-[1]", stops.length >= 3 && k === 0 ? "text-[clamp(1.53rem,2.55vw,2.21rem)]" : "text-[1.36rem]")}>
                 {s.activity.place.name}
               </span>
               {s.activity.place.area && <span className="mt-1 block truncate text-xs text-paper/70">{s.activity.place.area}</span>}
@@ -416,7 +416,7 @@ function DayPanel({
               <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
             )}
           </p>
-          <h3 className="display mt-3 text-[clamp(2.4rem,5vw,3.6rem)] leading-[0.95] text-ink">{day.theme || `Day ${index + 1}`}</h3>
+          <h3 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.06rem)] leading-[0.95] text-ink">{day.theme || `Day ${index + 1}`}</h3>
           {day.summary && <p className="mt-3 max-w-xl text-stone">{day.summary}</p>}
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 text-sm">
@@ -552,13 +552,13 @@ function BudgetCard({
           </svg>
           <div className="absolute inset-0 grid place-items-center text-center">
             <div>
-              <p className="display text-3xl leading-none text-ink">{Math.round((planned / Math.max(budget, 1)) * 100)}%</p>
+              <p className="display text-2xl leading-none text-ink">{Math.round((planned / Math.max(budget, 1)) * 100)}%</p>
               <p className="mt-1 text-[10px] text-stone">of {money(budget)}</p>
             </div>
           </div>
         </div>
         <div className="min-w-0">
-          <p className="display text-4xl leading-none text-ink">{money(planned)}</p>
+          <p className="display text-3xl leading-none text-ink">{money(planned)}</p>
           <p className="mt-1.5 text-sm text-stone">planned of your {money(budget)} budget</p>
           <p className={cn("mt-3 inline-flex rounded-full px-2.5 py-1 text-xs", over ? "bg-destructive/10 text-destructive" : "bg-brand-soft text-brand")}>
             {over ? `${money(-left)} over` : `${money(left)} to spare`}
@@ -627,13 +627,13 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
         <span className="absolute left-3 top-3 rounded-full bg-ink/40 px-2.5 py-1 font-mono text-xs text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">{pad(index + 1)}</span>
         {stay.pricePerNight ? (
           <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-right text-ink shadow-sm">
-            <span className="display text-xl leading-none">{money(stay.pricePerNight)}</span>
+            <span className="display text-lg leading-none">{money(stay.pricePerNight)}</span>
             <span className="ml-1 text-[11px] text-stone">/ night</span>
           </span>
         ) : null}
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <h4 className="display text-[1.9rem] leading-[1.02] text-ink">{stay.name}</h4>
+        <h4 className="display text-[1.61rem] leading-[1.02] text-ink">{stay.name}</h4>
         <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-stone">
           <MapPin className="size-3.5 text-brand" /> {stay.area}
           {stay.type && <span>· {stay.type}</span>}
@@ -885,7 +885,7 @@ export function TripView({
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.1, ease, delay: 0.4 }}
-              className={cn("display mt-3 text-[clamp(3.4rem,9vw,8.5rem)] leading-[0.86]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
+              className={cn("display mt-3 text-[clamp(2.89rem,7.65vw,7.22rem)] leading-[0.86]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
             >
               {flag && <Flag code={flag} className="mr-[0.2em] h-[0.4em] -translate-y-[0.12em] align-middle" />}
               {title}
@@ -956,7 +956,7 @@ export function TripView({
               <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
                 <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
               </p>
-              <h3 className="display mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[0.95]">
+              <h3 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
                 The <span className="italic text-brand-2 print:text-brand">big moments.</span>
               </h3>
             </div>
@@ -1101,7 +1101,7 @@ export function TripView({
                   <BedDouble className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="display block text-2xl leading-none">{p.name}</span>
+                  <span className="display block text-xl leading-none">{p.name}</span>
                   <span className="mt-1 block text-sm text-stone group-hover:text-paper/60">{i === 0 ? `Stays in ${cityOf(title)}` : p.blurb}</span>
                 </span>
                 <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
@@ -1194,7 +1194,7 @@ export function TripView({
         <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-sun/20 blur-3xl" />
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>
-            <p className="display text-[clamp(2.6rem,5vw,4rem)] leading-[0.95]">
+            <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[0.95]">
               {isPackage ? (
                 <>
                   Make it <span className="italic text-brand-2">yours.</span>

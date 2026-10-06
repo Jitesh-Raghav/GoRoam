@@ -194,7 +194,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
                           {b.start && ` · ${pretty(b.start)}`}
                           {b.end && ` → ${pretty(b.end)}`}
                         </p>
-                        <h4 className="display mt-1.5 text-[1.5rem] leading-[1.05] text-ink">{b.title}</h4>
+                        <h4 className="display mt-1.5 text-[1.27rem] leading-[1.05] text-ink">{b.title}</h4>
                       </div>
                       <div className="flex items-center gap-2">
                         {b.ref && <CopyRef value={b.ref} />}

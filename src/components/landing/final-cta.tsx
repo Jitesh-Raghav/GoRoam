@@ -24,7 +24,7 @@ export function FinalCta() {
           <Reveal y={12}>
             <p className="eyebrow text-paper/70">(09) / Your move</p>
           </Reveal>
-          <h2 className="display mt-8 text-[clamp(3.4rem,9vw,9rem)] leading-[0.88]">
+          <h2 className="display mt-8 text-[clamp(2.89rem,7.65vw,7.65rem)] leading-[0.88]">
             <SplitText text="The world is waiting." className="block" />
             {/* <SplitText text="Where to first?" className="block italic text-white" delay={0.2} /> */}
           </h2>

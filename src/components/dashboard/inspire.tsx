@@ -103,7 +103,7 @@ export function Inspire({
                     <p className="eyebrow flex items-center gap-2 text-paper/60">
                       <Sparkles className="size-3.5 text-sun-2" /> Inspire me
                     </p>
-                    <h3 className="display mt-2 text-[clamp(2rem,4vw,2.8rem)] leading-[0.95]">
+                    <h3 className="display mt-2 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
                       Where&apos;s at its <span className="italic text-brand-2">best</span> then?
                     </h3>
                   </div>
@@ -169,7 +169,7 @@ export function Inspire({
                                 <LazyScene id={scene} tint={SCENES[scene].tint} />
                               </div>
                               <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
-                              <h4 className="display absolute bottom-3 left-4 right-4 flex items-center gap-2 text-[1.8rem] leading-none text-paper">
+                              <h4 className="display absolute bottom-3 left-4 right-4 flex items-center gap-2 text-[1.53rem] leading-none text-paper">
                                 {flag && <Flag code={flag} className="h-[0.55em]" />}
                                 <span className="truncate">{idea.destination}</span>
                               </h4>

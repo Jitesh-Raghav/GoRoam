@@ -101,7 +101,7 @@ export function Checklist({ tripId, packing }: { tripId: string; packing?: strin
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow text-stone">Before you go</p>
-          <h3 className="display mt-3 text-4xl leading-none text-ink">Ready, set, roam.</h3>
+          <h3 className="display mt-3 text-3xl leading-none text-ink">Ready, set, roam.</h3>
         </div>
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm text-ink">{pct}%</span>

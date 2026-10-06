@@ -33,7 +33,7 @@ export default function ContactPage() {
             <span className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
               <r.icon className="size-5" />
             </span>
-            <p className="display mt-4 text-2xl leading-none text-ink">{r.title}</p>
+            <p className="display mt-4 text-xl leading-none text-ink">{r.title}</p>
             <p className="mt-2 text-sm text-stone">{r.body}</p>
             <a href={r.action.href} className="mt-4 inline-flex items-center gap-2 text-sm text-ink underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-brand">
               {r.action.label}

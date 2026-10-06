@@ -190,7 +190,7 @@ export function Hero() {
               A window to anywhere
             </motion.div>
 
-            <h2 className="display text-[clamp(3.4rem,13vw,5.6rem)] leading-[0.88] text-ink lg:text-[clamp(4.2rem,calc(9.3vw_-_19px),8.4rem)]">
+            <h2 className="display text-[clamp(2.89rem,11.05vw,4.76rem)] leading-[0.88] text-ink lg:text-[clamp(3.57rem,calc(7.91vw_-_16.15px),7.14rem)]">
               <span className="block">
                 <SplitText text="Plan less." trigger="inView" delay={0.15} />
               </span>
@@ -271,7 +271,7 @@ export function Hero() {
                   animate={{ y: "0%" }}
                   exit={{ y: "-100%" }}
                   transition={{ duration: 0.8, ease }}
-                  className="display absolute inset-x-0 top-0 truncate whitespace-nowrap text-[2rem] leading-[1.2] text-ink"
+                  className="display absolute inset-x-0 top-0 truncate whitespace-nowrap text-[1.7rem] leading-[1.2] text-ink"
                 >
                   {dest.name}
                 </motion.p>
@@ -374,7 +374,7 @@ export function Hero() {
             <p className="eyebrow text-paper/70">
               {pad(index + 1)} / {pad(HERO_SEQUENCE.length)} · {dest.place}
             </p>
-            <p className="display mt-2 text-3xl">{dest.name}</p>
+            <p className="display mt-2 text-2xl">{dest.name}</p>
           </div>
 
           {/* desktop manifesto over the opened scene */}
@@ -386,7 +386,7 @@ export function Hero() {
                 tokens={[MANIFESTO]}
                 progress={manifesto}
                 dim={0.18}
-                className="display text-[clamp(2.4rem,4.2vw,4.4rem)] leading-[1.08] text-paper"
+                className="display text-[clamp(2.04rem,3.57vw,3.74rem)] leading-[1.08] text-paper"
               />
             </div>
           </motion.div>

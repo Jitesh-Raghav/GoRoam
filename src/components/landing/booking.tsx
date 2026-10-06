@@ -32,7 +32,7 @@ function FlightCard({ on }: { on: boolean }) {
       </div>
       <div className="mt-4 flex items-center gap-3">
         <div>
-          <p className="display text-4xl leading-none">BOM</p>
+          <p className="display text-3xl leading-none">BOM</p>
           <p className="mt-1 font-mono text-[11px] text-stone">02:15</p>
         </div>
         <div className="relative flex-1">
@@ -52,7 +52,7 @@ function FlightCard({ on }: { on: boolean }) {
           <p className="text-center font-mono text-[10px] text-stone">11h 40m</p>
         </div>
         <div className="text-right">
-          <p className="display text-4xl leading-none text-brand">BER</p>
+          <p className="display text-3xl leading-none text-brand">BER</p>
           <p className="mt-1 font-mono text-[11px] text-stone">10:25</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ function StayCard() {
       </div>
       <div className="min-w-0 py-1 pr-2">
         <p className="eyebrow text-[0.58rem] text-stone">Stay · 3 nights</p>
-        <p className="display mt-1 truncate text-2xl leading-none">Boutique in Mitte</p>
+        <p className="display mt-1 truncate text-xl leading-none">Boutique in Mitte</p>
         <p className="mt-2 flex items-center gap-1 text-xs text-stone">
           <Star className="size-3.5 fill-brand text-brand" /> 9.1 · Free cancellation
         </p>
@@ -85,7 +85,7 @@ function TicketCard() {
       <Ticket className="size-6 shrink-0" />
       <div className="min-w-0">
         <p className="eyebrow text-[0.58rem] text-white/70">Skip the line · Oct 5</p>
-        <p className="display truncate text-2xl leading-none">Museum Island pass</p>
+        <p className="display truncate text-xl leading-none">Museum Island pass</p>
       </div>
     </div>
   );
@@ -99,7 +99,7 @@ function TransportCard() {
       </span>
       <div className="min-w-0">
         <p className="eyebrow text-[0.58rem] text-stone">Berlin → Dresden</p>
-        <p className="display text-2xl leading-none">Train · 1h 52m</p>
+        <p className="display text-xl leading-none">Train · 1h 52m</p>
       </div>
     </div>
   );
@@ -205,7 +205,7 @@ export function BookingSection() {
       <div className="relative mt-20 border-y border-paper/10 py-6 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
         <Marquee duration={36}>
           {PARTNERS.map((p) => (
-            <span key={p} className="display mx-8 text-3xl text-paper/40 sm:text-4xl">
+            <span key={p} className="display mx-8 text-2xl text-paper/40 sm:text-3xl">
               {p}
             </span>
           ))}

@@ -73,14 +73,14 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
         <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/15 px-2.5 py-1.5 text-center text-paper backdrop-blur-sm">
-          <span className="display block text-2xl leading-none">{it.numberOfDays}</span>
+          <span className="display block text-xl leading-none">{it.numberOfDays}</span>
           <span className="eyebrow block text-[0.52rem]">{it.numberOfDays === 1 ? "day" : "days"}</span>
         </span>
         <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
           <p className="eyebrow text-[0.6rem] text-paper/70">
             {formatDate(it.startDate, false)} – {formatDate(it.endDate)}
           </p>
-          <h3 className="display mt-2 flex items-center gap-2.5 text-[2.2rem] leading-none">
+          <h3 className="display mt-2 flex items-center gap-2.5 text-[1.87rem] leading-none">
             <Flag code={countryCodeFor(it.place || it.destination, it.country)} className="h-[0.6em]" />
             <span className="truncate">{titleCase(it.destination)}</span>
           </h3>
@@ -227,7 +227,7 @@ function ItinerariesContent() {
       <header className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div>
           <p className="eyebrow text-stone">Your collection</p>
-          <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+          <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
             <SplitText text="Every trip," trigger="mount" className="block" />
             <SplitText segments={[{ text: "beautifully kept.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
           </h1>
@@ -242,7 +242,7 @@ function ItinerariesContent() {
           <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
-                <p className="display text-5xl leading-none text-ink">{s.value}</p>
+                <p className="display text-4xl leading-none text-ink">{s.value}</p>
                 <p className="mt-2 text-sm text-stone">{s.label}</p>
               </div>
             ))}
@@ -283,7 +283,7 @@ function ItinerariesContent() {
           </div>
         ) : error ? (
           <div className="rounded-[28px] bg-white/80 p-10 text-center ring-1 ring-line">
-            <p className="display text-3xl">We couldn&apos;t load your trips.</p>
+            <p className="display text-2xl">We couldn&apos;t load your trips.</p>
             <p className="mx-auto mt-3 max-w-md text-stone">{error}</p>
             <button
               type="button"
@@ -301,7 +301,7 @@ function ItinerariesContent() {
             <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent" />
             <div className="relative max-w-lg p-8 py-16 text-paper sm:p-14">
               <p className="eyebrow text-paper/60">Nothing here yet</p>
-              <h2 className="display mt-4 text-5xl leading-[0.95]">
+              <h2 className="display mt-4 text-4xl leading-[0.95]">
                 Your first adventure is <span className="italic text-brand-2">one sentence</span> away.
               </h2>
               <p className="mt-4 text-paper/70">Tell GoRoam where you&apos;re dreaming of and we&apos;ll plan every day of it.</p>
@@ -313,7 +313,7 @@ function ItinerariesContent() {
         ) : filtered.length === 0 ? (
           <div className="rounded-[28px] bg-white/80 p-10 text-center ring-1 ring-line">
             <CalendarDays className="mx-auto size-6 text-brand" />
-            <p className="display mt-3 text-3xl">No trips match “{query}”.</p>
+            <p className="display mt-3 text-2xl">No trips match “{query}”.</p>
             <button type="button" onClick={() => setQuery("")} className={cn("mt-4 text-sm text-ink underline underline-offset-4")}>
               Clear search
             </button>

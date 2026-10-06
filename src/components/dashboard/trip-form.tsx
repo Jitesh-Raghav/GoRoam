@@ -595,7 +595,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
               <span className="font-mono text-xs text-brand">0{step + 1}</span>
               <div>
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.h2 key={current.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35 }} className="display text-[2.4rem] leading-none text-ink">
+                  <motion.h2 key={current.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35 }} className="display text-[2.04rem] leading-none text-ink">
                     {current.title}
                   </motion.h2>
                 </AnimatePresence>

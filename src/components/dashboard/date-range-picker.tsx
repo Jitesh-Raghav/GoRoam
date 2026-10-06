@@ -137,7 +137,7 @@ export function DateRangePicker({
   // A plain render function (not a component), so hovering doesn't remount the days.
   const renderMonth = (m: Date, className?: string) => (
     <div key={iso(m)} className={className}>
-      <p className="display mb-3 text-center text-xl text-ink">{format(m, "MMMM yyyy")}</p>
+      <p className="display mb-3 text-center text-lg text-ink">{format(m, "MMMM yyyy")}</p>
       <div className="grid grid-cols-7 text-center">
         {WEEKDAYS.map((w, i) => (
           <span key={w} className={cn("pb-2 font-mono text-[10px] uppercase tracking-wider", i >= 5 ? "text-brand" : "text-stone")}>
@@ -281,7 +281,7 @@ export function DateRangePicker({
                 <p className="text-sm text-ink" aria-live="polite">
                   {startDate ? (
                     <>
-                      <span className="display text-2xl">{previewDays}</span> {previewDays === 1 ? "day" : "days"}
+                      <span className="display text-xl">{previewDays}</span> {previewDays === 1 ? "day" : "days"}
                       <span className="text-stone">
                         {" "}
                         · {Math.max(previewDays - 1, 0)} {previewDays - 1 === 1 ? "night" : "nights"}

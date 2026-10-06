@@ -97,7 +97,7 @@ function BookContent() {
     <div className="mx-auto max-w-[1280px]">
       <header>
         <p className="eyebrow text-stone">Book travel</p>
-        <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="Flights, stays" trigger="mount" className="block" />
           <SplitText segments={[{ text: "& the good stuff.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
         </h1>
@@ -192,7 +192,7 @@ function BookContent() {
                 className="group flex items-center gap-4 rounded-[24px] bg-ink p-5 text-paper transition-colors hover:bg-brand aria-disabled:pointer-events-none aria-disabled:opacity-40"
               >
                 <span className="min-w-0 flex-1">
-                  <span className="display block text-3xl leading-none">{p.name}</span>
+                  <span className="display block text-2xl leading-none">{p.name}</span>
                   <span className="mt-1.5 block truncate text-sm text-paper/60 group-hover:text-paper/85">{p.blurb}</span>
                 </span>
                 <span className="grid size-11 shrink-0 place-items-center rounded-full bg-paper/10 transition-transform duration-500 group-hover:rotate-45">

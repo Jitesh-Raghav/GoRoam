@@ -70,7 +70,7 @@ function Slideshow() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="display mt-3 text-4xl leading-none sm:text-6xl"
+                className="display mt-3 text-3xl leading-none sm:text-5xl"
               >
                 {d.name}
               </motion.p>
@@ -143,7 +143,7 @@ function AuthPanel() {
         ) : session ? (
           <div>
             <p className="eyebrow text-stone">Signed in</p>
-            <h1 className="display mt-4 text-5xl leading-[0.95] text-ink">
+            <h1 className="display mt-4 text-4xl leading-[0.95] text-ink">
               Welcome back,
               <br />
               <span className="italic text-brand">{session.user?.name?.split(" ")[0] ?? "traveller"}.</span>
@@ -166,7 +166,7 @@ function AuthPanel() {
         ) : (
           <div>
             <p className="eyebrow text-stone">Welcome to GoRoam</p>
-            <h1 className="display mt-4 text-[clamp(3rem,6vw,4.4rem)] leading-[0.92] text-ink">
+            <h1 className="display mt-4 text-[clamp(2.55rem,5.1vw,3.74rem)] leading-[0.92] text-ink">
               <SplitText text="Your next trip" trigger="mount" className="block" />
               <SplitText segments={[{ text: "starts here.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
             </h1>

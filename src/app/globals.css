@@ -422,6 +422,34 @@ html.lenis, html.lenis body { height: auto; }
   62% { transform: translate(1980px, -70px); }
   100% { transform: translate(1980px, -70px); }
 }
+/* Panorama life: sun rays, smoke, the train and walkers, butterflies, a flickering torch. */
+.pano-rays { animation: pano-rays 140s linear infinite; }
+@keyframes pano-rays { to { transform: rotate(360deg); } }
+.pano-flicker { transform-box: fill-box; transform-origin: center; animation: pano-flicker 1.3s ease-in-out infinite; }
+@keyframes pano-flicker { 0%, 100% { transform: scale(1); opacity: 0.85; } 30% { transform: scale(1.25); opacity: 1; } 60% { transform: scale(0.92); opacity: 0.75; } }
+.pano-smoke { animation: pano-smoke 4s ease-out infinite; opacity: 0; }
+@keyframes pano-smoke { 0% { transform: translate(0, 0) scale(0.6); opacity: 0.55; } 100% { transform: translate(-10px, -34px) scale(2.2); opacity: 0; } }
+.pano-steam { animation: pano-steam 1.5s ease-out infinite; opacity: 0; }
+@keyframes pano-steam { 0% { transform: translate(0, 0) scale(0.6); opacity: 0.8; } 100% { transform: translate(-16px, -14px) scale(2); opacity: 0; } }
+/* Riders follow a path drawn in the scene; hidden where offset-path isn't supported. */
+.pano-rider { visibility: hidden; }
+@supports (offset-path: path("M0 0")) {
+  .pano-rider { visibility: visible; offset-distance: 0%; }
+}
+.pano-train { offset-rotate: auto; animation: pano-ride 52s linear infinite; }
+.pano-walk { offset-rotate: 0deg; animation: pano-ride 120s linear infinite; }
+@keyframes pano-ride { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+.pano-bob { animation: pano-bob 0.7s ease-in-out infinite; }
+@keyframes pano-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px); } }
+.pano-flutter { animation: pano-flutter 9s ease-in-out infinite; }
+@keyframes pano-flutter {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(26px, -14px); }
+  50% { transform: translate(48px, 4px); }
+  75% { transform: translate(20px, 10px); }
+}
+.pano-wing { transform-box: fill-box; transform-origin: center; animation: pano-wing 0.28s ease-in-out infinite alternate; }
+@keyframes pano-wing { from { transform: scaleX(1); } to { transform: scaleX(0.25); } }
 .scene[data-paused="true"] * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
   .scene * { animation: none !important; }

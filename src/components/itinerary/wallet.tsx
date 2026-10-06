@@ -286,7 +286,7 @@ export function TripWallet({
             <p className="eyebrow relative flex items-center gap-2 text-paper/55">
               <WalletIcon className="size-3.5 text-sun-2" /> Spent so far
             </p>
-            <p className="display relative mt-3 text-5xl leading-none">{money(total)}</p>
+            <p className="display relative mt-3 text-4xl leading-none">{money(total)}</p>
             {budget !== null && (
               <>
                 <div className="relative mt-5 h-2 overflow-hidden rounded-full bg-paper/10">

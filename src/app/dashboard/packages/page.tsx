@@ -11,7 +11,7 @@ export default async function PackagesPage() {
       <header className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div>
           <p className="eyebrow text-stone">Travel packages</p>
-          <h1 className="display mt-4 text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] text-ink">
+          <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
             Ready when
             <br />
             <span className="italic text-brand">you are.</span>

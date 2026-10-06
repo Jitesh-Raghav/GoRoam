@@ -135,7 +135,7 @@ function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onN
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
           <div className="relative">
             <p className="eyebrow text-[0.62rem] text-paper/60">Credits left</p>
-            <p className="display mt-2 text-5xl leading-none">{credits}</p>
+            <p className="display mt-2 text-4xl leading-none">{credits}</p>
             <p className="mt-2 text-xs text-paper/60">1 credit = 1 itinerary</p>
             <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs ring-1 ring-inset ring-paper/15 backdrop-blur transition-colors group-hover:bg-paper group-hover:text-ink">
               <Plus className="size-3.5" /> Top up

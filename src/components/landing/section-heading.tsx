@@ -37,7 +37,7 @@ export function SectionHeading({
       <h2
         className={cn(
           "display mt-6 leading-[0.92]",
-          size === "lg" ? "text-[clamp(2.8rem,6vw,5.6rem)]" : "text-[clamp(2.6rem,4.6vw,4.4rem)]",
+          size === "lg" ? "text-[clamp(2.38rem,5.1vw,4.76rem)]" : "text-[clamp(2.21rem,3.91vw,3.74rem)]",
           tone === "paper" ? "text-paper" : "text-ink"
         )}
       >

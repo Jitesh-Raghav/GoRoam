@@ -103,7 +103,7 @@ export function BoardingPass({
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="eyebrow text-[0.62rem] text-stone">From</p>
-            <p className="display mt-1 text-5xl leading-none tracking-tight">{code(data.source)}</p>
+            <p className="display mt-1 text-4xl leading-none tracking-tight">{code(data.source)}</p>
             <p className="mt-1 truncate text-sm text-stone">{data.source || "Your city"}</p>
           </div>
           <div className="relative mb-9 flex flex-1 items-center">
@@ -115,7 +115,7 @@ export function BoardingPass({
           </div>
           <div className="min-w-0 text-right">
             <p className="eyebrow text-[0.62rem] text-stone">To</p>
-            <p className="display mt-1 text-5xl leading-none tracking-tight text-brand">{code(data.destination)}</p>
+            <p className="display mt-1 text-4xl leading-none tracking-tight text-brand">{code(data.destination)}</p>
             <p className="mt-1 truncate text-sm text-stone">{data.destination || "Anywhere"}</p>
           </div>
         </div>

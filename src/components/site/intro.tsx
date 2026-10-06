@@ -16,7 +16,7 @@ export function Intro() {
       >
         <div className="flex overflow-hidden pb-[0.12em]">
           {letters.map((l, i) => (
-            <span key={i} className="intro-word display inline-block text-[clamp(4.5rem,14vw,12rem)]" style={{ animationDelay: `${0.08 + i * 0.05}s` }}>
+            <span key={i} className="intro-word display inline-block text-[clamp(3.82rem,11.9vw,10.2rem)]" style={{ animationDelay: `${0.08 + i * 0.05}s` }}>
               {l}
             </span>
           ))}

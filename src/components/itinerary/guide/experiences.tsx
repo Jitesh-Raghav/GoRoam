@@ -75,7 +75,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
                 ) : null}
               </div>
               <div className="flex flex-1 flex-col p-5">
-                <h3 className="display text-[1.6rem] leading-[1.02] text-ink">{e.name}</h3>
+                <h3 className="display text-[1.36rem] leading-[1.02] text-ink">{e.name}</h3>
                 {e.duration && (
                   <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-stone">
                     <Clock3 className="size-3.5 text-brand" /> {e.duration}

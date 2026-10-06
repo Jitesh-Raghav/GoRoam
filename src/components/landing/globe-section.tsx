@@ -175,7 +175,7 @@ export function GlobeSection() {
               {STATS.map((s, i) => (
                 <Reveal key={s.label} delay={0.1 * i}>
                   <div className="border-t border-paper/15 pt-5">
-                    <Counter value={s.value} suffix={s.suffix} className="display text-6xl leading-none text-paper" />
+                    <Counter value={s.value} suffix={s.suffix} className="display text-5xl leading-none text-paper" />
                     <p className="mt-3 text-sm leading-relaxed text-paper/60">{s.label}</p>
                   </div>
                 </Reveal>

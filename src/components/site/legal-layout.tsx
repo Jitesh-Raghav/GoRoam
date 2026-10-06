@@ -36,7 +36,7 @@ export function LegalLayout({ eyebrow, title, updated, children }: { eyebrow: st
           </nav>
 
           <p className="eyebrow text-stone">{eyebrow}</p>
-          <h1 className="display mt-4 text-[clamp(2.6rem,6vw,4rem)] leading-[0.95] text-ink">{title}</h1>
+          <h1 className="display mt-4 text-[clamp(2.21rem,5.1vw,3.4rem)] leading-[0.95] text-ink">{title}</h1>
           {updated && <p className="mt-4 text-sm text-stone">Last updated {updated}</p>}
 
           <div className="legal-copy mt-10 space-y-8 text-[1.05rem] leading-relaxed text-ink/85">{children}</div>
@@ -50,7 +50,7 @@ export function LegalLayout({ eyebrow, title, updated, children }: { eyebrow: st
 export function LegalSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="display text-2xl leading-none text-ink">{title}</h2>
+      <h2 className="display text-xl leading-none text-ink">{title}</h2>
       <div className="mt-3 space-y-3">{children}</div>
     </section>
   );

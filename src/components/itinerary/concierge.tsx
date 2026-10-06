@@ -183,7 +183,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                     <Sparkles className="size-5 text-white" />
                   </span>
                   <div>
-                    <p className="display text-2xl leading-none">Ask GoRoam</p>
+                    <p className="display text-xl leading-none">Ask GoRoam</p>
                     <p className="mt-1 text-xs text-paper/60">Your concierge for {city}</p>
                   </div>
                 </div>

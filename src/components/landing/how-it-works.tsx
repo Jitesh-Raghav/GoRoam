@@ -169,7 +169,7 @@ function GeneratingState() {
           <Sparkles className="absolute inset-0 m-auto size-6 text-brand" />
         </div>
         <div className="min-w-0">
-          <p className="display text-[1.7rem] leading-none sm:text-3xl">Crafting Kyoto…</p>
+          <p className="display text-[1.44rem] leading-none sm:text-2xl">Crafting Kyoto…</p>
           <p className="mt-2 text-xs text-stone sm:text-sm">5 days · 2 travellers · Culture, Food, Photography</p>
         </div>
       </div>
@@ -211,7 +211,7 @@ function ResultState() {
         <Scene id="fuji" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-2 text-paper">
-          <p className="display text-[1.6rem] leading-none sm:text-3xl">5 days in Kyoto</p>
+          <p className="display text-[1.36rem] leading-none sm:text-2xl">5 days in Kyoto</p>
           <span className="eyebrow shrink-0 rounded-full bg-paper/15 px-2.5 py-1.5 backdrop-blur">$2,380</span>
         </div>
       </div>
@@ -348,14 +348,14 @@ export function HowItWorks() {
               >
                 <div className={cn("transition-opacity duration-700", desktop && step !== i ? "lg:opacity-30" : "opacity-100")}>
                   <div className="flex items-center gap-4">
-                    <span className={cn("display text-6xl leading-none transition-colors duration-700", step === i ? "text-brand" : "text-ink/20")}>
+                    <span className={cn("display text-5xl leading-none transition-colors duration-700", step === i ? "text-brand" : "text-ink/20")}>
                       0{i + 1}
                     </span>
                     <span className={cn("grid size-11 place-items-center rounded-full transition-colors duration-700", step === i ? "bg-ink text-paper" : "bg-paper-2 text-ink/50")}>
                       <s.icon className="size-5" />
                     </span>
                   </div>
-                  <h3 className="display mt-6 text-[2.6rem] leading-[0.98] lg:text-[3.4rem]">{s.title}</h3>
+                  <h3 className="display mt-6 text-[2.21rem] leading-[0.98] lg:text-[2.89rem]">{s.title}</h3>
                   <p className="mt-4 max-w-md text-lg leading-relaxed text-stone">{s.body}</p>
                   <ul className="mt-5 space-y-2.5 sm:mt-6">
                     {s.points.map((p) => (

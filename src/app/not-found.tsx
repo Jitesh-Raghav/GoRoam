@@ -15,7 +15,7 @@ export default function NotFound() {
         </div>
         <div className="mt-auto max-w-2xl pb-6">
           <p className="eyebrow text-paper/70">404 · 0.0000° N, 0.0000° E</p>
-          <h1 className="display mt-4 text-[clamp(3.4rem,9vw,8rem)] leading-[0.88]">
+          <h1 className="display mt-4 text-[clamp(2.89rem,7.65vw,6.8rem)] leading-[0.88]">
             Off the <span className="italic text-brand-2">map.</span>
           </h1>
           <p className="mt-5 max-w-md text-lg text-paper/75">

@@ -57,7 +57,7 @@ export function Faq() {
           />
           <Reveal delay={0.2}>
             <div className="mt-10 max-w-sm rounded-[28px] bg-white/80 p-6 ring-1 ring-line">
-              <p className="display text-2xl leading-tight">Still curious?</p>
+              <p className="display text-xl leading-tight">Still curious?</p>
               <p className="mt-2 text-sm leading-relaxed text-stone">Drop us a line. We love helping people plan the trip they keep daydreaming about.</p>
               <a
                 href="mailto:hello@goroam.com"
@@ -82,7 +82,7 @@ export function Faq() {
                   >
                     <span className="flex items-baseline gap-5">
                       <span className="font-mono text-xs text-stone-2">0{i + 1}</span>
-                      <span className="display text-[1.65rem] leading-tight text-ink transition-colors group-hover:text-brand sm:text-[2rem]">{f.q}</span>
+                      <span className="display text-[1.4rem] leading-tight text-ink transition-colors group-hover:text-brand sm:text-[1.7rem]">{f.q}</span>
                     </span>
                     <span
                       className={cn(

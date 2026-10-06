@@ -67,7 +67,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
             <p className="eyebrow text-paper/65">
               {days} {days === 1 ? "day" : "days"} · ready to plan
             </p>
-            <h2 id="paywall-title" className="display mt-2 text-[clamp(2.2rem,5vw,3.2rem)] leading-[0.95]">
+            <h2 id="paywall-title" className="display mt-2 text-[clamp(1.87rem,4.25vw,2.72rem)] leading-[0.95]">
               {place} is <span className="italic text-brand-2">one step away.</span>
             </h2>
           </div>
@@ -96,7 +96,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
                   </span>
                 )}
                 <span className="eyebrow text-[0.58rem] opacity-60">{p.name}</span>
-                <span className="display mt-2 text-4xl leading-none">${p.price}</span>
+                <span className="display mt-2 text-3xl leading-none">${p.price}</span>
                 <span className="mt-1.5 text-sm">
                   {p.credits} trips <span className="opacity-60">· {perTrip(p)} each</span>
                 </span>

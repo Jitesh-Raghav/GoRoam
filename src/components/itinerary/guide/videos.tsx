@@ -57,7 +57,7 @@ function Player({ video, playing, onPlay }: { video: TripVideo; playing: boolean
             </span>
             <span className="absolute inset-x-0 bottom-0 p-5 text-paper sm:p-7">
               {video.channel && <span className="eyebrow block text-[0.6rem] text-paper/70">{video.channel}</span>}
-              <span className="display mt-1.5 line-clamp-2 block text-[clamp(1.4rem,2.6vw,2.2rem)] leading-[1.02]">{video.title}</span>
+              <span className="display mt-1.5 line-clamp-2 block text-[clamp(1.19rem,2.21vw,1.87rem)] leading-[1.02]">{video.title}</span>
             </span>
           </motion.button>
         )}
@@ -161,7 +161,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
               </span>
               <span className="absolute inset-x-0 bottom-0 p-4 text-paper sm:p-5">
                 <span className="eyebrow block text-[0.55rem] text-paper/60">Search YouTube</span>
-                <span className={cn("display mt-1 line-clamp-2 block leading-[1.02]", i === 0 ? "text-[clamp(1.5rem,2.6vw,2.2rem)]" : "text-[1.15rem]")}>{q}</span>
+                <span className={cn("display mt-1 line-clamp-2 block leading-[1.02]", i === 0 ? "text-[clamp(1.27rem,2.21vw,1.87rem)]" : "text-[0.98rem]")}>{q}</span>
               </span>
             </motion.a>
           ))}

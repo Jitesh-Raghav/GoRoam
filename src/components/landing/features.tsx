@@ -38,7 +38,7 @@ function Tile({ className, visual, title, body, delay = 0 }: { className?: strin
       <div className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white/80 p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.45)]">
         <div className="relative h-60 overflow-hidden rounded-[22px] bg-paper">{visual}</div>
         <div className="p-5 pt-6">
-          <h3 className="display text-[1.9rem] leading-none text-ink">{title}</h3>
+          <h3 className="display text-[1.61rem] leading-none text-ink">{title}</h3>
           <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
         </div>
       </div>
@@ -94,7 +94,7 @@ function BudgetVisual() {
   return (
     <div ref={ref} className="absolute inset-0 flex flex-col justify-end p-6">
       <div className="mb-auto flex items-baseline justify-between">
-        <p className="display text-4xl leading-none">$2,380</p>
+        <p className="display text-3xl leading-none">$2,380</p>
         <p className="font-mono text-[11px] text-stone">of $2,400</p>
       </div>
       <div className="relative flex h-32 items-end gap-2.5">
@@ -226,7 +226,7 @@ function GuideVisual() {
           {/* eslint-disable-next-line @next/next/no-img-element -- tiny flag */}
           <img src={`https://flagcdn.com/${p.flag}.svg`} alt="" className="h-3.5 w-5 rounded-[2px] object-cover ring-1 ring-black/10" />
           <span className="min-w-0 flex-1">
-            <span className="display block truncate text-xl leading-none text-ink">{p.local}</span>
+            <span className="display block truncate text-lg leading-none text-ink">{p.local}</span>
             <span className="mt-1 block truncate text-[11px] text-stone">
               {p.en} · “{p.say}”
             </span>
@@ -301,7 +301,7 @@ function ToolsVisual() {
             <t.icon className="size-4 text-brand" />
           </span>
           <span>
-            <span className="display block text-3xl leading-none text-ink">{t.value}</span>
+            <span className="display block text-2xl leading-none text-ink">{t.value}</span>
             <span className="mt-1 block truncate text-[11px] text-stone">{t.note}</span>
           </span>
         </motion.div>

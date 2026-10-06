@@ -111,7 +111,7 @@ function Phrases({ guide }: { guide: TripGuide }) {
               </span>
             </span>
             <span className="hidden min-w-0 sm:block">
-              <span className="display block truncate text-[1.7rem] leading-tight text-ink" lang={guide.languageCode}>
+              <span className="display block truncate text-[1.44rem] leading-tight text-ink" lang={guide.languageCode}>
                 {p.local}
               </span>
               <span className="block truncate text-sm text-stone">
@@ -183,7 +183,7 @@ function Food({ guide, destination }: { guide: TripGuide; destination: string })
             )}
           </div>
           <div className="p-5">
-            <h4 className="display text-[1.55rem] leading-[1.02] text-ink">{d.name}</h4>
+            <h4 className="display text-[1.32rem] leading-[1.02] text-ink">{d.name}</h4>
             {d.localName && d.localName !== d.name && <p className="mt-1 text-sm text-stone">{d.localName}</p>}
             <p className="mt-3 text-sm leading-relaxed text-stone">{d.what}</p>
             {d.whereToTry && (
@@ -213,7 +213,7 @@ function Souvenirs({ guide }: { guide: TripGuide }) {
             </span>
             {s.priceRange && <span className="rounded-full bg-paper-2 px-2.5 py-1 font-mono text-xs text-ink">{s.priceRange}</span>}
           </div>
-          <h4 className="display mt-4 text-[1.5rem] leading-[1.05] text-ink">{s.name}</h4>
+          <h4 className="display mt-4 text-[1.27rem] leading-[1.05] text-ink">{s.name}</h4>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-stone">{s.why}</p>
           {s.where && (
             <p className="mt-4 flex items-start gap-2 border-t border-line pt-3 text-xs text-ink">
@@ -286,7 +286,7 @@ function Safety({ guide }: { guide: TripGuide }) {
                 <li key={n.key}>
                   <a href={`tel:${guide.emergency![n.key]!.replace(/[^\d+]/g, "")}`} className="flex flex-col rounded-2xl bg-paper/[0.07] px-4 py-3 transition-colors hover:bg-paper hover:text-ink">
                     <span className="eyebrow text-[0.55rem] opacity-60">{n.label}</span>
-                    <span className="display mt-1 flex items-center gap-2 text-2xl leading-none">
+                    <span className="display mt-1 flex items-center gap-2 text-xl leading-none">
                       <Phone className="size-4 opacity-70" />
                       {guide.emergency![n.key]}
                     </span>
