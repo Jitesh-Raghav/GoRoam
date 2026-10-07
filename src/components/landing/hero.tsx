@@ -353,7 +353,7 @@ export function Hero() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 1.4, ease, delay: 0.35 }}
-          className="hero-frame relative mx-4 mt-12 h-[66svh] min-h-[420px] overflow-hidden rounded-b-[28px] rounded-t-[999px] bg-paper-2 sm:mx-8 lg:absolute lg:inset-0 lg:m-0 lg:h-auto lg:min-h-0 lg:rounded-none"
+          className="hero-frame relative mx-4 mt-12 h-[66svh] min-h-[26.25rem] overflow-hidden rounded-b-[28px] rounded-t-[999px] bg-paper-2 sm:mx-8 lg:absolute lg:inset-0 lg:m-0 lg:h-auto lg:min-h-0 lg:rounded-none"
         >
           <div className="hero-frame-inner absolute inset-0">
             <AnimatePresence initial={false}>

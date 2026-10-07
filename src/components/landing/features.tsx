@@ -52,7 +52,7 @@ function DaysVisual() {
   const slots = [Sunrise, Sun, Moon];
   return (
     <div ref={ref} className="absolute inset-0 flex items-center justify-center p-6">
-      <div className="grid w-full max-w-[560px] grid-cols-5 gap-2.5">
+      <div className="grid w-full max-w-[35rem] grid-cols-5 gap-2.5">
         {Array.from({ length: 5 }, (_, day) => (
           <div key={day} className="space-y-2.5">
             <p className="eyebrow text-center text-[0.6rem] text-stone">Day {day + 1}</p>

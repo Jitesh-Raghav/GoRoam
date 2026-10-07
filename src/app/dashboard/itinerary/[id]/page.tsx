@@ -10,7 +10,7 @@ import type { ItineraryDetails } from '@/lib/trip';
 
 function Loading() {
   return (
-    <div className="mx-auto max-w-[1320px] space-y-4">
+    <div className="mx-auto max-w-[82.5rem] space-y-4">
       <div className="skeleton h-[min(60vh,520px)] rounded-[32px]" />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
@@ -24,7 +24,7 @@ function Loading() {
 
 function NotFound({ message }: { message: string }) {
   return (
-    <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-ink">
+    <div className="relative mx-auto max-w-[82.5rem] overflow-hidden rounded-[36px] bg-ink">
       <div className="absolute inset-0">
         <Scene id="dunes" intro />
       </div>

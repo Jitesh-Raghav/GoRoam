@@ -62,7 +62,7 @@ export function SiteHeader() {
             scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(10,30,44,0.08)] backdrop-blur-md" : "bg-transparent"
           )}
         >
-          <div className="container-x flex h-[72px] items-center justify-between gap-6">
+          <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">
             <Logo />
 
             <nav aria-label="Primary" className="hidden items-center gap-1 rounded-full border border-line bg-paper/70 p-1 lg:flex">

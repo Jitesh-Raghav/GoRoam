@@ -55,7 +55,7 @@ function SettingsContent() {
   });
 
   return (
-    <div className="mx-auto max-w-[1100px]">
+    <div className="mx-auto max-w-[68.75rem]">
       <header className="mb-10">
         <p className="eyebrow text-stone">Settings</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">

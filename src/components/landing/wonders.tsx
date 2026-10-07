@@ -19,7 +19,7 @@ function WonderCard({ d, i }: { d: Destination; i: number }) {
     <Link
       href={tripHref(d.query)}
       className={cn(
-        "group relative block h-[500px] w-[80vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-paper-2 sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]",
+        "group relative block h-[31.25rem] w-[80vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-paper-2 sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]",
         i % 2 === 1 && "lg:translate-y-10"
       )}
       aria-label={`Plan a trip to ${d.name}, ${d.place}`}
@@ -148,7 +148,7 @@ export function Wonders() {
             <WonderCard key={d.slug} d={d} i={i} />
           ))}
 
-          <div className="flex h-[500px] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
+          <div className="flex h-[31.25rem] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
             <p className="eyebrow text-paper/60">And everywhere else</p>
             <div>
               <p className="display text-[2.38rem] leading-[0.95]">
