@@ -39,7 +39,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-[80rem]">
       <Welcome />
       <TripForm onSubmit={handleFormSubmit} />
     </div>

@@ -1,7 +1,7 @@
 // Shown inside the dashboard shell the moment a page is clicked, while it loads.
 export default function Loading() {
   return (
-    <div className="mx-auto max-w-[1280px]" aria-busy="true" aria-label="Loading">
+    <div className="mx-auto max-w-[80rem]" aria-busy="true" aria-label="Loading">
       <div className="skeleton h-3 w-28 rounded-full" />
       <div className="skeleton mt-5 h-14 w-full max-w-lg rounded-2xl" />
       <div className="skeleton mt-3 h-14 w-2/3 max-w-md rounded-2xl" />

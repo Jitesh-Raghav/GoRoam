@@ -213,7 +213,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
         id={stopId(day, slot.key)}
         className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
-        <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[300px]">
+        <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
@@ -822,7 +822,7 @@ export function TripView({
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
-    <div className="trip-sections relative isolate mx-auto max-w-[1320px]">
+    <div className="trip-sections relative isolate mx-auto max-w-[82.5rem]">
       {/* Soft colour behind the page, so the glass cards have something to frost. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden print:hidden">
         <div className="absolute -right-32 top-[9%] size-[34rem] rounded-full bg-brand-2/15 blur-3xl" />
@@ -831,7 +831,7 @@ export function TripView({
         <div className="absolute -left-32 top-[80%] size-[32rem] rounded-full bg-sun-2/15 blur-3xl" />
       </div>
       {/* Hero — doubles as the PDF cover */}
-      <section className="relative h-[min(74vh,660px)] min-h-[500px] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
+      <section className="relative h-[min(74vh,660px)] min-h-[31.25rem] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
           {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
         </div>
@@ -928,7 +928,7 @@ export function TripView({
       </section>
 
       {/* The trip's boarding pass, on the PDF cover only. */}
-      <section className="print-avoid mx-auto mt-6 hidden max-w-[560px] print:block">
+      <section className="print-avoid mx-auto mt-6 hidden max-w-[35rem] print:block">
         <BoardingPass
           scene={scene}
           interestLabels={VIBE_LABELS}

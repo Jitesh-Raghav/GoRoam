@@ -216,7 +216,7 @@ export function PanoramaHero() {
       ref={ref}
       id="top"
       aria-label="Plan your next trip"
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[740px] bg-[linear-gradient(180deg,#F4F8F9_0%,#E6F2F3_38%,#D2EAE8_64%,#F3E3C9_100%)]"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[46.25rem] bg-[linear-gradient(180deg,#F4F8F9_0%,#E6F2F3_38%,#D2EAE8_64%,#F3E3C9_100%)]"
     >
       <motion.div style={{ y: skyY }} className="absolute inset-0 -z-20">
         <PanoramaSky className="size-full" />

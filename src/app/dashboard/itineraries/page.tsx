@@ -223,7 +223,7 @@ function ItinerariesContent() {
   );
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-[80rem]">
       <header className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div>
           <p className="eyebrow text-stone">Your collection</p>

@@ -25,7 +25,7 @@ export default function SharedTripPage() {
 
   return (
     <div className="min-h-svh bg-paper">
-      <header className="no-print container-x flex h-[72px] items-center justify-between">
+      <header className="no-print container-x flex h-[4.5rem] items-center justify-between">
         <Logo />
         <PillLink href="/dashboard" size="md">
           Plan your own
@@ -33,7 +33,7 @@ export default function SharedTripPage() {
       </header>
       <main className="px-3 pb-10 min-[400px]:px-4 sm:px-6 lg:px-8">
         {error ? (
-          <div className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[36px] bg-ink">
+          <div className="relative mx-auto max-w-[82.5rem] overflow-hidden rounded-[36px] bg-ink">
             <div className="absolute inset-0">
               <Scene id="dunes" intro />
             </div>
@@ -52,7 +52,7 @@ export default function SharedTripPage() {
         ) : trip ? (
           <TripView it={trip} shared shareToken={token} />
         ) : (
-          <div className="mx-auto max-w-[1320px] space-y-4">
+          <div className="mx-auto max-w-[82.5rem] space-y-4">
             <div className="skeleton h-[min(74vh,660px)] rounded-[32px]" />
             <div className="skeleton h-24 rounded-[28px]" />
           </div>

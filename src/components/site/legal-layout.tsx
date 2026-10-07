@@ -18,7 +18,7 @@ const NAV = [
 export function LegalLayout({ eyebrow, title, updated, children }: { eyebrow: string; title: ReactNode; updated?: string; children: ReactNode }) {
   return (
     <div className="min-h-svh bg-paper">
-      <header className="container-x flex h-[72px] items-center justify-between">
+      <header className="container-x flex h-[4.5rem] items-center justify-between">
         <Logo />
         <PillLink href="/" size="md" className="hidden sm:inline-flex">
           Back to GoRoam

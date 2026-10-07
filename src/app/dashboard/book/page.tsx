@@ -94,7 +94,7 @@ function BookContent() {
     }));
 
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-[80rem]">
       <header>
         <p className="eyebrow text-stone">Book travel</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">

@@ -7,7 +7,7 @@ export const metadata = { title: "Travel packages · GoRoam" };
 export default async function PackagesPage() {
   const cards = await packageCards();
   return (
-    <div className="mx-auto max-w-[1280px]">
+    <div className="mx-auto max-w-[80rem]">
       <header className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div>
           <p className="eyebrow text-stone">Travel packages</p>
