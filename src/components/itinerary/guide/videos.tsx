@@ -4,7 +4,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Play } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { TripVideo } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto, asStop } from "../place-photo";
@@ -63,6 +63,76 @@ function Player({ video, playing, onPlay }: { video: TripVideo; playing: boolean
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/* One request per search idea, shared by every tile that asks for it. */
+const videoLookups = new Map<string, Promise<TripVideo | null>>();
+function lookUpVideo(q: string) {
+  let hit = videoLookups.get(q);
+  if (!hit) {
+    hit = fetch(`/api/video?q=${encodeURIComponent(q)}`)
+      .then((r) => (r.ok ? r.json() : { video: null }))
+      .then((d: { video?: TripVideo | null }) => d.video ?? null)
+      .catch(() => null);
+    videoLookups.set(q, hit);
+    hit.then((v) => !v && videoLookups.delete(q));
+  }
+  return hit;
+}
+
+// If a search finds no video, each tile still gets its own look: a different crop and tint of the city.
+const MISS_LOOKS = [
+  { pos: "object-[30%_45%]", tint: "from-ink/90 via-brand/25 to-ink/10" },
+  { pos: "object-[75%_60%] scale-125", tint: "from-ink/90 via-sun/25 to-ink/10" },
+  { pos: "object-[10%_80%] scale-150", tint: "from-ink/90 via-ink/40 to-brand-2/20" },
+  { pos: "object-[90%_20%] scale-110", tint: "from-ink/90 via-[#c0503e]/25 to-ink/10" },
+];
+
+/** A "watch before you go" idea, shown with the real thumbnail of its top YouTube video. */
+function QueryTile({ q, i, city, destination }: { q: string; i: number; city: string; destination: string }) {
+  const [video, setVideo] = useState<TripVideo | null | undefined>(undefined);
+  useEffect(() => {
+    let live = true;
+    lookUpVideo(q).then((v) => live && setVideo(v));
+    return () => {
+      live = false;
+    };
+  }, [q]);
+  const look = MISS_LOOKS[i % MISS_LOOKS.length];
+  const href = video ? `https://www.youtube.com/watch?v=${video.id}` : `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+
+  return (
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.7, ease, delay: i * 0.06 }}
+      className={cn(
+        "group relative block overflow-hidden rounded-[22px] bg-ink",
+        i === 0 ? "col-span-2 aspect-[16/8] lg:row-span-2 lg:aspect-auto" : i === 3 ? "col-span-2 aspect-[16/7] lg:aspect-auto" : "aspect-video"
+      )}
+    >
+      {video === undefined && <span className="skeleton absolute inset-0" />}
+      {video && <img src={video.thumb} alt="" loading="lazy" className="absolute inset-0 size-full object-cover transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.05]" />}
+      {video === null && <PlacePhoto activity={asStop(city)} destination={destination} credit={false} imgClassName={cn(look.pos, "group-hover:scale-[1.05]")} />}
+      <span className={cn("absolute inset-0 bg-gradient-to-t", video ? "from-ink/90 via-ink/30 to-ink/10" : look.tint)} />
+      <span
+        className={cn(
+          "absolute grid place-items-center transition-transform duration-500 group-hover:scale-110",
+          i === 0 ? "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" : "right-3 top-3"
+        )}
+      >
+        <YouTubeGlyph className={cn("drop-shadow-xl", i === 0 ? "h-10 w-14" : "h-6 w-8")} />
+      </span>
+      <span className="absolute inset-x-0 bottom-0 p-4 text-paper sm:p-5">
+        <span className="eyebrow block truncate text-[0.55rem] text-paper/60">{video?.channel ?? (video ? "YouTube" : "Search YouTube")}</span>
+        <span className={cn("display mt-1 line-clamp-2 block leading-[1.02]", i === 0 ? "text-[clamp(1.27rem,2.21vw,1.87rem)]" : "text-[0.98rem]")}>{q}</span>
+      </span>
+    </motion.a>
   );
 }
 
@@ -135,35 +205,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
       ) : (
         <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {queries.map((q, i) => (
-            <motion.a
-              key={q}
-              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`}
-              target="_blank"
-              rel="noreferrer"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.7, ease, delay: i * 0.06 }}
-              className={cn(
-                "group relative block overflow-hidden rounded-[22px] bg-ink",
-                i === 0 ? "col-span-2 aspect-[16/8] lg:row-span-2 lg:aspect-auto" : i === 3 ? "col-span-2 aspect-[16/7] lg:aspect-auto" : "aspect-video"
-              )}
-            >
-              <PlacePhoto activity={asStop(city)} destination={destination} credit={false} imgClassName="group-hover:scale-[1.05]" />
-              <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/10" />
-              <span
-                className={cn(
-                  "absolute grid place-items-center transition-transform duration-500 group-hover:scale-110",
-                  i === 0 ? "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" : "right-3 top-3"
-                )}
-              >
-                <YouTubeGlyph className={cn("drop-shadow-xl", i === 0 ? "h-10 w-14" : "h-6 w-8")} />
-              </span>
-              <span className="absolute inset-x-0 bottom-0 p-4 text-paper sm:p-5">
-                <span className="eyebrow block text-[0.55rem] text-paper/60">Search YouTube</span>
-                <span className={cn("display mt-1 line-clamp-2 block leading-[1.02]", i === 0 ? "text-[clamp(1.27rem,2.21vw,1.87rem)]" : "text-[0.98rem]")}>{q}</span>
-              </span>
-            </motion.a>
+            <QueryTile key={q} q={q} i={i} city={city} destination={destination} />
           ))}
         </div>
       )}

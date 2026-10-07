@@ -35,7 +35,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TipCategory, TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
-import { PlacePhoto, asStop } from "../place-photo";
+import { PlacePhoto, asDish } from "../place-photo";
 import { Band } from "../band";
 import { SectionTitle } from "./section-title";
 
@@ -175,7 +175,15 @@ function Food({ guide, destination }: { guide: TripGuide; destination: string })
       {guide.food.map((d, i) => (
         <article key={i} className={cn("print-avoid group flex flex-col overflow-hidden rounded-[24px] bg-white ring-1 ring-line", i === 0 && "sm:col-span-2 lg:col-span-1 lg:row-span-2")}>
           <div className={cn("relative overflow-hidden", i === 0 ? "h-48 lg:h-auto lg:min-h-64 lg:flex-1" : "h-40")}>
-            <PlacePhoto activity={asStop(d.localName ? `${d.name} ${d.localName}` : d.name)} destination={destination} icon={UtensilsCrossed} credit={false} imgClassName="group-hover:scale-[1.05]" />
+            {/* A photo of the dish itself, captioned with where to eat it in town. */}
+            <PlacePhoto activity={asDish(d.name)} destination={destination} icon={UtensilsCrossed} imgClassName="group-hover:scale-[1.05]" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/55 to-transparent" />
+            {d.whereToTry && (
+              <span className="absolute bottom-2.5 left-3 inline-flex max-w-[58%] items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink shadow-sm backdrop-blur">
+                <MapPin className="size-3 shrink-0 text-brand" />
+                <span className="truncate">{d.whereToTry.split(",")[0]}</span>
+              </span>
+            )}
             {d.veg && (
               <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-medium text-brand shadow-sm">
                 <Leaf className="size-3" /> Veg
@@ -394,7 +402,11 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
   const pick = (id: TabId) => {
     setTab(id);
     setTouched(true);
-    bar.current?.querySelector<HTMLElement>(`[data-tab="${id}"]`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    // Centre the tab by scrolling the bar alone. scrollIntoView would also scroll every
+    // ancestor that can scroll, including the band, and push the whole section off-screen.
+    const el = bar.current;
+    const chip = el?.querySelector<HTMLElement>(`[data-tab="${id}"]`);
+    if (el && chip) el.scrollTo({ left: chip.offsetLeft - el.clientWidth / 2 + chip.offsetWidth / 2, behavior: "smooth" });
   };
   const nudge = (dir: number) => bar.current?.scrollBy({ left: dir * bar.current.clientWidth * 0.6, behavior: "smooth" });
 

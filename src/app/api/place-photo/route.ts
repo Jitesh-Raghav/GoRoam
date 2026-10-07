@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isGooglePhoto, resolvePhoto } from '@/lib/place-photos';
+import { isGooglePhoto, resolveDishPhoto, resolvePhoto } from '@/lib/place-photos';
 import type { PlacePhoto } from '@/lib/trip';
 
 /**
@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
 
   if (!name) return NextResponse.json(NONE, { status: 400 });
 
-  const photo = (await resolvePhoto({ name, area, lat, lng }, city || name)) ?? NONE;
+  // Dishes are looked up as food, never as a place, so they don't fall back to a city photo.
+  const photo = (q.get('kind') === 'dish' ? await resolveDishPhoto(name) : await resolvePhoto({ name, area, lat, lng }, city || name)) ?? NONE;
 
   return NextResponse.json(photo, {
     headers: {

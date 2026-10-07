@@ -204,7 +204,7 @@ export interface PlacePhoto {
   sourceUrl?: string;
   /** false when it's a nearby landmark or the city rather than the place itself. */
   exact?: boolean;
-  kind?: "place" | "nearby" | "city";
+  kind?: "place" | "nearby" | "city" | "dish";
   /** A photo of the destination, shown if `url` fails to load. */
   fallback?: string;
   /** Google rating and review count, when the photo came from Google Places. */
