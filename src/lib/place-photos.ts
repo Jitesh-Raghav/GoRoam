@@ -344,6 +344,101 @@ export async function resolvePhoto(stop: StopQuery, destination: string): Promis
   return null;
 }
 
+/* ---------------------------------- dishes --------------------------------- */
+
+/** Dish names lose their qualifiers ("street-style", "Himachali") when searched. */
+const dishWords = (name: string) => words(name).filter((w) => !['style', 'street', 'traditional', 'famous', 'local', 'authentic', 'special', 'fresh', 'homemade'].includes(w));
+
+/** "Momos" and "Momo" are the same dish. */
+const stem = (w: string) => (w.length > 3 ? w.replace(/(es|s)$/, '') : w);
+
+/** Share of the dish's words found in a title ("Momos" in "Momo (food)" → 1, in "Shimla" → 0). */
+function dishMatch(name: string, title: string) {
+  const want = dishWords(name).map(stem);
+  if (!want.length) return 0;
+  const have = new Set(words(title).map(stem));
+  return want.filter((w) => have.has(w)).length / want.length;
+}
+
+const dishPhoto = (url: string, title: string, credit: string, sourceUrl?: string): PlacePhoto => ({ url, title, credit, sourceUrl, exact: true, kind: 'dish' });
+
+/** The dish's Wikipedia page image: most dishes have an article with a good photo. */
+async function dishFromWikipedia(name: string): Promise<PlacePhoto | null> {
+  const data = await get(`${WIKI}?${wikiQuery({ generator: 'search', gsrsearch: name, gsrlimit: '6' })}`);
+  const pages: WikiPage[] = (data.query?.pages ?? []).filter(usable).sort(byIndex);
+  const page = pages.find((p) => dishMatch(name, p.title) >= 0.5 || dishMatch(name, fileName(p.thumbnail!.source)) >= 0.75);
+  return page ? dishPhoto(page.thumbnail!.source, page.title, 'Wikipedia', `https://en.wikipedia.org/?curid=${page.pageid}`) : null;
+}
+
+/** A Commons photo whose file name names the dish. */
+async function dishFromCommons(name: string): Promise<PlacePhoto | null> {
+  const params = new URLSearchParams({
+    action: 'query',
+    format: 'json',
+    formatversion: '2',
+    generator: 'search',
+    gsrnamespace: '6',
+    gsrsearch: `${name} food filetype:bitmap`,
+    gsrlimit: '10',
+    prop: 'imageinfo',
+    iiprop: 'url|mime',
+    iiurlwidth: '1200',
+  });
+  const data = await get(`${COMMONS}?${params}`);
+  for (const f of ((data.query?.pages ?? []) as CommonsPage[]).sort(byIndex)) {
+    const info = f.imageinfo?.[0];
+    const src = info?.thumburl ?? info?.url;
+    if (!src || info?.mime !== 'image/jpeg' || BAD.test(f.title)) continue;
+    if (dishMatch(name, f.title.replace(/^File:/, '').replace(/[_.,]/g, ' ')) < 0.75) continue;
+    return dishPhoto(src, name, 'Wikimedia Commons', info?.descriptionurl);
+  }
+  return null;
+}
+
+/** An openly licensed food photo (Flickr and others) titled or tagged with the dish. */
+async function dishFromOpenverse(name: string): Promise<PlacePhoto | null> {
+  const params = new URLSearchParams({ q: `${name} food`, page_size: '10', mature: 'false', category: 'photograph' });
+  const data = await get(`https://api.openverse.org/v1/images/?${params}`);
+  for (const img of (data.results ?? []) as OpenverseImage[]) {
+    const src = img.thumbnail || img.url;
+    if (!src || BAD.test(img.title ?? '')) continue;
+    if (dishMatch(name, `${img.title ?? ''} ${(img.tags ?? []).map((t) => t.name).join(' ')}`) < 0.75) continue;
+    return dishPhoto(src, img.title || name, img.creator ? `${img.creator} · Openverse` : 'Openverse', img.foreign_landing_url);
+  }
+  return null;
+}
+
+const dishCache = new Map<string, PlacePhoto>();
+
+/**
+ * A photo of a dish itself (not of the city): its Wikipedia article's image, else a
+ * Commons or Openverse photo that names it. `null` when none of them has one; the
+ * caller then shows a food tile rather than an unrelated place.
+ */
+export async function resolveDishPhoto(dish: string): Promise<PlacePhoto | null> {
+  const name = dish.trim().slice(0, 100);
+  if (!name) return null;
+  const key = name.toLowerCase();
+  const hit = dishCache.get(key);
+  if (hit) return hit.url ? hit : null;
+  let failed = false;
+  for (const source of [dishFromWikipedia, dishFromCommons, dishFromOpenverse]) {
+    try {
+      const found = await source(name);
+      if (found?.url) {
+        if (dishCache.size >= MAX_CACHE) dishCache.delete(dishCache.keys().next().value!);
+        dishCache.set(key, found);
+        return found;
+      }
+    } catch (error) {
+      failed = true;
+      console.error('dish-photo:', error instanceof Error ? error.message : error);
+    }
+  }
+  if (!failed) dishCache.set(key, { url: null });
+  return null;
+}
+
 /** Run jobs a few at a time, so photo services aren't hit with a burst. */
 async function pool<T>(items: T[], limit: number, run: (item: T) => Promise<void>) {
   let i = 0;

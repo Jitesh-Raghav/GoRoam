@@ -64,7 +64,7 @@ export function Band({ tone = "plain", id, className, children }: { tone?: BandT
         <section
           id={id}
           className={cn(
-            "relative isolate mt-24 scroll-mt-6 overflow-hidden rounded-[32px] px-3 py-12 min-[400px]:px-4 sm:rounded-[40px] sm:px-10 sm:py-16",
+            "relative isolate mt-24 scroll-mt-6 overflow-clip rounded-[32px] px-3 py-12 min-[400px]:px-4 sm:rounded-[40px] sm:px-10 sm:py-16",
             "print:rounded-none print:bg-none print:p-0 print:text-ink print:ring-0",
             SURFACE[tone],
             className

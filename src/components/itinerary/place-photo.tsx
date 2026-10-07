@@ -29,10 +29,13 @@ export function TripPhotosProvider({ value, children }: { value: TripPhotos; chi
 /* Things that aren't trip stops (hotels, dishes, experiences) are looked up one at a time, once per page. */
 const lookups = new Map<string, Promise<Photo>>();
 const ownLookup = new WeakSet<ActivitySlot>();
+/** Dishes are photographed as food: no city photo stands in for them. */
+const dishLookup = new WeakSet<ActivitySlot>();
 
-function lookup(name: string, area: string | undefined, city: string): Promise<Photo> {
+function lookup(name: string, area: string | undefined, city: string, dish = false): Promise<Photo> {
   const params = new URLSearchParams({ name, city });
   if (area) params.set("area", area);
+  if (dish) params.set("kind", "dish");
   const key = params.toString();
   let hit = lookups.get(key);
   if (!hit) {
@@ -53,6 +56,13 @@ export const asStop = (name: string, area?: string): ActivitySlot => {
   return slot;
 };
 
+/** A photo lookup for a dish: a picture of the food itself, never the city as a stand-in. */
+export const asDish = (name: string): ActivitySlot => {
+  const slot = asStop(name);
+  dishLookup.add(slot);
+  return slot;
+};
+
 /** A stop added after the trip's photos were fetched (a swap) looks up its own. */
 export function lookUpOwnPhoto<T extends ActivitySlot>(slot: T): T {
   ownLookup.add(slot);
@@ -66,13 +76,14 @@ export function usePlacePhoto(activity: ActivitySlot | undefined, destination?: 
   const area = activity?.place?.area;
   const city = ctx?.city || destination || "";
   const own = !!activity && ownLookup.has(activity);
+  const dish = !!activity && dishLookup.has(activity);
   const ownKey = own && name ? `${name}|${area ?? ""}|${city}` : null;
   const [found, setFound] = useState<{ key: string; photo: Photo } | null>(null);
 
   useEffect(() => {
     if (!ownKey || !name) return;
     let live = true;
-    lookup(name, area, city).then((photo) => live && setFound({ key: ownKey, photo }));
+    lookup(name, area, city, dish).then((photo) => live && setFound({ key: ownKey, photo }));
     return () => {
       live = false;
     };
@@ -86,7 +97,7 @@ export function usePlacePhoto(activity: ActivitySlot | undefined, destination?: 
   if (own) {
     const photo = found?.key === ownKey ? found.photo : undefined;
     if (!photo) return undefined;
-    return photo.url ? photo : cityShot();
+    return photo.url || dish ? photo : cityShot();
   }
   if (!ctx) return { url: null };
   const photo = ctx.photos[photoKey(name, ctx.city)];
@@ -129,7 +140,8 @@ export function PlacePhoto({
   const photo = usePlacePhoto(activity, destination);
   const ctx = useContext(PhotosContext);
   // Try the stop's photo, then the fallbacks, in order, skipping any that fail to load.
-  const candidates = photo ? [photo.url, photo.fallback, ctx?.fallback].filter((u, i, all): u is string => !!u && all.indexOf(u) === i) : [];
+  const dish = !!activity && dishLookup.has(activity);
+  const candidates = photo ? [photo.url, photo.fallback, dish ? null : ctx?.fallback].filter((u, i, all): u is string => !!u && all.indexOf(u) === i) : [];
   const [failed, setFailed] = useState<string[]>([]);
   const [loadedUrl, setLoadedUrl] = useState<string | null>(null);
   const url = candidates.find((u) => !failed.includes(u)) ?? null;
