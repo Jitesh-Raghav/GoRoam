@@ -28,7 +28,7 @@ export function SectionTitle({ eyebrow, title, children }: { eyebrow: ReactNode;
         <h2
           className={cn(
             "display mt-4 text-[clamp(2.04rem,4.25vw,3.23rem)] leading-[0.95]",
-            dark ? "text-paper [&_.text-brand]:text-brand-2" : aurora ? "text-paper drop-shadow-[0_2px_18px_rgba(10,30,44,0.25)] [&_.text-brand]:text-ink" : "text-ink",
+            dark ? "text-paper [&_.accent]:text-brand-2" : aurora ? "text-paper drop-shadow-[0_2px_18px_rgba(10,30,44,0.25)] [&_.accent]:text-ink" : "text-ink",
             "print:text-ink"
           )}
         >

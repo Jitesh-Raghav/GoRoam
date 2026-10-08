@@ -188,7 +188,7 @@ export function GlobeSection() {
               label="Anywhere on Earth"
               tone="paper"
               size="md"
-              title={[[{ text: "The whole map," }], [{ text: "planned with care.", className: "accent" }]]}
+              title={[[{ text: "The whole map," }], [{ text: "planned with " }, { text: "care.", className: "accent" }]]}
               description="Drag the globe, or pick a wonder. GoRoam plans national getaways and big international journeys with the same care."
             />
             <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10">

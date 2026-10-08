@@ -66,7 +66,7 @@ export function Testimonials() {
           index="07"
           label="Loved by travellers"
           align="center"
-          title={[[{ text: "Loved by people" }], [{ text: "who actually go.", className: "accent" }]]}
+          title={[[{ text: "Loved by people" }], [{ text: "who actually " }, { text: "go.", className: "accent" }]]}
         />
 
         <div className="mx-auto mt-16 max-w-5xl text-center">

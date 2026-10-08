@@ -14,7 +14,7 @@ export function Pricing() {
           <SectionHeading
             index="08"
             label="Pricing"
-            title={[[{ text: "Simple pricing." }], [{ text: "Pay once, travel for ages.", className: "accent" }]]}
+            title={[[{ text: "Simple pricing." }], [{ text: "Pay once, travel for " }, { text: "ages.", className: "accent" }]]}
             description="No subscriptions and no hidden fees. Buy credits once and use them whenever you're ready. They never expire."
           />
           <Reveal delay={0.2} className="lg:mb-2">

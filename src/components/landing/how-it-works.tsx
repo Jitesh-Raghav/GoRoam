@@ -327,7 +327,7 @@ export function HowItWorks() {
         <SectionHeading
           index="03"
           label="How it works"
-          title={[[{ text: "One sentence in." }], [{ text: "A whole journey out.", className: "accent" }]]}
+          title={[[{ text: "One sentence in." }], [{ text: "A whole " }, { text: "journey", className: "accent" }, { text: " out." }]]}
           description="Three steps, a few seconds, zero spreadsheets. Here's what happens after you hit plan."
         />
 

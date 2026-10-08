@@ -229,7 +229,7 @@ function ItinerariesContent() {
           <p className="eyebrow text-stone">Your collection</p>
           <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
             <SplitText text="Every trip," trigger="mount" className="block" />
-            <SplitText segments={[{ text: "beautifully kept.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
+            <SplitText segments={[{ text: "beautifully", className: "accent" }, { text: " kept." }]} trigger="mount" delay={0.12} className="block" />
           </h1>
         </div>
         <PillLink href="/dashboard" variant="ink" icon={<Plus className="size-4" />}>

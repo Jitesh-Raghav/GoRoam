@@ -99,7 +99,7 @@ function BookContent() {
         <p className="eyebrow text-stone">Book travel</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="Flights, stays" trigger="mount" className="block" />
-          <SplitText segments={[{ text: "& the good stuff.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
+          <SplitText segments={[{ text: "& the " }, { text: "good stuff.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
         </h1>
         <p className="mt-4 max-w-xl text-lg text-stone">Search once. We open the best partners with your route, dates and party already filled in.</p>
       </header>

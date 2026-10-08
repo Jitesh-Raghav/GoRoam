@@ -129,7 +129,7 @@ export function BookingSection() {
             label="Book it all"
             tone="paper"
             size="md"
-            title={[[{ text: "Plan it here." }], [{ text: "Book it in two taps.", className: "accent" }]]}
+            title={[[{ text: "Plan it here." }], [{ text: "Book it in " }, { text: "two taps.", className: "accent" }]]}
             description="Every itinerary comes with flights, stays, tickets and transfers ready to book, prefilled with your dates and group, from the partners travellers already trust."
           />
           <ul className="mt-8 space-y-3">
