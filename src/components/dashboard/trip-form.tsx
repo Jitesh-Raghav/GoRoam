@@ -564,6 +564,24 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
 
       <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
         <div className="min-w-0 space-y-4">
+          {/* Phones: a slim, read-only ticket strip that fills in as you type, so the pass stays in
+              view without looking like a form. The full pass sits below the form. */}
+          <a
+            href="#boarding-pass"
+            className="flex items-center gap-3 rounded-[18px] bg-ink px-4 py-3 text-paper shadow-[0_14px_30px_-20px_rgba(10,30,44,0.8)] xl:hidden"
+            aria-label="Your boarding pass so far. Tap to see it in full."
+          >
+            <Plane className="size-4 shrink-0 text-brand-2" />
+            <span className="min-w-0 flex-1 truncate text-sm">
+              <span className={formData.source ? "text-paper" : "text-paper/50"}>{formData.source.split(",")[0] || "Your city"}</span>
+              <span className="mx-1.5 text-paper/40">→</span>
+              <span className={formData.destination ? "font-medium text-brand-2" : "text-paper/50"}>{formData.destination.split(",")[0] || "Anywhere"}</span>
+            </span>
+            <span className="shrink-0 font-mono text-[11px] text-paper/60">
+              {formData.numberOfDays}d · {people}p · ${formData.budget.toLocaleString("en-US")}
+            </span>
+          </a>
+
           {/* Progress */}
           <nav aria-label="Planner steps" className="rounded-[22px] bg-white/80 p-1.5 ring-1 ring-line">
             <ol className="grid grid-cols-4 gap-1">
@@ -867,10 +885,11 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
           <FieldError message={errors.submit} />
         </div>
 
-        <aside className="order-first xl:order-none">
+        <aside id="boarding-pass" className="scroll-mt-20">
           <div className="xl:sticky xl:top-10">
+            <p className="eyebrow mb-3 px-2 text-stone xl:hidden">Your boarding pass · preview</p>
             <BoardingPass data={pass} interestLabels={vibeLabels} />
-            <p className="mt-4 hidden px-2 text-sm leading-relaxed text-stone xl:block">
+            <p className="mt-4 px-2 text-sm leading-relaxed text-stone">
               Your boarding pass updates as you go. Try a destination like <em>Kyoto</em>, <em>Berlin</em> or <em>Rio</em>.
             </p>
           </div>
