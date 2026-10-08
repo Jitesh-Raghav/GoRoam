@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { UserRound } from "lucide-react";
+import { UserRound } from "@/components/site/icons";
 import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
 import { useEffect, useState } from "react";

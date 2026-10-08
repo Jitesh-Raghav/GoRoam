@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDownUp, Coins } from "lucide-react";
+import { ArrowDownUp, Coins } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import { formatMoney, homeCurrency } from "@/lib/currency";
 import { cn } from "@/lib/utils";

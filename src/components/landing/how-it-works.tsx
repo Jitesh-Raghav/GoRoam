@@ -15,7 +15,7 @@ import {
   Wallet,
   Users,
   CalendarDays,
-} from "lucide-react";
+} from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { LazyScene } from "@/components/scenes/lazy-scene";
@@ -327,7 +327,7 @@ export function HowItWorks() {
         <SectionHeading
           index="03"
           label="How it works"
-          title={[[{ text: "From a sentence" }], [{ text: "to a " }, { text: "journey.", className: "italic text-brand" }]]}
+          title={[[{ text: "One sentence in." }], [{ text: "A whole journey out.", className: "accent" }]]}
           description="Three steps, a few seconds, zero spreadsheets. Here's what happens after you hit plan."
         />
 

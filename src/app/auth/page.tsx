@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { AlertCircle, ArrowLeft, Check, Loader2 } from "@/components/site/icons";
 import { Scene } from "@/components/scenes/scene";
 import { ScrambleText } from "@/components/motion/scramble-text";
 import { SplitText } from "@/components/motion/split-text";
@@ -146,7 +146,7 @@ function AuthPanel() {
             <h1 className="display mt-4 text-4xl leading-[0.95] text-ink">
               Welcome back,
               <br />
-              <span className="italic text-brand">{session.user?.name?.split(" ")[0] ?? "traveller"}.</span>
+              <span className="accent">{session.user?.name?.split(" ")[0] ?? "traveller"}.</span>
             </h1>
             <div className="mt-8 flex items-center gap-4 rounded-2xl bg-white/80 p-4 ring-1 ring-line">
               <UserAvatar user={session.user} className="size-12" />
@@ -168,7 +168,7 @@ function AuthPanel() {
             <p className="eyebrow text-stone">Welcome to GoRoam</p>
             <h1 className="display mt-4 text-[clamp(2.55rem,5.1vw,3.74rem)] leading-[0.92] text-ink">
               <SplitText text="Your next trip" trigger="mount" className="block" />
-              <SplitText segments={[{ text: "starts here.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+              <SplitText segments={[{ text: "starts here.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone">Sign in to start planning your perfect trip with AI-powered itineraries.</p>
 

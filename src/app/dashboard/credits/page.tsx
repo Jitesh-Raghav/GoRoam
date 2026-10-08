@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, Zap } from "lucide-react";
+import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, Zap } from "@/components/site/icons";
 import Link from "next/link";
 import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/dashboard/use-checkout";
@@ -58,7 +58,7 @@ const faqs = [
   },
   {
     q: "Can I get a refund?",
-    a: "Yes, there's a 30-day money-back guarantee. Email hello@goroam.com and we'll refund the pack; its unused credits are removed.",
+    a: "Yes, there's a 30-day money-back guarantee. Email jitesh@goroam.world and we'll refund the pack; its unused credits are removed.",
   },
   {
     q: "Do credits expire?",
@@ -160,7 +160,7 @@ function CreditsPageContent() {
         <p className="eyebrow text-stone">Credits</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="More trips," trigger="mount" className="block" />
-          <SplitText segments={[{ text: "fewer spreadsheets.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+          <SplitText segments={[{ text: "fewer spreadsheets.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
         </h1>
       </header>
 
@@ -255,8 +255,8 @@ function CreditsPageContent() {
               <Info className="mt-0.5 size-4 shrink-0 text-brand" />
               <p>
                 {checkout.error} If it keeps happening, email{" "}
-                <a href="mailto:hello@goroam.com" className="font-medium underline underline-offset-4">
-                  hello@goroam.com
+                <a href="mailto:jitesh@goroam.world" className="font-medium underline underline-offset-4">
+                  jitesh@goroam.world
                 </a>
                 .
               </p>

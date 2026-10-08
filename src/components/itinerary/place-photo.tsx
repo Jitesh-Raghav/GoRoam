@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- remote photos from Wikimedia/Google/Openverse, already sized by the API. */
 
-import { Camera, Star, type LucideIcon } from "lucide-react";
+import { Camera, Star, type LucideIcon } from "@/components/site/icons";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { photoKey, type ActivitySlot, type PlacePhoto as Photo } from "@/lib/trip";
 import { cn } from "@/lib/utils";

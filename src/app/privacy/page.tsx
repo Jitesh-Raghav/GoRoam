@@ -117,7 +117,7 @@ export default function PrivacyPage() {
       <LegalSection title="9. Contact">
         <p>
           Questions, or want to exercise a data right? See our <a href="/contact">Contact page</a>, or email{" "}
-          <a href="mailto:hello@goroam.com">hello@goroam.com</a>.
+          <a href="mailto:jitesh@goroam.world">jitesh@goroam.world</a>.
         </p>
       </LegalSection>
     </LegalLayout>

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, BedDouble, Plane, TrainFront, Ticket } from "lucide-react";
+import { ArrowUpRight, BedDouble, Plane, TrainFront, Ticket } from "@/components/site/icons";
 import { useState } from "react";
 import {
   airportCode,

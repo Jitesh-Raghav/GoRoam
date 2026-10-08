@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { BedDouble, Check, Plane, Star, Ticket, TrainFront } from "lucide-react";
+import { BedDouble, Check, Plane, Star, Ticket, TrainFront } from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
 import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
@@ -129,7 +129,7 @@ export function BookingSection() {
             label="Book it all"
             tone="paper"
             size="md"
-            title={[[{ text: "Plan it here." }], [{ text: "Book it ", className: "italic text-brand-2" }, { text: "in two taps.", className: "italic text-brand-2" }]]}
+            title={[[{ text: "Plan it here." }], [{ text: "Book it in two taps.", className: "accent" }]]}
             description="Every itinerary comes with flights, stays, tickets and transfers ready to book, prefilled with your dates and group, from the partners travellers already trust."
           />
           <ul className="mt-8 space-y-3">

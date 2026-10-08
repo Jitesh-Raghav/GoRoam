@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Compass, CreditCard, LogOut, Luggage, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "lucide-react";
+import { Compass, CreditCard, LogOut, Luggage, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "@/components/site/icons";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";

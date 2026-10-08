@@ -31,7 +31,7 @@ import {
   ChevronLeft,
   ChevronRight,
   type LucideIcon,
-} from "lucide-react";
+} from "@/components/site/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TipCategory, TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -420,7 +420,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
         eyebrow="Your local guide"
         title={
           <>
-            Arrive like a <span className="italic text-brand">local.</span>
+            Arrive like a <span className="accent">local.</span>
           </>
         }
       >

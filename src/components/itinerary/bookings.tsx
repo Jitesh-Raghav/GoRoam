@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { BedDouble, Car, Check, Copy, FileText, Loader2, MapPin, Plane, Plus, ShieldCheck, Ticket, TrainFront, Trash2, X, type LucideIcon } from "lucide-react";
+import { BedDouble, Car, Check, Copy, FileText, Loader2, MapPin, Plane, Plus, ShieldCheck, Ticket, TrainFront, Trash2, X, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { BOOKING_KINDS, type BookingKind, type TripBooking } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -112,7 +112,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
         eyebrow="Bookings & documents"
         title={
           <>
-            Everything, <span className="italic text-brand">in one place.</span>
+            Everything, <span className="accent">in one place.</span>
           </>
         }
       >

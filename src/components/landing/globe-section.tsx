@@ -63,27 +63,33 @@ function Globe({ focus }: { focus: string | null }) {
       phi,
       theta,
       dark: 1,
-      diffuse: 1.25,
-      mapSamples: 20000,
-      mapBrightness: 5.5,
-      mapBaseBrightness: 0.02,
-      baseColor: [0.12, 0.24, 0.32],
-      markerColor: [0.96, 0.64, 0.25],
-      glowColor: [0.2, 0.62, 0.6],
+      diffuse: 0.9,
+      mapSamples: 36000,
+      mapBrightness: 7,
+      mapBaseBrightness: 0.03,
+      baseColor: [0.07, 0.17, 0.24],
+      markerColor: [1, 0.72, 0.36],
+      glowColor: [0.16, 0.52, 0.52],
       markers,
       arcs,
-      arcColor: [0.2, 0.82, 0.75],
-      arcWidth: 0.6,
-      arcHeight: 0.2,
-      markerElevation: 0.015,
-      opacity: 0.9,
+      arcColor: [0.3, 0.86, 0.78],
+      arcWidth: 0.7,
+      arcHeight: 0.22,
+      markerElevation: 0.02,
+      opacity: 0.95,
     });
 
     let raf = 0;
+    let shown: string | null = null;
     const loop = () => {
       raf = requestAnimationFrame(loop);
       if (!visible) return;
       const f = focusRef.current ? bySlug.get(focusRef.current) : null;
+      if (focusRef.current !== shown) {
+        // The destination you picked glows bigger than the rest.
+        shown = focusRef.current;
+        globe.update({ markers: DESTINATIONS.map((d) => ({ location: [d.lat, d.lng], size: d.slug === shown ? 0.11 : 0.045 })) });
+      }
       if (!drag) {
         if (f) {
           const [tp, tt] = toAngles(f.lat, f.lng);
@@ -142,10 +148,24 @@ function Globe({ focus }: { focus: string | null }) {
 
   return (
     <div ref={wrapRef} className="relative aspect-square w-full">
-      <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(11,130,120,0.22),transparent_62%)] blur-2xl" />
+      {/* Stars, then a soft lagoon halo behind the sphere */}
+      <div className="pointer-events-none absolute -inset-[6%] opacity-60 [background-image:radial-gradient(rgb(244_248_249/0.55)_1px,transparent_1.5px)] [background-size:34px_34px] [mask-image:radial-gradient(circle,transparent_42%,black_52%,transparent_72%)]" />
+      <div className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(52,209,191,0.28),transparent_64%)] blur-2xl" />
+      {/* Atmosphere: a thin bright rim hugging the planet */}
+      <div className="pointer-events-none absolute inset-[9.5%] rounded-full shadow-[0_0_60px_8px_rgba(52,209,191,0.18),inset_0_0_40px_rgba(52,209,191,0.25)] ring-1 ring-brand-2/25" />
+      {/* An orbit with a little plane on it */}
+      <div className="pointer-events-none absolute inset-[2%] rounded-full border border-dashed border-paper/15 [transform:rotateX(72deg)_rotateZ(-14deg)]">
+        <div className="globe-orbit absolute inset-0">
+          <span className="absolute left-1/2 top-0 grid size-6 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-sun text-ink shadow-[0_0_18px_rgba(255,200,118,0.8)]">
+            <svg viewBox="0 0 24 24" className="size-3.5" fill="currentColor" aria-hidden>
+              <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" />
+            </svg>
+          </span>
+        </div>
+      </div>
       <canvas
         ref={canvasRef}
-        className="relative size-full cursor-grab touch-none opacity-0 transition-opacity duration-1000"
+        className="relative size-full scale-95 cursor-grab touch-none opacity-0 transition-[opacity,transform] duration-[1400ms] ease-out [&[style*='opacity:_1']]:scale-100"
         aria-label="Interactive globe showing GoRoam destinations"
         role="img"
       />
@@ -168,7 +188,7 @@ export function GlobeSection() {
               label="Anywhere on Earth"
               tone="paper"
               size="md"
-              title={[[{ text: "From Kyoto to Cusco," }], [{ text: "every corner ", className: "italic text-brand-2" }, { text: "of the map." }]]}
+              title={[[{ text: "The whole map," }], [{ text: "planned with care.", className: "accent" }]]}
               description="Drag the globe, or pick a wonder. GoRoam plans national getaways and big international journeys with the same care."
             />
             <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10">
@@ -187,8 +207,16 @@ export function GlobeSection() {
             <div className="mx-auto max-w-[640px]">
               <Globe focus={focus} />
               <div className="-mt-4 text-center">
-                <p className="eyebrow h-4 text-paper/60">
-                  {active ? `Now over: ${active.place} · ${formatCoords(active.lat, active.lng)}` : "Drag to spin · tap a wonder to fly there"}
+                <p className="inline-flex items-center gap-2 rounded-full bg-paper/[0.08] px-4 py-2 text-xs text-paper/80 ring-1 ring-inset ring-paper/15 backdrop-blur-md">
+                  <span className={cn("size-1.5 rounded-full", active ? "bg-sun shadow-[0_0_10px_rgba(255,200,118,0.9)]" : "bg-brand-2")} />
+                  {active ? (
+                    <>
+                      Now over <span className="font-medium text-paper">{active.place}</span>
+                      <span className="font-mono text-paper/50">{formatCoords(active.lat, active.lng)}</span>
+                    </>
+                  ) : (
+                    "Drag to spin · tap a wonder to fly there"
+                  )}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                   {FOCUS.map((slug) => {

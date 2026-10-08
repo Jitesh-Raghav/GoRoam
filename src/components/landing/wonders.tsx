@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Clock3 } from "@/components/site/icons";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -110,7 +110,7 @@ export function Wonders() {
           </p>
           <h2 className="display mt-6 text-[clamp(2.38rem,9.35vw,3.74rem)] leading-[0.92]">
             <SplitText text="Ten wonders." className="block" />
-            <SplitText segments={[{ text: "One tap ", className: "italic text-brand" }, { text: "away." }]} className="block" delay={0.12} />
+            <SplitText segments={[{ text: "One tap ", className: "accent" }, { text: "away." }]} className="block" delay={0.12} />
           </h2>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-stone">
             Every icon here is a trip GoRoam can plan tonight. Tap one and we&apos;ll start your itinerary from there.
@@ -130,7 +130,7 @@ export function Wonders() {
             </p>
             <h2 className="display mt-6 text-[clamp(2.89rem,4.76vw,5.1rem)] leading-[0.9]">
               <SplitText text="Ten wonders." className="block" />
-              <SplitText segments={[{ text: "One tap ", className: "italic text-brand" }, { text: "away." }]} className="block" delay={0.12} />
+              <SplitText segments={[{ text: "One tap ", className: "accent" }, { text: "away." }]} className="block" delay={0.12} />
             </h2>
             <p className="mt-6 max-w-sm text-lg leading-relaxed text-stone">
               Every icon here is a trip GoRoam can plan tonight. Pick one and we&apos;ll start your itinerary from there.
@@ -154,7 +154,7 @@ export function Wonders() {
               <p className="display text-[2.38rem] leading-[0.95]">
                 Your map,
                 <br />
-                <span className="italic text-brand-2">your rules.</span>
+                <span className="accent">your rules.</span>
               </p>
               <p className="mt-4 text-paper/70">From a weekend in Jaipur to a month across Patagonia. If it&apos;s on Earth, GoRoam can plan it.</p>
               <PillLink href="/dashboard" variant="paper" className="mt-8">

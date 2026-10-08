@@ -22,7 +22,7 @@ export function Ticker() {
             <span
               className={
                 i % 2
-                  ? "display text-[clamp(2.55rem,6.38vw,5.95rem)] italic leading-none text-transparent [-webkit-text-stroke:1.2px_var(--ink)]"
+                  ? "display text-[clamp(2.55rem,6.38vw,5.95rem)] leading-none text-transparent [-webkit-text-stroke:1.2px_var(--ink)]"
                   : "display text-[clamp(2.55rem,6.38vw,5.95rem)] leading-none text-ink"
               }
             >

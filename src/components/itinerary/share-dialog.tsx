@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Copy, Link2, Mail, MessageCircle, Share2, X } from "lucide-react";
+import { Check, Copy, Link2, Mail, MessageCircle, Share2, X } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";

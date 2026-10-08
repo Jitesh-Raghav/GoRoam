@@ -43,7 +43,7 @@ import {
   Users,
   UtensilsCrossed,
   Wallet,
-} from "lucide-react";
+} from "@/components/site/icons";
 
 import { useCredits } from "@/components/dashboard/dashboard-layout";
 import { invalidate } from "@/lib/cached-json";

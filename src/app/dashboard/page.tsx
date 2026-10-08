@@ -26,7 +26,7 @@ function Welcome() {
       </p>
       <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
         <SplitText text="Where are we" trigger="mount" className="block" />
-        <SplitText segments={[{ text: "headed next?", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+        <SplitText segments={[{ text: "headed next?", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
       </h1>
       <p className="mt-4 max-w-xl text-lg text-stone">Four quick steps and GoRoam crafts a day-by-day plan, with flights, stays and tickets ready to book.</p>
     </header>

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Mail, Plus } from "lucide-react";
+import { Mail, Plus } from "@/components/site/icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
@@ -53,17 +53,17 @@ export function Faq() {
             index="09"
             label="Questions"
             size="md"
-            title={[[{ text: "Good to know" }], [{ text: "before you go.", className: "italic text-brand" }]]}
+            title={[[{ text: "Questions," }], [{ text: "answered.", className: "accent" }]]}
           />
           <Reveal delay={0.2}>
             <div className="mt-10 max-w-sm rounded-[28px] bg-white/80 p-6 ring-1 ring-line">
               <p className="display text-xl leading-tight">Still curious?</p>
               <p className="mt-2 text-sm leading-relaxed text-stone">Drop us a line. We love helping people plan the trip they keep daydreaming about.</p>
               <a
-                href="mailto:hello@goroam.com"
+                href="mailto:jitesh@goroam.world"
                 className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm text-paper transition-colors hover:bg-brand"
               >
-                <Mail className="size-4" /> hello@goroam.com
+                <Mail className="size-4" /> jitesh@goroam.world
               </a>
             </div>
           </Reveal>

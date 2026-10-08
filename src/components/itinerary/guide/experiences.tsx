@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Clock3, Dumbbell, GraduationCap, Map as MapIcon, Mountain, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Clock3, Dumbbell, GraduationCap, Map as MapIcon, Mountain, Sparkles, type LucideIcon } from "@/components/site/icons";
 import { useRef } from "react";
 import { cityOf, ticketsFor } from "@/lib/booking";
 import { money, type Experience, type ExperienceKind } from "@/lib/trip";
@@ -33,7 +33,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
         eyebrow="Adventures, sports & experiences"
         title={
           <>
-            Go do <span className="italic text-brand">something.</span>
+            Go do <span className="accent">something.</span>
           </>
         }
       >

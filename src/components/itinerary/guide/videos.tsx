@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- YouTube thumbnails, already sized. */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Play } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 import type { TripVideo } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -153,7 +153,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
         eyebrow="Watch before you go"
         title={
           <>
-            See it in <span className="italic text-brand">motion.</span>
+            See it in <span className="accent">motion.</span>
           </>
         }
       >

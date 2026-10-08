@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, BedDouble, Bus, Check, Loader2, Plus, ShoppingBag, Sparkles, Ticket, Trash2, UserPlus, UtensilsCrossed, Wallet as WalletIcon, X, type LucideIcon } from "lucide-react";
+import { ArrowRight, BedDouble, Bus, Check, Loader2, Plus, ShoppingBag, Sparkles, Ticket, Trash2, UserPlus, UtensilsCrossed, Wallet as WalletIcon, X, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { formatMoney, homeCurrency } from "@/lib/currency";
 import { EXPENSE_CATEGORIES, type ExpenseCategory, type Wallet, type WalletExpense } from "@/lib/trip";
@@ -166,7 +166,7 @@ export function TripWallet({
         eyebrow="Trip wallet"
         title={
           <>
-            Split it <span className="italic text-brand">fairly.</span>
+            Split it <span className="accent">fairly.</span>
           </>
         }
       >

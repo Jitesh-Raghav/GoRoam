@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useDestinationScene } from "@/lib/use-destination-scene";
@@ -65,7 +65,7 @@ export function GeneratingOverlay({ destination, days }: { destination: string; 
 
         <p className="eyebrow mt-8 text-paper/60">Crafting your itinerary</p>
         <h2 className="display mt-4 max-w-3xl text-[clamp(2.21rem,5.1vw,4.25rem)] leading-[0.95]">
-          {days} days in <span className="italic text-brand-2">{destination.split(",")[0] || "somewhere new"}</span>
+          {days} days in <span className="accent">{destination.split(",")[0] || "somewhere new"}</span>
         </h2>
 
         <ul className="mt-10 w-full max-w-sm space-y-3 text-left">

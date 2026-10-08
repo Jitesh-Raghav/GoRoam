@@ -1,7 +1,7 @@
 "use client";
 
 import { APIProvider, AdvancedMarker, ColorScheme, InfoWindow, Map, Polyline, useMap } from "@vis.gl/react-google-maps";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import { track } from "@/lib/analytics";
 import { mapsSearchUrl } from "@/lib/booking";

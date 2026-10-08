@@ -8,7 +8,7 @@ import type { ItineraryDetails } from '@/lib/trip';
 /**
  * Emails the trip to its owner (and only its owner, so it can't be used to
  * send mail to strangers), with a calendar file of every stop attached.
- * Needs RESEND_API_KEY and EMAIL_FROM, e.g. "GoRoam <trips@yourdomain.com>".
+ * Needs RESEND_API_KEY and EMAIL_FROM, e.g. "GoRoam <jitesh@goroam.world>".
  */
 
 const allow = limiter(3, 60_000);

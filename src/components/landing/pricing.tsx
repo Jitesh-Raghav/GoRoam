@@ -1,4 +1,4 @@
-import { Check, Gift, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, Gift, ShieldCheck, Sparkles } from "@/components/site/icons";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 import { PillLink } from "@/components/site/pill";
@@ -14,7 +14,7 @@ export function Pricing() {
           <SectionHeading
             index="08"
             label="Pricing"
-            title={[[{ text: "Pay once." }], [{ text: "Wander ", className: "italic text-brand" }, { text: "for ages." }]]}
+            title={[[{ text: "Simple pricing." }], [{ text: "Pay once, travel for ages.", className: "accent" }]]}
             description="No subscriptions and no hidden fees. Buy credits once and use them whenever you're ready. They never expire."
           />
           <Reveal delay={0.2} className="lg:mb-2">
@@ -99,7 +99,7 @@ export function Pricing() {
         <Reveal delay={0.1}>
           <p className="mt-10 text-center text-sm text-stone">
             Need a custom plan for your business?{" "}
-            <a href="mailto:hello@goroam.com" className="text-ink underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-brand">
+            <a href="mailto:jitesh@goroam.world" className="text-ink underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-brand">
               Contact us
             </a>
           </p>

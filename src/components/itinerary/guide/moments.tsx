@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CalendarHeart, Info, MapPin, Sparkles } from "lucide-react";
+import { CalendarHeart, Info, MapPin, Sparkles } from "@/components/site/icons";
 import type { TripEvent } from "@/lib/trip";
 import { Band } from "../band";
 import { SectionTitle } from "./section-title";
@@ -17,7 +17,7 @@ export function Events({ events, month }: { events: TripEvent[]; month: string }
         eyebrow={`Happening in ${month}`}
         title={
           <>
-            While you&apos;re <span className="italic text-brand">there.</span>
+            While you&apos;re <span className="accent">there.</span>
           </>
         }
       >
@@ -67,7 +67,7 @@ export function CoolFacts({ facts, city }: { facts: { title: string; fact: strin
           <Sparkles className="size-3.5 text-sun-2" /> {facts.length} things you didn&apos;t know
         </p>
         <h2 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.23rem)] leading-[0.95]">
-          {city}, <span className="italic text-brand-2">unexpectedly.</span>
+          {city}, <span className="accent">unexpectedly.</span>
         </h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
           {facts.map((f, i) => (

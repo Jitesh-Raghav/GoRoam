@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { WifiOff } from "lucide-react";
+import { WifiOff } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 
 /**
