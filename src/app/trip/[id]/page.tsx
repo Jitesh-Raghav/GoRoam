@@ -1,63 +1,31 @@
-"use client";
+import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { verifyShareToken } from "@/lib/share";
+import { SharedTrip } from "./shared-trip";
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { TripView } from "@/components/itinerary/trip-view";
-import { Scene } from "@/components/scenes/scene";
-import { Logo } from "@/components/site/logo";
-import { PillLink } from "@/components/site/pill";
-import type { ItineraryDetails } from "@/lib/trip";
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ t?: string }> };
+
+// A shared link pasted into a chat unfurls as that trip, but only with its token.
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const [{ id }, { t }] = await Promise.all([params, searchParams]);
+  if (!t || !verifyShareToken(id, t)) return { title: "A shared trip · GoRoam", robots: { index: false } };
+  const trip = await prisma.itinerary
+    .findUnique({ where: { id }, select: { destination: true, numberOfDays: true } })
+    .catch(() => null);
+  if (!trip) return { title: "A shared trip · GoRoam", robots: { index: false } };
+  const city = trip.destination.split(",")[0].trim();
+  const title = `${trip.numberOfDays} days in ${city} · GoRoam`;
+  const description = `A day-by-day plan for ${trip.destination}, with real places and an honest budget.`;
+  const image = { url: `/api/og/trip/${id}?t=${encodeURIComponent(t)}`, width: 1200, height: 630, alt: title };
+  return {
+    title,
+    description,
+    robots: { index: false },
+    openGraph: { title, description, type: "article", images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
+  };
+}
 
 export default function SharedTripPage() {
-  const params = useParams();
-  const [trip, setTrip] = useState<ItineraryDetails | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const t = new URLSearchParams(window.location.search).get("t") ?? "";
-    setToken(t);
-    fetch(`/api/shared/${params.id}?t=${encodeURIComponent(t)}`)
-      .then((r) => r.json())
-      .then((d) => (d.success ? setTrip(d.data) : setError(d.error || "This share link is invalid.")))
-      .catch(() => setError("We couldn't load this trip."));
-  }, [params.id]);
-
-  return (
-    <div className="min-h-svh bg-paper">
-      <header className="no-print container-x flex h-[4.5rem] items-center justify-between">
-        <Logo />
-        <PillLink href="/dashboard" size="md">
-          Plan your own
-        </PillLink>
-      </header>
-      <main className="px-3 pb-10 min-[400px]:px-4 sm:px-6 lg:px-8">
-        {error ? (
-          <div className="relative mx-auto max-w-[82.5rem] overflow-hidden rounded-[36px] bg-ink">
-            <div className="absolute inset-0">
-              <Scene id="dunes" intro />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent" />
-            <div className="relative max-w-lg p-8 py-20 text-paper sm:p-14">
-              <p className="eyebrow text-paper/60">Shared trip</p>
-              <h1 className="display mt-4 text-4xl leading-[0.95]">
-                This link has <span className="italic text-brand-2">wandered off.</span>
-              </h1>
-              <p className="mt-4 text-paper/70">{error} Ask whoever sent it for a fresh link.</p>
-              <PillLink href="/" variant="paper" className="mt-8">
-                Discover GoRoam
-              </PillLink>
-            </div>
-          </div>
-        ) : trip ? (
-          <TripView it={trip} shared shareToken={token} />
-        ) : (
-          <div className="mx-auto max-w-[82.5rem] space-y-4">
-            <div className="skeleton h-[min(74vh,660px)] rounded-[32px]" />
-            <div className="skeleton h-24 rounded-[28px]" />
-          </div>
-        )}
-      </main>
-    </div>
-  );
+  return <SharedTrip />;
 }

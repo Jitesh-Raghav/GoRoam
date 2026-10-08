@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { animate, motion, useInView } from "framer-motion";
 import {
   Building2,
   Camera,
@@ -19,10 +19,12 @@ import {
   Waves,
   ArrowRightLeft,
   CloudSun,
+  CloudRain,
+  RefreshCw,
   Map as MapIcon,
   Wallet,
 } from "lucide-react";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
@@ -32,11 +34,11 @@ import { SectionHeading } from "./section-heading";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function Tile({ className, visual, title, body, delay = 0 }: { className?: string; visual: ReactNode; title: string; body: string; delay?: number }) {
+function Tile({ className, visual, visualClassName, title, body, delay = 0 }: { className?: string; visual: ReactNode; visualClassName?: string; title: string; body: string; delay?: number }) {
   return (
     <Reveal delay={delay} className={className}>
       <div className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white/80 p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.45)]">
-        <div className="relative h-60 overflow-hidden rounded-[22px] bg-paper">{visual}</div>
+        <div className={cn("relative h-60 overflow-hidden rounded-[22px] bg-paper", visualClassName)}>{visual}</div>
         <div className="p-5 pt-6">
           <h3 className="display text-[1.61rem] leading-none text-ink">{title}</h3>
           <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
@@ -276,36 +278,177 @@ function ConciergeVisual() {
   );
 }
 
-const TOOLS = [
-  { icon: CloudSun, label: "Day 2 · Kyoto", value: "18° / 9°", note: "Live forecast, rain at 4 pm" },
-  { icon: ArrowRightLeft, label: "Swap a stop", value: "3 ideas", note: "“Something indoors”, nearby" },
-  { icon: Wallet, label: "Trip wallet", value: "Sam → you", note: "$42.50 settles it" },
-  { icon: MapIcon, label: "Offline map", value: "9 stops", note: "Opens in Organic Maps" },
+/* "Built for the road": five tiny working tools, each with a little life of its own. */
+
+function ToolCard({ className, label, icon: Icon, children, i, inView }: { className?: string; label: string; icon: typeof CloudSun; children: ReactNode; i: number; inView: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={inView ? { opacity: 1, y: 0 } : undefined}
+      transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.1 }}
+      className={cn("relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white p-3.5 shadow-[0_14px_30px_-24px_rgba(10,30,44,0.6)] ring-1 ring-line", className)}
+    >
+      <span className="flex items-center justify-between gap-2">
+        <span className="eyebrow truncate text-[0.55rem] text-stone">{label}</span>
+        <Icon className="size-4 shrink-0 text-brand" />
+      </span>
+      <div className="mt-3 flex flex-1 flex-col justify-end lg:justify-center">{children}</div>
+    </motion.div>
+  );
+}
+
+const FORECAST = [
+  { d: "Mon", icon: Sun, t: 24, rain: 10 },
+  { d: "Tue", icon: CloudSun, t: 21, rain: 30 },
+  { d: "Wed", icon: CloudRain, t: 18, rain: 80 },
+  { d: "Thu", icon: CloudSun, t: 20, rain: 40 },
+  { d: "Fri", icon: Sun, t: 23, rain: 5 },
 ];
+
+function CountUp({ to, inView, prefix = "" }: { to: number; inView: boolean; prefix?: string }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(0, to, { duration: 1.6, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setN(Math.round(v)) });
+    return () => controls.stop();
+  }, [inView, to]);
+  return (
+    <>
+      {prefix}
+      {n.toLocaleString("en-US")}
+    </>
+  );
+}
 
 function ToolsVisual() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.4, once: true });
+  const inView = useInView(ref, { amount: 0.35, once: true });
   return (
-    <div ref={ref} className="absolute inset-0 grid grid-cols-2 gap-2.5 p-4 sm:p-5 lg:grid-cols-4">
-      {TOOLS.map((t, i) => (
-        <motion.div
-          key={t.label}
-          initial={{ opacity: 0, y: 18 }}
+    <div ref={ref} className="absolute inset-0 grid grid-cols-2 grid-rows-[1fr_1fr_auto] gap-2.5 p-3 sm:p-4 lg:grid-cols-5 lg:grid-rows-1">
+      {/* Live weather for every day of the trip. */}
+      <ToolCard label="Kyoto · 5 days" icon={CloudSun} i={0} inView={inView}>
+        <div className="grid grid-cols-5 gap-1 text-center">
+          {FORECAST.map((f, k) => (
+            <div key={f.d} className="flex flex-col items-center gap-1">
+              <span className="text-[9px] text-stone">{f.d}</span>
+              <f.icon className={cn("size-3.5", f.rain > 50 ? "text-[#3a6ea5]" : "text-sun")} />
+              <span className="font-mono text-[10px] text-ink">{f.t}°</span>
+              <span className="relative h-9 w-1.5 overflow-hidden rounded-full bg-paper-2 lg:h-12">
+                <motion.span
+                  className="absolute inset-x-0 bottom-0 rounded-full bg-brand-2"
+                  initial={{ height: 0 }}
+                  animate={inView ? { height: `${f.rain}%` } : undefined}
+                  transition={{ duration: 1, ease, delay: 0.5 + k * 0.08 }}
+                />
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 truncate text-[10px] text-stone">Rain Wed: we&apos;ve swapped in a museum</p>
+      </ToolCard>
+
+      {/* The money converter. */}
+      <ToolCard label="Money" icon={ArrowRightLeft} i={1} inView={inView}>
+        <p className="flex items-center gap-1.5 text-xs text-stone">
+          <span>🇺🇸 $100</span>
+          <ArrowRightLeft className="size-3 text-brand" />
+          <span>🇯🇵 JPY</span>
+        </p>
+        <p className="display mt-1 text-[1.7rem] leading-none text-ink lg:text-[2rem]">
+          <CountUp to={14820} inView={inView} prefix="¥" />
+        </p>
+        <p className="mt-1.5 truncate text-[10px] text-stone">Ramen ≈ ¥1,100 · taxi ≈ ¥1,800</p>
+      </ToolCard>
+
+      {/* Swap a stop you don't fancy. */}
+      <ToolCard label="Swap a stop" icon={RefreshCw} i={2} inView={inView}>
+        <div className="space-y-1.5">
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={inView ? { opacity: 0.45 } : undefined}
+            transition={{ duration: 0.6, delay: 1.1 }}
+            className="rounded-xl bg-paper-2/70 px-2.5 py-1.5 text-[11px] text-stone line-through decoration-stone/60"
+          >
+            Philosopher&apos;s Path
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            animate={inView ? { opacity: 1, x: 0 } : undefined}
+            transition={{ duration: 0.7, ease, delay: 1.3 }}
+            className="rounded-xl bg-brand-soft px-2.5 py-1.5 text-[11px] font-medium text-ink"
+          >
+            Kyoto Railway Museum
+            <span className="block text-[9px] font-normal text-brand">Indoors · 6 min away</span>
+          </motion.div>
+        </div>
+        <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[9px] text-paper">
+          <RefreshCw className="size-2.5" /> Swapped
+        </span>
+      </ToolCard>
+
+      {/* Split costs with the crew. */}
+      <ToolCard label="Trip wallet" icon={Wallet} i={3} inView={inView}>
+        <div className="space-y-1.5">
+          {[
+            { who: "You", c: "bg-brand", w: 72, amt: "$184" },
+            { who: "Mia", c: "bg-sun", w: 48, amt: "$122" },
+            { who: "Sam", c: "bg-[#c0503e]", w: 30, amt: "$76" },
+          ].map((p, k) => (
+            <div key={p.who} className="flex items-center gap-2">
+              <span className={cn("grid size-5 shrink-0 place-items-center rounded-full text-[8px] font-medium text-white", p.c)}>{p.who[0]}</span>
+              <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-paper-2">
+                <motion.span className={cn("absolute inset-y-0 left-0 rounded-full", p.c)} initial={{ width: 0 }} animate={inView ? { width: `${p.w}%` } : undefined} transition={{ duration: 1, ease, delay: 0.6 + k * 0.12 }} />
+              </span>
+              <span className="w-8 text-right font-mono text-[9px] text-ink">{p.amt}</span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 truncate text-[10px] text-ink">
+          Mia → you <span className="font-medium text-brand">$12.50</span> settles it
+        </p>
+      </ToolCard>
+
+      {/* The day's route, saved for offline. */}
+      <ToolCard label="Offline map" icon={MapIcon} i={4} inView={inView} className="col-span-2 lg:col-span-1">
+        <div className="relative -mx-1 h-24 overflow-hidden rounded-xl bg-[#e8f1ef] lg:h-28">
+          <svg viewBox="0 0 200 96" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full">
+            <path d="M0 30H200M0 64H200M46 0V96M120 0V96M168 0V96" stroke="#fff" strokeWidth="5" />
+            <path d="M0 82C40 70 70 90 110 76S170 60 200 70" stroke="#bcdde6" strokeWidth="9" fill="none" />
+            <rect x="128" y="8" width="30" height="16" rx="3" fill="#cfe7cf" />
+            <motion.path
+              d="M24 70C52 52 70 44 92 40S138 30 150 18"
+              fill="none"
+              stroke="var(--ink)"
+              strokeWidth="2.4"
+              strokeDasharray="5 4"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={inView ? { pathLength: 1 } : undefined}
+              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.6 }}
+            />
+            {[
+              [24, 70],
+              [92, 40],
+              [150, 18],
+            ].map(([x, y], k) => (
+              <motion.g key={k} initial={{ scale: 0 }} animate={inView ? { scale: 1 } : undefined} transition={{ type: "spring", stiffness: 300, damping: 14, delay: 0.7 + k * 0.4 }} style={{ transformOrigin: `${x}px ${y}px` }}>
+                <circle cx={x} cy={y} r="7" fill={k === 2 ? "var(--sun)" : "var(--brand)"} stroke="#fff" strokeWidth="2" />
+                <text x={x} y={y + 3} textAnchor="middle" fontSize="8" fill="#fff" fontFamily="ui-monospace, monospace">
+                  {k + 1}
+                </text>
+              </motion.g>
+            ))}
+          </svg>
+        </div>
+        <motion.span
+          initial={{ opacity: 0, y: 6 }}
           animate={inView ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.1 }}
-          className="flex flex-col justify-between rounded-2xl bg-white p-4 shadow-[0_14px_30px_-24px_rgba(10,30,44,0.6)] ring-1 ring-line"
+          transition={{ duration: 0.5, delay: 2.2 }}
+          className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-brand-soft px-2 py-0.5 text-[9px] font-medium text-brand"
         >
-          <span className="flex items-center justify-between">
-            <span className="eyebrow text-[0.55rem] text-stone">{t.label}</span>
-            <t.icon className="size-4 text-brand" />
-          </span>
-          <span>
-            <span className="display block text-2xl leading-none text-ink">{t.value}</span>
-            <span className="mt-1 block truncate text-[11px] text-stone">{t.note}</span>
-          </span>
-        </motion.div>
-      ))}
+          <Download className="size-2.5" /> Saved offline · 9 stops
+        </motion.span>
+      </ToolCard>
     </div>
   );
 }
@@ -406,6 +549,7 @@ export function Features() {
           <Tile
             className="md:col-span-2 lg:col-span-6"
             visual={<ToolsVisual />}
+            visualClassName="h-[36rem] sm:h-[24rem] lg:h-64"
             title="Built for the road, not just the planning"
             body="Live weather for every day, a money converter, swap any stop you don't fancy, split costs with your crew in the trip wallet, and download the whole plan as an offline map."
           />

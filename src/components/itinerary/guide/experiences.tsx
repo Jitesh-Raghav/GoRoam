@@ -52,7 +52,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
         </div>
       </SectionTitle>
 
-      <div ref={rail} className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 pb-2 sm:mx-0 sm:px-0 print:grid print:grid-cols-2 print:overflow-visible">
+      <div ref={rail} className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-2 sm:mx-0 sm:px-0 print:grid print:grid-cols-2 print:overflow-visible">
         {items.map((e, i) => {
           const kind = KIND[e.kind];
           return (
