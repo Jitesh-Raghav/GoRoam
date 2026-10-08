@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
-import { CalendarDays, Heart, MapPin, Sparkles, Users, Wallet } from "lucide-react";
+import { CalendarDays, Heart, MapPin, Sparkles, Users, Wallet } from "@/components/site/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { SplitText } from "@/components/motion/split-text";
@@ -242,7 +242,7 @@ export function PanoramaHero() {
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
           </span>
           <span className="block">
-            <SplitText segments={[{ text: "wander ", className: "italic text-brand" }, { text: "next?" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
+            <SplitText segments={[{ text: "go next?", className: "accent-gradient" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
           </span>
         </h1>
 

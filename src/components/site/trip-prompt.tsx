@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "@/components/site/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { cn } from "@/lib/utils";

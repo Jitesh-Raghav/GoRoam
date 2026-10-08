@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "@/components/site/icons";
 import { cn } from "@/lib/utils";
 
 type Variant = "ink" | "paper" | "brand" | "outline" | "glass";

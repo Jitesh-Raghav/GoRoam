@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BedDouble, Moon, Plane, Sun } from "lucide-react";
+import { BedDouble, Moon, Plane, Sun } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 import { jetLagPlan, type JetLagPlan } from "@/lib/jetlag";
 import { cn } from "@/lib/utils";

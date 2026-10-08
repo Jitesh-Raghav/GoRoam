@@ -23,7 +23,7 @@ import {
   RefreshCw,
   Map as MapIcon,
   Wallet,
-} from "lucide-react";
+} from "@/components/site/icons";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Marquee } from "@/components/motion/marquee";
@@ -496,7 +496,7 @@ export function Features() {
         <SectionHeading
           index="05"
           label="Built for travellers"
-          title={[[{ text: "Everything a trip needs." }], [{ text: "Nothing it ", className: "italic text-brand" }, { text: "doesn't.", className: "italic text-brand" }]]}
+          title={[[{ text: "Everything a trip needs." }], [{ text: "Nothing it doesn't.", className: "accent" }]]}
         />
         <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
           <Brackets />

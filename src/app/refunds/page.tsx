@@ -21,7 +21,7 @@ export default function RefundsPage() {
       <LegalSection title="How it works">
         <ul>
           <li>
-            Email <a href="mailto:hello@goroam.com">hello@goroam.com</a> with the pack you bought and roughly when. We don&apos;t need a reason,
+            Email <a href="mailto:jitesh@goroam.world">jitesh@goroam.world</a> with the pack you bought and roughly when. We don&apos;t need a reason,
             though it helps us improve GoRoam if you share one.
           </li>
           <li>
@@ -58,7 +58,7 @@ export default function RefundsPage() {
 
       <LegalSection title="Contact">
         <p>
-          Refund requests and billing questions: <a href="mailto:hello@goroam.com">hello@goroam.com</a>, or see our{" "}
+          Refund requests and billing questions: <a href="mailto:jitesh@goroam.world">jitesh@goroam.world</a>, or see our{" "}
           <a href="/contact">Contact page</a>.
         </p>
       </LegalSection>

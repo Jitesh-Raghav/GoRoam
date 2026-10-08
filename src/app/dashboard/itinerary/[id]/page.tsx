@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@/components/site/icons';
 import { TripView } from '@/components/itinerary/trip-view';
 import { Scene } from '@/components/scenes/scene';
 import { PillLink } from '@/components/site/pill';
@@ -32,7 +32,7 @@ function NotFound({ message }: { message: string }) {
       <div className="relative max-w-lg p-8 py-20 text-paper sm:p-14">
         <p className="eyebrow text-paper/60">Itinerary not found</p>
         <h1 className="display mt-4 text-4xl leading-[0.95]">
-          This trip seems to have <span className="italic text-brand-2">wandered off.</span>
+          This trip seems to have <span className="accent">wandered off.</span>
         </h1>
         <p className="mt-4 text-paper/70">{message}</p>
         <PillLink href="/dashboard/itineraries" variant="paper" className="mt-8" icon={<ArrowLeft className="size-4" />}>

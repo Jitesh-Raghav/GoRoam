@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Loader2, Mail } from "lucide-react";
+import { Check, Loader2, Mail } from "@/components/site/icons";
 import { useState } from "react";
 
 type State = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; to: string } | { kind: "error"; message: string };

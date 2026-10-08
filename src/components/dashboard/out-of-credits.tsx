@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, Loader2, Sparkles, X } from "lucide-react";
+import { ArrowUpRight, Check, Loader2, Sparkles, X } from "@/components/site/icons";
 import { useEffect } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { useDestinationScene } from "@/lib/use-destination-scene";
@@ -68,7 +68,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
               {days} {days === 1 ? "day" : "days"} · ready to plan
             </p>
             <h2 id="paywall-title" className="display mt-2 text-[clamp(1.87rem,4.25vw,2.72rem)] leading-[0.95]">
-              {place} is <span className="italic text-brand-2">one step away.</span>
+              {place} is <span className="accent">one step away.</span>
             </h2>
           </div>
         </div>

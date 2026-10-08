@@ -36,7 +36,7 @@ import {
   Wand2,
   ArrowRightLeft,
   Map as MapIcon,
-} from "lucide-react";
+} from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -957,7 +957,7 @@ export function TripView({
                 <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
               </p>
               <h3 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
-                The <span className="italic text-brand-2 print:text-brand">big moments.</span>
+                The <span className="accent">big moments.</span>
               </h3>
             </div>
             <span className="rounded-full bg-paper/10 px-3 py-1.5 font-mono text-[11px] text-paper/70 ring-1 ring-inset ring-paper/15 print:hidden">
@@ -990,7 +990,7 @@ export function TripView({
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
           <section ref={planRef} className="scroll-mt-6">
-            <SectionTitle eyebrow="The plan" title={<>Day by <span className="italic text-brand">day.</span></>} />
+            <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>} />
 
             {days.length > 1 && (
               <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-1 sm:mx-0 sm:px-0">
@@ -1076,7 +1076,7 @@ export function TripView({
 
       {/* Stays */}
       <Band tone="brand" id="chapter-stay">
-        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="italic text-brand">base.</span></>}>
+        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
           <p className="max-w-sm text-sm text-stone">
             Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })} → {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
           </p>
@@ -1135,7 +1135,7 @@ export function TripView({
       {/* Essentials */}
       {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
         <Band>
-          <SectionTitle eyebrow="Good to know" title={<>The <span className="italic text-brand">essentials.</span></>} />
+          <SectionTitle eyebrow="Good to know" title={<>The <span className="accent">essentials.</span></>} />
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {essentials.map((e, i) => (
               <motion.div
@@ -1197,15 +1197,15 @@ export function TripView({
             <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[0.95]">
               {isPackage ? (
                 <>
-                  Make it <span className="italic text-brand-2">yours.</span>
+                  Make it <span className="accent">yours.</span>
                 </>
               ) : shared ? (
                 <>
-                  Dreaming up <span className="italic text-brand-2">your own?</span>
+                  Dreaming up <span className="accent">your own?</span>
                 </>
               ) : (
                 <>
-                  Bon <span className="italic text-brand-2">voyage.</span>
+                  Bon <span className="accent">voyage.</span>
                 </>
               )}
             </p>

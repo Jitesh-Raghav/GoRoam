@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Star } from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "./section-heading";
@@ -66,7 +66,7 @@ export function Testimonials() {
           index="07"
           label="Loved by travellers"
           align="center"
-          title={[[{ text: "Postcards from" }], [{ text: "our travellers.", className: "italic text-brand" }]]}
+          title={[[{ text: "Loved by people" }], [{ text: "who actually go.", className: "accent" }]]}
         />
 
         <div className="mx-auto mt-16 max-w-5xl text-center">

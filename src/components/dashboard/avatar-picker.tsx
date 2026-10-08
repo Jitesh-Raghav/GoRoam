@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Loader2, Shuffle } from "lucide-react";
+import { Check, Loader2, Shuffle } from "@/components/site/icons";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { UserAvatar } from "@/components/site/user-avatar";

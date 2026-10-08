@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Plane } from "lucide-react";
+import { Plane } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useDestinationScene } from "@/lib/use-destination-scene";

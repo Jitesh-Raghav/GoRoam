@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, CalendarDays, Loader2, Plus, Printer, Search, Trash2, Users, Wallet } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Loader2, Plus, Printer, Search, Trash2, Users, Wallet } from "@/components/site/icons";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
@@ -229,7 +229,7 @@ function ItinerariesContent() {
           <p className="eyebrow text-stone">Your collection</p>
           <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
             <SplitText text="Every trip," trigger="mount" className="block" />
-            <SplitText segments={[{ text: "beautifully kept.", className: "italic text-brand" }]} trigger="mount" delay={0.12} className="block" />
+            <SplitText segments={[{ text: "beautifully kept.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
           </h1>
         </div>
         <PillLink href="/dashboard" variant="ink" icon={<Plus className="size-4" />}>
@@ -302,7 +302,7 @@ function ItinerariesContent() {
             <div className="relative max-w-lg p-8 py-16 text-paper sm:p-14">
               <p className="eyebrow text-paper/60">Nothing here yet</p>
               <h2 className="display mt-4 text-4xl leading-[0.95]">
-                Your first adventure is <span className="italic text-brand-2">one sentence</span> away.
+                Your first adventure is <span className="accent">one sentence</span> away.
               </h2>
               <p className="mt-4 text-paper/70">Tell GoRoam where you&apos;re dreaming of and we&apos;ll plan every day of it.</p>
               <PillLink href="/dashboard" variant="paper" className="mt-8">

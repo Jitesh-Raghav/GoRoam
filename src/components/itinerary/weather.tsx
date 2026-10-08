@@ -1,6 +1,6 @@
 "use client";
 
-import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun, Umbrella, type LucideIcon } from "lucide-react";
+import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun, Umbrella, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import type { DayWeather, TripWeather } from "@/app/api/weather/route";
 import type { DayItinerary } from "@/lib/trip";

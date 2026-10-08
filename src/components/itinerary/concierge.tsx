@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUp, RotateCcw, Sparkles, X } from "lucide-react";
+import { ArrowUp, RotateCcw, Sparkles, X } from "@/components/site/icons";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CHAT_LIMIT } from "@/lib/plans";
 import { undashText } from "@/lib/text";

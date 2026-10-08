@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useState, type ReactNode } from "react";
-import { Bell, Download, Palette, Save, Shield, Trash2, User } from "lucide-react";
+import { Bell, Download, Palette, Save, Shield, Trash2, User } from "@/components/site/icons";
 import { AvatarPicker } from "@/components/dashboard/avatar-picker";
 import { SplitText } from "@/components/motion/split-text";
 import { Switch } from "@/components/ui/switch";
@@ -60,7 +60,7 @@ function SettingsContent() {
         <p className="eyebrow text-stone">Settings</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
           <SplitText text="Make it" trigger="mount" className="inline" />{" "}
-          <SplitText segments={[{ text: "yours.", className: "italic text-brand" }]} trigger="mount" delay={0.1} className="inline" />
+          <SplitText segments={[{ text: "yours.", className: "accent" }]} trigger="mount" delay={0.1} className="inline" />
         </h1>
         <p className="mt-4 max-w-xl text-lg text-stone">Manage your account preferences and settings.</p>
       </header>

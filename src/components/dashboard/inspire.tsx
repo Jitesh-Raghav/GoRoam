@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, CloudSun, Compass, Loader2, Plane, RefreshCw, Sparkles, Wallet, X } from "lucide-react";
+import { ArrowRight, CloudSun, Compass, Loader2, Plane, RefreshCw, Sparkles, Wallet, X } from "@/components/site/icons";
 import { useEffect, useState } from "react";
 import type { Idea } from "@/app/api/inspire/route";
 import { Flag } from "@/components/itinerary/guide/flag";
@@ -104,7 +104,7 @@ export function Inspire({
                       <Sparkles className="size-3.5 text-sun-2" /> Inspire me
                     </p>
                     <h3 className="display mt-2 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
-                      Where&apos;s at its <span className="italic text-brand-2">best</span> then?
+                      Where&apos;s at its <span className="accent">best</span> then?
                     </h3>
                   </div>
                   <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="grid size-10 shrink-0 place-items-center rounded-full bg-paper/10 transition-colors hover:bg-paper hover:text-ink">

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, ThumbsDown, ThumbsUp } from "lucide-react";
+import { MessageCircle, ThumbsDown, ThumbsUp } from "@/components/site/icons";
 import { createContext, useContext, useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { reactionKey, type StopReaction } from "@/lib/trip";
 import { cn } from "@/lib/utils";

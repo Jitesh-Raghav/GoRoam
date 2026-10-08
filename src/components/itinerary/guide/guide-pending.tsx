@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Languages, UtensilsCrossed, Gift, CalendarHeart, Mountain, PlayCircle } from "lucide-react";
+import { Languages, UtensilsCrossed, Gift, CalendarHeart, Mountain, PlayCircle } from "@/components/site/icons";
 
 const ITEMS = [
   { icon: Languages, label: "Phrases" },
@@ -18,7 +18,7 @@ export function GuidePending() {
     <section className="no-print mt-24 overflow-hidden rounded-[32px] bg-white p-7 ring-1 ring-line sm:p-10" aria-live="polite">
       <p className="eyebrow text-stone">Your local guide</p>
       <h2 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.55rem)] leading-[0.95] text-ink">
-        Writing your <span className="italic text-brand">local guide…</span>
+        Writing your <span className="accent">local guide…</span>
       </h2>
       <p className="mt-3 max-w-lg text-stone">Phrases, food, culture, events, adventures and videos for this trip. It takes about twenty seconds, and it&apos;s saved for next time.</p>
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">

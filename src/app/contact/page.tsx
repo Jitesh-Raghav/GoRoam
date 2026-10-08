@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, MessageCircleQuestion, Receipt } from "lucide-react";
+import { Mail, MessageCircleQuestion, Receipt } from "@/components/site/icons";
 import { LegalLayout } from "@/components/site/legal-layout";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ const ROUTES = [
     icon: MessageCircleQuestion,
     title: "General & support",
     body: "Questions about planning a trip, a bug, or anything else. We read every email.",
-    action: { label: "hello@goroam.com", href: "mailto:hello@goroam.com" },
+    action: { label: "jitesh@goroam.world", href: "mailto:jitesh@goroam.world" },
   },
   {
     icon: Receipt,

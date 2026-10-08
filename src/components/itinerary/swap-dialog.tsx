@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRightLeft, Check, Clock3, Lightbulb, Loader2, MapPin, Sparkles, X } from "lucide-react";
+import { ArrowRightLeft, Check, Clock3, Lightbulb, Loader2, MapPin, Sparkles, X } from "@/components/site/icons";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { updateCached } from "@/lib/cached-json";
 import { CHAT_LIMIT } from "@/lib/plans";
@@ -116,7 +116,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
                     <ArrowRightLeft className="size-3.5 text-brand" /> Day {target.day + 1} · {target.slot}
                   </p>
                   <h3 className="display mt-2 text-[1.7rem] leading-[1] text-ink">
-                    Swap <span className="italic text-brand">{target.current.place.name}</span>
+                    Swap <span className="accent">{target.current.place.name}</span>
                   </h3>
                 </div>
                 <button type="button" onClick={() => state !== "saving" && setTarget(null)} aria-label="Close" className="grid size-10 shrink-0 place-items-center rounded-full bg-paper-2 text-ink transition-colors hover:bg-ink hover:text-paper">

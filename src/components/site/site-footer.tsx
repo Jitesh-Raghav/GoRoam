@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUp, ArrowUpRight, Github, Instagram, Linkedin, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUp, ArrowUpRight, Github, Instagram, Linkedin, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "@/components/site/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -208,7 +208,7 @@ function ClosingPrompt() {
               <Sparkles className="size-3.5 text-sun-2" /> Ready when you are
             </p>
             <h2 className="display mt-4 text-[clamp(2.21rem,4.59vw,3.91rem)] leading-[0.92]">
-              Your next trip is <span className="italic text-brand-2">one sentence</span> away.
+              Your next trip is <span className="accent">one sentence</span> away.
             </h2>
             <p className="mt-5 flex h-6 min-w-0 items-center gap-2 overflow-hidden text-sm text-paper/55">
               <span className="shrink-0">Trending now:</span>

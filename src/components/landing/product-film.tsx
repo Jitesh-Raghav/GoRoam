@@ -1,6 +1,6 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { Play } from "@/components/site/icons";
 import { useRef, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/landing/section-heading";
@@ -53,7 +53,7 @@ export function ProductFilm() {
         <SectionHeading
           index="60s"
           label="The film"
-          title={[[{ text: "Watch a trip" }], [{ text: "plan itself.", className: "italic text-brand" }]]}
+          title={[[{ text: "Watch a trip" }], [{ text: "plan itself.", className: "accent" }]]}
           description="One line in, five days out: real places, real costs, a map for every day and a local guide, in about a minute."
         />
 

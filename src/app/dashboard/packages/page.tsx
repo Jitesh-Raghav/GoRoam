@@ -14,7 +14,7 @@ export default async function PackagesPage() {
           <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
             Ready when
             <br />
-            <span className="italic text-brand">you are.</span>
+            <span className="accent">you are.</span>
           </h1>
           <p className="mt-4 max-w-xl text-lg text-stone">
             Our most-loved trips, planned day by day with real places, honest budgets and local tips. Open one for free, then make it yours.

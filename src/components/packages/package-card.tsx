@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- remote Wikimedia/Openverse photos, already sized. */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, CalendarDays, MapPin, Sparkles } from "lucide-react";
+import { ArrowUpRight, CalendarDays, MapPin, Sparkles } from "@/components/site/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
