@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
-import { CalendarDays, Heart, MapPin, Sparkles, Users, Wallet } from "@/components/site/icons";
+import { CalendarDays, Heart, MapPin, Send, Sparkles, Users, Wallet } from "@/components/site/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { SplitText } from "@/components/motion/split-text";
@@ -171,7 +171,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
               )}
             </AnimatePresence>
           </div>
-          <PillButton type="submit" variant="brand" className="w-full justify-between sm:w-auto" icon={<Sparkles className="size-4" />}>
+          <PillButton type="submit" variant="brand" className="w-full justify-between sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
             Plan my trip
           </PillButton>
         </div>

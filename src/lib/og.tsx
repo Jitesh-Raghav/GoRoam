@@ -33,10 +33,10 @@ async function googleFont(family: string, axis: string, text: string): Promise<A
 type Font = { name: string; data: ArrayBuffer; weight: 500 | 600; style: "normal" };
 
 async function loadFonts(text: string): Promise<Font[]> {
-  const [sans, sansMedium] = await Promise.all([googleFont("Inter+Tight", "wght@600", text), googleFont("Inter+Tight", "wght@500", text)]);
+  const [sans, sansMedium] = await Promise.all([googleFont("Geist", "wght@600", text), googleFont("Geist", "wght@500", text)]);
   const fonts: Font[] = [];
-  if (sans) fonts.push({ name: "Inter Tight", data: sans, weight: 600, style: "normal" });
-  if (sansMedium) fonts.push({ name: "Inter Tight", data: sansMedium, weight: 500, style: "normal" });
+  if (sans) fonts.push({ name: "Geist", data: sans, weight: 600, style: "normal" });
+  if (sansMedium) fonts.push({ name: "Geist", data: sansMedium, weight: 500, style: "normal" });
   return fonts;
 }
 
@@ -107,7 +107,7 @@ export async function renderOgCard(card: OgCard) {
     ...card.panel.stops.flatMap((s) => [s.time, s.title, s.cost ?? ""]),
   ].join(" ");
   const [fonts, logo] = await Promise.all([loadFonts(text), logoMark()]);
-  const sans = "Inter Tight";
+  const sans = "Geist";
 
   return new ImageResponse(
     (

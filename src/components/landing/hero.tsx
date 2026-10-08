@@ -108,7 +108,7 @@ function PassportStamp({ dest, index }: { dest: (typeof HERO_SEQUENCE)[number]; 
             </text>
             <path d="M14.5 60l1.6-1.1 1.6 1.1-1.6 1.1zM102.3 60l1.6-1.1 1.6 1.1-1.6 1.1z" />
             <path d={MINI_PLANE} transform="translate(60 44) rotate(-90) scale(0.13)" />
-            <text x="60" y="68" textAnchor="middle" fontSize="21" letterSpacing="0.5" stroke={ink} strokeWidth="0.35" style={{ fontFamily: "var(--font-inter-tight), sans-serif" }}>
+            <text x="60" y="68" textAnchor="middle" fontSize="21" letterSpacing="0.5" stroke={ink} strokeWidth="0.35" style={{ fontFamily: "var(--font-geist-sans), sans-serif" }}>
               {dest.code}
             </text>
             <text x="60" y="79" textAnchor="middle" className="font-mono" fontSize="5" fontWeight="600" letterSpacing="1">
