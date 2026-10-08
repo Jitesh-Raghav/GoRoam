@@ -109,10 +109,12 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
           e.preventDefault();
           submit();
         }}
-        className="group/composer relative rounded-[30px] text-left bg-white/95 p-2 shadow-[0_44px_90px_-44px_rgba(10,30,44,0.6),0_2px_0_rgba(255,255,255,0.9)_inset] ring-1 ring-ink/[0.06] transition-shadow duration-500 focus-within:ring-2 focus-within:ring-brand/40"
+        className="group/composer relative isolate rounded-[28px] bg-white/45 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(10,30,44,0.18),inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-1 ring-inset ring-white/70 backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/60"
       >
-        {/* A soft lagoon glow that wakes up on focus. */}
-        <span aria-hidden className="pointer-events-none absolute -inset-px -z-10 rounded-[31px] bg-[conic-gradient(from_200deg,rgba(52,209,191,0.55),rgba(244,163,64,0.45),rgba(52,209,191,0.55))] opacity-0 blur-xl transition-opacity duration-700 group-focus-within/composer:opacity-60" />
+        {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
+        <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/70 via-white/20 to-transparent" />
+        <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(90%_70%_at_100%_100%,rgba(52,209,191,0.14),transparent_60%)]" />
+        <span aria-hidden className="composer-glow pointer-events-none absolute -inset-[2px] -z-10 rounded-[30px] opacity-0 blur-md transition-opacity duration-700 group-focus-within/composer:opacity-100" />
         <label htmlFor={id} className="sr-only">
           Describe the trip you want to plan
         </label>
@@ -129,17 +131,17 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
             enterKeyHint="go"
             maxLength={400}
             placeholder={focused ? "Where, how long, who's coming and what you love…" : ""}
-            className="block min-h-[4.75rem] w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[1.02rem] leading-relaxed text-ink outline-none placeholder:text-stone-2 sm:px-5 sm:text-[1.08rem]"
+            className="relative block min-h-[4.75rem] w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[1.0625rem] leading-relaxed text-ink outline-none placeholder:text-ink/40 sm:px-5"
           />
           {!text && !focused && (
-            <span aria-hidden className="pointer-events-none absolute inset-0 px-4 pt-3.5 text-[1.02rem] leading-relaxed text-stone sm:px-5 sm:text-[1.08rem]">
+            <span aria-hidden className="pointer-events-none absolute inset-0 px-4 pt-3.5 text-[1.0625rem] leading-relaxed text-ink/55 sm:px-5">
               {typed}
               <span className="ml-0.5 inline-block h-[1.1em] w-px translate-y-[0.2em] animate-pulse bg-ink/70" />
             </span>
           )}
         </div>
 
-        <div className="flex flex-col gap-3 px-2 pb-1 pt-1 sm:flex-row sm:items-end sm:justify-between sm:pl-3">
+        <div className="relative flex flex-col gap-3 border-t border-white/60 px-2 pb-1 pt-2.5 sm:flex-row sm:items-center sm:justify-between sm:pl-3">
           <div className="flex min-h-9 min-w-0 flex-1 flex-wrap items-center gap-1.5">
             <AnimatePresence initial={false} mode="popLayout">
               {chips.length ? (
@@ -151,7 +153,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.85 }}
                     transition={{ type: "spring", stiffness: 520, damping: 32 }}
-                    className="inline-flex max-w-[15rem] items-center gap-1.5 rounded-full bg-brand-soft px-2.5 py-1 text-xs text-ink"
+                    className="inline-flex max-w-[15rem] items-center gap-1.5 rounded-full bg-white/60 px-2.5 py-1 text-xs text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-inset ring-white/80 backdrop-blur"
                   >
                     <c.icon className="size-3.5 shrink-0 text-brand" />
                     <span className="truncate">{c.text}</span>
@@ -163,7 +165,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="hidden items-center gap-1.5 text-xs text-stone sm:inline-flex"
+                  className="hidden items-center gap-1.5 text-xs text-ink/60 sm:inline-flex"
                 >
                   <Sparkles className="size-3.5 text-brand" />
                   Mention where, how long, who&apos;s coming and what you love
@@ -171,7 +173,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
               )}
             </AnimatePresence>
           </div>
-          <PillButton type="submit" variant="brand" className="w-full justify-between sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
+          <PillButton type="submit" variant="ink" className="w-full justify-between shadow-[0_12px_24px_-12px_rgba(10,30,44,0.7),inset_0_1px_0_rgba(255,255,255,0.18)] sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
             Plan my trip
           </PillButton>
         </div>
@@ -189,7 +191,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
             key={s.label}
             type="button"
             onClick={() => pick(s.text)}
-            className="rounded-full bg-white/70 px-3.5 py-1.5 text-sm text-ink/80 ring-1 ring-ink/[0.06] backdrop-blur-sm transition-colors duration-300 hover:bg-ink hover:text-paper"
+            className="rounded-full bg-white/40 px-3.5 py-1.5 text-sm text-ink/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] ring-1 ring-inset ring-white/60 backdrop-blur-md transition-colors duration-300 hover:bg-ink hover:text-paper"
           >
             {s.label}
           </button>
@@ -237,12 +239,12 @@ export function PanoramaHero() {
           AI trip planner · your first itinerary is free
         </motion.div>
 
-        <h1 className="display mx-auto max-w-[14ch] text-[clamp(2.6rem,7.4vw,4.8rem)] leading-[0.98] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.2rem]">
+        <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.8rem,7.6vw,5.2rem)] leading-[1.02] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.4rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
           </span>
           <span className="block">
-            <SplitText segments={[{ text: "go next?", className: "accent-gradient" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
+            <SplitText segments={[{ text: "wander", className: "accent" }, { text: " next?" }]} trigger="mount" ready={intro.ready} delay={delay + 0.28} />
           </span>
         </h1>
 

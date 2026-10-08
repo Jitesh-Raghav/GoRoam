@@ -30,12 +30,13 @@ async function googleFont(family: string, axis: string, text: string): Promise<A
   }
 }
 
-type Font = { name: string; data: ArrayBuffer; weight: 500 | 600; style: "normal" };
+type Font = { name: string; data: ArrayBuffer; weight: 400 | 500 | 600; style: "normal" };
 
 async function loadFonts(text: string): Promise<Font[]> {
-  const [sans, sansMedium] = await Promise.all([googleFont("Geist", "wght@600", text), googleFont("Geist", "wght@500", text)]);
+  const [sans, sansMedium, sansRegular] = await Promise.all([googleFont("Geist", "wght@600", text), googleFont("Geist", "wght@500", text), googleFont("Geist", "wght@400", text)]);
   const fonts: Font[] = [];
   if (sans) fonts.push({ name: "Geist", data: sans, weight: 600, style: "normal" });
+  if (sansRegular) fonts.push({ name: "Geist", data: sansRegular, weight: 400, style: "normal" });
   if (sansMedium) fonts.push({ name: "Geist", data: sansMedium, weight: 500, style: "normal" });
   return fonts;
 }
@@ -89,7 +90,7 @@ export interface OgStop {
 }
 
 export interface OgCard {
-  /** Headline before the accent word, the accent (in sunset gold), and after it. */
+  /** Headline before the accent word, the accent (in lagoon), and after it. */
   title: [string, string, string];
   subtitle: string;
   /** The tilted itinerary card on the right. */
@@ -148,9 +149,9 @@ export async function renderOgCard(card: OgCard) {
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", marginTop: 54, fontSize: 82, fontWeight: 600, letterSpacing: "-0.045em", lineHeight: 1 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", marginTop: 54, fontSize: 84, fontWeight: 400, letterSpacing: "-0.035em", lineHeight: 1.04 }}>
             {card.title[0] ? <span style={{ marginRight: 20 }}>{card.title[0]}</span> : null}
-            <span style={{ color: SUN, marginRight: card.title[2] ? 20 : 0 }}>
+            <span style={{ color: LAGOON, marginRight: card.title[2] ? 20 : 0 }}>
               {card.title[1]}
             </span>
             {card.title[2] ? <span>{card.title[2]}</span> : null}
@@ -219,7 +220,7 @@ export async function renderOgCard(card: OgCard) {
 
 /** The site-wide preview. */
 export const siteCard = (): OgCard => ({
-  title: ["Where will you", "go next?", ""],
+  title: ["Where will you", "wander", "next?"],
   subtitle: "Day-by-day AI trip plans with real places, honest budgets and a guide for the road.",
   panel: {
     eyebrow: "Day 1 · Kyoto",

@@ -196,7 +196,7 @@ export function Hero() {
               </span>
               <span className="block">
                 <SplitText
-                  segments={[{ text: "Wander more.", className: "accent" }]}
+                  segments={[{ text: "Wander", className: "accent" }, { text: " more." }]}
                   trigger="inView"
                   delay={0.3}
                 />

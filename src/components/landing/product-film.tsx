@@ -53,7 +53,7 @@ export function ProductFilm() {
         <SectionHeading
           index="60s"
           label="The film"
-          title={[[{ text: "Watch a trip" }], [{ text: "plan itself.", className: "accent" }]]}
+          title={[[{ text: "Watch a trip" }], [{ text: "plan " }, { text: "itself.", className: "accent" }]]}
           description="One line in, five days out: real places, real costs, a map for every day and a local guide, in about a minute."
         />
 
