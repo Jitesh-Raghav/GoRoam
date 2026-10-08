@@ -370,7 +370,7 @@ function HarbourPlate() {
               textLength={1700}
               lengthAdjust="spacingAndGlyphs"
               fontSize={540}
-              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontVariationSettings: '"SOFT" 50, "WONK" 0, "opsz" 144', fontWeight: 430, letterSpacing: "-0.04em" }}
+              style={{ fontFamily: "var(--font-inter-tight), sans-serif", fontWeight: 600, letterSpacing: "-0.04em" }}
             >
               {/* An offset outline first, like the shadow line of an engraved letter. */}
               <tspan fill="none" stroke={WORDMARK} strokeWidth={1.2} strokeOpacity={0.35}>
@@ -387,7 +387,7 @@ function HarbourPlate() {
               fill="url(#wordmark-hatch)"
               stroke={WORDMARK}
               strokeWidth={1.8}
-              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontVariationSettings: '"SOFT" 50, "WONK" 0, "opsz" 144', fontWeight: 430, letterSpacing: "-0.04em" }}
+              style={{ fontFamily: "var(--font-inter-tight), sans-serif", fontWeight: 600, letterSpacing: "-0.04em" }}
             >
               GoRoam
             </text>

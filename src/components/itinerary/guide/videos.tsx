@@ -170,7 +170,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
       {list.length ? (
         <div className="mt-8 grid gap-3 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)]">
           <Player video={list[active]} playing={playing} onPlay={() => setPlaying(true)} />
-          <ul className="no-scrollbar -mx-3 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 sm:mx-0 sm:px-0 lg:flex-col lg:overflow-visible">
+          <ul className="no-scrollbar -mx-3 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 sm:mx-0 sm:px-0 lg:flex-col lg:overflow-visible">
             {list.map((v, i) => {
               const on = i === active;
               return (

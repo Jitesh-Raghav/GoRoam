@@ -120,7 +120,7 @@ export function Wonders() {
         <motion.div
           ref={trackRef}
           style={desktop ? { x } : undefined}
-          className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:gap-6 sm:px-8 lg:mt-0 lg:w-max lg:snap-none lg:items-center lg:overflow-visible lg:px-0 lg:pb-0 lg:pl-[max(3rem,calc((100vw_-_1440px)/2_+_3rem))] lg:pr-[10vw]"
+          className="no-scrollbar mt-10 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-8 sm:scroll-px-8 sm:gap-6 sm:px-8 lg:mt-0 lg:w-max lg:snap-none lg:items-center lg:overflow-visible lg:px-0 lg:pb-0 lg:pl-[max(3rem,calc((100vw_-_1440px)/2_+_3rem))] lg:pr-[10vw]"
         >
           <div className="hidden w-[min(34vw,520px)] shrink-0 pr-10 lg:block">
             <p className="eyebrow flex items-center gap-3 text-stone">

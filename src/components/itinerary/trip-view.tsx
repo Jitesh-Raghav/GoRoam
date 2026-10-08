@@ -336,7 +336,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
   return (
     <div
       className={cn(
-        "no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 sm:mx-0 sm:grid sm:h-[380px] sm:gap-3 sm:overflow-visible sm:px-0",
+        "no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 sm:mx-0 sm:grid sm:h-[380px] sm:gap-3 sm:overflow-visible sm:px-0",
         stops.length === 1 && "sm:grid-cols-1",
         stops.length === 2 && "sm:grid-cols-2",
         stops.length >= 3 && "sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] sm:grid-rows-2"
@@ -993,7 +993,7 @@ export function TripView({
             <SectionTitle eyebrow="The plan" title={<>Day by <span className="italic text-brand">day.</span></>} />
 
             {days.length > 1 && (
-              <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-3 min-[400px]:-mx-4 min-[400px]:px-4 pb-1 sm:mx-0 sm:px-0">
+              <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-1 sm:mx-0 sm:px-0">
                 {days.map((d, i) => {
                   const on = i === active;
                   return (
@@ -1082,7 +1082,7 @@ export function TripView({
           </p>
         </SectionTitle>
         {data?.stays?.length ? (
-          <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-2 min-[400px]:-mx-4 min-[400px]:px-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
+          <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
             {data.stays.map((s, i) => (
               <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={query} />
             ))}

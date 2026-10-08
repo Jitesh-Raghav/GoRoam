@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
 import { OfflineSupport } from "@/components/site/offline";
@@ -21,15 +21,15 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-// The hero's display face: a soft, optical-size serif with a characterful italic.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Headlines: a tight, confident grotesque. Instrument Serif stays for italic accent words.
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["SOFT", "WONK", "opsz"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL?.startsWith("http") ? process.env.NEXTAUTH_URL : "https://goroam.world"),
   title: "GoRoam - AI-Powered Travel Itinerary Planning",
   description: "Plan your perfect trip with AI-powered itineraries. Get personalized travel plans, real-time maps, and downloadable PDFs in seconds.",
   keywords: ["travel planning", "AI itinerary", "trip planner", "travel app", "vacation planning"],
@@ -48,20 +48,11 @@ export const metadata: Metadata = {
     description: "Create perfect travel itineraries with AI in minutes, not hours.",
     type: "website",
     locale: "en_US",
-    images: [
-      {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "GoRoam - AI Travel Planning",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "GoRoam - AI Travel Planning",
     description: "Plan amazing trips with AI-powered itineraries",
-    images: ["/logo.png"],
   },
 };
 
@@ -78,7 +69,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${fraunces.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${interTight.variable} font-sans antialiased`}
       >
         <Providers>
           {children}
