@@ -8,13 +8,13 @@ type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ t?: stri
 // A shared link pasted into a chat unfurls as that trip, but only with its token.
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const [{ id }, { t }] = await Promise.all([params, searchParams]);
-  if (!t || !verifyShareToken(id, t)) return { title: "A shared trip · GoRoam", robots: { index: false } };
+  if (!t || !verifyShareToken(id, t)) return { title: "A shared trip", robots: { index: false } };
   const trip = await prisma.itinerary
     .findUnique({ where: { id }, select: { destination: true, numberOfDays: true } })
     .catch(() => null);
-  if (!trip) return { title: "A shared trip · GoRoam", robots: { index: false } };
+  if (!trip) return { title: "A shared trip", robots: { index: false } };
   const city = trip.destination.split(",")[0].trim();
-  const title = `${trip.numberOfDays} days in ${city} · GoRoam`;
+  const title = `${trip.numberOfDays} days in ${city}`;
   const description = `A day-by-day plan for ${trip.destination}, with real places and an honest budget.`;
   const image = { url: `/api/og/trip/${id}?t=${encodeURIComponent(t)}`, width: 1200, height: 630, alt: title };
   return {

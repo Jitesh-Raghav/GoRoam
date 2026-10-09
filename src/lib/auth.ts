@@ -3,6 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 // The app's shared client: a second one here doubled the database connections
 // (and in dev, every hot reload opened yet another).
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/email/send";
+import { welcomeEmail } from "@/lib/email/welcome-email";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -44,6 +46,11 @@ export const authOptions = {
   events: {
     async createUser({ user }: any) {
       console.log("New user created:", user.email);
+      // A one-time welcome note. Never blocks or fails sign-up.
+      if (user.email) {
+        const { subject, html, text } = welcomeEmail(user.name);
+        void sendEmail({ to: user.email, subject, html, text });
+      }
     },
   },
 }; 

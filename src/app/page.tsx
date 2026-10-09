@@ -16,10 +16,13 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { Intro } from "@/components/site/intro";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { FAQS } from "@/lib/faq-data";
+import { JsonLd, faqPage, organization, softwareApp, website } from "@/lib/seo";
 
 export default function Home() {
   return (
     <>
+      <JsonLd data={[organization, website, softwareApp, faqPage(FAQS)]} />
       <Intro />
       <SmoothScroll />
       <SiteHeader />

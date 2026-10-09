@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy · GoRoam",
+  title: "Privacy Policy",
   description: "What GoRoam collects, why, and who it's shared with.",
 };
 

@@ -1,7 +1,7 @@
 import { PackageCard } from "@/components/packages/package-card";
 import { packageCards } from "@/lib/packages-data";
 
-export const metadata = { title: "Travel packages · GoRoam" };
+export const metadata = { title: "Travel packages" };
 
 // Ready-made trips, built once and served as static pages.
 export default async function PackagesPage() {
