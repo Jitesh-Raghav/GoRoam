@@ -53,6 +53,12 @@ export type AnalyticsEvent =
   | "pdf_downloaded"
   | "calendar_downloaded"
   | "checkout_started"
+  | "purchase_completed"
+  | "paywall_shown"
+  | "signed_in"
+  | "concierge_asked"
+  | "stop_swapped"
+  | "hero_prompt_submitted"
   | "film_played";
 
 export function track(event: AnalyticsEvent, properties?: Record<string, string | number | boolean | null | undefined>) {

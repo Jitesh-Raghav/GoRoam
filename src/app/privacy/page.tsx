@@ -6,19 +6,15 @@ export const metadata: Metadata = {
   description: "What GoRoam collects, why, and who it's shared with.",
 };
 
-const UPDATED = "27 September 2026";
+const UPDATED = "9 October 2026";
 
 export default function PrivacyPage() {
   return (
     <LegalLayout eyebrow="Legal" title="Privacy policy." updated={UPDATED}>
-      <p className="rounded-2xl bg-brand-soft/60 p-4 text-sm text-ink ring-1 ring-brand/20">
-        <strong>Placeholder notice:</strong> this page is a starting draft, not legal advice. Fill in your legal entity details where marked,
-        and have a lawyer confirm it covers GDPR/UK GDPR if you have EU or UK customers, before going live.
-      </p>
 
       <p>
-        This policy explains what <strong>[legal entity or individual name]</strong> (&quot;GoRoam&quot;, &quot;we&quot;) collects when you
-        use GoRoam, why, and who we share it with. It applies to goroam.vercel.app and the GoRoam dashboard.
+        This policy explains what <strong>Jitesh Raghav</strong>, an individual based in Gurgaon, Haryana, India, who operates GoRoam (&quot;GoRoam&quot;, &quot;we&quot;), collects when you
+        use GoRoam, why, and who we share it with. It applies to goroam.world and the GoRoam dashboard.
       </p>
 
       <LegalSection title="1. What we collect">
@@ -44,7 +40,7 @@ export default function PrivacyPage() {
         </ul>
       </LegalSection>
 
-      <LegalSection title="2. Cookies & local storage">
+      <LegalSection id="analytics" title="2. Cookies, local storage & analytics">
         <p>We keep this deliberately small:</p>
         <ul>
           <li>
@@ -56,7 +52,13 @@ export default function PrivacyPage() {
             in-progress plan while you&apos;re mid-checkout. This never leaves your browser and we can&apos;t read it.
           </li>
         </ul>
-        <p>We don&apos;t run third-party advertising or analytics trackers on GoRoam.</p>
+        <p>
+          <strong>Product analytics (PostHog)</strong>: we use PostHog to understand how GoRoam is used, such as which pages are visited,
+          when a trip is generated or shared, and where people get stuck. Events are tied to a random identifier or, once you sign in, to your
+          GoRoam account id; we don&apos;t send your name, email or trip text to PostHog. PostHog sets a first-party cookie to recognise
+          repeat visits. Blocking cookies or using a tracker blocker opts you out without affecting the app.
+        </p>
+        <p>We don&apos;t run any advertising trackers, and we never sell your data.</p>
       </LegalSection>
 
       <LegalSection title="3. Who we share it with">
@@ -69,6 +71,13 @@ export default function PrivacyPage() {
             this to return the result to us; see{" "}
             <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noreferrer">
               OpenAI&apos;s privacy policy
+            </a>
+            .
+          </li>
+          <li>
+            <strong>PostHog</strong>: product analytics, as described above; see{" "}
+            <a href="https://posthog.com/privacy" target="_blank" rel="noreferrer">
+              PostHog&apos;s privacy policy
             </a>
             .
           </li>

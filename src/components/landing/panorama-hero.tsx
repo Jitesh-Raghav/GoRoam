@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform 
 import { CalendarDays, Heart, MapPin, Send, Sparkles, Users, Wallet } from "@/components/site/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { track } from "@/lib/analytics";
 import { SplitText } from "@/components/motion/split-text";
 import { PillButton } from "@/components/site/pill";
 import { useTypewriter } from "@/components/site/trip-prompt";
@@ -74,6 +75,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
       return;
     }
     const p = parseTripPrompt(value);
+    track("hero_prompt_submitted", { length: value.length });
     // A bare place name ("Lisbon") is a destination even if we've never heard of it.
     if (!p.destination && value.split(/\s+/).length <= 4 && !/\d/.test(value)) p.destination = value;
     router.push(plannerHref(p));

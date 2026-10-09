@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, Zap } from "@/components/site/icons";
 import Link from "next/link";
@@ -136,6 +137,7 @@ function CreditsPageContent() {
       if (fresh) {
         setPayments(rows);
         setAdded(fresh.credits);
+        track("purchase_completed", { credits: fresh.credits, amount: fresh.amount });
         setReturned("confirmed");
         await refresh.current();
         try {

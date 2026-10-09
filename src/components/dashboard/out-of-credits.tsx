@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Loader2, Sparkles, X } from "@/components/site/icons";
 import { useEffect } from "react";
+import { track } from "@/lib/analytics";
 import { Scene } from "@/components/scenes/scene";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { PLANS, perTrip } from "@/lib/plans";
@@ -21,6 +22,9 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
   const place = titleCase(destination.split(",")[0] || "your trip");
   const { scene } = useDestinationScene(destination || "mountains");
   const checkout = useCheckout(0);
+  useEffect(() => {
+    track("paywall_shown", { destination: place, days });
+  }, [place, days]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();

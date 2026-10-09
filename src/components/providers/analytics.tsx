@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { analyticsEnabled, identify, loadAnalytics } from "@/lib/analytics";
+import { analyticsEnabled, identify, loadAnalytics, track } from "@/lib/analytics";
 
 /** Starts PostHog in idle time (when configured) and keeps it in step with sign-in. */
 export function Analytics() {
@@ -18,7 +18,19 @@ export function Analytics() {
   }, []);
 
   useEffect(() => {
-    if (status !== "loading") identify(userId);
+    if (status === "loading") return;
+    identify(userId);
+    // Once per browser session, so returning visits count as sign-ins without flooding.
+    if (userId && analyticsEnabled) {
+      try {
+        if (sessionStorage.getItem("goroam:signed-in") !== userId) {
+          sessionStorage.setItem("goroam:signed-in", userId);
+          track("signed_in");
+        }
+      } catch {
+        /* storage blocked: skip */
+      }
+    }
   }, [status, userId]);
 
   return null;

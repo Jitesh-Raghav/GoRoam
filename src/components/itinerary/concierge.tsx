@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, RotateCcw, Sparkles, X } from "@/components/site/icons";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { CHAT_LIMIT } from "@/lib/plans";
 import { undashText } from "@/lib/text";
 import { cn } from "@/lib/utils";
@@ -67,6 +68,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
     const history: Msg[] = [...messages, { role: "user", content: q }];
     setMessages([...history, { role: "assistant", content: "" }]);
     setBusy(true);
+    track("concierge_asked", { turn: history.filter((m) => m.role === "user").length });
     try {
       const res = await fetch(`/api/itinerary/${tripId}/chat`, {
         method: "POST",

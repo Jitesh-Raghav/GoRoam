@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUp, ArrowUpRight, Github, Instagram, Linkedin, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "@/components/site/icons";
+import { ArrowRight, ArrowUp, ArrowUpRight, Compass, Github, Mail, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "@/components/site/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -272,15 +272,16 @@ const COLUMNS = [
       { label: "Privacy policy", href: "/privacy" },
       { label: "Refund policy", href: "/refunds" },
       { label: "Contact us", href: "/contact" },
+      { label: "Cookies & analytics", href: "/privacy#analytics" },
     ],
   },
 ];
 
 const SOCIAL: { label: string; href: string; icon: LucideIcon }[] = [
-  { label: "X (Twitter)", href: "https://x.com/goroamapp", icon: Twitter },
-  { label: "Instagram", href: "https://instagram.com/goroamapp", icon: Instagram },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/goroam", icon: Linkedin },
-  { label: "GitHub", href: "https://github.com/goroam", icon: Github },
+  { label: "X (Twitter): @okayjitesh", href: "https://x.com/okayjitesh", icon: Twitter },
+  { label: "Email jitesh@goroam.world", href: "mailto:jitesh@goroam.world", icon: Mail },
+  { label: "Maker's portfolio", href: "https://jiteshraghav.xyz", icon: Compass },
+  { label: "GitHub", href: "https://github.com/Jitesh-Raghav", icon: Github },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -492,7 +493,7 @@ export function SiteFooter() {
               </a>
             ))}
             <a
-              href="https://x.com/compose/tweet?text=I%27ve%20been%20using%20%23GoRoam%20for%20travel%20planning%2C%20check%20it%20out!%20%40goroamapp"
+              href="https://x.com/compose/tweet?text=I%27ve%20been%20planning%20trips%20with%20GoRoam%2C%20check%20it%20out%3A%20https%3A%2F%2Fgoroam.world%20%40okayjitesh"
               target="_blank"
               rel="noreferrer"
               className="ml-1 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-paper/70 ring-1 ring-inset ring-paper/15 transition-colors hover:bg-paper hover:text-ink"
@@ -524,7 +525,20 @@ export function SiteFooter() {
       </div>
 
       <div className="container-x relative flex flex-col gap-5 border-t border-paper/10 py-7 text-sm text-paper/45 sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} GoRoam. All rights reserved. Made for the curious.</p>
+        <div className="space-y-1.5">
+          <p>© {new Date().getFullYear()} GoRoam. All rights reserved.</p>
+          <p className="text-xs leading-relaxed text-paper/40">
+            Operated by{" "}
+            <a href="https://jiteshraghav.xyz" target="_blank" rel="noreferrer" className="text-paper/60 hover:text-paper">
+              Jitesh Raghav
+            </a>{" "}
+            · Gurgaon, India ·{" "}
+            <a href="mailto:jitesh@goroam.world" className="text-paper/60 hover:text-paper">
+              jitesh@goroam.world
+            </a>{" "}
+            · Payments processed by Dodo Payments, our merchant of record.
+          </p>
+        </div>
         <div className="flex items-center gap-4">
           <span className="hidden items-center gap-2 sm:inline-flex">
             <span className="relative flex size-2">

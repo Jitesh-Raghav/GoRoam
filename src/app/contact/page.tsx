@@ -47,7 +47,7 @@ export default function ContactPage() {
           <Mail className="size-3.5" /> Registered business
         </p>
         <p className="mt-3 text-paper/85">
-          GoRoam is operated by <strong className="text-paper">[legal entity or individual name]</strong>, <strong className="text-paper">[registered address]</strong>.
+          GoRoam is operated by <strong className="text-paper">Jitesh Raghav</strong>, an individual based in <strong className="text-paper">Gurgaon, Haryana, India</strong>. Write to <a href="mailto:jitesh@goroam.world" className="text-brand-2 underline">jitesh@goroam.world</a>.
         </p>
       </div>
 
