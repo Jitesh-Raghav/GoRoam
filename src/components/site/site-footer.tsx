@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUp, ArrowUpRight, Compass, Github, Mail, Moon, Sparkles, Sun, type LucideIcon } from "@/components/site/icons";
+import { ArrowRight, ArrowUp, ArrowUpRight, Compass, Github, Mail, Moon, Sparkles, Sun, Twitter, type LucideIcon } from "@/components/site/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -278,6 +278,7 @@ const COLUMNS = [
 ];
 
 const SOCIAL: { label: string; href: string; icon: LucideIcon }[] = [
+  { label: "X (Twitter): @okayjitesh", href: "https://x.com/okayjitesh", icon: Twitter },
   { label: "Email jitesh@goroam.world", href: "mailto:jitesh@goroam.world", icon: Mail },
   { label: "Maker's portfolio", href: "https://jiteshraghav.xyz", icon: Compass },
   { label: "GitHub", href: "https://github.com/Jitesh-Raghav", icon: Github },
@@ -492,7 +493,7 @@ export function SiteFooter() {
               </a>
             ))}
             <a
-              href="https://x.com/compose/tweet?text=I%27ve%20been%20planning%20trips%20with%20GoRoam%2C%20check%20it%20out%3A%20https%3A%2F%2Fgoroam.world"
+              href="https://x.com/compose/tweet?text=I%27ve%20been%20planning%20trips%20with%20GoRoam%2C%20check%20it%20out%3A%20https%3A%2F%2Fgoroam.world%20%40okayjitesh"
               target="_blank"
               rel="noreferrer"
               className="ml-1 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm text-paper/70 ring-1 ring-inset ring-paper/15 transition-colors hover:bg-paper hover:text-ink"
