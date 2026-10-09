@@ -213,7 +213,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
         id={stopId(day, slot.key)}
         className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
-        <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
+        <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
@@ -225,7 +225,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
             <span className="shrink-0 rounded-full bg-white/95 px-2.5 py-1.5 font-mono text-xs text-ink shadow-sm">{activity.estimatedCost ? money(activity.estimatedCost) : "Free"}</span>
           </div>
         </div>
-        <div className="p-5 sm:p-7">
+        <div className="p-4 sm:p-7">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-stone">
             {activity.time && <span className="sm:hidden">{activity.time}</span>}
             {activity.duration && (
@@ -249,7 +249,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               )}
             </div>
           )}
-          {activity.place.description && <p className="mt-3 leading-relaxed text-stone">{activity.place.description}</p>}
+          {activity.place.description && <p className="mt-3 line-clamp-4 leading-relaxed text-stone sm:line-clamp-none">{activity.place.description}</p>}
           {activity.tip && (
             <p className="mt-4 flex gap-3 rounded-2xl bg-brand-soft/60 p-3.5 text-sm leading-relaxed text-ink">
               <Lightbulb className="mt-0.5 size-4 shrink-0 text-brand" />
@@ -354,7 +354,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease, delay: k * 0.08 }}
             className={cn(
-              "group relative h-64 w-[78%] shrink-0 snap-start overflow-hidden rounded-[26px] bg-ink text-left sm:h-auto sm:w-auto",
+              "group relative h-52 w-[72%] shrink-0 snap-start overflow-hidden rounded-[26px] bg-ink text-left sm:h-auto sm:w-auto",
               stops.length >= 3 && k === 0 && "sm:row-span-2"
             )}
             aria-label={`${slot.label}: ${s.activity.place.name}`}
@@ -439,7 +439,7 @@ function DayPanel({
 
       <DayGlance stops={stops} day={index} destination={it.destination} />
 
-      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/56] sm:aspect-[100/40]" />}
+      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
 
       <ol className="mt-8">
         {stops.map((s, k) => (
@@ -831,7 +831,7 @@ export function TripView({
         <div className="absolute -left-32 top-[80%] size-[32rem] rounded-full bg-sun-2/15 blur-3xl" />
       </div>
       {/* Hero — doubles as the PDF cover */}
-      <section className="relative h-[min(74vh,660px)] min-h-[31.25rem] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
+      <section className="relative h-[min(74vh,660px)] min-h-[26rem] sm:min-h-[31.25rem] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
           {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
         </div>
@@ -1004,12 +1004,12 @@ export function TripView({
                       aria-selected={on}
                       onClick={() => jump(i)}
                       className={cn(
-                        "group relative w-48 shrink-0 snap-start overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
+                        "group relative min-w-[9.5rem] flex-1 shrink-0 snap-start sm:min-w-[11.5rem] overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
                         on ? "text-paper shadow-[0_24px_50px_-28px_rgba(10,30,44,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(10,30,44,0.6)]"
                       )}
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
-                      <span className="relative block h-20 overflow-hidden">
+                      <span className="relative block h-24 overflow-hidden sm:h-28">
                         <PlacePhoto activity={d.morning ?? d.afternoon ?? d.evening} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>

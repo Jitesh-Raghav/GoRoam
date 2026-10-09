@@ -51,6 +51,7 @@ import { DateRangePicker } from "./date-range-picker";
 import { Inspire } from "./inspire";
 import { track } from "@/lib/analytics";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
+import { PlaceField } from "@/components/dashboard/place-field";
 import { GeneratingOverlay } from "@/components/dashboard/generating-overlay";
 import { OutOfCredits, PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { PillButton } from "@/components/site/pill";
@@ -138,58 +139,6 @@ function FieldError({ message }: { message?: string }) {
         </motion.p>
       )}
     </AnimatePresence>
-  );
-}
-
-function TextField({
-  id,
-  label,
-  icon: Icon,
-  value,
-  onChange,
-  placeholder,
-  error,
-  type = "text",
-  min,
-}: {
-  id: string;
-  label: string;
-  icon: typeof MapPin;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  error?: string;
-  type?: string;
-  min?: string;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className={cn(
-          "flex h-[4.5rem] cursor-text items-center gap-3 rounded-2xl bg-paper/60 px-4 ring-1 transition-shadow focus-within:bg-white focus-within:ring-2",
-          error ? "ring-destructive/60 focus-within:ring-destructive/60" : "ring-line focus-within:ring-brand/50"
-        )}
-      >
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line">
-          <Icon className="size-4" />
-        </span>
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="eyebrow text-[0.6rem] text-stone">{label}</span>
-          <input
-            id={id}
-            type={type}
-            min={min}
-            value={value}
-            placeholder={placeholder}
-            onChange={(e) => onChange(e.target.value)}
-            aria-invalid={!!error}
-            className="mt-1 w-full bg-transparent text-[1.05rem] text-ink outline-none placeholder:text-stone-2"
-          />
-        </span>
-      </label>
-      <FieldError message={error} />
-    </div>
   );
 }
 
@@ -634,8 +583,8 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                 {step === 0 && (
                   <>
                     <div className="relative grid gap-3 md:grid-cols-2">
-                      <TextField id="trip-source" label="Starting from" icon={Navigation} value={formData.source} onChange={(v) => set("source", v)} placeholder="e.g. Mumbai, India" error={errors.source} />
-                      <TextField id="trip-destination" label="Destination" icon={Plane} value={formData.destination} onChange={(v) => set("destination", v)} placeholder="e.g. Kyoto, Japan" error={errors.destination} />
+                      <PlaceField id="trip-source" kind="from" label="Starting from" icon={Navigation} value={formData.source} onChange={(v) => set("source", v)} placeholder="e.g. Mumbai, India" error={errors.source} />
+                      <PlaceField id="trip-destination" kind="to" label="Destination" icon={Plane} value={formData.destination} onChange={(v) => set("destination", v)} placeholder="e.g. Kyoto, Japan" error={errors.destination} />
                       <button
                         type="button"
                         onClick={() => setFormData((prev) => ({ ...prev, source: prev.destination, destination: prev.source }))}
