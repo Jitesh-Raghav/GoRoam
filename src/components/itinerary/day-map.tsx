@@ -49,6 +49,9 @@ export default function DayMap({ stops, destination, className, onFail }: { stop
     const w = window as unknown as { gm_authFailure?: () => void };
     const previous = w.gm_authFailure;
     w.gm_authFailure = () => {
+      console.warn(
+        "GoRoam map: Google rejected NEXT_PUBLIC_GOOGLE_MAPS_API_KEY. Enable the Maps JavaScript API for it and allow this site in its HTTP referrer restrictions. Showing the illustrated route instead."
+      );
       previous?.();
       onFail?.();
     };
