@@ -6,20 +6,15 @@ export const metadata: Metadata = {
   description: "The terms that apply to using GoRoam and buying credits.",
 };
 
-const UPDATED = "27 September 2026";
+const UPDATED = "9 October 2026";
 
 export default function TermsPage() {
   return (
     <LegalLayout eyebrow="Legal" title="Terms of service." updated={UPDATED}>
-      <p className="rounded-2xl bg-brand-soft/60 p-4 text-sm text-ink ring-1 ring-brand/20">
-        <strong>Placeholder notice:</strong> this page is a starting draft, not legal advice. Before accepting real payments, fill in your legal
-        entity name, registered address and governing law where marked, and have it reviewed by a lawyer familiar with selling digital services
-        from India to international customers.
-      </p>
 
       <p>
-        These Terms govern your use of GoRoam (the &quot;Service&quot;), operated by <strong>[legal entity or individual name]</strong>, based in{" "}
-        <strong>[city, country]</strong> (&quot;GoRoam&quot;, &quot;we&quot;, &quot;us&quot;). By creating an account or using GoRoam, you agree
+        These Terms govern your use of GoRoam (the &quot;Service&quot;), operated by <strong>Jitesh Raghav</strong>, an individual based in{" "}
+        <strong>Gurgaon, Haryana, India</strong> (&quot;GoRoam&quot;, &quot;we&quot;, &quot;us&quot;). By creating an account or using GoRoam, you agree
         to these Terms. If you don&apos;t agree, please don&apos;t use the Service.
       </p>
 
@@ -103,8 +98,8 @@ export default function TermsPage() {
 
       <LegalSection title="9. Governing law">
         <p>
-          These Terms are governed by the laws of <strong>[country/state]</strong>, without regard to conflict-of-law rules, and any dispute
-          will be handled in the courts of <strong>[city, country]</strong>, subject to any consumer-protection rights you have where you
+          These Terms are governed by the laws of <strong>India</strong>, without regard to conflict-of-law rules, and any dispute
+          will be handled in the courts of <strong>Gurgaon, Haryana, India</strong>, subject to any consumer-protection rights you have where you
           live that can&apos;t be waived by contract.
         </p>
       </LegalSection>

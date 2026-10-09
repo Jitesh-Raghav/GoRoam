@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRightLeft, Check, Clock3, Lightbulb, Loader2, MapPin, Sparkles, X } from "@/components/site/icons";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { track } from "@/lib/analytics";
 import { updateCached } from "@/lib/cached-json";
 import { CHAT_LIMIT } from "@/lib/plans";
 import { money, type ActivitySlot, type ItineraryData, type ItineraryDetails } from "@/lib/trip";
@@ -87,6 +88,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
       const swapped = next.itinerary?.[target.day]?.[target.slot];
       if (swapped) lookUpOwnPhoto(swapped);
       updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: next } }));
+      track("stop_swapped", { day: target.day + 1, slot: target.slot });
       setTarget(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't save that swap.");

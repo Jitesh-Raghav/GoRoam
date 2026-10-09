@@ -47,9 +47,9 @@ export function LegalLayout({ eyebrow, title, updated, children }: { eyebrow: st
 }
 
 /** One numbered/titled section of a policy. */
-export function LegalSection({ title, children }: { title: string; children: ReactNode }) {
+export function LegalSection({ id, title, children }: { id?: string; title: string; children: ReactNode }) {
   return (
-    <section>
+    <section id={id} className="scroll-mt-24">
       <h2 className="display text-xl leading-none text-ink">{title}</h2>
       <div className="mt-3 space-y-3">{children}</div>
     </section>

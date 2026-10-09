@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "GoRoam's 30-day money-back guarantee on credit packs.",
 };
 
-const UPDATED = "27 September 2026";
+const UPDATED = "9 October 2026";
 
 export default function RefundsPage() {
   return (
