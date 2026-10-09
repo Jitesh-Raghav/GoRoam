@@ -39,6 +39,7 @@ import {
 } from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
@@ -671,22 +672,34 @@ export function TripView({
   shared = false,
   shareToken,
   variant = "trip",
+  photosEndpoint,
+  unlockUrl,
 }: {
   it: ItineraryDetails;
   shared?: boolean;
   /** The share link's token, so a shared view can load the trip's photos. */
   shareToken?: string | null;
-  /** "package": a ready-made GoRoam trip rather than one of yours. */
-  variant?: "trip" | "package";
+  /** "package": a ready-made GoRoam trip rather than one of yours. "guest": a signed-out first trip, Day 1 only. */
+  variant?: "trip" | "package" | "guest";
+  /** Where to load stop photos from, when the default for the variant doesn't apply. */
+  photosEndpoint?: string;
+  /** Guest previews: where sign-in returns to, to claim and unlock the trip. */
+  unlockUrl?: string;
 }) {
   const data = it.itineraryData;
-  const isPackage = variant === "package";
+  // Guest previews behave like packages (no owner tools), with their own wording and an unlock button.
+  const isGuest = variant === "guest";
+  const isPackage = variant === "package" || isGuest;
+  const unlock = () => {
+    track("guest_unlock_clicked", { destination: it.destination, where: "trip" });
+    void signIn("google", { callbackUrl: unlockUrl ?? "/dashboard" });
+  };
   // On a public itinerary page the page itself owns the <h1>.
   const HeroHeading = isPackage ? motion.h2 : motion.h1;
 
   // Every stop's photo in one request; packages ship with theirs.
   const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
-  const photosUrl = isPackage ? packagePhotos : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`;
+  const photosUrl = photosEndpoint ?? (isPackage ? packagePhotos : null) ?? (isPackage ? null : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`);
   const fetchedPhotos = useCachedJson<{ photos: Record<string, PlacePhotoData>; fallback: string | null }>(photosUrl);
   const tripPhotos = useMemo(() => {
     const saved = data?.photos ?? {};
@@ -841,7 +854,11 @@ export function TripView({
         <HeroPhoto photo={heroPhoto} />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
-          {isPackage ? (
+          {isGuest ? (
+            <span className={cn(glass, "pointer-events-none")}>
+              <Sparkles className="size-4" /> Your free trip preview
+            </span>
+          ) : isPackage ? (
             <Link href="/itineraries" className={glass}>
               <ArrowLeft className="size-4" /> All packages
             </Link>
@@ -881,7 +898,7 @@ export function TripView({
           <div className="min-w-0 max-w-3xl">
             <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.3 }} className="eyebrow text-paper/75">
               {it.numberOfDays} {it.numberOfDays === 1 ? "day" : "days"} ·{" "}
-              {isPackage ? "GoRoam travel package" : `${fmt(it.startDate, { month: "short", day: "numeric" })} – ${fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}`}
+              {isGuest ? "Planned for you by GoRoam" : isPackage ? "GoRoam travel package" : `${fmt(it.startDate, { month: "short", day: "numeric" })} – ${fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}`}
               {who && ` · ${who}`}
             </motion.p>
             <HeroHeading
@@ -900,7 +917,11 @@ export function TripView({
             )}
           </div>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease, delay: 0.8 }} className="no-print shrink-0 self-start lg:self-auto">
-            {isPackage ? (
+            {isGuest ? (
+              <button type="button" onClick={unlock} className={cn(btn, "h-14 bg-brand px-6 text-base text-white hover:bg-brand/90")}>
+                <Sparkles className="size-4" /> Unlock the full trip, free
+              </button>
+            ) : isPackage ? (
               <PillLink href={similar} variant="brand" size="lg" onClick={() => track("package_customized", { destination: it.destination, where: "hero" })}>
                 Make it mine
               </PillLink>
@@ -1198,7 +1219,11 @@ export function TripView({
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>
             <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[0.95]">
-              {isPackage ? (
+              {isGuest ? (
+                <>
+                  Love Day 1? <span className="accent">There&apos;s more.</span>
+                </>
+              ) : isPackage ? (
                 <>
                   Make it <span className="accent">yours.</span>
                 </>
@@ -1213,7 +1238,9 @@ export function TripView({
               )}
             </p>
             <p className="mt-3 max-w-md text-paper/60">
-              {isPackage
+              {isGuest
+                ? "Sign in with Google, free, to unlock every day, the map, the local guide, PDF and sharing. It takes ten seconds."
+                : isPackage
                 ? "Change the dates, budget, pace or who's coming, and GoRoam re-plans every day around you."
                 : shared
                   ? "GoRoam plans a day-by-day trip like this one in under a minute, flights, stays and all."
@@ -1221,7 +1248,11 @@ export function TripView({
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            {isPackage ? (
+            {isGuest ? (
+              <button type="button" onClick={unlock} className={cn(btn, "h-12 bg-brand px-6 text-white hover:bg-brand/90")}>
+                <Sparkles className="size-4" /> Sign in free to unlock every day
+              </button>
+            ) : isPackage ? (
               <>
                 <Link href="/itineraries" className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
                   <ArrowLeft className="size-4" /> More packages

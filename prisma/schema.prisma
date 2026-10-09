@@ -111,3 +111,26 @@ model Payment {
 
   @@index([userId])
 }
+
+// A first trip made from the landing page before signing in. Days 2+ stay locked
+// until the traveller signs in and claims it, which copies it into an Itinerary.
+model GuestTrip {
+  id                 String   @id @default(cuid())
+  destination        String
+  startDate          DateTime
+  numberOfDays       Int
+  budget             Float
+  numberOfPeople     Int
+  tripType           String
+  interests          String   // JSON string array
+  itineraryData      String   // JSON string of the full itinerary
+  ipHash             String
+  deviceId           String
+  claimedByUserId    String?
+  claimedItineraryId String?
+  createdAt          DateTime @default(now())
+
+  @@index([ipHash, createdAt])
+  @@index([deviceId])
+  @@index([claimedByUserId])
+}
