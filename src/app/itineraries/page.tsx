@@ -1,0 +1,85 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { PackageCard } from "@/components/packages/package-card";
+import { PublicShell } from "@/components/seo/public-shell";
+import { DESTINATION_GUIDES } from "@/lib/destination-guides";
+import { packageCards } from "@/lib/packages-data";
+import { PACKAGE_SEO, type Region } from "@/lib/packages-seo";
+import { JsonLd, absolute, breadcrumbs } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Trip Gallery: Day-by-Day Itineraries for India & Beyond",
+  description:
+    "Free, ready-made day-by-day itineraries with real places, timings, maps and honest budgets: Hampi, Jaipur, Udaipur, Goa, Kerala, Ladakh, Manali, Rishikesh, Varanasi, Bali, Japan, Paris and more.",
+  alternates: { canonical: "/itineraries" },
+};
+
+const ORDER: Region[] = ["India", "Asia", "Middle East", "Europe"];
+const HEADINGS: Record<Region, string> = {
+  India: "India",
+  Asia: "Asia",
+  "Middle East": "Middle East",
+  Europe: "Europe",
+};
+
+export default async function GalleryPage() {
+  const cards = await packageCards();
+  const byRegion = ORDER.map((r) => ({ region: r, cards: cards.filter((c) => (PACKAGE_SEO[c.slug]?.region ?? "Asia") === r) })).filter((g) => g.cards.length);
+
+  return (
+    <PublicShell crumbs={[{ name: "Home", href: "/" }, { name: "Trip gallery", href: "/itineraries" }]}>
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "GoRoam trip gallery",
+            itemListElement: cards.map((c, i) => ({ "@type": "ListItem", position: i + 1, url: absolute(`/itineraries/${c.slug}`), name: PACKAGE_SEO[c.slug]?.seoTitle ?? c.title })),
+          },
+          breadcrumbs([
+            { name: "Home", path: "/" },
+            { name: "Trip gallery", path: "/itineraries" },
+          ]),
+        ]}
+      />
+      <div className="container-x pb-24 pt-8">
+        <header className="max-w-3xl">
+          <p className="eyebrow text-stone">Trip gallery</p>
+          <h1 className="display mt-4 text-[clamp(2.4rem,5.2vw,4.25rem)] text-ink">
+            Ready-made trips, <span className="accent">day by day.</span>
+          </h1>
+          <p className="mt-5 text-lg leading-relaxed text-ink/70">
+            Every itinerary here is planned stop by stop with real places, opening-time tips, map coordinates and an honest budget for two. Open one for free, follow it as is, or make it yours in the planner.
+          </p>
+        </header>
+
+        {byRegion.map((g) => (
+          <section key={g.region} className="mt-14" aria-labelledby={`region-${g.region}`}>
+            <h2 id={`region-${g.region}`} className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
+              {HEADINGS[g.region]} <span className="text-base text-stone">· {g.cards.length} trips</span>
+            </h2>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {g.cards.map((pkg, i) => (
+                <PackageCard key={pkg.slug} pkg={pkg} index={i} />
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <section className="mt-20 rounded-[32px] bg-white p-6 ring-1 ring-line sm:p-10" aria-labelledby="guides">
+          <h2 id="guides" className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
+            Destination guides
+          </h2>
+          <p className="mt-2 text-stone">Best time to go, where to stay, what it costs, and the sights worth your time.</p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {DESTINATION_GUIDES.map((d) => (
+              <Link key={d.slug} href={`/destinations/${d.slug}`} className="rounded-full bg-paper px-4 py-2 text-sm text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper">
+                {d.name} travel guide
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+    </PublicShell>
+  );
+}

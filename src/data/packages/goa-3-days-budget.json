@@ -1,0 +1,219 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-01-20",
+      "theme": "Old Goa and Panjim",
+      "summary": "Churches, Latin-quarter lanes and a riverside sunset.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Basilica of Bom Jesus and Old Goa",
+          "description": "UNESCO-listed churches from Goa's Portuguese capital, including the Basilica holding St Francis Xavier's relics and the vast Sé Cathedral.",
+          "area": "Old Goa",
+          "lat": 15.5009,
+          "lng": 73.9116
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "culture",
+        "tip": "Free entry; dress modestly."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 4:00 PM",
+        "place": {
+          "name": "Fontainhas Latin Quarter",
+          "description": "Walk the yellow, blue and red houses of Panjim's old Portuguese quarter, then a fish-thali lunch at a local canteen.",
+          "area": "Panjim",
+          "lat": 15.4979,
+          "lng": 73.8317
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 6,
+        "category": "sight",
+        "tip": "Ritz Classic and Anandashram are local favourites for fish thali."
+      },
+      "evening": {
+        "time": "5:30 PM - 7:30 PM",
+        "place": {
+          "name": "Miramar Beach sunset",
+          "description": "The city's beach where the Mandovi meets the sea; locals come for evening walks and corn-on-the-cob carts.",
+          "area": "Panjim",
+          "lat": 15.4823,
+          "lng": 73.807
+        },
+        "duration": "2 hours",
+        "estimatedCost": 2,
+        "category": "nature",
+        "tip": "Rent a scooter for the trip today (₹300-400 a day) and keep your licence handy."
+      },
+      "totalDayCost": 8
+    },
+    {
+      "day": 2,
+      "date": "2027-01-21",
+      "theme": "The quiet south",
+      "summary": "Cabo de Rama, Palolem and a boat to Butterfly Beach.",
+      "morning": {
+        "time": "8:30 AM - 11:30 AM",
+        "place": {
+          "name": "Cabo de Rama Fort",
+          "description": "A crumbling clifftop fort with a little church and huge views over the Arabian Sea, rarely busy.",
+          "area": "Canacona",
+          "lat": 15.0896,
+          "lng": 73.9207
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "The road is quiet but winding; ride carefully."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Palolem Beach",
+          "description": "A crescent of sand lined with palms and huts, calm enough for swimming in winter.",
+          "area": "Palolem",
+          "lat": 15.01,
+          "lng": 74.0232
+        },
+        "duration": "3 hours",
+        "estimatedCost": 10,
+        "category": "nature",
+        "tip": "Lunch at a beach shack; prices drop the further you walk from the main entrance."
+      },
+      "evening": {
+        "time": "4:00 PM - 6:30 PM",
+        "place": {
+          "name": "Boat to Butterfly Beach",
+          "description": "Share a fishing boat to a hidden cove reachable only by sea, with dolphin sightings often on the way.",
+          "area": "Palolem",
+          "lat": 15.0222,
+          "lng": 73.9984
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 10,
+        "category": "activity",
+        "tip": "Shared boats are cheapest; negotiate at the north end of Palolem."
+      },
+      "totalDayCost": 20
+    },
+    {
+      "day": 3,
+      "date": "2027-01-22",
+      "theme": "North Goa markets and forts",
+      "summary": "Fort Aguada, the Anjuna flea market and Vagator's cliffs.",
+      "morning": {
+        "time": "9:00 AM - 11:30 AM",
+        "place": {
+          "name": "Fort Aguada",
+          "description": "A 17th-century Portuguese fort and lighthouse guarding the Mandovi estuary.",
+          "area": "Sinquerim",
+          "lat": 15.492,
+          "lng": 73.7735
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 2,
+        "category": "sight",
+        "tip": "Go early before the heat and the tour buses."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 4:00 PM",
+        "place": {
+          "name": "Anjuna Flea Market",
+          "description": "The Wednesday market by the beach: textiles, silver, spices and a mix of traders from across India.",
+          "area": "Anjuna",
+          "lat": 15.5735,
+          "lng": 73.741
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 15,
+        "category": "shopping",
+        "tip": "It runs on Wednesdays in season (Nov-Apr); on other days, Mapusa's Friday market is the local alternative."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:30 PM",
+        "place": {
+          "name": "Chapora Fort and Vagator",
+          "description": "Climb to the 'Dil Chahta Hai' fort for sunset over Vagator's red cliffs and the Chapora river.",
+          "area": "Vagator",
+          "lat": 15.6066,
+          "lng": 73.7368
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Wear grippy shoes; the laterite path is loose."
+      },
+      "totalDayCost": 17
+    }
+  ],
+  "stays": [
+    {
+      "name": "Zostel Goa (Anjuna)",
+      "area": "Anjuna",
+      "type": "Hostel",
+      "why": "Social hostel near the flea market, with dorms and private rooms.",
+      "pricePerNight": 15
+    },
+    {
+      "name": "Palolem beach huts",
+      "area": "Palolem",
+      "type": "Beach hut",
+      "why": "Simple huts steps from the sand, the classic budget south-Goa stay.",
+      "pricePerNight": 25
+    },
+    {
+      "name": "Panjim Inn",
+      "area": "Fontainhas",
+      "type": "Heritage hotel",
+      "why": "A 19th-century mansion in the Latin quarter, good value for a splurge night.",
+      "pricePerNight": 70
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Konkani; English and Hindi widely spoken",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Round up at shacks; 5-10% in restaurants",
+    "weather": "Nov-Feb is peak and dry (21-32°C). Jun-Sep is monsoon; many shacks close.",
+    "gettingAround": "Rent a scooter (₹300-400/day) and wear a helmet; GoaMiles app taxis for longer hops.",
+    "phrase": "Dev borem korum: thank you (Konkani)"
+  },
+  "packing": [
+    "Driving licence for scooter rental",
+    "Swimwear and a sarong",
+    "Reef-safe sunscreen",
+    "Light rain jacket if travelling at season edges"
+  ],
+  "summary": {
+    "totalCost": 45,
+    "totalDays": 3,
+    "destination": "Goa, India",
+    "overview": "Goa on a backpacker budget: scooter-hopping between the quieter south beaches, Portuguese lanes in Panjim's Fontainhas, a flea market, and fish thalis that cost less than a coffee back home.",
+    "landscape": "coast",
+    "countryCode": "in",
+    "highlights": [
+      "Scootering to Palolem and Butterfly Beach",
+      "The colour-washed lanes of Fontainhas",
+      "Anjuna flea market on Wednesday",
+      "Fish thali for under ₹200"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "friends",
+      "adults": 2,
+      "children": 0,
+      "spend": "savvy",
+      "stay": "hostel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

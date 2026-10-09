@@ -1,0 +1,171 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-11-20",
+      "theme": "River and fire",
+      "summary": "A sunrise boat, the old city, and the evening aarti.",
+      "morning": {
+        "time": "5:45 AM - 8:30 AM",
+        "place": {
+          "name": "Sunrise boat along the ghats",
+          "description": "Row from Assi Ghat downstream at dawn as bathers, priests and washermen start the day, past Manikarnika, the burning ghat that never goes out.",
+          "area": "Assi Ghat to Manikarnika",
+          "lat": 25.29,
+          "lng": 83.0067
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 10,
+        "category": "culture",
+        "tip": "Agree the boat price and route at Assi the night before; photography at the cremation ghats is not allowed."
+      },
+      "afternoon": {
+        "time": "10:00 AM - 1:30 PM",
+        "place": {
+          "name": "Kashi Vishwanath and the old lanes",
+          "description": "Walk the rebuilt corridor to the golden-spired Shiva temple, then lose yourself in the galis for kachori-sabzi and lassi at Blue Lassi.",
+          "area": "Vishwanath Gali",
+          "lat": 25.3109,
+          "lng": 83.0107
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 10,
+        "category": "culture",
+        "tip": "Phones, bags and pens aren't allowed inside the temple; use the lockers near the gate."
+      },
+      "evening": {
+        "time": "5:30 PM - 7:30 PM",
+        "place": {
+          "name": "Ganga Aarti at Dashashwamedh Ghat",
+          "description": "Seven priests perform the fire ritual in unison with lamps, conch shells and chants. Watch from the steps or from a boat on the river.",
+          "area": "Dashashwamedh",
+          "lat": 25.3069,
+          "lng": 83.0105
+        },
+        "duration": "2 hours",
+        "estimatedCost": 8,
+        "category": "culture",
+        "tip": "A boat view (₹100-200 each) avoids the crush on the steps."
+      },
+      "totalDayCost": 28,
+      "dayTip": "Wear slip-on shoes; you'll take them off often."
+    },
+    {
+      "day": 2,
+      "date": "2026-11-21",
+      "theme": "Sarnath and the silk weavers",
+      "summary": "The Buddha's first sermon site, silk workshops, and a last walk on the ghats.",
+      "morning": {
+        "time": "8:30 AM - 12:00 PM",
+        "place": {
+          "name": "Sarnath",
+          "description": "Ten kilometres north, the deer park where the Buddha gave his first teaching, with the great Dhamek Stupa and a museum holding the Lion Capital, India's national emblem.",
+          "area": "Sarnath",
+          "lat": 25.3811,
+          "lng": 83.0237
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 10,
+        "category": "culture",
+        "tip": "The museum is closed on Fridays."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:30 PM",
+        "place": {
+          "name": "Banarasi silk weavers",
+          "description": "Visit a family handloom workshop to see Banarasi brocade being woven thread by thread, and buy direct from the weavers.",
+          "area": "Madanpura",
+          "lat": 25.302,
+          "lng": 83.004
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 40,
+        "category": "shopping",
+        "tip": "Ask to see the GI tag for genuine Banarasi silk."
+      },
+      "evening": {
+        "time": "5:00 PM - 8:00 PM",
+        "place": {
+          "name": "Assi Ghat evening",
+          "description": "A gentler aarti and evening music at Assi Ghat, then dinner at a rooftop café overlooking the river.",
+          "area": "Assi Ghat",
+          "lat": 25.2867,
+          "lng": 83.0068
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "culture",
+        "tip": "Try malaiyo, saffron milk foam, if you're here Nov-Feb; it's only made in winter."
+      },
+      "totalDayCost": 70
+    }
+  ],
+  "stays": [
+    {
+      "name": "BrijRama Palace",
+      "area": "Darbhanga Ghat",
+      "type": "Heritage hotel",
+      "why": "An 18th-century palace right on the ghats, reached by boat.",
+      "pricePerNight": 260
+    },
+    {
+      "name": "Ganges View Hotel",
+      "area": "Assi Ghat",
+      "type": "Boutique hotel",
+      "why": "A long-loved guesthouse with river-facing rooms and music evenings.",
+      "pricePerNight": 70
+    },
+    {
+      "name": "Zostel Varanasi",
+      "area": "Bangali Tola",
+      "type": "Hostel",
+      "why": "Budget beds close to the ghats.",
+      "pricePerNight": 15
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Hindi and Bhojpuri; English understood in tourist areas",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Small tips for boatmen and guides",
+    "weather": "Oct-Mar is best (8-28°C); winter mornings are foggy and atmospheric.",
+    "gettingAround": "Walk the ghats; cycle-rickshaws and e-ricks for the city; a cab for Sarnath.",
+    "phrase": "Har Har Mahadev: the city's greeting to Shiva"
+  },
+  "packing": [
+    "Slip-on shoes",
+    "Warm layer for dawn boats in winter",
+    "Scarf",
+    "Hand sanitiser"
+  ],
+  "summary": {
+    "totalCost": 98,
+    "totalDays": 2,
+    "destination": "Varanasi, India",
+    "overview": "Two intense, beautiful days in one of the world's oldest living cities: a dawn boat along the ghats, the Kashi Vishwanath corridor, old-city food lanes, the Ganga Aarti at Dashashwamedh and a quiet morning at Sarnath.",
+    "landscape": "river",
+    "countryCode": "in",
+    "highlights": [
+      "Dawn boat ride along the ghats",
+      "The Ganga Aarti at Dashashwamedh Ghat",
+      "Kachori and malaiyo in the old lanes",
+      "Sarnath, where the Buddha first taught"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "hotel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

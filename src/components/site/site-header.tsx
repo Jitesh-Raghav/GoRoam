@@ -14,7 +14,8 @@ import { PillLink } from "./pill";
 import { useIntro } from "./use-intro";
 
 const LINKS = [
-  { href: "/#wonders", label: "Destinations" },
+  { href: "/itineraries", label: "Trips" },
+  { href: "/destinations", label: "Guides" },
   { href: "/#how", label: "How it works" },
   { href: "/#book", label: "Book" },
   { href: "/#pricing", label: "Pricing" },

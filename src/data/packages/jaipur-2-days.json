@@ -1,0 +1,170 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-12-03",
+      "theme": "Forts on the ridge",
+      "summary": "Amer Fort early, Jal Mahal on the way back, and the city lights from Nahargarh.",
+      "morning": {
+        "time": "8:00 AM - 11:30 AM",
+        "place": {
+          "name": "Amer Fort",
+          "description": "A honey-coloured fort-palace above Maota Lake, with the mirror-work Sheesh Mahal and courtyards that light up in the early sun. Arriving at 8 means you see it before the tour buses.",
+          "area": "Amer",
+          "lat": 26.9855,
+          "lng": 75.8513
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 12,
+        "category": "sight",
+        "tip": "Walk or take a jeep up; skip the elephant rides. The composite ticket also covers Nahargarh, Albert Hall and Jantar Mantar."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:00 PM",
+        "place": {
+          "name": "Jal Mahal and lunch on Amer Road",
+          "description": "A photo stop at the palace that seems to float on Man Sagar Lake, then lunch nearby on dal baati churma, Rajasthan's signature baked wheat balls with lentils.",
+          "area": "Man Sagar Lake",
+          "lat": 26.9535,
+          "lng": 75.8463
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 15,
+        "category": "food",
+        "tip": "The palace itself is closed to visitors; the promenade is the view."
+      },
+      "evening": {
+        "time": "5:00 PM - 8:00 PM",
+        "place": {
+          "name": "Nahargarh Fort sunset",
+          "description": "The ridge-top fort looks straight down on the whole city. Stay for sunset as Jaipur's lights come on, then eat at the fort's terrace café.",
+          "area": "Aravalli ridge",
+          "lat": 26.9374,
+          "lng": 75.8156
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Book a cab both ways; the road up is steep and winding."
+      },
+      "totalDayCost": 47
+    },
+    {
+      "day": 2,
+      "date": "2026-12-04",
+      "theme": "Inside the Pink City",
+      "summary": "The royal city centre, bazaars and a rooftop view of Hawa Mahal.",
+      "morning": {
+        "time": "9:30 AM - 12:30 PM",
+        "place": {
+          "name": "City Palace and Jantar Mantar",
+          "description": "The royal family still lives in part of the City Palace; the museum rooms and the four seasonal gates of Pritam Niwas Chowk are open to visitors. Next door, Jantar Mantar's 18th-century instruments include the world's largest stone sundial.",
+          "area": "Old City",
+          "lat": 26.9258,
+          "lng": 75.8237
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "culture",
+        "tip": "Hire a licensed guide at Jantar Mantar; the instruments make much more sense explained."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Johari and Bapu Bazaar",
+          "description": "Block-printed textiles, mojari slippers and silver along the pink arcades. Stop at Lassiwala on MI Road for a clay cup of thick lassi and at Rawat Mishthan Bhandar for pyaaz kachori.",
+          "area": "Old City",
+          "lat": 26.9196,
+          "lng": 75.8264
+        },
+        "duration": "3 hours",
+        "estimatedCost": 25,
+        "category": "shopping",
+        "tip": "Prices are open to bargaining; start at around half of the first quote."
+      },
+      "evening": {
+        "time": "5:30 PM - 8:30 PM",
+        "place": {
+          "name": "Hawa Mahal and a rooftop dinner",
+          "description": "See the 953-window 'Palace of Winds' from the front, then climb to one of the cafés opposite for a rooftop dinner looking straight at its façade.",
+          "area": "Badi Chaupar",
+          "lat": 26.9239,
+          "lng": 75.8267
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "The best view is from the cafés across the road, not from inside the palace."
+      },
+      "totalDayCost": 75
+    }
+  ],
+  "stays": [
+    {
+      "name": "Samode Haveli",
+      "area": "Old City",
+      "type": "Heritage hotel",
+      "why": "A 19th-century haveli with painted rooms and a pool, walkable to the old city.",
+      "pricePerNight": 160
+    },
+    {
+      "name": "Alsisar Haveli",
+      "area": "Sansar Chandra Road",
+      "type": "Heritage hotel",
+      "why": "Rajput architecture and courtyards at a mid-range price.",
+      "pricePerNight": 90
+    },
+    {
+      "name": "Zostel Jaipur",
+      "area": "Hathroi Fort area",
+      "type": "Hostel",
+      "why": "Social, central and budget-friendly, with private rooms too.",
+      "pricePerNight": 25
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Hindi and Rajasthani; English widely understood",
+    "plugs": "Type C/D, 230V",
+    "tipping": "5-10% in sit-down restaurants",
+    "weather": "Oct-Mar is pleasant (8-28°C); Apr-Jun is fierce heat above 40°C.",
+    "gettingAround": "Uber, Ola and autos are cheap; agree the auto fare first.",
+    "phrase": "Khamma ghani: a warm Rajasthani hello"
+  },
+  "packing": [
+    "Comfortable walking shoes",
+    "Scarf for sun and temple visits",
+    "Sunglasses",
+    "Layer for cool winter evenings"
+  ],
+  "summary": {
+    "totalCost": 122,
+    "totalDays": 2,
+    "destination": "Jaipur, India",
+    "overview": "A tight, well-paced 48 hours in the Pink City: the hill fort of Amer at opening time, the City Palace and Jantar Mantar, old-city bazaars, and a rooftop dinner facing Hawa Mahal.",
+    "landscape": "desert",
+    "countryCode": "in",
+    "highlights": [
+      "Amer Fort at opening time",
+      "Jantar Mantar's giant sundials",
+      "Sunset from Nahargarh Fort",
+      "Lassi and kachori in the old city"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

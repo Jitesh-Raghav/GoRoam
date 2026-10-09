@@ -11,6 +11,7 @@ import { MobileManifesto, Ticker } from "@/components/landing/ticker";
 import { PanoramaHero } from "@/components/landing/panorama-hero";
 import { ProductFilm } from "@/components/landing/product-film";
 import { Wonders } from "@/components/landing/wonders";
+import { TripGallery } from "@/components/landing/trip-gallery";
 import { GuideRails, SectionRule } from "@/components/landing/guides";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { Intro } from "@/components/site/intro";
@@ -19,7 +20,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { FAQS } from "@/lib/faq-data";
 import { JsonLd, faqPage, organization, softwareApp, website } from "@/lib/seo";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <JsonLd data={[organization, website, softwareApp, faqPage(FAQS)]} />
@@ -42,6 +43,8 @@ export default function Home() {
           <HowItWorks />
           <SectionRule label="27.1751° N · 78.0421° E" />
           <GlobeSection />
+          <SectionRule label="15.3350° N · 76.4600° E" />
+          <TripGallery />
           <SectionRule label="41.8902° N · 12.4922° E" />
           <Features />
           <SectionRule label="29.9792° N · 31.1342° E" />

@@ -1,0 +1,318 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-06-10",
+      "theme": "Arrive and acclimatise",
+      "summary": "Rest is the plan: Leh sits at 3,500 m.",
+      "morning": {
+        "time": "10:00 AM - 1:00 PM",
+        "place": {
+          "name": "Rest and hydrate at your hotel",
+          "description": "Flying straight to 3,500 m means your body needs a full day to adjust. Sleep, drink water and skip exertion today; it's what makes the rest of the trip work.",
+          "area": "Leh",
+          "lat": 34.1642,
+          "lng": 77.5848
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "wellness",
+        "tip": "Avoid alcohol for the first 48 hours; ask your doctor about acetazolamide before you fly."
+      },
+      "afternoon": {
+        "time": "3:30 PM - 5:30 PM",
+        "place": {
+          "name": "Leh Main Bazaar stroll",
+          "description": "A gentle walk through the bazaar for apricot jam, pashmina and Ladakhi butter tea, with the Leh Palace above.",
+          "area": "Main Bazaar",
+          "lat": 34.1649,
+          "lng": 77.5857
+        },
+        "duration": "2 hours",
+        "estimatedCost": 15,
+        "category": "shopping",
+        "tip": "Walk slowly; the stairs feel steep at this altitude."
+      },
+      "evening": {
+        "time": "6:00 PM - 7:30 PM",
+        "place": {
+          "name": "Shanti Stupa sunset",
+          "description": "A white Japanese-built stupa above the town; drive to the top rather than climb the 500 steps on day one.",
+          "area": "Changspa",
+          "lat": 34.1734,
+          "lng": 77.5747
+        },
+        "duration": "1.5 hours",
+        "estimatedCost": 5,
+        "category": "sight",
+        "tip": "Take a cab up; save the steps for later in the week."
+      },
+      "totalDayCost": 20
+    },
+    {
+      "day": 2,
+      "date": "2027-06-11",
+      "theme": "Monasteries of the Indus",
+      "summary": "Thiksey, Shey and Hemis along the river.",
+      "morning": {
+        "time": "6:30 AM - 9:30 AM",
+        "place": {
+          "name": "Thiksey Monastery morning prayers",
+          "description": "A 12-storey monastery stacked up a hill, often compared to the Potala. Arrive for morning prayers with horns and chanting, then see the two-storey Maitreya Buddha.",
+          "area": "Thiksey",
+          "lat": 34.056,
+          "lng": 77.667
+        },
+        "duration": "3 hours",
+        "estimatedCost": 6,
+        "category": "culture",
+        "tip": "Prayers start around 6 AM; arrive quietly and sit at the back."
+      },
+      "afternoon": {
+        "time": "10:30 AM - 1:30 PM",
+        "place": {
+          "name": "Hemis Monastery",
+          "description": "Ladakh's richest monastery, hidden in a side valley, with a fine museum of thangkas and ritual objects.",
+          "area": "Hemis",
+          "lat": 33.9126,
+          "lng": 77.7039
+        },
+        "duration": "3 hours",
+        "estimatedCost": 6,
+        "category": "culture",
+        "tip": "Lunch at the small café by the gate."
+      },
+      "evening": {
+        "time": "3:00 PM - 5:30 PM",
+        "place": {
+          "name": "Shey Palace",
+          "description": "The old summer palace of Ladakh's kings, with a giant seated copper Buddha and views over the Indus wetlands.",
+          "area": "Shey",
+          "lat": 34.071,
+          "lng": 77.6366
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 4,
+        "category": "sight",
+        "tip": "Back in Leh, apply for your inner-line permits online today for Nubra and Pangong."
+      },
+      "totalDayCost": 16
+    },
+    {
+      "day": 3,
+      "date": "2027-06-12",
+      "theme": "Over Khardung La to Nubra",
+      "summary": "A high pass, then dunes and a valley of orchards.",
+      "morning": {
+        "time": "7:30 AM - 12:00 PM",
+        "place": {
+          "name": "Khardung La pass",
+          "description": "One of the highest motorable passes at about 5,359 m, with prayer flags and views across the Karakoram.",
+          "area": "Khardung La",
+          "lat": 34.2787,
+          "lng": 77.6047
+        },
+        "duration": "4.5 hours",
+        "estimatedCost": 60,
+        "category": "nature",
+        "tip": "Stop for 15 minutes at most at the top; the altitude is serious."
+      },
+      "afternoon": {
+        "time": "1:30 PM - 4:00 PM",
+        "place": {
+          "name": "Diskit Monastery",
+          "description": "The oldest monastery in Nubra, with a 32-m Maitreya Buddha looking down the valley.",
+          "area": "Diskit",
+          "lat": 34.5434,
+          "lng": 77.5566
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 4,
+        "category": "culture",
+        "tip": "Overnight in a Hunder or Diskit camp; Nubra is warmer and lower than Leh."
+      },
+      "evening": {
+        "time": "4:30 PM - 6:30 PM",
+        "place": {
+          "name": "Hunder sand dunes",
+          "description": "Cold-desert dunes between the mountains, with double-humped Bactrian camels.",
+          "area": "Hunder",
+          "lat": 34.5826,
+          "lng": 77.471
+        },
+        "duration": "2 hours",
+        "estimatedCost": 20,
+        "category": "nature",
+        "tip": "The camel ride is short; the dunes at golden hour are the real show."
+      },
+      "totalDayCost": 84
+    },
+    {
+      "day": 4,
+      "date": "2027-06-13",
+      "theme": "To Pangong Tso",
+      "summary": "Through the Shyok valley to the great lake.",
+      "morning": {
+        "time": "7:00 AM - 1:00 PM",
+        "place": {
+          "name": "Shyok valley drive",
+          "description": "The direct route along the Shyok river from Nubra to Pangong, through some of Ladakh's wildest scenery.",
+          "area": "Shyok",
+          "lat": 34.1784,
+          "lng": 78.1584
+        },
+        "duration": "6 hours",
+        "estimatedCost": 70,
+        "category": "nature",
+        "tip": "Road conditions change; your driver will confirm the Shyok route that morning."
+      },
+      "afternoon": {
+        "time": "2:00 PM - 5:00 PM",
+        "place": {
+          "name": "Pangong Tso shore",
+          "description": "The 134-km lake that runs into Tibet, changing from turquoise to deep blue as the light moves.",
+          "area": "Spangmik",
+          "lat": 33.93,
+          "lng": 78.58
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Wind picks up in the afternoon; bring your warmest layer."
+      },
+      "evening": {
+        "time": "7:00 PM - 9:00 PM",
+        "place": {
+          "name": "Stargazing at the lake",
+          "description": "With no towns nearby, Pangong's night sky is one of the darkest in India.",
+          "area": "Spangmik",
+          "lat": 33.932,
+          "lng": 78.585
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Camps run on generators; electricity often stops around 11 PM."
+      },
+      "totalDayCost": 70
+    },
+    {
+      "day": 5,
+      "date": "2027-06-14",
+      "theme": "Back over Chang La",
+      "summary": "A sunrise at the lake and the drive back to Leh.",
+      "morning": {
+        "time": "6:00 AM - 8:00 AM",
+        "place": {
+          "name": "Sunrise at Pangong",
+          "description": "The lake at dawn is glassy and silent, the best light of the trip.",
+          "area": "Spangmik",
+          "lat": 33.93,
+          "lng": 78.58
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Pack the night before so you leave by 9."
+      },
+      "afternoon": {
+        "time": "9:00 AM - 2:00 PM",
+        "place": {
+          "name": "Chang La pass",
+          "description": "Back to Leh over Chang La at about 5,360 m, with a tea stop at the army café on top.",
+          "area": "Chang La",
+          "lat": 34.0475,
+          "lng": 77.9294
+        },
+        "duration": "5 hours",
+        "estimatedCost": 70,
+        "category": "nature",
+        "tip": "Keep water and snacks in the car; there's little on the way."
+      },
+      "evening": {
+        "time": "5:00 PM - 8:00 PM",
+        "place": {
+          "name": "Farewell dinner in Leh",
+          "description": "Celebrate with thukpa and skyu (Ladakhi pasta stew) at a garden restaurant in Changspa.",
+          "area": "Changspa",
+          "lat": 34.17,
+          "lng": 77.578
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Flights out of Leh leave early; most need you at the airport by 6 AM."
+      },
+      "totalDayCost": 100
+    }
+  ],
+  "stays": [
+    {
+      "name": "The Grand Dragon Ladakh",
+      "area": "Leh",
+      "type": "Hotel",
+      "why": "Heated rooms and oxygen on request, reassuring for the first nights at altitude.",
+      "pricePerNight": 170
+    },
+    {
+      "name": "Stok Palace Heritage",
+      "area": "Stok",
+      "type": "Heritage hotel",
+      "why": "Stay in the royal family's palace, 15 km from Leh.",
+      "pricePerNight": 200
+    },
+    {
+      "name": "Pangong lakeside camps",
+      "area": "Spangmik",
+      "type": "Camp",
+      "why": "Insulated tents right by the water for the lake night.",
+      "pricePerNight": 80
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Ladakhi; Hindi and English widely understood",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Tip your driver about ₹500 a day",
+    "weather": "Jun-Sep is the season (Leh 10-25°C, nights near freezing at the lakes).",
+    "gettingAround": "Hire a local Ladakh taxi with driver for Nubra and Pangong; outside taxis can't operate between sights. Inner-line permits are applied for online.",
+    "phrase": "Julley: hello, thank you and goodbye"
+  },
+  "packing": [
+    "Down jacket and thermals",
+    "High-SPF sunscreen and lip balm",
+    "Sunglasses (UV protection)",
+    "Prescribed altitude medication",
+    "Power bank and cash (ATMs are scarce outside Leh)"
+  ],
+  "summary": {
+    "totalCost": 290,
+    "totalDays": 5,
+    "destination": "Leh, Ladakh, India",
+    "overview": "Five carefully paced days in Ladakh, with a full rest day for acclimatisation built in, monasteries above the Indus, the Nubra valley over Khardung La, and the blue sweep of Pangong Tso.",
+    "landscape": "mountains",
+    "countryCode": "in",
+    "highlights": [
+      "Pangong Tso's shifting blues",
+      "Nubra's sand dunes and Diskit monastery",
+      "Thiksey monastery's morning prayers",
+      "Sunset at Shanti Stupa"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "hotel",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "car",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

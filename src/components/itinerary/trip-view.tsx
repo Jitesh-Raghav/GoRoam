@@ -681,9 +681,12 @@ export function TripView({
 }) {
   const data = it.itineraryData;
   const isPackage = variant === "package";
+  // On a public itinerary page the page itself owns the <h1>.
+  const HeroHeading = isPackage ? motion.h2 : motion.h1;
 
   // Every stop's photo in one request; packages ship with theirs.
-  const photosUrl = isPackage ? null : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`;
+  const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
+  const photosUrl = isPackage ? packagePhotos : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`;
   const fetchedPhotos = useCachedJson<{ photos: Record<string, PlacePhotoData>; fallback: string | null }>(photosUrl);
   const tripPhotos = useMemo(() => {
     const saved = data?.photos ?? {};
@@ -839,7 +842,7 @@ export function TripView({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
           {isPackage ? (
-            <Link href="/dashboard/packages" className={glass}>
+            <Link href="/itineraries" className={glass}>
               <ArrowLeft className="size-4" /> All packages
             </Link>
           ) : shared ? (
@@ -881,7 +884,7 @@ export function TripView({
               {isPackage ? "GoRoam travel package" : `${fmt(it.startDate, { month: "short", day: "numeric" })} – ${fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}`}
               {who && ` · ${who}`}
             </motion.p>
-            <motion.h1
+            <HeroHeading
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.1, ease, delay: 0.4 }}
@@ -889,7 +892,7 @@ export function TripView({
             >
               {flag && <Flag code={flag} className="mr-[0.2em] h-[0.4em] -translate-y-[0.12em] align-middle" />}
               {title}
-            </motion.h1>
+            </HeroHeading>
             {data?.summary?.overview && (
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }} className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-paper/85">
                 {data.summary.overview}
@@ -1220,7 +1223,7 @@ export function TripView({
           <div className="flex flex-wrap gap-3">
             {isPackage ? (
               <>
-                <Link href="/dashboard/packages" className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
+                <Link href="/itineraries" className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
                   <ArrowLeft className="size-4" /> More packages
                 </Link>
                 <PillLink href={similar} variant="brand" onClick={() => track("package_customized", { destination: it.destination, where: "outro" })}>

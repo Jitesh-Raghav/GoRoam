@@ -13,6 +13,14 @@ const LOADERS: Record<string, () => Promise<{ default: unknown }>> = {
   "switzerland-6-days": () => import("@/data/packages/switzerland-6-days.json"),
   "kerala-5-days": () => import("@/data/packages/kerala-5-days.json"),
   "goa-3-days": () => import("@/data/packages/goa-3-days.json"),
+  "hampi-3-days-couples": () => import("@/data/packages/hampi-3-days-couples.json"),
+  "jaipur-2-days": () => import("@/data/packages/jaipur-2-days.json"),
+  "udaipur-3-days-couples": () => import("@/data/packages/udaipur-3-days-couples.json"),
+  "manali-4-days-friends": () => import("@/data/packages/manali-4-days-friends.json"),
+  "rishikesh-3-days": () => import("@/data/packages/rishikesh-3-days.json"),
+  "varanasi-2-days": () => import("@/data/packages/varanasi-2-days.json"),
+  "ladakh-5-days": () => import("@/data/packages/ladakh-5-days.json"),
+  "goa-3-days-budget": () => import("@/data/packages/goa-3-days-budget.json"),
 };
 
 export async function loadPackage(slug: string): Promise<ItineraryData | null> {

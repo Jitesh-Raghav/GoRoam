@@ -45,7 +45,7 @@ const PAGE_DATA: Record<string, string> = {
 const NAV = [
   { icon: Compass, label: "Plan a trip", href: "/dashboard" },
   { icon: MapIcon, label: "My itineraries", href: "/dashboard/itineraries" },
-  { icon: Luggage, label: "Travel packages", href: "/dashboard/packages" },
+  { icon: Luggage, label: "Trip gallery", href: "/itineraries" },
   { icon: Plane, label: "Book travel", href: "/dashboard/book" },
   { icon: CreditCard, label: "Credits", href: "/dashboard/credits" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },

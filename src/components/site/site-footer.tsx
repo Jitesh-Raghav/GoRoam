@@ -249,7 +249,8 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "Plan a trip", href: "/dashboard" },
-      { label: "Destinations", href: "/#wonders" },
+      { label: "Trip gallery", href: "/itineraries" },
+      { label: "Destination guides", href: "/destinations" },
       { label: "How it works", href: "/#how" },
       { label: "Pricing", href: "/#pricing" },
       { label: "FAQ", href: "/#faq" },
@@ -261,7 +262,6 @@ const COLUMNS = [
       { label: "Sign in", href: "/auth" },
       { label: "Dashboard", href: "/dashboard" },
       { label: "My itineraries", href: "/dashboard/itineraries" },
-      { label: "Travel packages", href: "/dashboard/packages" },
       { label: "Buy credits", href: "/dashboard/credits" },
     ],
   },

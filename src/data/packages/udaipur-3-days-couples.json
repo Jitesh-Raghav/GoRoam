@@ -1,0 +1,220 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-01-14",
+      "theme": "Palaces on Lake Pichola",
+      "summary": "The City Palace, then a sunset boat to Jag Mandir.",
+      "morning": {
+        "time": "9:30 AM - 1:00 PM",
+        "place": {
+          "name": "City Palace",
+          "description": "A cascade of palaces built over four centuries, with the Mor Chowk peacock mosaics and the mirrored Sheesh Mahal. The terraces frame Lake Pichola and the Lake Palace hotel below.",
+          "area": "Lake Pichola east bank",
+          "lat": 24.5764,
+          "lng": 73.6835
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 20,
+        "category": "sight",
+        "tip": "Rent the audio guide; the palace is a maze and the stories are the point."
+      },
+      "afternoon": {
+        "time": "1:30 PM - 3:30 PM",
+        "place": {
+          "name": "Lunch at Ambrai Ghat",
+          "description": "Cross to the quieter west bank for a lakeside lunch looking back at the City Palace, the classic Udaipur view.",
+          "area": "Hanuman Ghat",
+          "lat": 24.5797,
+          "lng": 73.6799
+        },
+        "duration": "2 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Ask for a table on the ghat edge; it's the same view as the postcards."
+      },
+      "evening": {
+        "time": "4:30 PM - 6:30 PM",
+        "place": {
+          "name": "Sunset boat to Jag Mandir",
+          "description": "The palace boat ride stops at Jag Mandir, the island palace said to have inspired the Taj Mahal, and times the return for sunset.",
+          "area": "Lake Pichola",
+          "lat": 24.5675,
+          "lng": 73.6799
+        },
+        "duration": "2 hours",
+        "estimatedCost": 24,
+        "category": "activity",
+        "tip": "Book the last sunset departure at the City Palace jetty in the morning; it sells out."
+      },
+      "totalDayCost": 74
+    },
+    {
+      "day": 2,
+      "date": "2027-01-15",
+      "theme": "Old city and a royal sunset",
+      "summary": "Lanes, havelis, a folk show, and the hilltop Monsoon Palace.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Jagdish Temple and old-city lanes",
+          "description": "A carved 17th-century Vishnu temple at the heart of the old city, then the lanes around it full of miniature-painting studios and silver shops.",
+          "area": "Old City",
+          "lat": 24.5797,
+          "lng": 73.6838
+        },
+        "duration": "3 hours",
+        "estimatedCost": 5,
+        "category": "culture",
+        "tip": "Many studios run short painting demos; a good way to buy a genuine miniature."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Saheliyon ki Bari",
+          "description": "The 'garden of the maidens', with marble elephants, lotus pools and fountains fed by gravity from Fateh Sagar Lake.",
+          "area": "Fateh Sagar area",
+          "lat": 24.6022,
+          "lng": 73.6866
+        },
+        "duration": "2 hours",
+        "estimatedCost": 3,
+        "category": "nature",
+        "tip": "Pair it with a walk along Fateh Sagar's promenade afterwards."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:30 PM",
+        "place": {
+          "name": "Sajjangarh Monsoon Palace",
+          "description": "A white hilltop palace above the city, built to watch monsoon clouds. At sunset you see every lake in Udaipur at once.",
+          "area": "Bansdara Hill",
+          "lat": 24.5944,
+          "lng": 73.6386
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 15,
+        "category": "sight",
+        "tip": "Vehicles go up from the sanctuary gate; the last one usually leaves around sunset, so don't linger past it."
+      },
+      "totalDayCost": 23
+    },
+    {
+      "day": 3,
+      "date": "2027-01-16",
+      "theme": "Into the Aravallis",
+      "summary": "A morning in the hills and a farewell dinner on the lake.",
+      "morning": {
+        "time": "8:00 AM - 12:30 PM",
+        "place": {
+          "name": "Eklingji and Nagda temples",
+          "description": "Twenty kilometres north, Eklingji is the Mewar rulers' family temple, still in worship. Nearby Nagda's 10th-century Sas-Bahu temples sit quietly by a lake.",
+          "area": "Kailashpuri",
+          "lat": 24.7469,
+          "lng": 73.7207
+        },
+        "duration": "4.5 hours",
+        "estimatedCost": 25,
+        "category": "culture",
+        "tip": "No phones or cameras inside Eklingji; leave them in the car."
+      },
+      "afternoon": {
+        "time": "1:30 PM - 4:00 PM",
+        "place": {
+          "name": "Bagore ki Haveli",
+          "description": "An 18th-century minister's mansion turned museum, with rooms of puppets, costumes and the world's 'largest turban'.",
+          "area": "Gangaur Ghat",
+          "lat": 24.5797,
+          "lng": 73.6819
+        },
+        "duration": "2 hours",
+        "estimatedCost": 4,
+        "category": "culture",
+        "tip": "Come back at 7 PM for the Dharohar folk dance show in the courtyard (tickets at the gate)."
+      },
+      "evening": {
+        "time": "7:30 PM - 10:00 PM",
+        "place": {
+          "name": "Candlelit dinner facing the Lake Palace",
+          "description": "End with dinner on a lakeside terrace looking at the illuminated Lake Palace, a fitting last night.",
+          "area": "Lake Pichola",
+          "lat": 24.5752,
+          "lng": 73.68
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 70,
+        "category": "food",
+        "tip": "Reserve a lake-edge table a day ahead for a weekend night."
+      },
+      "totalDayCost": 99,
+      "dayTip": "Most sights close by 6 PM; keep evenings for the lake."
+    }
+  ],
+  "stays": [
+    {
+      "name": "Taj Lake Palace",
+      "area": "Lake Pichola",
+      "type": "Luxury hotel",
+      "why": "The floating marble palace itself, reached only by boat; the ultimate couples' splurge.",
+      "pricePerNight": 650
+    },
+    {
+      "name": "Jagat Niwas Palace",
+      "area": "Lal Ghat",
+      "type": "Heritage hotel",
+      "why": "Lake-view havelis with jharokha windows in the heart of the old city.",
+      "pricePerNight": 110
+    },
+    {
+      "name": "Amet Haveli",
+      "area": "Hanuman Ghat",
+      "type": "Boutique hotel",
+      "why": "Quiet west-bank rooms facing the City Palace across the water.",
+      "pricePerNight": 130
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Hindi and Mewari; English widely understood",
+    "plugs": "Type C/D, 230V",
+    "tipping": "5-10% in restaurants",
+    "weather": "Oct-Mar is mild (10-28°C). Lakes are fullest after the Jul-Sep monsoon.",
+    "gettingAround": "Autos for the old city; book a cab for Sajjangarh and Eklingji.",
+    "phrase": "Padharo mhare des: welcome to my land"
+  },
+  "packing": [
+    "Smart-casual outfit for lakeside dinners",
+    "Light jacket for winter evenings on the water",
+    "Walking shoes for old-city lanes",
+    "Scarf for temple visits"
+  ],
+  "summary": {
+    "totalCost": 196,
+    "totalDays": 3,
+    "destination": "Udaipur, India",
+    "overview": "Udaipur for two: lake palaces, a sunset boat on Lake Pichola, old-city lanes and a day trip into the Aravalli hills, with candlelit dinners on the water.",
+    "landscape": "lakes",
+    "countryCode": "in",
+    "highlights": [
+      "Sunset boat ride on Lake Pichola",
+      "The City Palace's mirror and peacock halls",
+      "Dinner facing the Lake Palace",
+      "Monsoon Palace at dusk"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "boutique",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "honeymoon",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}
