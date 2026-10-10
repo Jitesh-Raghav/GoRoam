@@ -44,7 +44,15 @@ export async function sendEmail(mail: {
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) {
-      console.error('Resend error:', res.status, await res.text().catch(() => ''));
+      const detail = await res.text().catch(() => '');
+      // The usual causes, spelled out so the Vercel log says what to fix.
+      const hint =
+        res.status === 401 ? 'RESEND_API_KEY is wrong or revoked.'
+        : res.status === 403 ? `The sending domain in EMAIL_FROM (${from}) is not verified in Resend, or this key can only send to your own address (test mode).`
+        : res.status === 422 ? `EMAIL_FROM must look like "GoRoam <jitesh@goroam.world>"; got ${JSON.stringify(from)}.`
+        : res.status === 429 ? 'Resend rate limit or daily quota reached.'
+        : '';
+      console.error(`Resend error ${res.status} sending "${mail.subject}" to ${mail.to}: ${detail} ${hint}`.trim());
       return false;
     }
     return true;

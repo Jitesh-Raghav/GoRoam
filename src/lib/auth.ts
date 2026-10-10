@@ -85,10 +85,11 @@ export const authOptions = {
   events: {
     async createUser({ user }: any) {
       console.log("New user created:", user.email);
-      // A one-time welcome note. Never blocks or fails sign-up.
+      // A one-time welcome note. Awaited, because on Vercel the function can be frozen
+      // as soon as sign-in responds, killing an un-awaited send. sendEmail never throws.
       if (user.email) {
         const { subject, html, text } = welcomeEmail(user.name);
-        void sendEmail({ to: user.email, subject, html, text });
+        await sendEmail({ to: user.email, subject, html, text });
       }
     },
   },
