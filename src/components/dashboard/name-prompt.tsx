@@ -21,7 +21,8 @@ export function NamePrompt() {
   const { data: session, status, update } = useSession();
   const user = session?.user;
   const [saved, setSaved] = useState(false);
-  const open = status === "authenticated" && !!user && !user.name?.trim() && !saved;
+  // Every first sign-in (Google or email link), plus anyone who somehow has no name.
+  const open = status === "authenticated" && !!user && (!!user.needsOnboarding || !user.name?.trim()) && !saved;
 
   const base = cleanSeed(user?.email?.split("@")[0] ?? "traveller") || "traveller";
   const [round, setRound] = useState("");
@@ -32,13 +33,18 @@ export function NamePrompt() {
   const [error, setError] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  // Suggest a name from the address ("priya.sharma@…" → "Priya"), but let them change it.
+  // Start from the name Google gave us, or suggest one from the address ("priya.sharma@…" → "Priya").
   useEffect(() => {
     if (!open || name) return;
+    if (user?.name?.trim()) {
+      setName(user.name.trim());
+      window.setTimeout(() => input.current?.select(), 350);
+      return;
+    }
     const local = user?.email?.split("@")[0]?.split(/[._+-]/)[0]?.replace(/\d+/g, "") ?? "";
     if (local.length >= 2) setName(local[0].toUpperCase() + local.slice(1).toLowerCase());
     window.setTimeout(() => input.current?.select(), 350);
-  }, [open, name, user?.email]);
+  }, [open, name, user?.email, user?.name]);
 
   // Keep the page behind still while the step is open.
   useEffect(() => {

@@ -19,7 +19,7 @@ export async function PATCH(request: NextRequest) {
   if (name.length < 1) return NextResponse.json({ success: false, error: 'Tell us what to call you.' }, { status: 400 });
   if (/[<>{}]|https?:\/\//i.test(name)) return NextResponse.json({ success: false, error: 'Just a name, please.' }, { status: 400 });
 
-  const data: { name: string; image?: string } = { name };
+  const data: { name: string; image?: string; onboardedAt: Date } = { name, onboardedAt: new Date() };
   if (body.style && body.seed) {
     const seed = cleanSeed(String(body.seed));
     if (!AVATAR_STYLES.some((a) => a.id === body.style) || !seed) {

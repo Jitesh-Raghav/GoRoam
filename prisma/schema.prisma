@@ -54,6 +54,8 @@ model User {
   credits       Int       @default(1)
   // When the welcome email went out (null: not yet). Lets every sign-in path retry it safely, once.
   welcomeSentAt DateTime?
+  // When they finished the first-sign-in "What should we call you?" step (null: not yet).
+  onboardedAt   DateTime?
   subscription  String?   @default("free")
   
   accounts Account[]

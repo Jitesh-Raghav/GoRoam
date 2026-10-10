@@ -39,6 +39,15 @@ const emailLinkProvider: EmailConfig = {
   },
 };
 
+// Accounts created before the first-sign-in step shipped are treated as onboarded,
+// so existing travellers are never asked.
+const ONBOARDING_SINCE = new Date("2026-10-10T00:00:00Z");
+
+async function needsOnboarding(userId: string) {
+  const u = await prisma.user.findUnique({ where: { id: userId }, select: { onboardedAt: true, createdAt: true } });
+  return !!u && !u.onboardedAt && u.createdAt >= ONBOARDING_SINCE;
+}
+
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -66,18 +75,20 @@ export const authOptions = {
         return {
           ...token,
           userId: user.id,
+          needsOnboarding: await needsOnboarding(user.id).catch(() => false),
         };
       }
       // After the avatar changes, read it back from the database (never trust the client's copy).
       if (trigger === "update" && token.email) {
-        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { image: true, name: true } });
-        if (fresh) return { ...token, picture: fresh.image, name: fresh.name };
+        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { id: true, image: true, name: true } });
+        if (fresh) return { ...token, picture: fresh.image, name: fresh.name, needsOnboarding: await needsOnboarding(fresh.id).catch(() => false) };
       }
       return token;
     },
     async session({ session, token }: any) {
       if (token && session.user) {
         session.user.id = token.userId as string;
+        session.user.needsOnboarding = !!token.needsOnboarding;
       }
       return session;
     },
