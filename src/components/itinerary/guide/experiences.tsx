@@ -28,7 +28,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
   const scroll = (dir: number) => rail.current?.scrollBy({ left: dir * rail.current.clientWidth * 0.8, behavior: "smooth" });
 
   return (
-    <Band tone="ink">
+    <Band>
       <SectionTitle
         eyebrow="Adventures, sports & experiences"
         title={
@@ -44,7 +44,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
               type="button"
               onClick={() => scroll(d)}
               aria-label={d < 0 ? "Previous experiences" : "More experiences"}
-              className="grid size-11 place-items-center rounded-full bg-paper/10 text-paper ring-1 ring-inset ring-paper/20 backdrop-blur transition-colors hover:bg-paper hover:text-ink"
+              className="grid size-11 place-items-center rounded-full bg-white text-ink shadow-card ring-1 ring-line transition-colors hover:bg-ink hover:text-paper"
             >
               <ArrowUpRight className={cn("size-4", d < 0 ? "-rotate-[135deg]" : "rotate-45")} />
             </button>
@@ -52,7 +52,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
         </div>
       </SectionTitle>
 
-      <div ref={rail} className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-2 sm:mx-0 sm:px-0 print:grid print:grid-cols-2 print:overflow-visible">
+      <div ref={rail} className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-6 pt-1 sm:mx-0 sm:px-0 print:grid print:grid-cols-2 print:overflow-visible">
         {items.map((e, i) => {
           const kind = KIND[e.kind];
           return (
@@ -62,7 +62,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.7, ease, delay: Math.min(i, 4) * 0.06 }}
-              className="print-avoid group flex w-[82%] shrink-0 snap-start flex-col overflow-hidden rounded-[26px] bg-white text-ink shadow-[0_30px_60px_-34px_rgba(0,0,0,0.8)] ring-1 ring-white/10 transition-transform duration-500 ease-out-expo hover:-translate-y-1 sm:w-[calc((100%-1.5rem)/3)]"
+              className="glass print-avoid group flex w-[82%] shrink-0 snap-start flex-col overflow-hidden rounded-card text-ink transition-transform duration-500 ease-out-expo hover:-translate-y-1 sm:w-[calc((100%-1.5rem)/3)] print:w-auto"
             >
               <div className="relative h-44 overflow-hidden">
                 <PlacePhoto activity={asStop(e.name)} destination={destination} icon={kind.icon} credit={false} imgClassName="group-hover:scale-[1.05]" />

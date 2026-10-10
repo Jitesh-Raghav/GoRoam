@@ -11,7 +11,22 @@ import { cn } from "@/lib/utils";
  * shows while it loads (and stays if there's no photo); the photo fades in and
  * drifts slowly, Ken Burns style.
  */
-export function HeroPhoto({ photo, className, credit = true, lazy = false, drift = true }: { photo: PlacePhoto | null; className?: string; credit?: boolean; lazy?: boolean; drift?: boolean }) {
+export function HeroPhoto({
+  photo,
+  className,
+  credit = true,
+  creditClassName,
+  lazy = false,
+  drift = true,
+}: {
+  photo: PlacePhoto | null;
+  className?: string;
+  credit?: boolean;
+  /** Moves the credit chip, e.g. "top-3 bottom-auto" when something sits in the bottom corner. */
+  creditClassName?: string;
+  lazy?: boolean;
+  drift?: boolean;
+}) {
   const url = photo?.url ?? null;
   const [state, setState] = useState<{ url: string; ok: boolean } | null>(null);
   const loaded = !!url && state?.url === url && state.ok;
@@ -49,7 +64,10 @@ export function HeroPhoto({ photo, className, credit = true, lazy = false, drift
           href={photo.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="no-print pointer-events-auto absolute bottom-2.5 right-4 z-10 max-w-[60%] truncate rounded-full bg-ink/40 px-2.5 py-1 text-[10px] text-paper/80 backdrop-blur-md transition-colors hover:bg-ink/70 hover:text-paper"
+          className={cn(
+            "no-print pointer-events-auto absolute bottom-2.5 right-4 z-10 max-w-[60%] truncate rounded-full bg-ink/40 px-2.5 py-1 text-[10px] text-paper/80 backdrop-blur-md transition-colors hover:bg-ink/70 hover:text-paper",
+            creditClassName
+          )}
         >
           Photo · {photo.credit}
         </a>

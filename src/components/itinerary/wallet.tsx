@@ -237,7 +237,7 @@ export function TripWallet({
                         onClick={() => setSplit(on ? sharing.filter((x) => x !== p.id) : [...sharing, p.id])}
                         className={cn("inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs ring-1 transition-colors", on ? "bg-brand-soft text-ink ring-brand/30" : "bg-transparent text-stone ring-line hover:text-ink")}
                       >
-                        {on && <Check className="size-3 text-brand" />} {p.name}
+                        {on && <Check className="size-3.5 text-brand" />} {p.name}
                       </button>
                     );
                   })}

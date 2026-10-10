@@ -46,7 +46,7 @@ export default async function Home() {
           <FinalCta />
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter cta={false} />
     </>
   );
 }

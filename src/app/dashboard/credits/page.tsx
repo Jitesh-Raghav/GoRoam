@@ -3,22 +3,43 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, Zap } from "@/components/site/icons";
+import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, X, Zap } from "@/components/site/icons";
 import Link from "next/link";
 import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/dashboard/use-checkout";
 import { useCredits } from "@/components/dashboard/dashboard-layout";
-import { Scene } from "@/components/scenes/scene";
+import type { SceneId } from "@/components/scenes/scenes";
 import { SplitText } from "@/components/motion/split-text";
+import { PhotoPanel } from "@/components/site/photo-panel";
 import { PillButton, PillLink } from "@/components/site/pill";
+import { BRAND_PHOTOS, PHOTO_QUERIES, sizedPhoto, useBrandPhoto } from "@/lib/brand-photos";
 import { cn } from "@/lib/utils";
-import { PLANS, freeTrips, perTrip, type PlanId } from "@/lib/plans";
+import { PLANS, freeTrips, perTrip, type Plan, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
   return <CreditsPageContent />;
 }
 
 const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, adventurer: Crown };
+/** Drawn under each pack's photo, and shown if none loads. */
+const PACK_SCENES: Record<PlanId, SceneId> = { starter: "lake", explorer: "fuji", adventurer: "peaks" };
+
+/** A pack's header: a photo of the kind of trip it buys, with its size on top. */
+function PackPhoto({ plan }: { plan: Plan }) {
+  const photo = sizedPhoto(useBrandPhoto(BRAND_PHOTOS.packs[plan.id], PHOTO_QUERIES.packs[plan.id]), 1000);
+  const Icon = ICONS[plan.id];
+  return (
+    <PhotoPanel photo={photo} scene={PACK_SCENES[plan.id]} className="aspect-[16/10] shrink-0">
+      <span className="absolute left-5 top-5 grid size-10 place-items-center rounded-xl bg-paper/15 text-paper ring-1 ring-inset ring-paper/25 backdrop-blur-md">
+        <Icon className="size-5" />
+      </span>
+      <div className="absolute bottom-4 left-5 text-paper">
+        <p className="eyebrow text-paper/75">{plan.name}</p>
+        <p className="display mt-1.5 text-[2rem] leading-none">{plan.credits} trips</p>
+      </div>
+    </PhotoPanel>
+  );
+}
 
 interface PaymentRow {
   id: string;
@@ -82,6 +103,7 @@ function CreditsPageContent() {
   refresh.current = refreshCredits;
   const [picked, setPicked] = useState<PlanId | null>(null);
   const [savedTrip, setSavedTrip] = useState<string | null>(null);
+  const balancePhoto = useBrandPhoto(BRAND_PHOTOS.credits, PHOTO_QUERIES.credits);
 
   // Arriving from a plan link: spotlight that pack. Arriving from the planner's
   // paywall: offer the way back to the trip they were building.
@@ -183,7 +205,7 @@ function CreditsPageContent() {
             exit={{ opacity: 0 }}
             role="status"
             className={cn(
-              "mt-6 flex flex-col gap-4 rounded-[24px] p-5 sm:flex-row sm:items-center sm:justify-between",
+              "mt-6 flex flex-col gap-4 rounded-card p-5 sm:flex-row sm:items-center sm:justify-between",
               returned === "confirmed" ? "bg-ink text-paper" : returned === "failed" ? "bg-destructive/10 text-ink" : "bg-white/80 text-ink ring-1 ring-line"
             )}
           >
@@ -218,24 +240,22 @@ function CreditsPageContent() {
         )}
       </AnimatePresence>
 
-      {/* Balance */}
-      <section className="relative mt-10 overflow-hidden rounded-[32px] bg-ocean text-paper">
-        <div className="absolute inset-0 opacity-90">
-          <Scene id="santorini" intro />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/10" />
-        <div className="relative flex flex-col gap-8 p-8 sm:p-12 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="eyebrow text-paper/60">Current balance</p>
-            <p className="display mt-4 text-[clamp(4.25rem,10.2vw,7.65rem)] leading-[0.8]">{credits}</p>
-            <p className="mt-4 max-w-sm text-paper/70">
-              {credits === 1 ? "credit" : "credits"} left · each credit plans one complete itinerary, and they never expire.
-            </p>
+      {/* Balance, over a real photo (the illustration shows until it loads) */}
+      <section aria-label="Your balance" className="mt-10">
+        <PhotoPanel photo={balancePhoto} scene="santorini" intro lazy={false} shade="left" creditClassName="bottom-auto top-4" className="rounded-panel text-paper">
+          <div className="relative flex min-h-[19rem] flex-col justify-end gap-8 p-8 sm:min-h-[22rem] sm:p-12 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow text-paper/70">Current balance</p>
+              <p className="display mt-4 text-[clamp(4.25rem,10.2vw,7.65rem)] leading-[0.8]">{credits}</p>
+              <p className="mt-4 max-w-sm text-paper/80">
+                {credits === 1 ? "credit" : "credits"} left · each credit plans one complete itinerary, and they never expire.
+              </p>
+            </div>
+            <PillLink href="/dashboard" variant="paper" icon={<Plus className="size-4" />} className="self-start md:self-auto">
+              Plan a trip
+            </PillLink>
           </div>
-          <PillLink href="/dashboard" variant="paper" icon={<Plus className="size-4" />}>
-            Plan a trip
-          </PillLink>
-        </div>
+        </PhotoPanel>
       </section>
 
       {/* Plans */}
@@ -262,57 +282,49 @@ function CreditsPageContent() {
                 </a>
                 .
               </p>
-              <button type="button" onClick={checkout.clearError} className="ml-auto text-stone hover:text-ink" aria-label="Dismiss">
-                ✕
+              <button type="button" onClick={checkout.clearError} className="-m-1 ml-auto grid size-7 shrink-0 place-items-center rounded-full text-stone transition-colors hover:bg-ink/5 hover:text-ink" aria-label="Dismiss">
+                <X className="size-4" />
               </button>
             </motion.div>
           )}
         </AnimatePresence>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {PLANS.map((plan, i) => {
-            const Icon = ICONS[plan.id];
-            return (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
-                className={cn(
-                  "relative flex flex-col overflow-hidden rounded-[32px] p-8",
-                  plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,130,120,0.55)]" : "bg-white/80 text-ink ring-1 ring-line",
-                  picked === plan.id && "ring-2 ring-brand"
-                )}
-              >
-                {plan.popular && (
-                  <>
-                    <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-brand/30 blur-3xl" />
-                    <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white">
-                      <Sparkles className="size-3.5" /> Most popular
-                    </span>
-                  </>
-                )}
-                <span className={cn("grid size-11 place-items-center rounded-2xl", plan.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
-                  <Icon className="size-5" />
+          {PLANS.map((plan, i) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
+              className={cn(
+                "relative flex flex-col overflow-hidden rounded-panel",
+                plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,119,109,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
+                picked === plan.id && "ring-2 ring-brand"
+              )}
+            >
+              <PackPhoto plan={plan} />
+              {plan.popular && (
+                <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm">
+                  <Sparkles className="size-3.5" /> Most popular
                 </span>
-                <p className={cn("eyebrow mt-6", plan.popular ? "text-paper/60" : "text-stone")}>{plan.name}</p>
-                <div className="mt-4 flex items-baseline gap-2">
+              )}
+              <div className="relative flex flex-1 flex-col p-7 sm:p-8">
+                {plan.popular && <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 size-72 rounded-full bg-brand/25 blur-3xl" />}
+                <div className="relative flex items-baseline gap-2">
                   <span className="display text-5xl leading-none">${plan.price}</span>
                   <span className={cn("text-sm", plan.popular ? "text-paper/60" : "text-stone")}>one-time</span>
                 </div>
-                <p className={cn("mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
+                <p className={cn("relative mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
                   {plan.credits} credits
-                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>
-                    ≈ {perTrip(plan)} per trip
-                  </span>
+                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ {perTrip(plan)} per trip</span>
                 </p>
-                <p className={cn("mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
+                <p className={cn("relative mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
 
                 <PillButton
                   type="button"
                   variant={plan.popular ? "brand" : "ink"}
                   size="lg"
-                  className="mt-8 w-full justify-between"
+                  className="relative mt-8 w-full justify-between"
                   disabled={checkout.pending !== null}
                   icon={checkout.pending === plan.id ? <Loader2 className="size-4 animate-spin" /> : undefined}
                   onClick={() => checkout.start(plan.id, savedTrip ? "planner" : undefined)}
@@ -320,26 +332,26 @@ function CreditsPageContent() {
                   {checkout.pending === plan.id ? "Opening checkout…" : `Buy ${plan.name}`}
                 </PillButton>
 
-                <ul className="mt-8 space-y-3">
+                <ul className="relative mt-8 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", plan.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
-                        <Check className="size-3" />
+                        <Check className="size-3.5" />
                       </span>
                       <span className={cn("text-sm", plan.popular ? "text-paper/85" : "text-ink/80")}>{feature}</span>
                     </li>
                   ))}
                 </ul>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
       {payments.length > 0 && (
         <section className="mt-16">
           <h2 className="display text-3xl text-ink">Purchases</h2>
-          <ul className="mt-6 divide-y divide-line overflow-hidden rounded-[24px] bg-white/80 ring-1 ring-line">
+          <ul className="mt-6 divide-y divide-line overflow-hidden rounded-card bg-white ring-1 ring-line">
             {payments.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
                 <Receipt className="size-4 shrink-0 text-brand" />
@@ -360,7 +372,7 @@ function CreditsPageContent() {
       {/* FAQ */}
       <section className="mt-16 grid gap-3 md:grid-cols-2">
         {faqs.map((f) => (
-          <div key={f.q} className="rounded-3xl bg-white/80 p-6 ring-1 ring-line">
+          <div key={f.q} className="rounded-card bg-white p-6 ring-1 ring-line">
             <h3 className="display text-xl text-ink">{f.q}</h3>
             <p className="mt-2 leading-relaxed text-stone">{f.a}</p>
           </div>

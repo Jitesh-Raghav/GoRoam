@@ -6,6 +6,9 @@ export const COMPANY = {
   name: "GoRoam",
   operator: "Jitesh Raghav",
   location: "Gurgaon, Haryana, India",
+  /** For "Made in Gurgaon · 9:41 PM there now" in the footer. */
+  city: "Gurgaon, India",
+  timeZone: "Asia/Kolkata",
   email: "jitesh@goroam.world",
   founder: {
     name: "Jitesh Raghav",

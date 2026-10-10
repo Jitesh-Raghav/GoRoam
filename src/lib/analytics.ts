@@ -48,6 +48,7 @@ export type AnalyticsEvent =
   | "package_viewed"
   | "package_customized"
   | "booking_partner_clicked"
+  | "booking_idea_picked"
   | "directions_clicked"
   | "share_link_created"
   | "pdf_downloaded"

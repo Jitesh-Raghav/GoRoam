@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { PackageCard } from "@/components/packages/package-card";
+import { GalleryGrid } from "@/components/packages/gallery-grid";
+import { GuideChip } from "@/components/seo/guide-media";
 import { PublicShell } from "@/components/seo/public-shell";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { packageCards } from "@/lib/packages-data";
-import { PACKAGE_SEO, type Region } from "@/lib/packages-seo";
+import { PACKAGE_SEO } from "@/lib/packages-seo";
 import { JsonLd, absolute, breadcrumbs } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -14,17 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/itineraries" },
 };
 
-const ORDER: Region[] = ["India", "Asia", "Middle East", "Europe"];
-const HEADINGS: Record<Region, string> = {
-  India: "India",
-  Asia: "Asia",
-  "Middle East": "Middle East",
-  Europe: "Europe",
-};
-
 export default async function GalleryPage() {
   const cards = await packageCards();
-  const byRegion = ORDER.map((r) => ({ region: r, cards: cards.filter((c) => (PACKAGE_SEO[c.slug]?.region ?? "Asia") === r) })).filter((g) => g.cards.length);
 
   return (
     <PublicShell crumbs={[{ name: "Home", href: "/" }, { name: "Trip gallery", href: "/itineraries" }]}>
@@ -53,18 +44,7 @@ export default async function GalleryPage() {
           </p>
         </header>
 
-        {byRegion.map((g) => (
-          <section key={g.region} className="mt-14" aria-labelledby={`region-${g.region}`}>
-            <h2 id={`region-${g.region}`} className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
-              {HEADINGS[g.region]} <span className="ml-1 font-sans text-base font-normal tracking-normal text-stone">{g.cards.length} trips</span>
-            </h2>
-            <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {g.cards.map((pkg, i) => (
-                <PackageCard key={pkg.slug} pkg={pkg} index={i} />
-              ))}
-            </div>
-          </section>
-        ))}
+        <GalleryGrid cards={cards} className="mt-14" />
 
         <section className="mt-20 rounded-panel bg-white p-6 ring-1 ring-line sm:p-10" aria-labelledby="guides">
           <h2 id="guides" className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
@@ -73,9 +53,7 @@ export default async function GalleryPage() {
           <p className="mt-2 text-stone">Best time to go, where to stay, what it costs, and the sights worth your time.</p>
           <div className="mt-6 flex flex-wrap gap-2">
             {DESTINATION_GUIDES.map((d) => (
-              <Link key={d.slug} href={`/destinations/${d.slug}`} className="rounded-full bg-paper px-4 py-2 text-sm text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper">
-                {d.name} travel guide
-              </Link>
+              <GuideChip key={d.slug} slug={d.slug} name={`${d.name} travel guide`} destination={d.destination} className="bg-paper" />
             ))}
           </div>
         </section>

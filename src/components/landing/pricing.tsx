@@ -62,7 +62,7 @@ export function Pricing() {
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-3">
                       <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", p.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
-                        <Check className="size-3" />
+                        <Check className="size-3.5" />
                       </span>
                       <span className={p.popular ? "text-paper/85" : "text-ink/80"}>{f}</span>
                     </li>

@@ -2,7 +2,7 @@
 
 import { addDays, addMonths, differenceInCalendarDays, format, isSameDay, isSameMonth, parseISO, startOfMonth, startOfWeek } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, ChevronLeft, ChevronRight, X } from "@/components/site/icons";
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, X } from "@/components/site/icons";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 
@@ -201,7 +201,7 @@ export function DateRangePicker({
           <span className="mt-1 truncate text-[1.05rem] text-ink">
             {startDate && endDate ? (
               <>
-                {format(startDate, "EEE, d MMM")} <span className="text-stone">→</span> {format(endDate, "EEE, d MMM")}
+                {format(startDate, "EEE, d MMM")} <ArrowRight className="mx-0.5 inline size-3.5 -translate-y-px text-stone" /> {format(endDate, "EEE, d MMM")}
               </>
             ) : (
               <span className="text-stone-2">Pick your dates</span>

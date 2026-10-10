@@ -629,3 +629,44 @@ export const DESTINATION_GUIDES: DestinationGuide[] = [
 ];
 
 export const guideBySlug = (slug: string) => DESTINATION_GUIDES.find((g) => g.slug === slug);
+
+export type MonthRating = DestinationGuide["bestTime"]["months"][number]["rating"];
+export const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "Nov - Feb" → [10, 11, 0, 1]; "May, Oct" → [4, 9]; null if it isn't months. */
+function monthsIn(label: string): number[] | null {
+  const out: number[] = [];
+  for (const part of label.split(",")) {
+    const [from, to] = part.trim().split(/\s*-\s*/);
+    const a = MONTHS.indexOf((from ?? "").slice(0, 3));
+    if (a < 0) return null;
+    if (!to) {
+      out.push(a);
+      continue;
+    }
+    const b = MONTHS.indexOf(to.slice(0, 3));
+    if (b < 0) return null;
+    for (let m = a; ; m = (m + 1) % 12) {
+      out.push(m);
+      if (m === b) break;
+    }
+  }
+  return out;
+}
+
+const RANK: Record<MonthRating, number> = { best: 3, good: 2, avoid: 1 };
+
+/**
+ * The guide's month ranges as twelve ratings, January first, for the month strip.
+ * Overlaps keep the better rating; months no range mentions are null. Null overall
+ * if any label isn't a plain month range, so the strip never shows a guess.
+ */
+export function monthRatings(g: DestinationGuide): (MonthRating | null)[] | null {
+  const year: (MonthRating | null)[] = Array(12).fill(null);
+  for (const m of g.bestTime.months) {
+    const months = monthsIn(m.label);
+    if (!months) return null;
+    for (const i of months) if (!year[i] || RANK[m.rating] > RANK[year[i]!]) year[i] = m.rating;
+  }
+  return year;
+}

@@ -477,8 +477,9 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Glass cards: frosted fill, a gradient hairline, a top highlight and a      */
-/*  sheen that slides across on hover. Use without ring-* utilities.          */
+/*  Cards on the trip page. .glass is a crisp white card with a quiet hairline */
+/*  (it stays frosted, for the sticky chapter bar); .glass-dark is the frosted */
+/*  ink card with a gradient hairline and a sheen on hover. No ring-* needed.  */
 /* -------------------------------------------------------------------------- */
 @layer components {
   .glass,
@@ -489,12 +490,10 @@ html.lenis, html.lenis body { height: auto; }
     backdrop-filter: blur(18px) saturate(1.6);
   }
   .glass {
-    background: linear-gradient(155deg, rgb(255 255 255 / 0.86), rgb(255 255 255 / 0.58) 55%, rgb(255 255 255 / 0.72));
+    background: rgb(255 255 255 / 0.94);
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.95),
-      inset 0 -1px 0 rgb(10 30 44 / 0.03),
-      0 28px 60px -38px rgb(10 30 44 / 0.45),
-      0 2px 8px -4px rgb(10 30 44 / 0.1);
+      0 1px 2px rgb(10 28 39 / 0.04),
+      0 22px 48px -34px rgb(10 28 39 / 0.38);
   }
   .glass-dark {
     background: linear-gradient(155deg, rgb(19 52 70 / 0.72), rgb(10 30 44 / 0.5) 60%, rgb(10 30 44 / 0.66));
@@ -521,6 +520,10 @@ html.lenis, html.lenis body { height: auto; }
   .glass-dark::before {
     background: linear-gradient(150deg, rgb(255 255 255 / 0.32), rgb(52 209 191 / 0.22) 40%, rgb(255 255 255 / 0.04) 70%, rgb(255 200 118 / 0.22));
   }
+  /* Light cards keep to one neutral hairline. */
+  .glass::before {
+    background: linear-gradient(180deg, rgb(10 28 39 / 0.07), rgb(10 28 39 / 0.11));
+  }
   .glass::after,
   .glass-dark::after {
     content: "";
@@ -540,6 +543,10 @@ html.lenis, html.lenis body { height: auto; }
   .glass:hover::after,
   .glass-dark:hover::after {
     background-position: -60% 0;
+  }
+  /* ...and no sheen. */
+  .glass::after {
+    content: none;
   }
 
   /* Section numbers count themselves, so they stay right when a section is missing. */
@@ -598,7 +605,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Footer harbour plate: ferries cross, the sloop rides the swell, the moon's path glints. */
+/* Footer harbour plate: ferries cross and the sloop rides the swell. */
 .plate-ferry-a {
   animation: plate-ferry-a 60s linear infinite;
 }
@@ -647,24 +654,10 @@ html.lenis, html.lenis body { height: auto; }
     transform: translateY(3px) rotate(1.5deg);
   }
 }
-.plate-glint {
-  animation: plate-glint 4.2s ease-in-out infinite;
-  opacity: 0;
-}
-@keyframes plate-glint {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .plate-ferry-a,
   .plate-ferry-b,
-  .plate-bob,
-  .plate-glint {
+  .plate-bob {
     animation: none;
   }
 }
@@ -687,16 +680,26 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Duotone icons: the soft back layer glows lagoon instead of a grey wash. */
+/* Duotone icons: the soft back layer glows lagoon instead of a grey wash.
+   A parent can retint it with --icon-duo / --icon-duo-opacity, or the helpers below. */
 .gr-icon [opacity="0.2"] {
-  fill: var(--brand-2);
-  opacity: 0.38;
+  fill: var(--icon-duo, var(--brand-2));
+  opacity: var(--icon-duo-opacity, 0.38);
 }
-
-/* The landing globe's little orbiting plane. */
-@keyframes globe-orbit { to { transform: rotate(360deg); } }
-.globe-orbit { animation: globe-orbit 22s linear infinite; }
-@media (prefers-reduced-motion: reduce) { .globe-orbit { animation: none; } }
+/* Marks (check, cross, plus, minus, menu) sit in chips of their own: no back square. */
+.gr-mark [opacity="0.2"] {
+  display: none;
+}
+/* A warm back layer, for moments and highlights. */
+.duo-sun {
+  --icon-duo: var(--sun-2);
+  --icon-duo-opacity: 0.55;
+}
+/* A pale back layer, for icons on brand or ink fills. */
+.duo-paper {
+  --icon-duo: var(--paper);
+  --icon-duo-opacity: 0.28;
+}
 
 /* The hero composer's focus glow: a slow lagoon-and-sun ring turning behind the glass. */
 @property --glow-angle {

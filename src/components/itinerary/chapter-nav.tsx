@@ -14,13 +14,16 @@ export interface Chapter {
 const GAP = 20;
 
 /**
- * The trip page's table of contents: a glass chip bar that sticks while you
- * scroll, lights up the chapter you're reading and jumps to any other.
+ * The trip page's table of contents: a chip bar that sticks while you scroll,
+ * lights up the chapter you're reading and jumps to any other. Once stuck it
+ * names the trip and fills a hairline as you read on.
  */
-export function ChapterNav({ chapters, className }: { chapters: Chapter[]; className?: string }) {
+export function ChapterNav({ chapters, title, className }: { chapters: Chapter[]; title?: string; className?: string }) {
   const [active, setActive] = useState(chapters[0]?.id);
+  const [stuck, setStuck] = useState(false);
   const bar = useRef<HTMLDivElement>(null);
   const nav = useRef<HTMLElement>(null);
+  const fill = useRef<HTMLSpanElement>(null);
   // Where the bar's bottom edge sits once it sticks: its sticky top plus its height, plus a little air.
   const offset = () => {
     const el = nav.current;
@@ -44,6 +47,13 @@ export function ChapterNav({ chapters, className }: { chapters: Chapter[]; class
         const line = offset() + 8;
         for (const el of els) if (el.getBoundingClientRect().top - line <= 0) current = el.id;
         setActive(current);
+        const n = nav.current;
+        if (n) setStuck(n.getBoundingClientRect().top <= (parseFloat(getComputedStyle(n).top) || 0) + 1);
+        // How far the reading line has come through the chapters, written straight to the bar.
+        const start = els[0].getBoundingClientRect().top;
+        const end = els[els.length - 1].getBoundingClientRect().bottom;
+        const p = Math.min(1, Math.max(0, (line - start) / Math.max(end - start, 1)));
+        if (fill.current) fill.current.style.transform = `scaleX(${p})`;
       });
     };
     update();
@@ -78,8 +88,14 @@ export function ChapterNav({ chapters, className }: { chapters: Chapter[]; class
 
   return (
     <nav ref={nav} aria-label="Trip chapters" className={cn("no-print sticky z-30", className)}>
-      <div className="glass rounded-full p-1 shadow-[0_18px_40px_-26px_rgba(10,30,44,0.6)]">
-        <div ref={bar} className="no-scrollbar flex gap-0.5 overflow-x-auto">
+      <div className="glass relative flex items-center rounded-full p-1 shadow-[0_18px_40px_-26px_rgba(10,30,44,0.6)]">
+        {title && (
+          <span className={cn("hidden shrink-0 items-center overflow-hidden whitespace-nowrap text-sm text-ink transition-[max-width,opacity,padding] duration-500 lg:flex", stuck ? "max-w-60 pl-4 pr-3 opacity-100" : "max-w-0 opacity-0")}>
+            <span className="display truncate">{title}</span>
+            <span aria-hidden className="ml-3 h-4 w-px bg-line" />
+          </span>
+        )}
+        <div ref={bar} className="no-scrollbar flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
           {chapters.map((c) => {
             const on = c.id === active;
             return (
@@ -104,6 +120,9 @@ export function ChapterNav({ chapters, className }: { chapters: Chapter[]; class
             );
           })}
         </div>
+        <span aria-hidden className={cn("pointer-events-none absolute inset-x-6 -bottom-px h-px overflow-hidden transition-opacity duration-500", stuck ? "opacity-100" : "opacity-0")}>
+          <span ref={fill} className="block h-full origin-left scale-x-0 bg-brand" />
+        </span>
       </div>
     </nav>
   );

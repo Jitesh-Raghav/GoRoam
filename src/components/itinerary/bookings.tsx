@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { BedDouble, Car, Check, Copy, FileText, Loader2, MapPin, Plane, Plus, ShieldCheck, Ticket, TrainFront, Trash2, X, type LucideIcon } from "@/components/site/icons";
+import { ArrowRight, BedDouble, Car, Check, Copy, FileText, Loader2, MapPin, Plane, Plus, ShieldCheck, Ticket, TrainFront, Trash2, X, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { BOOKING_KINDS, type BookingKind, type TripBooking } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -46,7 +46,7 @@ function CopyRef({ value }: { value: string }) {
       aria-label={`Copy ${value}`}
     >
       {value}
-      {done ? <Check className="size-3 text-brand" /> : <Copy className="size-3 opacity-50 group-hover/copy:opacity-100" />}
+      {done ? <Check className="size-3.5 text-brand" /> : <Copy className="size-3.5 opacity-50 group-hover/copy:opacity-100" />}
     </button>
   );
 }
@@ -192,7 +192,12 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
                         <p className="eyebrow text-[0.55rem] text-brand">
                           {K.label}
                           {b.start && ` · ${pretty(b.start)}`}
-                          {b.end && ` → ${pretty(b.end)}`}
+                          {b.end && (
+                            <>
+                              {" "}
+                              <ArrowRight className="inline size-3 -translate-y-px" /> {pretty(b.end)}
+                            </>
+                          )}
                         </p>
                         <h4 className="display mt-1.5 text-[1.27rem] leading-[1.05] text-ink">{b.title}</h4>
                       </div>
