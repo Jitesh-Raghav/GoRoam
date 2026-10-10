@@ -5,6 +5,7 @@ import { limiter, ownedItinerary } from '@/lib/owned-trip';
 import { CHAT_LIMIT } from '@/lib/plans';
 import { refundAiRequest, takeAiRequest, tripContext } from '@/lib/trip-context';
 import { undash } from '@/lib/text';
+import { checkStop } from '@/lib/itinerary-ai';
 import { reactionKey, type ActivitySlot, type ItineraryData } from '@/lib/trip';
 
 /**
@@ -26,22 +27,34 @@ const coord = (v: unknown, lim: number) => {
 };
 
 /** Anything a client or a model sends back, reduced to a safe stop. */
-function cleanStop(raw: unknown, fallbackTime: string): ActivitySlot | null {
+function cleanStop(raw: unknown, fallbackTime: string, people: number): ActivitySlot | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = undash(raw) as Record<string, unknown>;
   const place = (r.place && typeof r.place === 'object' ? r.place : {}) as Record<string, unknown>;
   const name = str(place.name, 140);
   if (!name) return null;
   const cost = Math.round(Number(r.estimatedCost));
-  return {
+  return checkStop({
     time: str(r.time, 40) || fallbackTime,
     duration: str(r.duration, 40) || '2 hours',
     estimatedCost: Number.isFinite(cost) && cost >= 0 && cost < 100000 ? cost : 0,
     category: CATEGORIES.includes(String(r.category)) ? String(r.category) : undefined,
     tip: str(r.tip, 240) || undefined,
     place: { name, description: str(place.description, 400), area: str(place.area, 80) || undefined, lat: coord(place.lat, 90), lng: coord(place.lng, 180) },
-  };
+    priceNote: str(r.priceNote, 80) || undefined,
+    hours: str(r.hours, 90) || undefined,
+    bookAhead: str(r.bookAhead, 90) || undefined,
+    bestTime: str(r.bestTime, 90) || undefined,
+    wear: str(r.wear, 90) || undefined,
+    access: str(r.access, 90) || undefined,
+  }, people);
 }
+
+/** How many are travelling, for the per-person price check. */
+const partyOf = (data: ItineraryData) => {
+  const p = data.trip?.preferences;
+  return p ? Math.max(1, (Number(p.adults) || 0) + (Number(p.children) || 0)) : 2;
+};
 
 function target(body: Record<string, unknown>, data: ItineraryData) {
   const day = Math.round(Number(body.day));
@@ -63,6 +76,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const t = target(body, data);
   if (!t) return NextResponse.json({ success: false, error: 'Pick a stop to swap.' }, { status: 400 });
   const hint = str(body.hint, 200);
+  const people = partyOf(data);
 
   if (!(await takeAiRequest(id))) {
     return NextResponse.json({ success: false, error: `You've used all ${CHAT_LIMIT} AI requests on this trip.`, left: 0 }, { status: 429 });
@@ -80,12 +94,13 @@ RULES
 - Real, specific, currently operating places close to the rest of the day, open at that time of day and season.
 - Not already anywhere in the trip.
 - Respect the party, pace, budget and any dietary needs.
-- estimatedCost is realistic USD for the whole group, 0 if free. lat/lng are real coordinates (4 decimals).
+- estimatedCost is the accurate USD cost for the whole group: the official admission (the foreign-visitor rate where one exists) × people, 0 if free to enter, a real meal price × people for food. priceNote says how it adds up in local money ("¥500 entry × 2"). lat/lng are real coordinates (4 decimals).
+- hours, bookAhead, bestTime, wear and access: short practical notes as on the other stops, "" when there's nothing worth saying.
 - category is one of: ${CATEGORIES.join(', ')}.
 - Never use em dashes.
 
 Respond with JSON only:
-{ "alternatives": [ { "time": "${t.current?.time || '9:00 AM - 12:00 PM'}", "place": { "name": "", "description": "Two vivid sentences", "area": "", "lat": 0, "lng": 0 }, "duration": "2 hours", "estimatedCost": 0, "category": "sight", "tip": "One insider tip" } ] }`;
+{ "alternatives": [ { "time": "${t.current?.time || '9:00 AM - 12:00 PM'}", "place": { "name": "", "description": "Two vivid sentences", "area": "", "lat": 0, "lng": 0 }, "duration": "2 hours", "estimatedCost": 0, "priceNote": "", "category": "sight", "tip": "One insider tip", "hours": "", "bookAhead": "", "bestTime": "", "wear": "", "access": "" } ] }`;
 
   try {
     const completion = await openai.chat.completions.create(
@@ -104,7 +119,7 @@ Respond with JSON only:
     const parsed = JSON.parse(completion.choices[0]?.message?.content || '{}');
     const taken = new Set((data.itinerary ?? []).flatMap((d) => SLOTS.map((s) => d[s]?.place?.name?.toLowerCase())).filter(Boolean));
     const alternatives = (Array.isArray(parsed.alternatives) ? parsed.alternatives : [])
-      .map((a: unknown) => cleanStop(a, t.current?.time || ''))
+      .map((a: unknown) => cleanStop(a, t.current?.time || '', people))
       .filter((a: ActivitySlot | null): a is ActivitySlot => !!a && !taken.has(a.place.name.toLowerCase()))
       .slice(0, 3);
     if (!alternatives.length) throw new Error('No alternatives');
@@ -127,7 +142,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   if (!fresh) return NextResponse.json({ success: false, error: 'Itinerary not found' }, { status: 404 });
   const data = JSON.parse(fresh.itineraryData) as ItineraryData;
   const t = target(body, data);
-  const stop = t && cleanStop(body.activity, t.current?.time || '');
+  const people = partyOf(data);
+  const stop = t && cleanStop(body.activity, t.current?.time || '', people);
   if (!t || !stop) return NextResponse.json({ success: false, error: 'Invalid stop.' }, { status: 400 });
 
   const day = { ...data.itinerary[t.day], [t.slot]: stop };

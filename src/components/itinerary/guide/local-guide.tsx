@@ -61,7 +61,7 @@ const TIP: Record<TipCategory, { label: string; icon: LucideIcon }> = {
 };
 
 /** Reads a phrase aloud in the local language, when the browser has a voice for it. */
-function useSpeech(lang?: string) {
+export function useSpeech(lang?: string) {
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [speaking, setSpeaking] = useState<number | null>(null);
   useEffect(() => {

@@ -170,6 +170,20 @@ export interface ActivitySlot {
   estimatedCost: number;
   category?: string;
   tip?: string;
+  /** How the cost adds up, in local money: "¥1,000 entry × 2". */
+  priceNote?: string;
+  /** Set when the cost looked implausible, so the page asks the traveller to check it. */
+  priceCheck?: boolean;
+  /** Opening hours on that day: "9:00–17:00, closed Mondays". */
+  hours?: string;
+  /** Why to book ahead, when it matters: "Timed tickets sell out a week ahead". */
+  bookAhead?: string;
+  /** The best time to be there: "Before 8 AM, before the tour buses". */
+  bestTime?: string;
+  /** Dress code or footwear: "Shoulders and knees covered". */
+  wear?: string;
+  /** Step-free access, stairs or terrain: "Steep steps, no lift". */
+  access?: string;
 }
 
 export interface DayItinerary {
@@ -201,6 +215,14 @@ export interface Essentials {
   weather?: string;
   gettingAround?: string;
   phrase?: string;
+  /** Is the tap water safe to drink. */
+  water?: string;
+  /** Ride-hailing, transit and payment apps that work there. */
+  apps?: string;
+  /** How to get mobile data: eSIM, where to buy a SIM, roughly what it costs. */
+  sim?: string;
+  /** The main emergency number(s). */
+  emergency?: string;
 }
 
 export interface PlacePhoto {

@@ -66,7 +66,8 @@
         "duration": "3 hours",
         "estimatedCost": 14,
         "category": "sight",
-        "tip": "The combined ASI ticket also covers Lotus Mahal and the Elephant Stables, so keep it for tomorrow."
+        "tip": "The same ASI ticket covers Lotus Mahal and the Elephant Stables, but only on the day you buy it.",
+        "priceNote": "₹600 foreigner entry × 2"
       },
       "afternoon": {
         "time": "12:00 PM - 2:30 PM",
@@ -114,9 +115,10 @@
           "lng": 76.471
         },
         "duration": "3 hours",
-        "estimatedCost": 0,
+        "estimatedCost": 14,
         "category": "sight",
-        "tip": "Same ticket as Vittala Temple yesterday."
+        "tip": "Tickets are valid on the day of purchase only, so buy at the Zanana Enclosure gate.",
+        "priceNote": "₹600 foreigner entry × 2 (new day, new ticket)"
       },
       "afternoon": {
         "time": "12:00 PM - 3:00 PM",
@@ -146,7 +148,7 @@
         "category": "nature",
         "tip": "Swimming isn't safe in all seasons; enjoy it from the rocks unless locals confirm it's calm."
       },
-      "totalDayCost": 14
+      "totalDayCost": 28
     }
   ],
   "stays": [
@@ -162,7 +164,7 @@
       "area": "Kamalapura",
       "type": "Luxury resort",
       "why": "A palace-style splurge with a pool and guided heritage walks for a special occasion.",
-      "pricePerNight": 330
+      "pricePerNight": 500
     },
     {
       "name": "Anegundi homestays",
@@ -189,7 +191,7 @@
     "Small torch for sunset walks back"
   ],
   "summary": {
-    "totalCost": 52,
+    "totalCost": 66,
     "totalDays": 3,
     "destination": "Hampi, India",
     "overview": "Three unhurried days among the boulder fields and temple ruins of the Vijayanagara capital, timed so you catch the soft light at sunrise and sunset, with a coracle ride on the Tungabhadra and quiet dinners for two.",

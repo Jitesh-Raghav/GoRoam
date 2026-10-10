@@ -78,9 +78,10 @@
           "lng": 115.261
         },
         "duration": "3 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 12,
         "category": "nature",
-        "tip": "Avoid bringing food into the forest to prevent monkey antics."
+        "tip": "Avoid bringing food into the forest to prevent monkey antics.",
+        "priceNote": "IDR 80,000 weekdays, 100,000 weekends × 2"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -96,7 +97,7 @@
         "category": "food",
         "tip": "Try the wood-fired pizza for a delicious treat."
       },
-      "totalDayCost": 180
+      "totalDayCost": 172
     },
     {
       "day": 3,
@@ -215,9 +216,9 @@
     {
       "name": "Karma Jimbaran",
       "area": "Jimbaran",
-      "type": "Boutique hotel",
+      "type": "Villa resort",
       "why": "A charming boutique hotel just steps from the beach, perfect for relaxation.",
-      "pricePerNight": 140
+      "pricePerNight": 400
     }
   ],
   "essentials": {
@@ -240,7 +241,7 @@
     "Beach towel"
   ],
   "summary": {
-    "totalCost": 570,
+    "totalCost": 562,
     "totalDays": 4,
     "destination": "Ubud and Seminyak, Indonesia",
     "overview": "Experience the rich culture, stunning nature, and beautiful beaches of Bali. This trip offers a perfect combination of relaxation and adventure, tailored for first-time visitors.",

@@ -17,7 +17,8 @@
         "duration": "3 hours",
         "estimatedCost": 100,
         "category": "sight",
-        "tip": "Book your tickets online in advance to skip the queues and pick the first slot of the day for fewer crowds."
+        "tip": "Book your tickets online in advance to skip the queues and pick the first slot of the day for fewer crowds.",
+        "priceNote": "At the Top, from about AED 169 × 2"
       },
       "afternoon": {
         "time": "1:00 PM - 3:00 PM",
@@ -45,7 +46,8 @@
         "duration": "3 hours",
         "estimatedCost": 80,
         "category": "sight",
-        "tip": "Arrive early to secure a good spot for the fountain show, which runs every 30 minutes."
+        "tip": "Arrive early to secure a good spot for the fountain show, which runs every 30 minutes.",
+        "priceNote": "Show is free; dinner at a lakeside café"
       },
       "totalDayCost": 240
     },
@@ -57,16 +59,17 @@
       "morning": {
         "time": "9:00 AM - 12:00 PM",
         "place": {
-          "name": "Dubai Museum",
-          "description": "Visit the Dubai Museum housed in the Al Fahidi Fort to understand the city’s transformation from a fishing village to a global metropolis. The exhibits are engaging and informative.",
-          "area": "Al Fahidi",
-          "lat": 25.2632,
-          "lng": 55.3043
+          "name": "Al Shindagha Museum",
+          "description": "The story of Dubai from pearling village to global city, told across restored courtyard houses on the creek. Dubai Museum at Al Fahidi Fort has been closed for renovation, so this is the place to go now.",
+          "area": "Al Shindagha",
+          "lat": 25.2683,
+          "lng": 55.2933
         },
         "duration": "3 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 8,
         "category": "culture",
-        "tip": "Go early to enjoy the museum with fewer visitors and take your time exploring."
+        "tip": "Take an abra across the creek from Deira for AED 1 each and walk in from the water.",
+        "priceNote": "AED 15 entry × 2"
       },
       "afternoon": {
         "time": "1:00 PM - 3:00 PM",
@@ -96,7 +99,7 @@
         "category": "shopping",
         "tip": "Haggle for the best prices; it’s part of the experience!"
       },
-      "totalDayCost": 70
+      "totalDayCost": 58
     },
     {
       "day": 3,
@@ -129,7 +132,8 @@
         "duration": "2 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Check the schedule in advance as races occur on specific days."
+        "tip": "Check the schedule in advance as races occur on specific days.",
+        "priceNote": "Free to watch"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -217,7 +221,7 @@
       "area": "Madinat Jumeirah",
       "type": "Luxury hotel",
       "why": "Offers luxurious accommodations and stunning views of the Burj Al Arab, ideal for a romantic getaway.",
-      "pricePerNight": 400
+      "pricePerNight": 750
     }
   ],
   "essentials": {
@@ -240,7 +244,7 @@
     "Camera for capturing memories"
   ],
   "summary": {
-    "totalCost": 1230,
+    "totalCost": 1218,
     "totalDays": 4,
     "destination": "Dubai, UAE",
     "overview": "Explore the dazzling city of Dubai, where modern skyscrapers meet rich traditions and adventure awaits at every corner. Enjoy iconic landmarks, thrilling activities, and delicious food throughout your stay.",

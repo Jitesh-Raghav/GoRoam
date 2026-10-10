@@ -15,9 +15,10 @@
           "lng": 100.4913
         },
         "duration": "3 hours",
-        "estimatedCost": 50,
+        "estimatedCost": 31,
         "category": "sight",
-        "tip": "Arrive early to avoid the crowds and consider hiring a guide for deeper insights."
+        "tip": "Arrive early to avoid the crowds and consider hiring a guide for deeper insights.",
+        "priceNote": "฿500 foreigner entry × 2, with the Grand Palace"
       },
       "afternoon": {
         "time": "12:30 PM - 2:00 PM",
@@ -47,7 +48,7 @@
         "category": "nightlife",
         "tip": "Check out the 'Brick Bar' for live local music and a fun crowd."
       },
-      "totalDayCost": 100
+      "totalDayCost": 81
     },
     {
       "day": 2,
@@ -113,9 +114,10 @@
           "lng": 100.5305
         },
         "duration": "2 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 12,
         "category": "culture",
-        "tip": "Join a guided tour to learn more about the art and history of silk weaving."
+        "tip": "Join a guided tour to learn more about the art and history of silk weaving.",
+        "priceNote": "฿200 guided entry × 2"
       },
       "afternoon": {
         "time": "12:00 PM - 2:00 PM",
@@ -145,7 +147,7 @@
         "category": "nature",
         "tip": "Visit in the late afternoon for a more serene experience."
       },
-      "totalDayCost": 70
+      "totalDayCost": 62
     }
   ],
   "stays": [
@@ -191,7 +193,7 @@
     "Travel guidebook or app"
   ],
   "summary": {
-    "totalCost": 275,
+    "totalCost": 248,
     "totalDays": 3,
     "destination": "Bangkok, Thailand",
     "overview": "Experience the vibrant blend of culture, history, and nightlife in Bangkok, a city that never sleeps. Enjoy iconic landmarks, delicious food, and lively entertainment as you explore this bustling metropolis.",
