@@ -1,0 +1,221 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-11-12",
+      "theme": "Bazaar, temples and a hilltop sunset",
+      "summary": "Ease in around Hampi Bazaar, the living Virupaksha Temple and the boulder-strewn Hemakuta Hill.",
+      "morning": {
+        "time": "9:00 AM - 11:30 AM",
+        "place": {
+          "name": "Virupaksha Temple",
+          "description": "Still in worship after 1,300 years, its 50-metre gopuram anchors the old bazaar. Inside, Lakshmi the temple elephant blesses visitors most mornings, and a pinhole in one hall projects an inverted image of the tower.",
+          "area": "Hampi Bazaar",
+          "lat": 15.335,
+          "lng": 76.46
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 2,
+        "category": "culture",
+        "tip": "Shoulders and knees covered, shoes left at the gate; arrive before 9:30 to see the morning puja."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Hampi Bazaar and the Kadalekalu Ganesha",
+          "description": "Walk the kilometre-long colonnade where traders once sold gems by the heap, then climb to the giant monolithic Ganesha and the smaller Sasivekalu Ganesha on the hill's flank. Lunch on a banana-leaf thali at one of the bazaar's family kitchens.",
+          "area": "Hampi Bazaar",
+          "lat": 15.3346,
+          "lng": 76.461
+        },
+        "duration": "3 hours",
+        "estimatedCost": 12,
+        "category": "sight",
+        "tip": "Midday is hot on the rocks; carry at least a litre of water each."
+      },
+      "evening": {
+        "time": "5:15 PM - 7:00 PM",
+        "place": {
+          "name": "Hemakuta Hill sunset",
+          "description": "A low granite hill scattered with early temples, where the whole valley turns gold at dusk. It's an easy ten-minute climb from the bazaar and the best first view of Hampi.",
+          "area": "Hemakuta Hill",
+          "lat": 15.3343,
+          "lng": 76.459
+        },
+        "duration": "1.75 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Sit facing west on the slabs behind the twin-tower temples; leave before full dark, the path has no lights."
+      },
+      "totalDayCost": 14
+    },
+    {
+      "day": 2,
+      "date": "2026-11-13",
+      "theme": "Vittala's stone chariot and the river",
+      "summary": "The grandest temple complex in Hampi, then a coracle out on the Tungabhadra.",
+      "morning": {
+        "time": "8:00 AM - 11:00 AM",
+        "place": {
+          "name": "Vittala Temple and Stone Chariot",
+          "description": "The finest carving in Hampi: musical pillars that ring when tapped (now roped off), and the stone chariot pictured on India's ₹50 note. Early light is softest and crowds are thin.",
+          "area": "Vittala",
+          "lat": 15.3426,
+          "lng": 76.4747
+        },
+        "duration": "3 hours",
+        "estimatedCost": 14,
+        "category": "sight",
+        "tip": "The combined ASI ticket also covers Lotus Mahal and the Elephant Stables, so keep it for tomorrow."
+      },
+      "afternoon": {
+        "time": "12:00 PM - 2:30 PM",
+        "place": {
+          "name": "Coracle ride on the Tungabhadra",
+          "description": "Spin downriver in a bamboo-and-tarp basket boat past riverside shrines and carvings you can't reach on foot. Boatmen gather near the Kodandarama ghat and the path from Vittala.",
+          "area": "Riverside below Vittala",
+          "lat": 15.3417,
+          "lng": 76.4692
+        },
+        "duration": "1 hour",
+        "estimatedCost": 10,
+        "category": "activity",
+        "tip": "Agree the price and route before you step in; life jackets are usually on board, ask for them."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:30 PM",
+        "place": {
+          "name": "Malyavanta Raghunatha Temple at dusk",
+          "description": "A hilltop temple to Rama, far quieter than Matanga, with carved fish and sea creatures on the boulders and a wide sunset view east of the ruins.",
+          "area": "Kamalapura road",
+          "lat": 15.3236,
+          "lng": 76.4936
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 0,
+        "category": "culture",
+        "tip": "Have your auto driver wait; return autos are scarce after dark."
+      },
+      "totalDayCost": 24,
+      "dayTip": "Hire one auto-rickshaw for the day (around ₹1,000-1,500); distances between sites are bigger than they look."
+    },
+    {
+      "day": 3,
+      "date": "2026-11-14",
+      "theme": "The royal centre",
+      "summary": "Palaces, the queen's bath and a last sunset by a lake.",
+      "morning": {
+        "time": "8:30 AM - 11:30 AM",
+        "place": {
+          "name": "Lotus Mahal and Elephant Stables",
+          "description": "An Indo-Islamic pavilion of arches and lotus-bud domes inside the walled women's quarter, next to the eleven domed stables built for the royal elephants.",
+          "area": "Zenana Enclosure",
+          "lat": 15.3186,
+          "lng": 76.471
+        },
+        "duration": "3 hours",
+        "estimatedCost": 0,
+        "category": "sight",
+        "tip": "Same ticket as Vittala Temple yesterday."
+      },
+      "afternoon": {
+        "time": "12:00 PM - 3:00 PM",
+        "place": {
+          "name": "Hazara Rama Temple and Queen's Bath",
+          "description": "The palace chapel's walls are a stone comic strip of the Ramayana and royal processions. Ten minutes away, the Queen's Bath is a plain-fronted building hiding a carved arcaded pool.",
+          "area": "Royal Centre",
+          "lat": 15.3197,
+          "lng": 76.4683
+        },
+        "duration": "3 hours",
+        "estimatedCost": 6,
+        "category": "culture",
+        "tip": "Lunch at a Kamalapura dhaba on the way; it's the closest village to the royal centre."
+      },
+      "evening": {
+        "time": "5:00 PM - 7:30 PM",
+        "place": {
+          "name": "Sanapur Lake",
+          "description": "Across the river, a reservoir ringed by boulders where locals swim and couples watch the sun drop behind the rocks. A calm, green contrast to the ruins.",
+          "area": "Sanapur",
+          "lat": 15.3666,
+          "lng": 76.4566
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 8,
+        "category": "nature",
+        "tip": "Swimming isn't safe in all seasons; enjoy it from the rocks unless locals confirm it's calm."
+      },
+      "totalDayCost": 14
+    }
+  ],
+  "stays": [
+    {
+      "name": "Heritage Resort Hampi",
+      "area": "Kamalapura road",
+      "type": "Resort",
+      "why": "Cottages with gardens a short drive from the royal centre; quiet for couples.",
+      "pricePerNight": 70
+    },
+    {
+      "name": "Evolve Back Kamalapura Palace",
+      "area": "Kamalapura",
+      "type": "Luxury resort",
+      "why": "A palace-style splurge with a pool and guided heritage walks for a special occasion.",
+      "pricePerNight": 330
+    },
+    {
+      "name": "Anegundi homestays",
+      "area": "Anegundi",
+      "type": "Homestay",
+      "why": "Simple village rooms across the river, close to Sanapur Lake and Anjanadri Hill.",
+      "pricePerNight": 30
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Kannada; Hindi and English understood in Hampi",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Not expected; round up for guides and drivers",
+    "weather": "Oct-Feb is dry and warm (15-30°C). Mar-May is very hot; Jun-Sep brings monsoon green but some closures.",
+    "gettingAround": "Hosapete is the nearest railhead (13 km). Autos and rented bicycles or scooters cover the sites.",
+    "phrase": "Namaskara (ನಮಸ್ಕಾರ): Hello"
+  },
+  "packing": [
+    "Light cotton clothes that cover knees and shoulders",
+    "Wide-brim hat and sunscreen",
+    "Shoes with grip for granite",
+    "Reusable water bottle",
+    "Small torch for sunset walks back"
+  ],
+  "summary": {
+    "totalCost": 52,
+    "totalDays": 3,
+    "destination": "Hampi, India",
+    "overview": "Three unhurried days among the boulder fields and temple ruins of the Vijayanagara capital, timed so you catch the soft light at sunrise and sunset, with a coracle ride on the Tungabhadra and quiet dinners for two.",
+    "landscape": "desert",
+    "countryCode": "in",
+    "highlights": [
+      "Sunset over the ruins from Hemakuta Hill",
+      "The stone chariot at Vittala Temple",
+      "A round coracle ride on the Tungabhadra",
+      "Lotus Mahal and the royal Elephant Stables"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "couple",
+      "adults": 2,
+      "children": 0,
+      "spend": "comfort",
+      "stay": "resort",
+      "pace": "relaxed",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "anniversary",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

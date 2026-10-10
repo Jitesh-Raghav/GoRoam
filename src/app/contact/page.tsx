@@ -3,7 +3,7 @@ import { Mail, MessageCircleQuestion, Receipt } from "@/components/site/icons";
 import { LegalLayout } from "@/components/site/legal-layout";
 
 export const metadata: Metadata = {
-  title: "Contact · GoRoam",
+  title: "Contact",
   description: "Get in touch with GoRoam.",
 };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 
 export const metadata: Metadata = {
-  title: "Refund Policy · GoRoam",
+  title: "Refund Policy",
   description: "GoRoam's 30-day money-back guarantee on credit packs.",
 };
 

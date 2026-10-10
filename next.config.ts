@@ -13,6 +13,13 @@ const nextConfig: NextConfig = {
       { source: "/ingest/:path*", destination: `${host}/:path*` },
     ];
   },
+  // Travel packages moved out of the dashboard into the public, indexable trip gallery.
+  async redirects() {
+    return [
+      { source: "/dashboard/packages", destination: "/itineraries", permanent: true },
+      { source: "/dashboard/packages/:slug", destination: "/itineraries/:slug", permanent: true },
+    ];
+  },
   skipTrailingSlashRedirect: true,
   images: {
     // Google profile pictures from next-auth sessions.

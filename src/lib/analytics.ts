@@ -59,6 +59,10 @@ export type AnalyticsEvent =
   | "concierge_asked"
   | "stop_swapped"
   | "hero_prompt_submitted"
+  | "guest_trip_generated"
+  | "guest_trip_limited"
+  | "guest_unlock_clicked"
+  | "guest_trip_claimed"
   | "film_played";
 
 export function track(event: AnalyticsEvent, properties?: Record<string, string | number | boolean | null | undefined>) {

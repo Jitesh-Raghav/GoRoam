@@ -1,0 +1,219 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2026-10-15",
+      "theme": "The bridges and the aarti",
+      "summary": "Walk the riverside between Laxman Jhula and Ram Jhula and end at the evening aarti.",
+      "morning": {
+        "time": "9:00 AM - 12:00 PM",
+        "place": {
+          "name": "Laxman Jhula and Tapovan",
+          "description": "The suspension-bridge stretch of Rishikesh, with the 13-storey Trimbakeshwar temple and a strip of cafés and yoga schools along the river.",
+          "area": "Tapovan",
+          "lat": 30.127,
+          "lng": 78.3299
+        },
+        "duration": "3 hours",
+        "estimatedCost": 10,
+        "category": "sight",
+        "tip": "The old Laxman Jhula bridge is closed to traffic; the new glass bridge alongside is the crossing."
+      },
+      "afternoon": {
+        "time": "12:30 PM - 3:30 PM",
+        "place": {
+          "name": "Beatles Ashram (Chaurasi Kutia)",
+          "description": "The abandoned Maharishi Mahesh Yogi ashram where the Beatles stayed in 1968, now a forest ruin of meditation domes covered in murals.",
+          "area": "Rajaji National Park",
+          "lat": 30.1062,
+          "lng": 78.3189
+        },
+        "duration": "3 hours",
+        "estimatedCost": 15,
+        "category": "culture",
+        "tip": "Foreigners pay a higher ticket; carry ID. Go at midday when the light falls through the domes."
+      },
+      "evening": {
+        "time": "5:30 PM - 7:30 PM",
+        "place": {
+          "name": "Ganga Aarti at Parmarth Niketan",
+          "description": "The ashram's riverside aarti with chanting, drums and lamps circled over the Ganga at dusk, open to everyone.",
+          "area": "Swarg Ashram",
+          "lat": 30.1166,
+          "lng": 78.3108
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "culture",
+        "tip": "Arrive by 5:30 to sit on the ghat steps; the best seats fill early."
+      },
+      "totalDayCost": 25
+    },
+    {
+      "day": 2,
+      "date": "2026-10-16",
+      "theme": "Rapids and cliff-side cafés",
+      "summary": "Rafting in the morning, a slow afternoon in Tapovan.",
+      "morning": {
+        "time": "8:00 AM - 12:00 PM",
+        "place": {
+          "name": "Rafting from Shivpuri",
+          "description": "The classic 16-km run from Shivpuri back to Rishikesh through rapids like Roller Coaster and Golf Course, with a cliff-jump stop.",
+          "area": "Shivpuri",
+          "lat": 30.1497,
+          "lng": 78.3874
+        },
+        "duration": "4 hours",
+        "estimatedCost": 30,
+        "category": "activity",
+        "tip": "Book an operator licensed by the state; rafting closes in the Jul-Aug monsoon."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Lunch and a sound-healing session",
+          "description": "A long lunch at a cliff-top café, then a singing-bowl sound-healing session at one of Tapovan's studios.",
+          "area": "Tapovan",
+          "lat": 30.125,
+          "lng": 78.327
+        },
+        "duration": "3 hours",
+        "estimatedCost": 40,
+        "category": "wellness",
+        "tip": "Most sessions are drop-in; ask at the studio in the morning."
+      },
+      "evening": {
+        "time": "5:30 PM - 7:30 PM",
+        "place": {
+          "name": "Triveni Ghat aarti",
+          "description": "The town's biggest ghat, where locals float leaf-boat diyas on the river during a grand evening aarti.",
+          "area": "Triveni Ghat",
+          "lat": 30.1033,
+          "lng": 78.2972
+        },
+        "duration": "2 hours",
+        "estimatedCost": 2,
+        "category": "culture",
+        "tip": "Buy a diya boat from the stalls for a few rupees and float it yourself."
+      },
+      "totalDayCost": 72
+    },
+    {
+      "day": 3,
+      "date": "2026-10-17",
+      "theme": "Sunrise and the waterfall",
+      "summary": "Morning yoga, then a forest walk to a waterfall.",
+      "morning": {
+        "time": "6:30 AM - 9:00 AM",
+        "place": {
+          "name": "Sunrise yoga by the Ganga",
+          "description": "A drop-in hatha class on a riverside deck as the sun comes over the hills, the way to start a day in Rishikesh.",
+          "area": "Tapovan",
+          "lat": 30.126,
+          "lng": 78.3285
+        },
+        "duration": "1.5 hours",
+        "estimatedCost": 12,
+        "category": "wellness",
+        "tip": "Drop-in classes cost ₹300-600; bring nothing but water."
+      },
+      "afternoon": {
+        "time": "10:00 AM - 1:30 PM",
+        "place": {
+          "name": "Neer Garh Waterfall",
+          "description": "A short climb through forest to a series of turquoise pools and falls, cool and quiet compared with the town.",
+          "area": "Badrinath Road",
+          "lat": 30.1415,
+          "lng": 78.3332
+        },
+        "duration": "3.5 hours",
+        "estimatedCost": 6,
+        "category": "nature",
+        "tip": "The path is slippery after rain; wear shoes, not sandals."
+      },
+      "evening": {
+        "time": "3:00 PM - 6:00 PM",
+        "place": {
+          "name": "Café afternoon and the Ram Jhula market",
+          "description": "A last masala chai on a terrace and a wander through Ram Jhula's stalls for rudraksha beads, singing bowls and yoga wear.",
+          "area": "Ram Jhula",
+          "lat": 30.1225,
+          "lng": 78.315
+        },
+        "duration": "3 hours",
+        "estimatedCost": 20,
+        "category": "shopping",
+        "tip": "Rishikesh is vegetarian and alcohol-free by law; meat and alcohol aren't sold in town."
+      },
+      "totalDayCost": 38
+    }
+  ],
+  "stays": [
+    {
+      "name": "Aloha on the Ganges",
+      "area": "Tapovan",
+      "type": "Hotel",
+      "why": "River-view rooms, a pool and yoga classes on site.",
+      "pricePerNight": 120
+    },
+    {
+      "name": "Parmarth Niketan",
+      "area": "Swarg Ashram",
+      "type": "Ashram",
+      "why": "Simple ashram rooms with daily yoga and the aarti on your doorstep.",
+      "pricePerNight": 25
+    },
+    {
+      "name": "Zostel Rishikesh",
+      "area": "Tapovan",
+      "type": "Hostel",
+      "why": "Hillside hostel with a café and views, popular with solo travellers.",
+      "pricePerNight": 20
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Hindi and Garhwali; English common in Tapovan",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Not expected; tip rafting guides",
+    "weather": "Oct-Nov and Feb-Apr are ideal (15-30°C). Rafting stops in Jul-Aug.",
+    "gettingAround": "Shared autos run between Ram Jhula, Laxman Jhula and Tapovan; Dehradun airport is 35 km.",
+    "phrase": "Hari Om: the common greeting"
+  },
+  "packing": [
+    "Yoga clothes",
+    "Quick-dry outfit and spare clothes for rafting",
+    "Modest clothing for ashrams and ghats",
+    "Sandals plus walking shoes"
+  ],
+  "summary": {
+    "totalCost": 135,
+    "totalDays": 3,
+    "destination": "Rishikesh, India",
+    "overview": "Three days in the yoga capital on the Ganga: sunrise yoga, the Beatles Ashram, rafting through the Shivpuri rapids and the Ganga Aarti at Triveni Ghat and Parmarth Niketan.",
+    "landscape": "mountains",
+    "countryCode": "in",
+    "highlights": [
+      "Evening Ganga Aarti at Parmarth Niketan",
+      "Rafting from Shivpuri",
+      "The graffiti-covered Beatles Ashram",
+      "Sunrise yoga by the river"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "solo",
+      "adults": 1,
+      "children": 0,
+      "spend": "savvy",
+      "stay": "hostel",
+      "pace": "balanced",
+      "diet": [],
+      "transport": "transit",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}

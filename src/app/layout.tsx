@@ -18,10 +18,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL?.startsWith("http") ? process.env.NEXTAUTH_URL : "https://goroam.world"),
-  title: "GoRoam - AI-Powered Travel Itinerary Planning",
-  description: "Plan your perfect trip with AI-powered itineraries. Get personalized travel plans, real-time maps, and downloadable PDFs in seconds.",
-  keywords: ["travel planning", "AI itinerary", "trip planner", "travel app", "vacation planning"],
-  authors: [{ name: "GoRoam Team" }],
+  title: {
+    default: "GoRoam: AI Trip Planner for Day-by-Day Itineraries",
+    template: "%s · GoRoam",
+  },
+  description:
+    "Describe your trip in one sentence and GoRoam's AI trip planner builds a day-by-day itinerary with real places, timings, an honest budget and a local guide. Your first trip is free.",
+  keywords: ["AI trip planner", "AI itinerary generator", "travel itinerary planner", "trip planner India", "day by day itinerary"],
+  authors: [{ name: "Jitesh Raghav", url: "https://jiteshraghav.xyz" }],
+  creator: "Jitesh Raghav",
+  alternates: { canonical: "/" },
+  // Google Search Console: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION to the "HTML tag" content value.
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } : undefined,
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
@@ -32,15 +40,17 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "GoRoam - AI-Powered Travel Planning",
-    description: "Create perfect travel itineraries with AI in minutes, not hours.",
+    title: "GoRoam: AI Trip Planner for Day-by-Day Itineraries",
+    description: "One sentence in, a whole trip out: real places, honest budgets and a guide for the road. First trip free.",
     type: "website",
+    siteName: "GoRoam",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GoRoam - AI Travel Planning",
-    description: "Plan amazing trips with AI-powered itineraries",
+    title: "GoRoam: AI Trip Planner",
+    description: "One sentence in, a whole trip out. First trip free.",
+    creator: "@okayjitesh",
   },
 };
 

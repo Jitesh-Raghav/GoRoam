@@ -2,20 +2,15 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import OpenAI from 'openai';
 import { normalizePreferences, titleCase, type ItineraryData } from '@/lib/trip';
-import { SYSTEM_PROMPT, constructPrompt, tidy, type ItineraryRequest } from '@/lib/itinerary-ai';
+import { type ItineraryRequest } from '@/lib/itinerary-ai';
+import { generateItineraryData } from '@/lib/generate';
 import { FREE_CREDITS } from '@/lib/plans';
 import { photosForItinerary } from '@/lib/place-photos';
-import { generateGuide } from '@/lib/guide';
 
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 
 interface ItineraryResponse {
@@ -139,69 +134,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
     chargedUserId = user.id;
 
-    // Construct prompt and call OpenAI
-    const prompt = constructPrompt(data, prefs);
-    
-    // The local guide is written alongside the day plan, so it adds no wait.
-    // If it fails the trip still saves; the itinerary page writes it later.
-    const guidePromise = generateGuide(openai, {
-      destination: data.destination,
-      source: data.source,
-      startDate: data.startDate,
-      numberOfDays: data.numberOfDays,
-      interests: data.interests,
-      preferences: prefs,
-    }).catch((guideError) => {
-      console.error('Guide generation failed:', guideError instanceof Error ? guideError.message : guideError);
-      return undefined;
-    });
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // Using the more cost-effective model
-      messages: [
-        {
-          role: "system",
-          content: SYSTEM_PROMPT
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 12000,
-      response_format: { type: "json_object" },
-    });
-
-    const gptResponse = completion.choices[0]?.message?.content;
-    if (!gptResponse) {
-      throw new Error('No response from OpenAI');
-    }
-
-    // Parse GPT response - handle markdown code blocks
-    let itineraryData: ItineraryData;
-    try {
-      // Remove markdown code block formatting if present
-      let cleanResponse = gptResponse.trim();
-      if (cleanResponse.startsWith('```json')) {
-        cleanResponse = cleanResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-      } else if (cleanResponse.startsWith('```')) {
-        cleanResponse = cleanResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
-      }
-      
-      itineraryData = tidy(JSON.parse(cleanResponse), data);
-      itineraryData.trip = { source: data.source, preferences: prefs };
-      delete itineraryData.guide;
-    } catch (parseError) {
-      console.error('Failed to parse GPT response:', gptResponse);
-      console.error('Parse error:', parseError);
-      throw new Error('Invalid response format from AI');
-    }
-
-
-
-    const guide = await guidePromise;
-    if (guide) itineraryData.guide = guide;
+    const itineraryData = await generateItineraryData(data, prefs);
 
     // Save itinerary to database
     const savedItinerary = await prisma.itinerary.create({

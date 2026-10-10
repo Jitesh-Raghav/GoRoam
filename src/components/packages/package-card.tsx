@@ -22,7 +22,7 @@ export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: numbe
   const [photoOk, setPhotoOk] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const { scene } = useDestinationScene(pkg.destination, pkg.landscape);
-  const href = `/dashboard/packages/${pkg.slug}`;
+  const href = `/itineraries/${pkg.slug}`;
 
   // Count an impression once a card is properly on screen.
   useEffect(() => {

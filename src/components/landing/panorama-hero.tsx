@@ -2,8 +2,11 @@
 
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
 import { CalendarDays, Heart, MapPin, Send, Sparkles, Users, Wallet } from "@/components/site/icons";
+import { signIn, useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { createPortal } from "react-dom";
 import { track } from "@/lib/analytics";
 import { SplitText } from "@/components/motion/split-text";
 import { PillButton } from "@/components/site/pill";
@@ -41,8 +44,14 @@ function understood(p: ParsedPrompt) {
   return chips;
 }
 
+// The planning overlay, only loaded when a guest trip is being made.
+const GeneratingOverlay = dynamic(() => import("@/components/dashboard/generating-overlay").then((m) => m.GeneratingOverlay), { ssr: false });
+
 function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
   const router = useRouter();
+  const { status } = useSession();
+  const [guest, setGuest] = useState<{ destination: string; days: number } | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const id = useId();
   const area = useRef<HTMLTextAreaElement>(null);
   const shake = useAnimationControls();
@@ -78,7 +87,38 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
     track("hero_prompt_submitted", { length: value.length });
     // A bare place name ("Lisbon") is a destination even if we've never heard of it.
     if (!p.destination && value.split(/\s+/).length <= 4 && !/\d/.test(value)) p.destination = value;
-    router.push(plannerHref(p));
+    if (status === "authenticated" || !p.destination) return router.push(plannerHref(p));
+    void planAsGuest(p);
+  };
+
+  // Signed out: plan the first trip right here, no account needed. Days 2+ unlock on sign-in.
+  const planAsGuest = async (p: ParsedPrompt) => {
+    const days = Math.min(p.days ?? 3, 7);
+    setNotice(null);
+    setGuest({ destination: p.destination!, days });
+    try {
+      const res = await fetch("/api/guest-itinerary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ destination: p.destination, days, budget: p.budget, startDate: p.startDate, companions: p.companions, interests: p.interests }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (body.id) {
+        if (!body.existing) track("guest_trip_generated", { destination: p.destination, days });
+        router.push(`/try/${body.id}`);
+        return;
+      }
+      setGuest(null);
+      if (body.signedIn) return router.push(plannerHref(p));
+      if (body.limited) {
+        track("guest_trip_limited", { destination: p.destination });
+        return void signIn("google", { callbackUrl: plannerHref(p) });
+      }
+      setNotice(body.error ?? "We couldn't plan that just now. Try again in a moment.");
+    } catch {
+      setGuest(null);
+      setNotice("We couldn't reach GoRoam. Check your connection and try again.");
+    }
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -105,6 +145,13 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
       transition={{ duration: 1.2, ease, delay: delay + 0.55 }}
       className="mx-auto w-full max-w-[46rem]"
     >
+      {/* Portalled: the composer sits in a transformed container, which would trap a fixed overlay. */}
+      {guest && createPortal(<GeneratingOverlay destination={guest.destination} days={guest.days} />, document.body)}
+      {notice && (
+        <p role="alert" className="mb-3 rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink ring-1 ring-sun/40 backdrop-blur">
+          {notice}
+        </p>
+      )}
       <motion.form
         animate={shake}
         onSubmit={(e) => {

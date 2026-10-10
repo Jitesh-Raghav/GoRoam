@@ -1,0 +1,269 @@
+{
+  "itinerary": [
+    {
+      "day": 1,
+      "date": "2027-04-08",
+      "theme": "Old Manali and the deodars",
+      "summary": "Settle in with temples, cedar forest and café-hopping.",
+      "morning": {
+        "time": "10:00 AM - 12:30 PM",
+        "place": {
+          "name": "Hidimba Devi Temple",
+          "description": "A four-tiered wooden pagoda temple from 1553, set in a forest of giant deodar cedars. The carvings around the doorway are the finest in the valley.",
+          "area": "Dhungri",
+          "lat": 32.2482,
+          "lng": 77.1801
+        },
+        "duration": "2 hours",
+        "estimatedCost": 0,
+        "category": "culture",
+        "tip": "Queues build after 11; go straight after breakfast."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 4:00 PM",
+        "place": {
+          "name": "Old Manali café crawl",
+          "description": "Cross the Manalsu bridge into the old village for slow lunches of trout and Israeli plates, apple-wood houses and Himalayan views from café terraces.",
+          "area": "Old Manali",
+          "lat": 32.259,
+          "lng": 77.1756
+        },
+        "duration": "3 hours",
+        "estimatedCost": 30,
+        "category": "food",
+        "tip": "Most cafés are cash or UPI; card machines are hit and miss."
+      },
+      "evening": {
+        "time": "6:00 PM - 10:00 PM",
+        "place": {
+          "name": "Live music night in Old Manali",
+          "description": "Old Manali's cafés host acoustic sets and open-mic nights through the season, the easiest way to meet other travellers.",
+          "area": "Old Manali",
+          "lat": 32.2603,
+          "lng": 77.175
+        },
+        "duration": "4 hours",
+        "estimatedCost": 35,
+        "category": "nightlife",
+        "tip": "Places close by 11 PM under local rules; plan your walk back down."
+      },
+      "totalDayCost": 65
+    },
+    {
+      "day": 2,
+      "date": "2027-04-09",
+      "theme": "Snow day",
+      "summary": "Atal Tunnel to Sissu, then snow play at Solang Valley.",
+      "morning": {
+        "time": "7:30 AM - 12:30 PM",
+        "place": {
+          "name": "Atal Tunnel and Sissu",
+          "description": "Drive through the 9-km Atal Tunnel under the Rohtang Pass into Lahaul's stark valley, with frozen waterfalls and snow fields around Sissu.",
+          "area": "Lahaul",
+          "lat": 32.4025,
+          "lng": 77.1499
+        },
+        "duration": "5 hours",
+        "estimatedCost": 50,
+        "category": "nature",
+        "tip": "Hire a local taxi; private Manali taxis are the only ones with valley permits. Check road status the night before."
+      },
+      "afternoon": {
+        "time": "1:30 PM - 4:30 PM",
+        "place": {
+          "name": "Solang Valley",
+          "description": "Snow slopes for sledging, skiing lessons and paragliding in season, with the ropeway climbing to 3,200 m.",
+          "area": "Solang",
+          "lat": 32.3164,
+          "lng": 77.1567
+        },
+        "duration": "3 hours",
+        "estimatedCost": 60,
+        "category": "activity",
+        "tip": "Rent snow boots and jackets at Solang, not in Manali; it's cheaper and you avoid carrying them."
+      },
+      "evening": {
+        "time": "7:00 PM - 9:30 PM",
+        "place": {
+          "name": "Dinner on the Mall Road",
+          "description": "Back in town, walk the pedestrian Mall and eat Himachali siddu and trout at one of the dhabas off the main strip.",
+          "area": "Mall Road",
+          "lat": 32.2431,
+          "lng": 77.1892
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 25,
+        "category": "food",
+        "tip": "Siddu, a steamed stuffed bread with ghee, is the local dish to order."
+      },
+      "totalDayCost": 135
+    },
+    {
+      "day": 3,
+      "date": "2027-04-10",
+      "theme": "River day",
+      "summary": "Rafting on the Beas and hot springs at Vashisht.",
+      "morning": {
+        "time": "9:00 AM - 1:00 PM",
+        "place": {
+          "name": "White-water rafting on the Beas",
+          "description": "A 14-km run of grade II-III rapids from Pirdi, the classic Kullu rafting stretch, with guides and gear included.",
+          "area": "Pirdi, Kullu",
+          "lat": 31.9567,
+          "lng": 77.1162
+        },
+        "duration": "4 hours",
+        "estimatedCost": 40,
+        "category": "activity",
+        "tip": "Rafting runs roughly Mar-Jun and Sep-Oct; it stops during the monsoon."
+      },
+      "afternoon": {
+        "time": "2:00 PM - 4:30 PM",
+        "place": {
+          "name": "Kullu shawl weavers",
+          "description": "Stop at the Bhuttico weavers' co-operative to see handlooms and buy a genuine Kullu shawl with its geometric border.",
+          "area": "Bhuttico, Kullu",
+          "lat": 31.9706,
+          "lng": 77.1104
+        },
+        "duration": "2 hours",
+        "estimatedCost": 30,
+        "category": "shopping",
+        "tip": "Co-op prices are fixed and the wool is genuine, unlike many roadside shops."
+      },
+      "evening": {
+        "time": "6:00 PM - 8:30 PM",
+        "place": {
+          "name": "Vashisht hot springs",
+          "description": "Soak in the sulphur hot-spring baths beside the old Vashisht temple, then dinner in the village.",
+          "area": "Vashisht",
+          "lat": 32.2656,
+          "lng": 77.1878
+        },
+        "duration": "2.5 hours",
+        "estimatedCost": 5,
+        "category": "wellness",
+        "tip": "The public baths are separate for men and women; bring a towel."
+      },
+      "totalDayCost": 75
+    },
+    {
+      "day": 4,
+      "date": "2027-04-11",
+      "theme": "Waterfall hike",
+      "summary": "A half-day hike to Jogini Falls before heading home.",
+      "morning": {
+        "time": "8:00 AM - 12:30 PM",
+        "place": {
+          "name": "Jogini Falls hike",
+          "description": "A 3-km trail from Vashisht through apple orchards and pine forest to a 150-m waterfall sacred to the local goddess.",
+          "area": "Vashisht",
+          "lat": 32.2765,
+          "lng": 77.1915
+        },
+        "duration": "4.5 hours",
+        "estimatedCost": 0,
+        "category": "nature",
+        "tip": "Wear proper shoes; the last stretch is rocky and slippery."
+      },
+      "afternoon": {
+        "time": "1:00 PM - 3:00 PM",
+        "place": {
+          "name": "Manu Temple and Old Manali lunch",
+          "description": "The temple to the sage Manu, who gave Manali its name, sits at the top of the old village. One more café lunch before the road.",
+          "area": "Old Manali",
+          "lat": 32.2617,
+          "lng": 77.1747
+        },
+        "duration": "2 hours",
+        "estimatedCost": 25,
+        "category": "culture",
+        "tip": "Book overnight Volvo buses to Delhi a few days ahead in peak season."
+      },
+      "evening": {
+        "time": "4:00 PM - 6:00 PM",
+        "place": {
+          "name": "Van Vihar riverside walk",
+          "description": "A deodar park along the Beas for a last easy walk and paddle-boating on the small lake before your evening bus.",
+          "area": "Mall Road",
+          "lat": 32.243,
+          "lng": 77.188
+        },
+        "duration": "2 hours",
+        "estimatedCost": 5,
+        "category": "nature",
+        "tip": "Overnight buses leave from the private bus stand near the Mall around 5-7 PM."
+      },
+      "totalDayCost": 30
+    }
+  ],
+  "stays": [
+    {
+      "name": "Zostel Manali",
+      "area": "Old Manali",
+      "type": "Hostel",
+      "why": "The social hub for friend groups, with dorms and private rooms and a big common area.",
+      "pricePerNight": 30
+    },
+    {
+      "name": "Johnson Lodge",
+      "area": "Circuit House Road",
+      "type": "Hotel",
+      "why": "Comfortable rooms and a well-loved restaurant, walkable to the Mall.",
+      "pricePerNight": 90
+    },
+    {
+      "name": "Old Manali homestays",
+      "area": "Old Manali",
+      "type": "Homestay",
+      "why": "Wooden village houses with orchard views, good value for a group.",
+      "pricePerNight": 35
+    }
+  ],
+  "essentials": {
+    "currency": "Indian Rupee (INR). UPI and cards work in towns; carry cash for small temples, coracles and rural stalls.",
+    "language": "Hindi and Kullui; English widely understood",
+    "plugs": "Type C/D, 230V",
+    "tipping": "Round up; tip rafting guides ₹100-200 each",
+    "weather": "Apr is crisp (5-20°C) with snow above Solang. Dec-Feb is freezing; Jul-Aug brings landslide risk.",
+    "gettingAround": "Overnight Volvo from Delhi (12-14 h) or fly to Bhuntar (50 km). Local taxis for Solang and Atal Tunnel.",
+    "phrase": "Ram Ram: the everyday Himachali hello"
+  },
+  "packing": [
+    "Warm layers and a down jacket",
+    "Waterproof shoes with grip",
+    "Sunglasses for snow glare",
+    "Motion-sickness tablets for mountain roads",
+    "Power bank"
+  ],
+  "summary": {
+    "totalCost": 305,
+    "totalDays": 4,
+    "destination": "Manali, India",
+    "overview": "Four days in the Kullu valley with your crew: Old Manali cafés, a day in the snow at Solang and Atal Tunnel, river rafting in Kullu and a hike to Jogini Falls.",
+    "landscape": "mountains",
+    "countryCode": "in",
+    "highlights": [
+      "Snow at Solang Valley and through Atal Tunnel",
+      "Old Manali's cafés and live music",
+      "White-water rafting on the Beas",
+      "The Jogini Falls hike from Vashisht"
+    ]
+  },
+  "trip": {
+    "source": "",
+    "preferences": {
+      "companions": "friends",
+      "adults": 4,
+      "children": 0,
+      "spend": "savvy",
+      "stay": "hostel",
+      "pace": "packed",
+      "diet": [],
+      "transport": "rides",
+      "occasion": "first",
+      "notes": ""
+    }
+  },
+  "photos": {}
+}
