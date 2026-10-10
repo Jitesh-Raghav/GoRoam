@@ -10,6 +10,7 @@ import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/da
 import { useCredits } from "@/components/dashboard/dashboard-layout";
 import type { SceneId } from "@/components/scenes/scenes";
 import { SplitText } from "@/components/motion/split-text";
+import { Mesh, type MeshTone } from "@/components/site/mesh";
 import { PhotoPanel } from "@/components/site/photo-panel";
 import { PillButton, PillLink } from "@/components/site/pill";
 import { BRAND_PHOTOS, PHOTO_QUERIES, sizedPhoto, useBrandPhoto } from "@/lib/brand-photos";
@@ -23,6 +24,8 @@ export default function CreditsPage() {
 const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, adventurer: Crown };
 /** Drawn under each pack's photo, and shown if none loads. */
 const PACK_SCENES: Record<PlanId, SceneId> = { starter: "lake", explorer: "fuji", adventurer: "peaks" };
+/** Each pack's colour, in the mesh that wakes up on hover. */
+const PACK_TONES: Record<PlanId, MeshTone> = { starter: "lagoon", explorer: "sunset", adventurer: "sand" };
 
 /** A pack's header: a photo of the kind of trip it buys, with its size on top. */
 function PackPhoto({ plan }: { plan: Plan }) {
@@ -297,7 +300,7 @@ function CreditsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
               className={cn(
-                "relative flex flex-col overflow-hidden rounded-panel",
+                "mesh-host relative flex flex-col overflow-hidden rounded-panel transition-transform duration-500 ease-out-expo hover:-translate-y-1",
                 plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,119,109,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
                 picked === plan.id && "ring-2 ring-brand"
               )}
@@ -308,8 +311,8 @@ function CreditsPageContent() {
                   <Sparkles className="size-3.5" /> Most popular
                 </span>
               )}
-              <div className="relative flex flex-1 flex-col p-7 sm:p-8">
-                {plan.popular && <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 size-72 rounded-full bg-brand/25 blur-3xl" />}
+              <div className="relative isolate flex flex-1 flex-col overflow-hidden p-7 sm:p-8">
+                <Mesh tone={PACK_TONES[plan.id]} />
                 <div className="relative flex items-baseline gap-2">
                   <span className="display text-5xl leading-none">${plan.price}</span>
                   <span className={cn("text-sm", plan.popular ? "text-paper/60" : "text-stone")}>one-time</span>
