@@ -598,7 +598,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Footer harbour plate: ferries cross, the sloop rides the swell, the moon's path glints. */
+/* Footer harbour plate: ferries cross and the sloop rides the swell. */
 .plate-ferry-a {
   animation: plate-ferry-a 60s linear infinite;
 }
@@ -647,24 +647,10 @@ html.lenis, html.lenis body { height: auto; }
     transform: translateY(3px) rotate(1.5deg);
   }
 }
-.plate-glint {
-  animation: plate-glint 4.2s ease-in-out infinite;
-  opacity: 0;
-}
-@keyframes plate-glint {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .plate-ferry-a,
   .plate-ferry-b,
-  .plate-bob,
-  .plate-glint {
+  .plate-bob {
     animation: none;
   }
 }
