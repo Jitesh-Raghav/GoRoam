@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { dodo, paymentsConfigured, productIdFor } from '@/lib/dodo';
-import { PLANS, type PlanId } from '@/lib/plans';
+import { currencyFor } from '@/lib/currency';
+import { PLANS, fixedPrice, type PlanId } from '@/lib/plans';
 
 // Starts a Dodo Payments checkout for one credit pack and returns its URL.
 // Credits are added later by the webhook, never by this route or the redirect.
@@ -44,8 +45,16 @@ export async function POST(request: NextRequest) {
     const cancel = new URL(back);
     cancel.searchParams.set('checkout', 'cancelled');
 
+    // Charge in the visitor's own currency when the pack has a fixed price in it
+    // (set up in Dodo's localized pricing). The country comes from the request,
+    // never from the client, so the price matches the one the site showed.
+    const country = request.headers.get('x-vercel-ip-country');
+    const local = currencyFor(country);
+    const billingCurrency = local && local !== 'USD' && fixedPrice(plan.id, local) !== null ? local : null;
+
     const checkout = await dodo().checkoutSessions.create({
       product_cart: [{ product_id: productIdFor(plan.id as PlanId)!, quantity: 1 }],
+      ...(billingCurrency ? { billing_currency: billingCurrency as 'INR' | 'EUR' | 'GBP' } : {}),
       customer: { email: user.email, name: user.name ?? undefined },
       metadata: { user_id: user.id, plan_id: plan.id },
       return_url: success.toString(),

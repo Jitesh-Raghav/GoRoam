@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import { track } from "@/lib/analytics";
 import { Scene } from "@/components/scenes/scene";
 import { useDestinationScene } from "@/lib/use-destination-scene";
-import { PLANS, perTrip } from "@/lib/plans";
+import { usePackPrice } from "@/lib/money";
+import { PLANS } from "@/lib/plans";
 import { titleCase } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { useCheckout } from "./use-checkout";
@@ -22,6 +23,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
   const place = titleCase(destination.split(",")[0] || "your trip");
   const { scene } = useDestinationScene(destination || "mountains");
   const checkout = useCheckout(0);
+  const price = usePackPrice();
   useEffect(() => {
     track("paywall_shown", { destination: place, days });
   }, [place, days]);
@@ -100,10 +102,13 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
                   </span>
                 )}
                 <span className="eyebrow text-[0.58rem] opacity-60">{p.name}</span>
-                <span className="display mt-2 text-3xl leading-none">${p.price}</span>
-                <span className="mt-1.5 text-sm">
-                  {p.credits} trips <span className="opacity-60">· {perTrip(p)} each</span>
+                <span className="display mt-2 text-3xl leading-none">{price(p).approx && <span className="mr-0.5 text-lg opacity-60">≈</span>}
+                  {price(p).price}
                 </span>
+                <span className="mt-1.5 text-sm">
+                  {p.credits} trips <span className="opacity-60">· {price(p).approx ? "≈ " : ""}{price(p).each} each</span>
+                </span>
+                {price(p).billed && <span className="mt-0.5 text-[11px] opacity-60">billed as {price(p).billed}</span>}
                 {checkout.pending === p.id ? (
                   <Loader2 className="absolute bottom-4 right-4 size-4 animate-spin" />
                 ) : (

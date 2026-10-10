@@ -12,6 +12,8 @@ import { SplitText } from "@/components/motion/split-text";
 import { PillButton } from "@/components/site/pill";
 import { useTypewriter } from "@/components/site/trip-prompt";
 import { useIntro } from "@/components/site/use-intro";
+import { formatMoney } from "@/lib/currency";
+import { useMoney } from "@/lib/money";
 import { parseTripPrompt, plannerHref, type ParsedPrompt } from "@/lib/prompt-parse";
 import { COMPANIONS, VIBES, labelFor } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -39,7 +41,7 @@ function understood(p: ParsedPrompt) {
   if (p.destination) chips.push({ key: "where", icon: MapPin, text: p.destination });
   if (p.days || p.month) chips.push({ key: "when", icon: CalendarDays, text: [p.days && `${p.days} ${p.days === 1 ? "day" : "days"}`, p.month].filter(Boolean).join(" · ") });
   if (p.companions) chips.push({ key: "who", icon: Users, text: labelFor(COMPANIONS, p.companions) });
-  if (p.budget) chips.push({ key: "budget", icon: Wallet, text: `$${p.budget.toLocaleString("en-US")}` });
+  if (p.budget) chips.push({ key: "budget", icon: Wallet, text: formatMoney(p.budget, p.budgetCurrency ?? "USD", 0) });
   if (p.interests.length) chips.push({ key: "vibes", icon: Heart, text: p.interests.slice(0, 3).map((i) => labelFor(VIBES, i)).join(", ") });
   return chips;
 }
@@ -59,6 +61,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
   const [focused, setFocused] = useState(false);
   const [parsed, setParsed] = useState<ParsedPrompt | null>(null);
   const typed = useTypewriter(ready && !text && !focused, EXAMPLES);
+  const { toUsd } = useMoney();
 
   // Read the description as it's typed, a beat after the last keystroke.
   useEffect(() => {
@@ -96,11 +99,13 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
     const days = Math.min(p.days ?? 3, 7);
     setNotice(null);
     setGuest({ destination: p.destination!, days });
+    // Guest trips are planned in USD; a budget in another currency is converted at today's rate.
+    const budget = p.budget && (!p.budgetCurrency || p.budgetCurrency === "USD" ? p.budget : toUsd(p.budget, p.budgetCurrency));
     try {
       const res = await fetch("/api/guest-itinerary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destination: p.destination, days, budget: p.budget, startDate: p.startDate, companions: p.companions, interests: p.interests }),
+        body: JSON.stringify({ destination: p.destination, days, budget: budget ? Math.round(budget) : undefined, startDate: p.startDate, companions: p.companions, interests: p.interests }),
       });
       const body = await res.json().catch(() => ({}));
       if (body.id) {

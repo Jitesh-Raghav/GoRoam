@@ -80,3 +80,28 @@ export const CHAT_LIMIT = 30;
 
 export const usd = (n: number) => `$${n.toFixed(2)}`;
 export const perTrip = (p: Plan) => usd(p.price / p.credits);
+
+/** Currencies a pack has its own fixed price in, besides USD. */
+export type PackCurrency = "INR" | "EUR" | "GBP";
+
+/**
+ * Fixed local prices, set as round local numbers rather than converted at
+ * today's rate. They're only shown (and charged) once the same amounts are
+ * in Dodo's localized pricing (scripts/dodo-local-prices.ts) and
+ * NEXT_PUBLIC_LOCAL_PRICES=1 is set. Until then visitors see a converted
+ * "≈" figure next to the USD price they'll actually pay.
+ */
+export const PRICES: Record<PlanId, Record<PackCurrency, number>> = {
+  starter: { INR: 799, EUR: 9.49, GBP: 7.99 },
+  explorer: { INR: 1999, EUR: 23.99, GBP: 19.99 },
+  adventurer: { INR: 5499, EUR: 64.99, GBP: 54.99 },
+};
+
+export const LOCAL_PRICES = process.env.NEXT_PUBLIC_LOCAL_PRICES === "1";
+
+/** The fixed price of a pack in a currency we charge in, or null when that currency is billed in USD. */
+export function fixedPrice(plan: PlanId, currency: string): number | null {
+  if (currency === "USD") return PLANS.find((p) => p.id === plan)!.price;
+  if (!LOCAL_PRICES) return null;
+  return PRICES[plan][currency as PackCurrency] ?? null;
+}

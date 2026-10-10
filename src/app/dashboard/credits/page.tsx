@@ -15,7 +15,8 @@ import { PhotoPanel } from "@/components/site/photo-panel";
 import { PillButton, PillLink } from "@/components/site/pill";
 import { BRAND_PHOTOS, PHOTO_QUERIES, sizedPhoto, useBrandPhoto } from "@/lib/brand-photos";
 import { cn } from "@/lib/utils";
-import { PLANS, freeTrips, perTrip, type Plan, type PlanId } from "@/lib/plans";
+import { PackEach, PackPrice } from "@/components/site/pack-price";
+import { PLANS, freeTrips, type Plan, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
   return <CreditsPageContent />;
@@ -313,13 +314,12 @@ function CreditsPageContent() {
               )}
               <div className="relative isolate flex flex-1 flex-col overflow-hidden p-7 sm:p-8">
                 <Mesh tone={PACK_TONES[plan.id]} />
-                <div className="relative flex items-baseline gap-2">
-                  <span className="display text-5xl leading-none">${plan.price}</span>
-                  <span className={cn("text-sm", plan.popular ? "text-paper/60" : "text-stone")}>one-time</span>
+                <div className="relative">
+                  <PackPrice plan={plan} className="text-5xl" muted={plan.popular ? "text-paper/60" : "text-stone"} />
                 </div>
                 <p className={cn("relative mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
                   {plan.credits} credits
-                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ {perTrip(plan)} per trip</span>
+                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={plan} /> per trip</span>
                 </p>
                 <p className={cn("relative mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
 

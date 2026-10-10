@@ -104,6 +104,10 @@ export interface TripPreferences {
   transport: Transport;
   occasion: Occasion;
   notes: string;
+  /** The currency the traveller typed their budget in ("INR"); the trip's `budget` is always USD. */
+  budgetCurrency?: string;
+  /** The budget exactly as typed, in `budgetCurrency`. */
+  budgetLocal?: number;
 }
 
 export const DEFAULT_PREFERENCES: TripPreferences = {
@@ -144,6 +148,9 @@ export function normalizePreferences(input: unknown): TripPreferences {
     transport: pick(TRANSPORT, p.transport, d.transport),
     occasion: pick(OCCASIONS, p.occasion, d.occasion),
     notes: typeof p.notes === "string" ? p.notes.replace(/\s+/g, " ").trim().slice(0, 400) : "",
+    ...(typeof p.budgetCurrency === "string" && /^[A-Z]{3}$/.test(p.budgetCurrency) && Number(p.budgetLocal) > 0 && Number(p.budgetLocal) < 1e10
+      ? { budgetCurrency: p.budgetCurrency, budgetLocal: Math.round(Number(p.budgetLocal)) }
+      : {}),
   };
 }
 

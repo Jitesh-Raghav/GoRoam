@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -69,6 +69,8 @@ import {
   type TripPreferences,
 } from "@/lib/trip";
 import { PLANS, perTrip } from "@/lib/plans";
+import { budgetPicks, compactMoney, formatMoney, roundBudget } from "@/lib/currency";
+import { tidy, useMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<string, typeof MapPin> = {
@@ -105,7 +107,7 @@ const MAX_VIBES = 5;
 
 const STEPS = [
   { id: "route", label: "Route", title: "Where & when?", subtitle: "Your starting point, the place you keep daydreaming about, and your dates." },
-  { id: "people", label: "Who & budget", title: "Who's coming?", subtitle: "Who's on the trip and the total budget for everyone, in US dollars." },
+  { id: "people", label: "Who & budget", title: "Who's coming?", subtitle: "Who's on the trip and the total budget for everyone, in your own currency." },
   { id: "style", label: "Style", title: "How do you travel?", subtitle: "Your pace, what you're into and where you like to wake up." },
   { id: "details", label: "Details", title: "The fine print.", subtitle: "Optional, but it's what makes the plan feel like yours." },
 ] as const;
@@ -115,7 +117,9 @@ export interface TripFormData {
   destination: string;
   startDate: string;
   numberOfDays: number;
+  /** The total budget, in `budgetCurrency`. */
   budget: number;
+  budgetCurrency: string;
   interests: string[];
 }
 
@@ -297,7 +301,17 @@ function Label({ children, aside }: { children: ReactNode; aside?: ReactNode }) 
   );
 }
 
-const nf = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+/** Currencies offered for the budget, besides the traveller's own. */
+const BUDGET_CURRENCIES = ["USD", "EUR", "GBP", "INR", "JPY", "AUD", "CAD", "SGD", "AED", "CHF"];
+
+/** "₹", "€", "$" — the symbol a currency is written with. */
+const symbolOf = (c: string) => {
+  try {
+    return new Intl.NumberFormat(c === "INR" ? "en-IN" : "en-US", { style: "currency", currency: c, currencyDisplay: "narrowSymbol" }).formatToParts(0).find((p) => p.type === "currency")?.value ?? c;
+  } catch {
+    return c;
+  }
+};
 
 export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripFormProps) {
   const router = useRouter();
@@ -310,8 +324,12 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     startDate: "",
     numberOfDays: 4,
     budget: 1500,
+    budgetCurrency: "USD",
     interests: [],
   });
+  const money = useMoney();
+  // Once the traveller has set a budget (or one came with them), leave it alone.
+  const budgetSet = useRef(false);
   const [prefs, setPrefs] = useState<TripPreferences>(DEFAULT_PREFERENCES);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -328,7 +346,10 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
       const prefilled = ["destination", "days", "budget", "start", "with", "vibes", "diet", "notes"].some((k) => q.get(k));
       if (raw && !prefilled) {
         const draft = JSON.parse(raw);
-        if (draft?.formData) setFormData((prev) => ({ ...prev, ...draft.formData }));
+        if (draft?.formData) {
+          if (draft.formData.budget) budgetSet.current = true;
+          setFormData((prev) => ({ ...prev, ...draft.formData }));
+        }
         if (draft?.prefs) setPrefs((prev) => ({ ...prev, ...draft.prefs }));
         if (typeof draft?.step === "number") setStep(Math.max(0, Math.min(STEPS.length - 1, draft.step)));
         return;
@@ -339,13 +360,15 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     const d = q.get("destination");
     const days = Number(q.get("days"));
     const budget = Number(q.get("budget"));
+    const cur = /^[A-Z]{3}$/.test(q.get("cur") ?? "") ? q.get("cur")! : "USD";
+    if (budget > 0) budgetSet.current = true;
     const start = q.get("start") ?? "";
     const vibes = (q.get("vibes") ?? "").split(",").filter((v) => VIBES.some((o) => o.id === v)).slice(0, 5);
     setFormData((prev) => ({
       ...prev,
       ...(d ? { destination: d.slice(0, 120) } : {}),
       ...(days >= 1 && days <= 30 ? { numberOfDays: Math.round(days) } : {}),
-      ...(budget >= 100 ? { budget: Math.round(budget) } : {}),
+      ...(budget > 0 ? { budget: Math.round(budget), budgetCurrency: cur } : {}),
       ...(/^\d{4}-\d{2}-\d{2}$/.test(start) && start >= today ? { startDate: start } : {}),
       ...(vibes.length ? { interests: vibes } : {}),
     }));
@@ -371,8 +394,31 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     // eslint-disable-next-line react-hooks/exhaustive-deps -- read the URL once, on arrival
   }, []);
 
+  // Start the budget in the traveller's own money once we know what that is.
+  useEffect(() => {
+    if (budgetSet.current || !money.live || money.region === "USD" || !money.rates?.[money.region]) return;
+    budgetSet.current = true;
+    setFormData((prev) => ({ ...prev, budgetCurrency: money.region, budget: budgetPicks(money.region, money.rates![money.region])[1] }));
+  }, [money.live, money.region, money.rates]);
+
   const people = prefs.adults + prefs.children;
+  const cur = formData.budgetCurrency;
+  /** The budget in USD, which is what the planner and the AI work in; null until rates arrive for a non-USD budget. */
+  const budgetUsd = cur === "USD" ? formData.budget : money.toUsd(formData.budget, cur);
+  const curRate = cur === "USD" ? 1 : (money.rates?.[cur] ?? null);
+  const picks = budgetPicks(cur, curRate);
+  const minLocal = curRate ? roundBudget(100 * curRate) : 100;
+  const nf = (n: number) => formatMoney(tidy(n), cur, 0);
   const perPersonDay = formData.budget / Math.max(people, 1) / Math.max(formData.numberOfDays, 1);
+  const budgetOptions = [...new Set([money.region, cur, ...BUDGET_CURRENCIES])].filter((c) => c === "USD" || money.rates?.[c]);
+
+  const switchCurrency = (next: string) => {
+    budgetSet.current = true;
+    const usd = budgetUsd ?? 1500;
+    const rate = next === "USD" ? 1 : (money.rates?.[next] ?? null);
+    if (!rate) return;
+    setFormData((prev) => ({ ...prev, budgetCurrency: next, budget: roundBudget(usd * rate) }));
+  };
 
   const set = <K extends keyof TripFormData>(field: K, value: TripFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -406,7 +452,8 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
       if (formData.numberOfDays < 1 || formData.numberOfDays > 30) e.numberOfDays = "Trips can be 1 to 30 days.";
     }
     if (upTo >= 1) {
-      if (!formData.budget || formData.budget < 100) e.budget = "Budget must be at least $100.";
+      if (budgetUsd === null) e.budget = "We couldn't load exchange rates. Switch the budget to USD and try again.";
+      else if (!formData.budget || budgetUsd < 99.5) e.budget = `Budget must be at least ${formatMoney(minLocal, cur, 0)}.`;
     }
     if (upTo >= 2) {
       if (formData.interests.length === 0) e.interests = "Pick at least one thing you're into.";
@@ -451,9 +498,10 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          budget: Math.round(budgetUsd ?? formData.budget),
           numberOfPeople: people,
           tripType: prefs.companions,
-          preferences: prefs,
+          preferences: cur === "USD" ? prefs : { ...prefs, budgetCurrency: cur, budgetLocal: formData.budget },
         }),
       });
       const result = await response.json();
@@ -527,7 +575,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
               <span className={formData.destination ? "font-medium text-brand-2" : "text-paper/50"}>{formData.destination.split(",")[0] || "Anywhere"}</span>
             </span>
             <span className="shrink-0 font-mono text-[11px] text-paper/60">
-              {formData.numberOfDays}d · {people}p · ${formData.budget.toLocaleString("en-US")}
+              {formData.numberOfDays}d · {people}p · {compactMoney(formData.budget, cur)}
             </span>
           </a>
 
@@ -598,7 +646,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                       className="-mt-4"
                       from={formData.source}
                       companions={prefs.companions}
-                      budget={Number(formData.budget) || 2000}
+                      budget={Math.round(budgetUsd ?? 0) || 2000}
                       days={formData.numberOfDays}
                       interests={formData.interests}
                       onPick={(destination, month) => {
@@ -664,25 +712,50 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                           <Wallet className="size-4" />
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col">
-                          <span className="eyebrow text-[0.6rem] text-stone">Budget (USD) · everything included</span>
+                          <span className="eyebrow text-[0.6rem] text-stone">Budget ({cur})<span className="hidden sm:inline"> · everything included</span></span>
                           <span className="mt-1 flex items-center text-[1.05rem] text-ink">
-                            <span className="text-stone">$</span>
+                            <span className="text-stone">{symbolOf(cur)}</span>
                             <input
                               id="trip-budget"
                               type="number"
                               inputMode="numeric"
-                              min={100}
-                              step={50}
+                              min={minLocal}
+                              step={picks[0] >= 10000 ? 1000 : 50}
                               value={formData.budget || ""}
-                              onChange={(e) => set("budget", Number(e.target.value))}
+                              onChange={(e) => {
+                                budgetSet.current = true;
+                                set("budget", Number(e.target.value));
+                              }}
                               aria-invalid={!!errors.budget}
                               className="w-full bg-transparent pl-0.5 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                             />
                           </span>
                         </span>
+                        <select
+                          value={cur}
+                          onChange={(e) => switchCurrency(e.target.value)}
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label="Budget currency"
+                          className="shrink-0 cursor-pointer rounded-full bg-white py-1.5 pl-3 pr-2 font-mono text-xs text-ink ring-1 ring-line outline-none hover:ring-brand/40 focus-visible:ring-2 focus-visible:ring-brand/50"
+                        >
+                          {budgetOptions.map((c) => (
+                            <option key={c} value={c}>
+                              {symbolOf(c)} {c}
+                            </option>
+                          ))}
+                        </select>
                       </label>
                       <FieldError message={errors.budget} />
-                      <QuickPicks values={[750, 1500, 3000, 6000]} current={formData.budget} onPick={(v) => set("budget", v)} format={(v) => nf(v)} />
+                      <QuickPicks
+                        values={picks}
+                        current={formData.budget}
+                        onPick={(v) => {
+                          budgetSet.current = true;
+                          set("budget", v);
+                        }}
+                        format={(v) => compactMoney(v, cur)}
+                      />
+                      {cur !== "USD" && budgetUsd !== null && budgetUsd > 0 && <p className="mt-2 px-1 text-xs text-stone">≈ ${Math.round(budgetUsd).toLocaleString("en-US")} at today&apos;s rate</p>}
                     </div>
 
                     <div>

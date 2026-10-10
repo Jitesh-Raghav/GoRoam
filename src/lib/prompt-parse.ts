@@ -13,7 +13,9 @@ export interface ParsedPrompt {
   days?: number;
   month?: string;
   startDate?: string;
+  /** The budget as written, in `budgetCurrency`. */
   budget?: number;
+  budgetCurrency?: string;
   companions?: Companions;
   interests: string[];
   diet: string[];
@@ -109,12 +111,45 @@ function startFor(month: number, now = new Date()) {
 
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-function findBudget(t: string): number | undefined {
-  const m = t.match(/(?:\$|usd\s?)\s?(\d[\d,]*(?:\.\d+)?)\s?(k)?\b|\b(\d[\d,]*)\s?(k)?\s?(?:usd|dollars|bucks)\b/);
-  if (!m) return undefined;
-  const raw = Number((m[1] ?? m[3]).replace(/,/g, ""));
-  const v = Math.round(raw * ((m[2] ?? m[4]) ? 1000 : 1));
-  return v >= 100 && v <= 200000 ? v : undefined;
+// Ways of writing a currency, before or after the amount.
+const CURRENCY_WORDS: [string, string][] = [
+  ["\\$|usd|us\\$|dollars?|bucks", "USD"],
+  ["₹|rs\\.?|inr|rupees?", "INR"],
+  ["€|eur|euros?", "EUR"],
+  ["£|gbp|pounds?|quid", "GBP"],
+  ["¥|jpy|yen", "JPY"],
+  ["aed|dirhams?", "AED"],
+  ["a\\$|aud", "AUD"],
+  ["c\\$|cad", "CAD"],
+  ["s\\$|sgd", "SGD"],
+];
+const CUR = CURRENCY_WORDS.map(([w]) => w).join("|");
+const AMOUNT = "(\\d[\\d,]*(?:\\.\\d+)?)\\s?(k|thousand|lakhs?|lacs?|l|crores?|cr|m|million)?";
+const BEFORE = new RegExp(`(?:^|[^a-z])(${CUR})\\s?${AMOUNT}(?![a-z])`);
+const AFTER = new RegExp(`\\b${AMOUNT}\\s?(${CUR})(?![a-z])`);
+const SCALE: Record<string, number> = { k: 1e3, thousand: 1e3, l: 1e5, lakh: 1e5, lakhs: 1e5, lac: 1e5, lacs: 1e5, cr: 1e7, crore: 1e7, crores: 1e7, m: 1e6, million: 1e6 };
+
+/** "$1,200", "₹1.5 lakh", "2000 euros", "£3k": the amount and its currency. */
+function findBudget(t: string): { amount: number; currency: string } | undefined {
+  let symbol: string | undefined;
+  let raw: string | undefined;
+  let scale: string | undefined;
+  const before = t.match(BEFORE);
+  if (before) [, symbol, raw, scale] = before;
+  else {
+    const after = t.match(AFTER);
+    if (after) [, raw, scale, symbol] = after;
+  }
+  if (!symbol || !raw) {
+    // Lakhs only ever mean rupees: "a 2 lakh budget".
+    const lakh = t.match(/\b(\d+(?:\.\d+)?)\s?(lakhs?|lacs?)\b/);
+    return lakh ? { amount: Math.round(Number(lakh[1]) * 1e5), currency: "INR" } : undefined;
+  }
+  const currency = CURRENCY_WORDS.find(([w]) => new RegExp(`^(?:${w})$`).test(symbol!.trim()))?.[1];
+  if (!currency) return undefined;
+  const amount = Math.round(Number(raw.replace(/,/g, "")) * (scale ? SCALE[scale] : 1));
+  // Rule out "7 days" style numbers and typos; the planner checks the real minimum.
+  return amount >= 50 && amount < 1e9 ? { amount, currency } : undefined;
 }
 
 function findCompanions(t: string): Companions | undefined {
@@ -165,12 +200,14 @@ export function parseTripPrompt(text: string, now = new Date()): ParsedPrompt {
   const interests = VIBE_WORDS.filter(([, re]) => re.test(t))
     .map(([id]) => id)
     .slice(0, 5);
+  const budget = findBudget(t);
   return {
     destination: findPlace(raw, t),
     days: findDays(t),
     month: month === undefined ? undefined : titleCase(MONTHS[month]),
     startDate: month === undefined ? undefined : iso(startFor(month, now)),
-    budget: findBudget(t),
+    budget: budget?.amount,
+    budgetCurrency: budget?.currency,
     companions: findCompanions(t),
     interests,
     diet: DIET_WORDS.filter(([, re]) => re.test(t)).map(([id]) => id),
@@ -184,6 +221,7 @@ export function plannerHref(p: ParsedPrompt) {
   if (p.destination) q.set("destination", p.destination);
   if (p.days) q.set("days", String(p.days));
   if (p.budget) q.set("budget", String(p.budget));
+  if (p.budget && p.budgetCurrency && p.budgetCurrency !== "USD") q.set("cur", p.budgetCurrency);
   if (p.startDate) q.set("start", p.startDate);
   if (p.companions) q.set("with", p.companions);
   if (p.interests.length) q.set("vibes", p.interests.join(","));

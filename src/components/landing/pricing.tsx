@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 import { Mesh, type MeshTone } from "@/components/site/mesh";
 import { PillLink } from "@/components/site/pill";
-import { PLANS, freeTrips, perTrip } from "@/lib/plans";
+import { PackEach, PackPrice } from "@/components/site/pack-price";
+import { PLANS, freeTrips } from "@/lib/plans";
 import { SectionHeading } from "./section-heading";
 
 /** Each pack's colour, in the mesh that wakes up on hover. */
@@ -46,12 +47,11 @@ export function Pricing() {
                   </span>
                 ) : null}
                 <p className={cn("eyebrow", p.popular ? "text-paper/60" : "text-stone")}>{p.name}</p>
-                <div className="mt-6 flex items-baseline gap-2">
-                  <span className="display text-[3.25rem] leading-none tabular-nums">${p.price}</span>
-                  <span className={cn("text-sm", p.popular ? "text-paper/60" : "text-stone")}>one-time</span>
+                <div className="mt-6">
+                  <PackPrice plan={p} className="text-[3.25rem]" muted={p.popular ? "text-paper/60" : "text-stone"} />
                 </div>
                 <p className={cn("mt-4 font-medium", p.popular ? "text-brand-2" : "text-brand")}>
-                  {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ {perTrip(p)} per itinerary</span>
+                  {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={p} /> per itinerary</span>
                 </p>
                 <p className={cn("mt-2", p.popular ? "text-paper/70" : "text-stone")}>{p.tagline}</p>
 

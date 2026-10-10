@@ -3,21 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowDownUp, Coins } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
-import { formatMoney, homeCurrency } from "@/lib/currency";
+import { formatMoney } from "@/lib/currency";
+import { loadRates, useMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
-
-let ratesPromise: Promise<Record<string, number> | null> | null = null;
-/** USD-based exchange rates, fetched once per page. */
-export const loadRates = () => {
-  if (!ratesPromise) {
-    ratesPromise = fetch("/api/fx")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d?.rates ?? null)
-      .catch(() => null);
-    ratesPromise.then((r) => !r && (ratesPromise = null));
-  }
-  return ratesPromise;
-};
 
 /** Nice round amounts in a currency: 1, 5, 10… scaled to what a coffee or a meal costs there. */
 function ladder(perUsd: number) {
@@ -30,14 +18,13 @@ function ladder(perUsd: number) {
  * quick ladder of everyday amounts, and the trip budget in local terms.
  */
 export function CurrencyCard({ local, budgetUsd, className }: { local: string; budgetUsd: number; className?: string }) {
-  const [rates, setRates] = useState<Record<string, number> | null>(null);
-  const [home, setHome] = useState("USD");
+  // The traveller's side follows the trip's price currency.
+  const { currency: home, rates } = useMoney();
   const [amount, setAmount] = useState("");
   const [flip, setFlip] = useState(false);
 
   useEffect(() => {
-    setHome(homeCurrency());
-    loadRates().then(setRates);
+    void loadRates();
   }, []);
 
   const ok = !!rates?.[local] && !!rates?.[home];

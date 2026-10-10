@@ -48,6 +48,7 @@ import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
+import { useMoney } from "@/lib/money";
 import { downloadIcs } from "@/lib/ics";
 import {
   COMPANIONS,
@@ -56,7 +57,6 @@ import {
   STAYS,
   VIBES,
   labelFor,
-  money,
   titleCase,
   type ActivitySlot,
   type DayItinerary,
@@ -88,13 +88,14 @@ import { Videos } from "./guide/videos";
 import { HeroPhoto } from "./hero-photo";
 import { Bookings } from "./bookings";
 import { CurrencyCard } from "./currency-card";
+import { CurrencySwitch } from "./currency-switch";
 import { JetLagCard } from "./jetlag-card";
 import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { TripWallet } from "./wallet";
 import { DayForecast, WeatherChip, WeatherOutlook, tripCentre, useLocalTime, useTripWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
-import { currencyFor } from "@/lib/currency";
+import { currencyFor, formatMoney } from "@/lib/currency";
 import { downloadKml, hasMappableStops } from "@/lib/kml";
 import { updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
@@ -188,6 +189,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
 function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
+  const { fmt: money } = useMoney();
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
   const swap = useSwap();
@@ -403,6 +405,7 @@ function DayPanel({
   /** Today, during the trip: the slot happening now (or next). */
   nowSlot?: string | null;
 }) {
+  const { fmt: money } = useMoney();
   const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
@@ -501,8 +504,11 @@ function BudgetCard({
   dayCosts,
   active,
   onPick,
+  typed,
 }: {
   budget: number;
+  /** The budget exactly as the traveller typed it, when that wasn't in USD. */
+  typed?: { amount: number; currency: string };
   activities: number;
   stay: number | null;
   nights: number;
@@ -512,6 +518,9 @@ function BudgetCard({
   active: number;
   onPick: (i: number) => void;
 }) {
+  const { fmt: money, currency } = useMoney();
+  // Show the budget as typed ("₹1,00,000") rather than a round trip through USD.
+  const budgetText = typed && typed.currency === currency ? formatMoney(typed.amount, currency, 0) : money(budget);
   const planned = activities + (stay ?? 0);
   const left = budget - planned;
   const over = left < 0;
@@ -556,13 +565,13 @@ function BudgetCard({
           <div className="absolute inset-0 grid place-items-center text-center">
             <div>
               <p className="display text-2xl leading-none text-ink">{Math.round((planned / Math.max(budget, 1)) * 100)}%</p>
-              <p className="mt-1 text-[10px] text-stone">of {money(budget)}</p>
+              <p className="mt-1 text-[10px] text-stone">of {budgetText}</p>
             </div>
           </div>
         </div>
         <div className="min-w-0">
           <p className="display text-3xl leading-none text-ink">{money(planned)}</p>
-          <p className="mt-1.5 text-sm text-stone">planned of your {money(budget)} budget</p>
+          <p className="mt-1.5 text-sm text-stone">planned of your {budgetText} budget</p>
           <p className={cn("mt-3 inline-flex rounded-full px-2.5 py-1 text-xs", over ? "bg-destructive/10 text-destructive" : "bg-brand-soft text-brand")}>
             {over ? `${money(-left)} over` : `${money(left)} to spare`}
           </p>
@@ -615,6 +624,7 @@ function BudgetCard({
 }
 
 function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number; query: BookingQuery }) {
+  const { fmt: money } = useMoney();
   const [primary] = stayPartners(query, `${stay.name}, ${cityOf(query.destination)}`);
   return (
     <motion.article
@@ -691,6 +701,7 @@ export function TripView({
   /** Packages: where "Trip gallery" leads back to (the public gallery, or the dashboard's copy of it). */
   backHref?: string;
 }) {
+  const { fmt: money, convert, currency: shownCurrency } = useMoney();
   const data = it.itineraryData;
   // Guest previews behave like packages (no owner tools), with their own wording and an unlock button.
   const isGuest = variant === "guest";
@@ -969,7 +980,10 @@ export function TripView({
             startDate: isoDay(it.startDate, 0),
             numberOfDays: it.numberOfDays,
             numberOfPeople: people,
-            budget: Math.round(it.budget),
+            // In the shown currency: as typed when it matches, else converted.
+            ...(prefs?.budgetLocal && prefs.budgetCurrency === shownCurrency
+              ? { budget: prefs.budgetLocal, budgetCurrency: shownCurrency }
+              : { budget: Math.round(convert(it.budget) ?? it.budget), budgetCurrency: convert(it.budget) === null ? "USD" : shownCurrency }),
             tripType: who || "Trip",
             interests: it.interests,
             note: prefs ? `${labelFor(PACES, prefs.pace)} pace · ${labelFor(STAYS, prefs.stay)}` : undefined,
@@ -986,7 +1000,9 @@ export function TripView({
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
           <section ref={planRef} className="scroll-mt-6">
-            <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>} />
+            <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>}>
+              <CurrencySwitch local={localCurrency} typed={prefs?.budgetCurrency} />
+            </SectionTitle>
 
             {days.length > 1 && (
               <div
@@ -1068,6 +1084,7 @@ export function TripView({
           <div className="space-y-3 lg:sticky lg:top-6">
             <BudgetCard
               budget={it.budget}
+              typed={prefs?.budgetCurrency && prefs.budgetLocal ? { amount: prefs.budgetLocal, currency: prefs.budgetCurrency } : undefined}
               activities={activities}
               stay={stayTotal}
               nights={nights}

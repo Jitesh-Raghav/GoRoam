@@ -1,5 +1,6 @@
 "use client";
 
+import { useMoney } from "@/lib/money";
 /* eslint-disable @next/next/no-img-element -- remote Wikimedia/Unsplash photos, already sized. */
 
 import { motion } from "framer-motion";
@@ -11,7 +12,7 @@ import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { track } from "@/lib/analytics";
 import type { PackageCardData } from "@/lib/packages-data";
-import { money } from "@/lib/trip";
+
 import { usePlacePhoto } from "@/lib/brand-photos";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ import { cn } from "@/lib/utils";
  * destination; the illustrated scene underneath shows until it loads, or if none exists.
  */
 export function PackageCard({ pkg, index, href = `/itineraries/${pkg.slug}` }: { pkg: PackageCardData; index: number; /** Where the card opens; the dashboard keeps its own copy of each trip. */ href?: string }) {
+  const { fmt: money } = useMoney();
   const ref = useRef<HTMLAnchorElement>(null);
   const router = useRouter();
   const [broken, setBroken] = useState<string[]>([]);
