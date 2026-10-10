@@ -673,10 +673,25 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Duotone icons: the soft back layer glows lagoon instead of a grey wash. */
+/* Duotone icons: the soft back layer glows lagoon instead of a grey wash.
+   A parent can retint it with --icon-duo / --icon-duo-opacity, or the helpers below. */
 .gr-icon [opacity="0.2"] {
-  fill: var(--brand-2);
-  opacity: 0.38;
+  fill: var(--icon-duo, var(--brand-2));
+  opacity: var(--icon-duo-opacity, 0.38);
+}
+/* Marks (check, cross, plus, minus, menu) sit in chips of their own: no back square. */
+.gr-mark [opacity="0.2"] {
+  display: none;
+}
+/* A warm back layer, for moments and highlights. */
+.duo-sun {
+  --icon-duo: var(--sun-2);
+  --icon-duo-opacity: 0.55;
+}
+/* A pale back layer, for icons on brand or ink fills. */
+.duo-paper {
+  --icon-duo: var(--paper);
+  --icon-duo-opacity: 0.28;
 }
 
 /* The hero composer's focus glow: a slow lagoon-and-sun ring turning behind the glass. */

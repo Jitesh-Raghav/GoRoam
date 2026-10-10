@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Loader2, RefreshCw } from "@/components/site/icons";
+import { Check, Hand, Loader2, RefreshCw } from "@/components/site/icons";
 import { UserAvatar } from "@/components/site/user-avatar";
 import { AVATAR_STYLES, cleanSeed, randomSeed, type AvatarChoice } from "@/lib/avatars";
 import { cn } from "@/lib/utils";
@@ -116,10 +116,14 @@ export function NamePrompt() {
               <p className="text-center text-lg">
                 {name.trim() ? (
                   <>
-                    Hi, <span className="font-medium text-brand-2">{name.trim().split(" ")[0]}</span> 👋
+                    Hi, <span className="font-medium text-brand-2">{name.trim().split(" ")[0]}</span>
+                    <Hand className="duo-sun ml-1.5 inline size-5 -translate-y-px text-sun-2" />
                   </>
                 ) : (
-                  "Hi there 👋"
+                  <>
+                    Hi there
+                    <Hand className="duo-sun ml-1.5 inline size-5 -translate-y-px text-sun-2" />
+                  </>
                 )}
               </p>
               <div className="grid grid-cols-4 gap-3">
@@ -137,7 +141,7 @@ export function NamePrompt() {
                       <UserAvatar choice={o} className="size-full" />
                       {on && (
                         <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-brand-2 text-ink">
-                          <Check className="size-3" />
+                          <Check className="size-3.5" />
                         </span>
                       )}
                     </button>

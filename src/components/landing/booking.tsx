@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { BedDouble, Check, Plane, Star, Ticket, TrainFront } from "@/components/site/icons";
+import { ArrowRight, BedDouble, Check, Plane, Star, Ticket, TrainFront } from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { LazyScene } from "@/components/scenes/lazy-scene";
@@ -95,7 +95,9 @@ function TransportCard() {
         <TrainFront className="size-5" />
       </span>
       <div className="min-w-0">
-        <p className="eyebrow text-[0.58rem] text-stone">Berlin → Dresden</p>
+        <p className="eyebrow inline-flex items-center gap-1.5 text-[0.58rem] text-stone">
+          Berlin <ArrowRight className="size-3" /> Dresden
+        </p>
         <p className="display text-xl leading-none">Train · 1h 52m</p>
       </div>
     </div>

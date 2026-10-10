@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TripView } from "@/components/itinerary/trip-view";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
+import { ArrowRight } from "@/components/site/icons";
 import { guideBySlug } from "@/lib/destination-guides";
 import { PACKAGES, packageBySlug } from "@/lib/packages";
 import { loadPackage, packageTrip } from "@/lib/packages-data";
@@ -160,14 +161,16 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
             <div className="rounded-panel bg-ink p-6 text-paper">
               <p className="eyebrow text-paper/60">Make it yours</p>
               <p className="mt-3 text-lg">Different dates, budget or crew? Plan your own version in a minute.</p>
-              <Link href={plan} className="mt-5 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
-                Customise this trip →
+              <Link href={plan} className="group mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
+                Customise this trip <ArrowRight className="duo-paper size-4 transition-transform duration-500 group-hover:translate-x-0.5" />
               </Link>
             </div>
             {guide && (
               <Link href={`/destinations/${guide.slug}`} className="block rounded-panel bg-white p-6 ring-1 ring-line hover:ring-brand/40">
                 <p className="eyebrow text-stone">Destination guide</p>
-                <p className="mt-2 text-lg text-ink">{guide.name} travel guide →</p>
+                <p className="mt-2 inline-flex items-center gap-2 text-lg text-ink">
+                  {guide.name} travel guide <ArrowRight className="size-4 text-brand" />
+                </p>
                 <p className="mt-1 text-sm text-stone">Best time, where to stay, costs and top sights.</p>
               </Link>
             )}
@@ -177,8 +180,8 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
                 <ul className="mt-3 space-y-2">
                   {related.map((r) => (
                     <li key={r.slug}>
-                      <Link href={`/itineraries/${r.slug}`} className="text-ink hover:text-brand">
-                        {r.title} →
+                      <Link href={`/itineraries/${r.slug}`} className="inline-flex items-center gap-2 text-ink hover:text-brand">
+                        {r.title} <ArrowRight className="size-3.5 text-brand" />
                       </Link>
                     </li>
                   ))}

@@ -523,7 +523,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
             <Plane className="size-4 shrink-0 text-brand-2" />
             <span className="min-w-0 flex-1 truncate text-sm">
               <span className={formData.source ? "text-paper" : "text-paper/50"}>{formData.source.split(",")[0] || "Your city"}</span>
-              <span className="mx-1.5 text-paper/40">→</span>
+              <ArrowRight className="mx-1.5 inline size-3.5 -translate-y-px text-paper/40" />
               <span className={formData.destination ? "font-medium text-brand-2" : "text-paper/50"}>{formData.destination.split(",")[0] || "Anywhere"}</span>
             </span>
             <span className="shrink-0 font-mono text-[11px] text-paper/60">
@@ -547,7 +547,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                     >
                       {on && <motion.span layoutId="step-pill" className="absolute inset-0 rounded-2xl bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
                       <span className={cn("relative grid size-5 place-items-center rounded-full font-mono text-[10px]", on ? "bg-brand text-white" : done ? "bg-brand-soft text-brand" : "bg-paper-2")}>
-                        {done ? <Check className="size-3" /> : i + 1}
+                        {done ? <Check className="size-3.5" /> : i + 1}
                       </span>
                       <span className="relative hidden sm:inline">{s.label}</span>
                     </button>

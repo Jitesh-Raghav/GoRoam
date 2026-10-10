@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/seo/destination-hero";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
+import { ArrowRight, ArrowUpRight } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
 import { DESTINATION_GUIDES, guideBySlug } from "@/lib/destination-guides";
 import { packageBySlug } from "@/lib/packages";
@@ -171,8 +172,8 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
                     <p className="mt-2 leading-relaxed text-ink/75">{a.description}</p>
                     <p className="mt-2 text-sm text-stone">
                       <strong className="font-medium text-ink/80">Tip:</strong> {a.tip}{" "}
-                      <a className="text-brand hover:underline" href={`https://www.google.com/maps/search/?api=1&query=${a.lat},${a.lng}`} target="_blank" rel="noreferrer">
-                        Map ↗
+                      <a className="inline-flex items-center gap-1 text-brand hover:underline" href={`https://www.google.com/maps/search/?api=1&query=${a.lat},${a.lng}`} target="_blank" rel="noreferrer">
+                        Map <ArrowUpRight className="size-3.5" />
                       </a>
                     </p>
                   </li>
@@ -245,8 +246,8 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <div className="rounded-panel bg-ink p-6 text-paper">
               <p className="eyebrow text-paper/60">Your trip, your way</p>
               <p className="mt-3 text-lg">Tell GoRoam your dates, budget and crew, and get a day-by-day {g.name} plan in under a minute.</p>
-              <Link href={plan} className="mt-5 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
-                Plan it free →
+              <Link href={plan} className="group mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
+                Plan it free <ArrowRight className="duo-paper size-4 transition-transform duration-500 group-hover:translate-x-0.5" />
               </Link>
             </div>
             <div className="rounded-panel bg-white p-6 ring-1 ring-line">

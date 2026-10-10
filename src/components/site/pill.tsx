@@ -63,7 +63,7 @@ function PillInner({ children, variant, size, icon }: { children: ReactNode; var
             fills[variant]
           )}
         />
-        {icon ?? <ArrowUpRight className="size-4 transition-transform duration-500 ease-out-expo group-hover/pill:rotate-45" />}
+        {icon ?? <ArrowUpRight className="size-[1.125rem] transition-transform duration-500 ease-out-expo group-hover/pill:rotate-45" />}
       </span>
     </>
   );

@@ -111,7 +111,7 @@ export function AvatarPicker() {
               <UserAvatar choice={{ style: activeStyle, seed }} className="size-full" />
               {on && (
                 <span className="absolute -right-0.5 -top-0.5 grid size-5 place-items-center rounded-full bg-brand text-white">
-                  <Check className="size-3" />
+                  <Check className="size-3.5" />
                 </span>
               )}
             </button>

@@ -1,6 +1,7 @@
-// The house icon set: Phosphor, duotone for things and bold for UI glyphs, under the
-// names the app already used, so call sites stay `<MapPin className="size-4" />`.
-// The duotone layer picks up the lagoon tint from `.gr-icon` in globals.css.
+// The house icon set: Phosphor duotone throughout, under the names the app already
+// used, so call sites stay `<MapPin className="size-4" />`. The duotone layer picks up
+// the lagoon tint from `.gr-icon` in globals.css. Marks (check, cross, plus, minus,
+// menu) usually sit in a chip of their own, so they drop Phosphor's back square.
 import type { ComponentProps, ComponentType } from "react";
 import { AirplaneLandingIcon as AirplaneLandingPh, AirplaneTiltIcon as AirplaneTiltPh, ArrowCounterClockwiseIcon as ArrowCounterClockwisePh, ArrowLeftIcon as ArrowLeftPh, ArrowRightIcon as ArrowRightPh, ArrowSquareOutIcon as ArrowSquareOutPh, ArrowUpIcon as ArrowUpPh, ArrowUpRightIcon as ArrowUpRightPh, ArrowsClockwiseIcon as ArrowsClockwisePh, ArrowsDownUpIcon as ArrowsDownUpPh, ArrowsLeftRightIcon as ArrowsLeftRightPh, BabyIcon as BabyPh, BankIcon as BankPh, BarbellIcon as BarbellPh, BedIcon as BedPh, BellIcon as BellPh, BicycleIcon as BicyclePh, BuildingApartmentIcon as BuildingApartmentPh, BuildingOfficeIcon as BuildingOfficePh, BuildingsIcon as BuildingsPh, BusIcon as BusPh, CalendarDotsIcon as CalendarDotsPh, CalendarHeartIcon as CalendarHeartPh, CalendarPlusIcon as CalendarPlusPh, CameraIcon as CameraPh, CarIcon as CarPh, CaretLeftIcon as CaretLeftPh, CaretRightIcon as CaretRightPh, ChatCircleDotsIcon as ChatCircleDotsPh, CheckIcon as CheckPh, CheckCircleIcon as CheckCirclePh, CircleIcon as CirclePh, ClockIcon as ClockPh, CloudIcon as CloudPh, CloudFogIcon as CloudFogPh, CloudLightningIcon as CloudLightningPh, CloudRainIcon as CloudRainPh, CloudSnowIcon as CloudSnowPh, CloudSunIcon as CloudSunPh, CoinsIcon as CoinsPh, CompassIcon as CompassPh, CopyIcon as CopyPh, CouchIcon as CouchPh, CreditCardIcon as CreditCardPh, CrownIcon as CrownPh, DiamondIcon as DiamondPh, DownloadSimpleIcon as DownloadSimplePh, DropIcon as DropPh, EnvelopeSimpleIcon as EnvelopeSimplePh, FileTextIcon as FileTextPh, FloppyDiskIcon as FloppyDiskPh, FlowerLotusIcon as FlowerLotusPh, FootprintsIcon as FootprintsPh, ForkKnifeIcon as ForkKnifePh, GearSixIcon as GearSixPh, GiftIcon as GiftPh, GithubLogoIcon as GithubLogoPh, GraduationCapIcon as GraduationCapPh, HandCoinsIcon as HandCoinsPh, HandHeartIcon as HandHeartPh, HandWavingIcon as HandWavingPh, HeartIcon as HeartPh, HeartbeatIcon as HeartbeatPh, InfoIcon as InfoPh, InstagramLogoIcon as InstagramLogoPh, LeafIcon as LeafPh, LightbulbIcon as LightbulbPh, LightningIcon as LightningPh, LinkSimpleIcon as LinkSimplePh, LinkedinLogoIcon as LinkedinLogoPh, ListIcon as ListPh, MagicWandIcon as MagicWandPh, MagnifyingGlassIcon as MagnifyingGlassPh, MapPinIcon as MapPinPh, LockSimpleIcon as LockSimplePh, PaperPlaneTiltIcon as PaperPlaneTiltPh, MapTrifoldIcon as MapTrifoldPh, MartiniIcon as MartiniPh, MinusIcon as MinusPh, MoneyIcon as MoneyPh, MoonIcon as MoonPh, MountainsIcon as MountainsPh, NavigationArrowIcon as NavigationArrowPh, PaletteIcon as PalettePh, PathIcon as PathPh, PencilSimpleLineIcon as PencilSimpleLinePh, PhoneIcon as PhonePh, PillIcon as PillPh, PlayIcon as PlayPh, PlayCircleIcon as PlayCirclePh, PlugIcon as PlugPh, PlusIcon as PlusPh, PrinterIcon as PrinterPh, QuestionIcon as QuestionPh, QuotesIcon as QuotesPh, ReceiptIcon as ReceiptPh, RepeatIcon as RepeatPh, SailboatIcon as SailboatPh, ShareNetworkIcon as ShareNetworkPh, ShieldIcon as ShieldPh, ShieldCheckIcon as ShieldCheckPh, ShoppingBagIcon as ShoppingBagPh, ShuffleIcon as ShufflePh, SignOutIcon as SignOutPh, SirenIcon as SirenPh, SparkleIcon as SparklePh, SpeakerHighIcon as SpeakerHighPh, SpinnerGapIcon as SpinnerGapPh, StampIcon as StampPh, StarIcon as StarPh, SuitcaseRollingIcon as SuitcaseRollingPh, SunIcon as SunPh, SunHorizonIcon as SunHorizonPh, SyringeIcon as SyringePh, TentIcon as TentPh, ThumbsDownIcon as ThumbsDownPh, ThumbsUpIcon as ThumbsUpPh, TicketIcon as TicketPh, TrainIcon as TrainPh, TramIcon as TramPh, TranslateIcon as TranslatePh, TrashIcon as TrashPh, TreeEvergreenIcon as TreeEvergreenPh, TreePalmIcon as TreePalmPh, UmbrellaIcon as UmbrellaPh, UserIcon as UserPh, UserCircleIcon as UserCirclePh, UserPlusIcon as UserPlusPh, UsersThreeIcon as UsersThreePh, WalletIcon as WalletPh, WarningIcon as WarningPh, WarningCircleIcon as WarningCirclePh, WavesIcon as WavesPh, WifiHighIcon as WifiHighPh, WifiSlashIcon as WifiSlashPh, XIcon as XPh, XLogoIcon as XLogoPh, YoutubeLogoIcon as YoutubeLogoPh } from "@phosphor-icons/react/dist/ssr";
 import type { Icon, IconWeight } from "@phosphor-icons/react";
@@ -9,24 +10,24 @@ import { cn } from "@/lib/utils";
 type Props = Omit<ComponentProps<Icon>, "ref"> & { strokeWidth?: number };
 export type LucideIcon = ComponentType<Props>;
 
-function make(Ph: Icon, weight: IconWeight, name: string): LucideIcon {
+function make(Ph: Icon, weight: IconWeight, name: string, mark = false): LucideIcon {
   // strokeWidth is lucide-only; Phosphor sets its weight instead.
   function GrIcon({ className, strokeWidth: _strokeWidth, ...rest }: Props) {
     void _strokeWidth;
-    return <Ph size={24} weight={weight} aria-hidden {...rest} className={cn("gr-icon shrink-0", className)} />;
+    return <Ph size={24} weight={weight} aria-hidden {...rest} className={cn("gr-icon shrink-0", mark && "gr-mark", className)} />;
   }
   GrIcon.displayName = name;
   return GrIcon;
 }
 
 export const AlertCircle = make(WarningCirclePh, "duotone", "AlertCircle");
-export const ArrowDownUp = make(ArrowsDownUpPh, "bold", "ArrowDownUp");
-export const ArrowLeft = make(ArrowLeftPh, "bold", "ArrowLeft");
-export const ArrowLeftRight = make(ArrowsLeftRightPh, "bold", "ArrowLeftRight");
-export const ArrowRight = make(ArrowRightPh, "bold", "ArrowRight");
-export const ArrowRightLeft = make(ArrowsLeftRightPh, "bold", "ArrowRightLeft");
-export const ArrowUp = make(ArrowUpPh, "bold", "ArrowUp");
-export const ArrowUpRight = make(ArrowUpRightPh, "bold", "ArrowUpRight");
+export const ArrowDownUp = make(ArrowsDownUpPh, "duotone", "ArrowDownUp");
+export const ArrowLeft = make(ArrowLeftPh, "duotone", "ArrowLeft");
+export const ArrowLeftRight = make(ArrowsLeftRightPh, "duotone", "ArrowLeftRight");
+export const ArrowRight = make(ArrowRightPh, "duotone", "ArrowRight");
+export const ArrowRightLeft = make(ArrowsLeftRightPh, "duotone", "ArrowRightLeft");
+export const ArrowUp = make(ArrowUpPh, "duotone", "ArrowUp");
+export const ArrowUpRight = make(ArrowUpRightPh, "duotone", "ArrowUpRight");
 export const Baby = make(BabyPh, "duotone", "Baby");
 export const BedDouble = make(BedPh, "duotone", "BedDouble");
 export const Bell = make(BellPh, "duotone", "Bell");
@@ -35,11 +36,11 @@ export const CalendarDays = make(CalendarDotsPh, "duotone", "CalendarDays");
 export const CalendarHeart = make(CalendarHeartPh, "duotone", "CalendarHeart");
 export const Camera = make(CameraPh, "duotone", "Camera");
 export const Car = make(CarPh, "duotone", "Car");
-export const Check = make(CheckPh, "bold", "Check");
+export const Check = make(CheckPh, "duotone", "Check", true);
 export const CheckCircle2 = make(CheckCirclePh, "duotone", "CheckCircle2");
-export const CheckIcon = make(CheckPh, "bold", "CheckIcon");
-export const ChevronLeft = make(CaretLeftPh, "bold", "ChevronLeft");
-export const ChevronRight = make(CaretRightPh, "bold", "ChevronRight");
+export const CheckIcon = make(CheckPh, "duotone", "CheckIcon", true);
+export const ChevronLeft = make(CaretLeftPh, "duotone", "ChevronLeft");
+export const ChevronRight = make(CaretRightPh, "duotone", "ChevronRight");
 export const CircleIcon = make(CirclePh, "fill", "CircleIcon");
 export const Clock3 = make(ClockPh, "duotone", "Clock3");
 export const Cloud = make(CloudPh, "duotone", "Cloud");
@@ -54,7 +55,7 @@ export const Compass = make(CompassPh, "duotone", "Compass");
 export const Copy = make(CopyPh, "duotone", "Copy");
 export const CreditCard = make(CreditCardPh, "duotone", "CreditCard");
 export const Crown = make(CrownPh, "duotone", "Crown");
-export const Download = make(DownloadSimplePh, "bold", "Download");
+export const Download = make(DownloadSimplePh, "duotone", "Download");
 export const Dumbbell = make(BarbellPh, "duotone", "Dumbbell");
 export const FileText = make(FileTextPh, "duotone", "FileText");
 export const Gift = make(GiftPh, "duotone", "Gift");
@@ -65,15 +66,15 @@ export const Info = make(InfoPh, "duotone", "Info");
 export const Instagram = make(InstagramLogoPh, "duotone", "Instagram");
 export const Languages = make(TranslatePh, "duotone", "Languages");
 export const Lightbulb = make(LightbulbPh, "duotone", "Lightbulb");
-export const Link2 = make(LinkSimplePh, "bold", "Link2");
+export const Link2 = make(LinkSimplePh, "duotone", "Link2");
 export const Linkedin = make(LinkedinLogoPh, "duotone", "Linkedin");
-export const Loader2 = make(SpinnerGapPh, "bold", "Loader2");
+export const Loader2 = make(SpinnerGapPh, "duotone", "Loader2");
 export const LogOut = make(SignOutPh, "duotone", "LogOut");
 export const Luggage = make(SuitcaseRollingPh, "duotone", "Luggage");
 export const Mail = make(EnvelopeSimplePh, "duotone", "Mail");
 export const Map = make(MapTrifoldPh, "duotone", "Map");
 export const MapPin = make(MapPinPh, "duotone", "MapPin");
-export const Menu = make(ListPh, "bold", "Menu");
+export const Menu = make(ListPh, "duotone", "Menu", true);
 export const MessageCircle = make(ChatCircleDotsPh, "duotone", "MessageCircle");
 export const MessageCircleQuestion = make(QuestionPh, "duotone", "MessageCircleQuestion");
 export const Moon = make(MoonPh, "duotone", "Moon");
@@ -83,19 +84,19 @@ export const Palette = make(PalettePh, "duotone", "Palette");
 export const Plane = make(AirplaneTiltPh, "duotone", "Plane");
 export const Play = make(PlayPh, "fill", "Play");
 export const PlayCircle = make(PlayCirclePh, "duotone", "PlayCircle");
-export const Plus = make(PlusPh, "bold", "Plus");
+export const Plus = make(PlusPh, "duotone", "Plus", true);
 export const Printer = make(PrinterPh, "duotone", "Printer");
 export const Receipt = make(ReceiptPh, "duotone", "Receipt");
-export const RefreshCw = make(ArrowsClockwisePh, "bold", "RefreshCw");
-export const RotateCcw = make(ArrowCounterClockwisePh, "bold", "RotateCcw");
+export const RefreshCw = make(ArrowsClockwisePh, "duotone", "RefreshCw");
+export const RotateCcw = make(ArrowCounterClockwisePh, "duotone", "RotateCcw");
 export const Save = make(FloppyDiskPh, "duotone", "Save");
-export const Search = make(MagnifyingGlassPh, "bold", "Search");
+export const Search = make(MagnifyingGlassPh, "duotone", "Search");
 export const Settings = make(GearSixPh, "duotone", "Settings");
 export const Share2 = make(ShareNetworkPh, "duotone", "Share2");
 export const Shield = make(ShieldPh, "duotone", "Shield");
 export const ShieldCheck = make(ShieldCheckPh, "duotone", "ShieldCheck");
 export const ShoppingBag = make(ShoppingBagPh, "duotone", "ShoppingBag");
-export const Shuffle = make(ShufflePh, "bold", "Shuffle");
+export const Shuffle = make(ShufflePh, "duotone", "Shuffle");
 export const Sparkles = make(SparklePh, "duotone", "Sparkles");
 export const Star = make(StarPh, "duotone", "Star");
 export const Sun = make(SunPh, "duotone", "Sun");
@@ -105,7 +106,7 @@ export const ThumbsUp = make(ThumbsUpPh, "duotone", "ThumbsUp");
 export const Ticket = make(TicketPh, "duotone", "Ticket");
 export const TrainFront = make(TrainPh, "duotone", "TrainFront");
 export const Trash2 = make(TrashPh, "duotone", "Trash2");
-export const Twitter = make(XLogoPh, "bold", "Twitter");
+export const Twitter = make(XLogoPh, "duotone", "Twitter");
 export const Umbrella = make(UmbrellaPh, "duotone", "Umbrella");
 export const User = make(UserPh, "duotone", "User");
 export const UserPlus = make(UserPlusPh, "duotone", "UserPlus");
@@ -114,7 +115,7 @@ export const Users = make(UsersThreePh, "duotone", "Users");
 export const UtensilsCrossed = make(ForkKnifePh, "duotone", "UtensilsCrossed");
 export const Wallet = make(WalletPh, "duotone", "Wallet");
 export const WifiOff = make(WifiSlashPh, "duotone", "WifiOff");
-export const X = make(XPh, "bold", "X");
+export const X = make(XPh, "duotone", "X", true);
 export const Youtube = make(YoutubeLogoPh, "duotone", "Youtube");
 export const Zap = make(LightningPh, "duotone", "Zap");
 export const Banknote = make(MoneyPh, "duotone", "Banknote");
@@ -123,7 +124,7 @@ export const Building = make(BuildingsPh, "duotone", "Building");
 export const Building2 = make(BuildingOfficePh, "duotone", "Building2");
 export const CalendarPlus = make(CalendarPlusPh, "duotone", "CalendarPlus");
 export const Droplets = make(DropPh, "duotone", "Droplets");
-export const ExternalLink = make(ArrowSquareOutPh, "bold", "ExternalLink");
+export const ExternalLink = make(ArrowSquareOutPh, "duotone", "ExternalLink");
 export const Flower2 = make(FlowerLotusPh, "duotone", "Flower2");
 export const Footprints = make(FootprintsPh, "duotone", "Footprints");
 export const Gem = make(DiamondPh, "duotone", "Gem");
@@ -136,14 +137,14 @@ export const Landmark = make(BankPh, "duotone", "Landmark");
 export const Leaf = make(LeafPh, "duotone", "Leaf");
 export const Martini = make(MartiniPh, "duotone", "Martini");
 export const MessageSquareQuote = make(QuotesPh, "duotone", "MessageSquareQuote");
-export const Minus = make(MinusPh, "bold", "Minus");
+export const Minus = make(MinusPh, "duotone", "Minus", true);
 export const Palmtree = make(TreePalmPh, "duotone", "Palmtree");
 export const PenLine = make(PencilSimpleLinePh, "duotone", "PenLine");
 export const Phone = make(PhonePh, "duotone", "Phone");
 export const Pill = make(PillPh, "duotone", "Pill");
 export const PlaneLanding = make(AirplaneLandingPh, "duotone", "PlaneLanding");
 export const Plug = make(PlugPh, "duotone", "Plug");
-export const Repeat = make(RepeatPh, "bold", "Repeat");
+export const Repeat = make(RepeatPh, "duotone", "Repeat");
 export const Route = make(PathPh, "duotone", "Route");
 export const Sailboat = make(SailboatPh, "duotone", "Sailboat");
 export const Siren = make(SirenPh, "duotone", "Siren");
@@ -158,5 +159,5 @@ export const Volume2 = make(SpeakerHighPh, "duotone", "Volume2");
 export const Wand2 = make(MagicWandPh, "duotone", "Wand2");
 export const Waves = make(WavesPh, "duotone", "Waves");
 export const Wifi = make(WifiHighPh, "duotone", "Wifi");
-export const Send = make(PaperPlaneTiltPh, "fill", "Send");
+export const Send = make(PaperPlaneTiltPh, "duotone", "Send");
 export const Lock = make(LockSimplePh, "duotone", "Lock");

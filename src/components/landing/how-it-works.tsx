@@ -170,7 +170,7 @@ function GeneratingState() {
         {STATUS.map((s, i) => (
           <li key={s} className={cn("flex items-center gap-3 text-[0.82rem] transition-colors duration-500 sm:text-sm", i < done ? "text-ink" : "text-stone-2")}>
             <span className={cn("grid size-5 shrink-0 place-items-center rounded-full transition-colors duration-500", i < done ? "bg-brand text-white" : "bg-paper-2")}>
-              {i < done && <Check className="size-3" />}
+              {i < done && <Check className="size-3.5" />}
             </span>
             {s}
           </li>

@@ -301,7 +301,7 @@ function AuthPanel() {
               {["Your first itinerary, on us", "Day-by-day plans with real places", "Print-ready PDFs for the road"].map((t) => (
                 <li key={t} className="flex items-center gap-3 text-sm text-ink/80">
                   <span className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand">
-                    <Check className="size-3" />
+                    <Check className="size-3.5" />
                   </span>
                   {t}
                 </li>

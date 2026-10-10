@@ -1105,7 +1105,8 @@ export function TripView({
       <Band tone="brand" id="chapter-stay">
         <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
           <p className="max-w-sm text-sm text-stone">
-            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })} → {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
+            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
+            <ArrowRight className="inline size-3.5 -translate-y-px" /> {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
           </p>
         </SectionTitle>
         {data?.stays?.length ? (

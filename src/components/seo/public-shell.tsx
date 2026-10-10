@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { DashboardReturn } from "@/components/seo/dashboard-return";
+import { Plus } from "@/components/site/icons";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
@@ -48,7 +49,9 @@ export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
         <details key={f.q} className="group px-5 py-4 sm:px-7 sm:py-5">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] text-ink">
             <h3 className="font-medium">{f.q}</h3>
-            <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-paper-2 text-ink transition-transform group-open:rotate-45">+</span>
+            <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-paper-2 text-ink transition-transform group-open:rotate-45">
+              <Plus className="size-3.5" />
+            </span>
           </summary>
           <p className="mt-3 leading-relaxed text-stone">{f.a}</p>
         </details>

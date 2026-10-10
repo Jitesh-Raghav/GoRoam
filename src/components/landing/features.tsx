@@ -9,6 +9,7 @@ import {
   Sun,
   Sunrise,
   Volume2,
+  ArrowRight,
   ArrowRightLeft,
   CloudSun,
   CloudRain,
@@ -17,6 +18,7 @@ import {
   Wallet,
 } from "@/components/site/icons";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Flag } from "@/components/itinerary/guide/flag";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "./section-heading";
@@ -300,9 +302,13 @@ function ToolsVisual() {
       {/* The money converter. */}
       <ToolCard label="Money" icon={ArrowRightLeft} i={1} inView={inView}>
         <p className="flex items-center gap-1.5 text-xs text-stone">
-          <span>🇺🇸 $100</span>
-          <ArrowRightLeft className="size-3 text-brand" />
-          <span>🇯🇵 JPY</span>
+          <span className="inline-flex items-center gap-1">
+            <Flag code="us" className="h-2.5" /> $100
+          </span>
+          <ArrowRightLeft className="size-3.5 text-brand" />
+          <span className="inline-flex items-center gap-1">
+            <Flag code="jp" className="h-2.5" /> JPY
+          </span>
         </p>
         <p className="display mt-1 text-[1.7rem] leading-none text-ink lg:text-[2rem]">
           <CountUp to={14820} inView={inView} prefix="¥" />
@@ -354,7 +360,7 @@ function ToolsVisual() {
           ))}
         </div>
         <p className="mt-2 truncate text-[10px] text-ink">
-          Mia → you <span className="font-medium text-brand">$12.50</span> settles it
+          Mia <ArrowRight className="inline size-3 align-[-2px] text-stone" /> you <span className="font-medium text-brand">$12.50</span> settles it
         </p>
       </ToolCard>
 
@@ -396,7 +402,7 @@ function ToolsVisual() {
           transition={{ duration: 0.5, delay: 2.2 }}
           className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-brand-soft px-2 py-0.5 text-[9px] font-medium text-brand"
         >
-          <Download className="size-2.5" /> Saved offline · 9 stops
+          <Download className="size-3" /> Saved offline · 9 stops
         </motion.span>
       </ToolCard>
     </div>
