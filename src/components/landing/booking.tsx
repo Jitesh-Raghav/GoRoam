@@ -60,7 +60,7 @@ function FlightCard({ on }: { on: boolean }) {
 function StayCard() {
   return (
     <div className="flex gap-4 rounded-card bg-white p-3 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
-      <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-2xl">
+      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-28">
         <LazyScene id="berlin" tint="#4B4F8C" />
       </div>
       <div className="min-w-0 py-1 pr-2">
@@ -121,8 +121,8 @@ export function BookingSection() {
   return (
     <section id="book" className="scroll-mt-10 px-3 sm:px-4">
       <div className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-28">
-        <div className="container-x relative grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
-          <div>
+        <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16">
+          <div className="min-w-0">
             <SectionHeading
               label="Book it all"
               tone="paper"
@@ -157,7 +157,7 @@ export function BookingSection() {
             </Reveal>
           </div>
 
-          <div ref={ref} className="relative">
+          <div ref={ref} className="relative min-w-0">
             <div className="relative mx-auto max-w-md rounded-panel bg-paper/[0.06] p-4 ring-1 ring-inset ring-paper/10 sm:p-6">
               <div className="grid grid-cols-4 gap-1 rounded-2xl bg-paper/[0.06] p-1">
                 {TABS.map((t, i) => (
