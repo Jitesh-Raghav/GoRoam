@@ -16,6 +16,11 @@ export interface DayWeather {
   /** Chance of rain (forecast) or millimetres that fell (history). */
   rain: number | null;
   source: 'forecast' | 'last-year' | 'recorded';
+  /** Local "06:24" (a year back's is within a minute or two of this year's). */
+  sunrise?: string;
+  sunset?: string;
+  /** Peak UV index; forecast days only. */
+  uv?: number;
 }
 
 export interface TripWeather {
@@ -23,8 +28,8 @@ export interface TripWeather {
   days: DayWeather[];
 }
 
-const DAILY_FORECAST = 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max';
-const DAILY_ARCHIVE = 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum';
+const DAILY_FORECAST = 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max';
+const DAILY_ARCHIVE = 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset';
 const cache = new Map<string, { at: number; value: TripWeather }>();
 const TTL = 3 * 3600 * 1000;
 
@@ -43,7 +48,13 @@ interface Daily {
   temperature_2m_min: number[];
   precipitation_probability_max?: (number | null)[];
   precipitation_sum?: (number | null)[];
+  sunrise?: (string | null)[];
+  sunset?: (string | null)[];
+  uv_index_max?: (number | null)[];
 }
+
+/** "2026-11-12T06:24" → "06:24". */
+const clock = (v: string | null | undefined) => (v && /T\d{2}:\d{2}/.test(v) ? v.slice(11, 16) : undefined);
 
 async function fetchDaily(base: string, lat: number, lng: number, from: string, to: string, fields: string) {
   const params = new URLSearchParams({ latitude: lat.toFixed(4), longitude: lng.toFixed(4), daily: fields, timezone: 'auto', start_date: from, end_date: to });
@@ -88,6 +99,9 @@ export async function GET(request: NextRequest) {
         min: Math.round(daily.temperature_2m_min[i]),
         rain: source === 'forecast' ? (daily.precipitation_probability_max?.[i] ?? null) : (daily.precipitation_sum?.[i] ?? null),
         source,
+        sunrise: clock(daily.sunrise?.[i]),
+        sunset: clock(daily.sunset?.[i]),
+        uv: daily.uv_index_max?.[i] != null ? Math.round(daily.uv_index_max[i]!) : undefined,
       });
     });
   };

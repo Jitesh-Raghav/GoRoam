@@ -64,9 +64,10 @@
           "lng": 12.4922
         },
         "duration": "3 hours",
-        "estimatedCost": 60,
+        "estimatedCost": 47,
         "category": "sight",
-        "tip": "Book your tickets online in advance to avoid long queues."
+        "tip": "Book your tickets online in advance to avoid long queues.",
+        "priceNote": "€18 + €2 booking × 2, with Forum & Palatine"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -78,9 +79,10 @@
           "lng": 12.4853
         },
         "duration": "3 hours",
-        "estimatedCost": 25,
+        "estimatedCost": 0,
         "category": "sight",
-        "tip": "Use a guidebook or an audio guide for rich historical context."
+        "tip": "Use a guidebook or an audio guide for rich historical context.",
+        "priceNote": "Included in the Colosseum ticket"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -96,7 +98,7 @@
         "category": "food",
         "tip": "Make a reservation for a table with a view for a truly memorable experience."
       },
-      "totalDayCost": 235
+      "totalDayCost": 197
     },
     {
       "day": 3,
@@ -113,9 +115,10 @@
           "lng": 12.4534
         },
         "duration": "3 hours",
-        "estimatedCost": 80,
+        "estimatedCost": 58,
         "category": "sight",
-        "tip": "Visit early in the morning to beat the crowds and enjoy a more personal experience."
+        "tip": "Visit early in the morning to beat the crowds and enjoy a more personal experience.",
+        "priceNote": "€20 + €5 online booking × 2"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -127,9 +130,10 @@
           "lng": 12.4539
         },
         "duration": "3 hours",
-        "estimatedCost": 30,
+        "estimatedCost": 23,
         "category": "sight",
-        "tip": "Climb to the dome for an unforgettable view of Rome, especially in the afternoon light."
+        "tip": "Climb to the dome for an unforgettable view of Rome, especially in the afternoon light.",
+        "priceNote": "Free; dome by lift €10 × 2"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -145,7 +149,7 @@
         "category": "food",
         "tip": "Try the potato and rosemary pizza for a unique taste."
       },
-      "totalDayCost": 140
+      "totalDayCost": 111
     },
     {
       "day": 4,
@@ -178,7 +182,8 @@
         "duration": "3 hours",
         "estimatedCost": 40,
         "category": "sight",
-        "tip": "Plan your visit for early afternoon to enjoy the gardens afterward."
+        "tip": "Plan your visit for early afternoon to enjoy the gardens afterward.",
+        "priceNote": "€15 + €2 booking × 2"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -213,7 +218,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit early to enjoy the fountain without the crowds."
+        "tip": "Visit early to enjoy the fountain without the crowds.",
+        "priceNote": "Free to see"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -252,14 +258,14 @@
       "area": "Monti",
       "type": "Boutique hotel",
       "why": "This stylish hotel offers a central location with modern amenities, perfect for exploring Rome.",
-      "pricePerNight": 140
+      "pricePerNight": 290
     },
     {
       "name": "Hotel De Russie",
       "area": "Piazza del Popolo",
-      "type": "Boutique hotel",
+      "type": "Luxury hotel",
       "why": "Luxurious yet intimate, this hotel boasts beautiful gardens and is close to the main attractions.",
-      "pricePerNight": 400
+      "pricePerNight": 950
     },
     {
       "name": "Nerva Boutique Hotel",
@@ -289,7 +295,7 @@
     "Camera"
   ],
   "summary": {
-    "totalCost": 735,
+    "totalCost": 668,
     "totalDays": 5,
     "destination": "Rome, Italy",
     "overview": "Discover the timeless beauty and rich history of Rome, from ancient ruins to vibrant neighborhoods. Enjoy memorable culinary experiences and immerse yourself in the city's art and culture.",

@@ -17,7 +17,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit early in the morning to avoid crowds and capture great photos."
+        "tip": "Visit early in the morning to avoid crowds and capture great photos.",
+        "priceNote": "Free to walk"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -66,7 +67,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit early to appreciate the monument without distractions."
+        "tip": "Visit early to appreciate the monument without distractions.",
+        "priceNote": "Free to see"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -127,9 +129,10 @@
           "lng": 7.8559
         },
         "duration": "3 hours",
-        "estimatedCost": 60,
+        "estimatedCost": 110,
         "category": "sight",
-        "tip": "Visit on a clear day for the best views."
+        "tip": "Visit on a clear day for the best views.",
+        "priceNote": "CHF 44 funicular return × 2"
       },
       "evening": {
         "time": "4:00 PM - 7:00 PM",
@@ -145,7 +148,7 @@
         "category": "food",
         "tip": "Order the fondue for an authentic Swiss experience."
       },
-      "totalDayCost": 260
+      "totalDayCost": 310
     },
     {
       "day": 4,
@@ -211,9 +214,10 @@
           "lng": 7.8632
         },
         "duration": "3 hours",
-        "estimatedCost": 80,
+        "estimatedCost": 210,
         "category": "activity",
-        "tip": "Sit on the left side for the best views of the Matterhorn."
+        "tip": "Sit on the left side for the best views of the Matterhorn.",
+        "priceNote": "About CHF 85 each, 2nd class × 2"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -243,7 +247,7 @@
         "category": "food",
         "tip": "Reserve a window seat for an unforgettable view."
       },
-      "totalDayCost": 300
+      "totalDayCost": 430
     },
     {
       "day": 6,
@@ -260,9 +264,10 @@
           "lng": 7.7469
         },
         "duration": "3 hours",
-        "estimatedCost": 140,
+        "estimatedCost": 330,
         "category": "sight",
-        "tip": "Get there early to avoid the crowds and enjoy the sunrise."
+        "tip": "Get there early to avoid the crowds and enjoy the sunrise.",
+        "priceNote": "CHF 132 return × 2 (half with a Swiss Travel Pass)"
       },
       "afternoon": {
         "time": "12:30 PM - 3:30 PM",
@@ -292,7 +297,7 @@
         "category": "nature",
         "tip": "Arrive early to secure a good spot for the sunset."
       },
-      "totalDayCost": 240
+      "totalDayCost": 430
     }
   ],
   "stays": [
@@ -301,21 +306,21 @@
       "area": "Old Town, Lucerne",
       "type": "Boutique hotel",
       "why": "This hotel combines historic charm with modern amenities, offering a central location perfect for exploring.",
-      "pricePerNight": 140
+      "pricePerNight": 420
     },
     {
       "name": "Hotel Interlaken",
       "area": "Interlaken",
       "type": "Mid-range hotel",
       "why": "Located in a picturesque setting, this hotel provides comfortable rooms and is a short walk from the train station.",
-      "pricePerNight": 150
+      "pricePerNight": 300
     },
     {
       "name": "Hotel Alpenhof",
       "area": "Zermatt",
       "type": "Boutique hotel",
       "why": "This cozy hotel has stunning views of the Matterhorn and offers a warm, welcoming atmosphere.",
-      "pricePerNight": 180
+      "pricePerNight": 420
     }
   ],
   "essentials": {
@@ -338,7 +343,7 @@
     "Daypack for hikes"
   ],
   "summary": {
-    "totalCost": 1190,
+    "totalCost": 1560,
     "totalDays": 6,
     "destination": "Lucerne, Interlaken and Zermatt, Switzerland",
     "overview": "Experience the breathtaking beauty of Switzerland, with charming towns, stunning landscapes, and unforgettable adventures. This trip balances relaxation and exploration, making it perfect for first-time visitors.",

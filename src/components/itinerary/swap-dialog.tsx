@@ -1,12 +1,13 @@
 "use client";
 
+import { useMoney } from "@/lib/money";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRightLeft, Check, Clock3, Lightbulb, Loader2, MapPin, Sparkles, X } from "@/components/site/icons";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { track } from "@/lib/analytics";
 import { updateCached } from "@/lib/cached-json";
 import { CHAT_LIMIT } from "@/lib/plans";
-import { money, type ActivitySlot, type ItineraryData, type ItineraryDetails } from "@/lib/trip";
+import { type ActivitySlot, type ItineraryData, type ItineraryDetails } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { lookUpOwnPhoto } from "./place-photo";
 
@@ -30,6 +31,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
  * indoors"), see three options nearby, and the chosen one is saved to the trip.
  */
 export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; enabled: boolean; children: ReactNode }) {
+  const { fmt: money } = useMoney();
   const [target, setTarget] = useState<Target | null>(null);
   const [hint, setHint] = useState("");
   const [state, setState] = useState<"idle" | "finding" | "choosing" | "saving">("idle");

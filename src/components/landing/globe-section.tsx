@@ -2,6 +2,7 @@
 
 import createGlobe, { type Arc, type Marker } from "cobe";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Counter } from "@/components/motion/counter";
@@ -185,6 +186,34 @@ function Globe({ focus, onGrab }: { focus: string; onGrab: () => void }) {
   );
 }
 
+// three.js and the country outlines load only when the section comes near, never with the page.
+const HexGlobe = dynamic(() => import("./hex-globe"), { ssr: false, loading: () => <div className="aspect-square w-full" /> });
+
+/** The hex globe once the section is near; the dotted globe if WebGL isn't available. */
+function SectionGlobe({ focus, onGrab }: { focus: string; onGrab: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || near) return;
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "600px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
+  return (
+    <div ref={ref}>
+      {failed ? (
+        <Globe focus={focus} onGrab={onGrab} />
+      ) : near ? (
+        <HexGlobe focus={focus} places={BOARD.map((d) => d.slug)} onGrab={onGrab} onFail={() => setFailed(true)} />
+      ) : (
+        <div className="aspect-square w-full" />
+      )}
+    </div>
+  );
+}
+
 /** The place the globe is over: a real photo, the essentials, and a way to plan it. */
 function Postcard({ place, className }: { place: Destination; className?: string }) {
   const photo = sizedPhoto(usePlacePhoto(place.query), 900);
@@ -305,7 +334,7 @@ export function GlobeSection() {
             {/* Globe, with a postcard of where it's over */}
             <div className="order-1 lg:order-2 lg:col-span-7">
               <div className="relative mx-auto max-w-[600px]">
-                <Globe focus={place.slug} onGrab={() => setHeld(true)} />
+                <SectionGlobe focus={place.slug} onGrab={() => setHeld(true)} />
                 <p className="pointer-events-none -mt-2 text-center text-xs text-paper/40">Drag to spin the globe</p>
                 <Postcard place={place} className="mx-auto mt-6 w-full max-w-sm lg:absolute lg:-left-10 lg:bottom-10 lg:mt-0 lg:w-[17.5rem]" />
               </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Price } from "@/components/site/price";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TripView } from "@/components/itinerary/trip-view";
@@ -32,7 +33,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 const SLOTS = ["morning", "afternoon", "evening"] as const;
-const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 
 export default async function ItineraryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -105,7 +105,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             { k: "Length", v: `${pkg.days} days` },
-            { k: "Budget for two", v: `${usd(pkg.budget)} incl. stays` },
+            { k: "Budget for two", v: <><Price usd={pkg.budget} /> incl. stays</> },
             { k: "Best time", v: pkg.bestTime },
             { k: "Pace", v: pkg.pace[0].toUpperCase() + pkg.pace.slice(1) },
           ].map((f) => (

@@ -3,10 +3,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, BedDouble, Bus, Check, Loader2, Plus, ShoppingBag, Sparkles, Ticket, Trash2, UserPlus, UtensilsCrossed, Wallet as WalletIcon, X, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { formatMoney, homeCurrency } from "@/lib/currency";
+import { formatMoney } from "@/lib/currency";
 import { EXPENSE_CATEGORIES, type ExpenseCategory, type Wallet, type WalletExpense } from "@/lib/trip";
 import { cn } from "@/lib/utils";
-import { loadRates } from "./currency-card";
+import { loadRates, useMoney } from "@/lib/money";
 import { SectionTitle } from "./guide/section-title";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -76,12 +76,15 @@ export function TripWallet({
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [rates, setRates] = useState<Record<string, number> | null>(null);
   const timer = useRef<number | undefined>(undefined);
+  const { currency: shown, live } = useMoney();
 
-  // A fresh wallet starts in the traveller's own currency.
+  // A fresh wallet starts in the currency the trip's prices are shown in.
   useEffect(() => {
-    if (!initial) setWallet((w) => (w.expenses.length ? w : { ...w, currency: homeCurrency() }));
+    if (!initial && live) setWallet((w) => (w.expenses.length ? w : { ...w, currency: shown }));
+  }, [initial, live, shown]);
+  useEffect(() => {
     loadRates().then(setRates);
-  }, [initial]);
+  }, []);
 
   // Save a moment after the last change.
   useEffect(() => {
@@ -118,7 +121,7 @@ export function TripWallet({
     for (const e of wallet.expenses) m.set(e.category, (m.get(e.category) ?? 0) + e.amount);
     return [...m].sort((a, b) => b[1] - a[1]);
   }, [wallet.expenses]);
-  const currencies = [...new Set([wallet.currency, homeCurrency(), localCurrency, "USD", "EUR"].filter((c): c is string => !!c))];
+  const currencies = [...new Set([wallet.currency, shown, localCurrency, "USD", "EUR"].filter((c): c is string => !!c))];
 
   /* ------------------------------- add expense ------------------------------ */
   const [title, setTitle] = useState("");

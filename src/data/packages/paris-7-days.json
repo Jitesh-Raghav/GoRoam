@@ -17,7 +17,8 @@
         "duration": "2 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit early to avoid the crowds and enjoy the tranquility."
+        "tip": "Visit early to avoid the crowds and enjoy the tranquility.",
+        "priceNote": "Free to enter"
       },
       "afternoon": {
         "time": "12:30 PM - 2:30 PM",
@@ -64,9 +65,10 @@
           "lng": 2.3376
         },
         "duration": "3 hours",
-        "estimatedCost": 48,
+        "estimatedCost": 75,
         "category": "culture",
-        "tip": "Book timed entry tickets online to skip the long lines."
+        "tip": "Book timed entry tickets online to skip the long lines.",
+        "priceNote": "€32 non-EU entry × 2 (€22 for EU)"
       },
       "afternoon": {
         "time": "12:30 PM - 2:30 PM",
@@ -92,11 +94,12 @@
           "lng": 2.3266
         },
         "duration": "3 hours",
-        "estimatedCost": 32,
+        "estimatedCost": 37,
         "category": "culture",
-        "tip": "Visit late on Thursdays when the museum is open until 9:45 PM to avoid crowds."
+        "tip": "Visit late on Thursdays when the museum is open until 9:45 PM to avoid crowds.",
+        "priceNote": "€16 entry × 2"
       },
-      "totalDayCost": 160
+      "totalDayCost": 192
     },
     {
       "day": 3,
@@ -115,7 +118,8 @@
         "duration": "2.5 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Arrive early to enjoy a peaceful moment in the nearby square."
+        "tip": "Arrive early to enjoy a peaceful moment in the nearby square.",
+        "priceNote": "Free to enter"
       },
       "afternoon": {
         "time": "12:00 PM - 2:00 PM",
@@ -141,11 +145,12 @@
           "lng": 2.2945
         },
         "duration": "3 hours",
-        "estimatedCost": 90,
+        "estimatedCost": 84,
         "category": "sight",
-        "tip": "Visit just before sunset for stunning views and to see the city lights come alive."
+        "tip": "Visit just before sunset for stunning views and to see the city lights come alive.",
+        "priceNote": "Top by lift €36.10 × 2"
       },
-      "totalDayCost": 180
+      "totalDayCost": 174
     },
     {
       "day": 4,
@@ -211,9 +216,10 @@
           "lng": 2.1205
         },
         "duration": "4 hours",
-        "estimatedCost": 70,
+        "estimatedCost": 82,
         "category": "sight",
-        "tip": "Arrive early to avoid the crowds and maximize your time."
+        "tip": "Arrive early to avoid the crowds and maximize your time.",
+        "priceNote": "Passport €35 non-EU × 2"
       },
       "afternoon": {
         "time": "12:30 PM - 2:00 PM",
@@ -243,7 +249,7 @@
         "category": "nature",
         "tip": "Bring a picnic blanket to enjoy some relaxation amidst the beauty."
       },
-      "totalDayCost": 130
+      "totalDayCost": 142
     },
     {
       "day": 6,
@@ -260,9 +266,10 @@
           "lng": 2.3445
         },
         "duration": "2 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 30,
         "category": "sight",
-        "tip": "Visit early in the day to enjoy the chapel in peace."
+        "tip": "Visit early in the day to enjoy the chapel in peace.",
+        "priceNote": "€13 entry × 2"
       },
       "afternoon": {
         "time": "11:30 AM - 1:30 PM",
@@ -292,7 +299,7 @@
         "category": "nightlife",
         "tip": "Book your tickets in advance for the best seats and package deals."
       },
-      "totalDayCost": 390
+      "totalDayCost": 400
     },
     {
       "day": 7,
@@ -350,7 +357,7 @@
       "area": "Montparnasse",
       "type": "Boutique hotel",
       "why": "This stylish hotel offers a blend of modern comfort and classic Parisian elegance, perfect for first-time visitors.",
-      "pricePerNight": 200
+      "pricePerNight": 340
     },
     {
       "name": "Hotel Fabric",
@@ -387,7 +394,7 @@
     "Guidebook or map"
   ],
   "summary": {
-    "totalCost": 982,
+    "totalCost": 1030,
     "totalDays": 7,
     "destination": "Paris, France",
     "overview": "Discover the magic of Paris, where art, history, and culinary delights await at every corner. From iconic landmarks to hidden gems, this itinerary offers a perfect blend of experiences for first-time visitors.",

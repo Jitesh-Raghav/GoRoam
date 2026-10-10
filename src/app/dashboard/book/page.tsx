@@ -8,6 +8,7 @@ import { useMemo, useRef, useState, type ReactNode } from "react";
 import { BOOKING_TABS, partnersFor } from "@/components/itinerary/booking-panel";
 import { SplitText } from "@/components/motion/split-text";
 import type { SceneId } from "@/components/scenes/scenes";
+import { Mesh } from "@/components/site/mesh";
 import { PhotoPanel } from "@/components/site/photo-panel";
 import { BRAND_PHOTOS, PHOTO_QUERIES, sizedPhoto, useBrandPhoto, usePlacePhoto } from "@/lib/brand-photos";
 import { cityOf, isoDay, type BookingKind, type BookingQuery } from "@/lib/booking";
@@ -287,16 +288,17 @@ function BookContent() {
                 rel="noopener noreferrer sponsored"
                 onClick={() => track("booking_partner_clicked", { partner: p.id, kind, where: "book" })}
                 aria-disabled={!ready}
-                className="group flex min-w-0 items-center gap-4 rounded-card bg-white p-4 ring-1 ring-line transition-[box-shadow,background-color,color] duration-300 hover:bg-ink hover:text-paper hover:shadow-float aria-disabled:pointer-events-none aria-disabled:opacity-45 sm:p-5"
+                className="mesh-host group relative isolate flex min-w-0 items-center gap-4 overflow-hidden rounded-card bg-white p-4 ring-1 ring-line transition-[box-shadow,transform] duration-500 ease-out-expo hover:-translate-y-0.5 hover:shadow-float aria-disabled:pointer-events-none aria-disabled:opacity-45 sm:p-5"
               >
-                <span aria-hidden className="display grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-lg text-ink transition-colors group-hover:bg-paper/10 group-hover:text-paper">
+                <Mesh tone="lagoon" />
+                <span aria-hidden className="display grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-lg text-ink">
                   {p.name.charAt(0)}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="display block text-xl leading-none">{p.name}</span>
-                  <span className="mt-1.5 block truncate text-sm text-stone transition-colors group-hover:text-paper/70">{p.blurb}</span>
+                  <span className="mt-1.5 block truncate text-sm text-stone">{p.blurb}</span>
                 </span>
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-paper transition-[transform,background-color,color] duration-500 group-hover:rotate-45 group-hover:bg-paper group-hover:text-ink">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-paper transition-transform duration-500 group-hover:rotate-45">
                   <ArrowUpRight className="size-4" />
                 </span>
               </motion.a>

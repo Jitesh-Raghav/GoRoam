@@ -8,7 +8,7 @@ export const FAQS = [
   },
   {
     q: "What is a credit?",
-    a: `One credit creates one complete itinerary. Every new account starts with ${freeTrips()}, and packs of ${PLANS.map((p) => p.credits).join(", ").replace(/, (\d+)$/, " or $1")} credits start at $${PLANS[0].price}.`,
+    a: `One credit creates one complete itinerary. Every new account starts with ${freeTrips()}, and packs of ${PLANS.map((p) => p.credits).join(", ").replace(/, (\d+)$/, " or $1")} credits start at $${PLANS[0].price} (shown in your own currency where you are).`,
   },
   {
     q: "Do credits expire?",

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatMoney } from "@/lib/currency";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plane } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
@@ -51,6 +52,8 @@ export interface PassData {
   numberOfDays: number;
   numberOfPeople: number;
   budget: number;
+  /** The currency `budget` is in (USD when missing). */
+  budgetCurrency?: string;
   /** Short label for the chip on the pass, e.g. "Couple". */
   tripType: string;
   interests: string[];
@@ -125,7 +128,7 @@ export function BoardingPass({
             ["Date", date],
             ["Days", String(data.numberOfDays || "-")],
             ["Guests", String(data.numberOfPeople || "-")],
-            ["Budget", data.budget ? `$${data.budget.toLocaleString("en-US")}` : "-"],
+            ["Budget", data.budget ? formatMoney(data.budget, data.budgetCurrency ?? "USD", 0) : "-"],
           ].map(([k, v]) => (
             <div key={k} className="min-w-0">
               <dt className="eyebrow text-[0.58rem] text-stone">{k}</dt>

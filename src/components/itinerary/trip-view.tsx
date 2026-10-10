@@ -39,7 +39,7 @@ import {
 } from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
@@ -48,6 +48,8 @@ import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
+import { useMoney } from "@/lib/money";
+import { useStoredPhotos } from "@/lib/photo-store";
 import { downloadIcs } from "@/lib/ics";
 import {
   COMPANIONS,
@@ -56,11 +58,11 @@ import {
   STAYS,
   VIBES,
   labelFor,
-  money,
   titleCase,
   type ActivitySlot,
   type DayItinerary,
   type Essentials,
+  type TripGuide,
   type ItineraryDetails,
   type PlacePhoto as PlacePhotoData,
   type StaySuggestion,
@@ -88,13 +90,17 @@ import { Videos } from "./guide/videos";
 import { HeroPhoto } from "./hero-photo";
 import { Bookings } from "./bookings";
 import { CurrencyCard } from "./currency-card";
+import { CurrencySwitch } from "./currency-switch";
+import { EssentialsBento } from "./essentials-bento";
+import { ArrivalPanel, CheckPrice, Daylight, DayLoadChip, HolidayNote, PriceDisclaimer, StopConnector, StopFacts, dayLoad, legBetween, useHolidays } from "./trip-extras";
+import type { Holiday } from "@/app/api/holidays/route";
 import { JetLagCard } from "./jetlag-card";
 import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { TripWallet } from "./wallet";
-import { DayForecast, WeatherChip, WeatherOutlook, tripCentre, useLocalTime, useTripWeather } from "./weather";
+import { DayForecast, WeatherChip, tripCentre, useLocalTime, useTripWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
-import { currencyFor } from "@/lib/currency";
+import { currencyFor, formatMoney } from "@/lib/currency";
 import { downloadKml, hasMappableStops } from "@/lib/kml";
 import { updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
@@ -188,6 +194,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
 function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
+  const { fmt: money } = useMoney();
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
   const swap = useSwap();
@@ -225,7 +232,9 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               <span className="eyebrow text-[0.6rem]">{slot.label}</span>
               {activity.time && <span className="hidden truncate text-xs text-paper/80 sm:inline">· {activity.time}</span>}
             </span>
-            <span className="shrink-0 rounded-full bg-white/95 px-2.5 py-1.5 font-mono text-xs text-ink shadow-sm">{activity.estimatedCost ? money(activity.estimatedCost) : "Free"}</span>
+            <span className="shrink-0 rounded-full bg-white/95 px-2.5 py-1.5 font-mono text-xs text-ink shadow-sm" title={activity.priceNote ? `Estimate: ${activity.priceNote}` : activity.estimatedCost ? "Estimated cost for your group" : undefined}>
+              {activity.priceCheck ? <CheckPrice /> : activity.estimatedCost ? <><span className="mr-1 font-sans text-[10px] uppercase tracking-wider text-stone">Est.</span>{money(activity.estimatedCost)}</> : "Free"}
+            </span>
           </div>
         </div>
         <div className="p-4 sm:p-7">
@@ -234,6 +243,11 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
             {activity.duration && (
               <span className="inline-flex items-center gap-1">
                 <Clock3 className="size-3.5 text-brand" /> {activity.duration}
+              </span>
+            )}
+            {activity.priceNote && (
+              <span className="inline-flex min-w-0 items-center gap-1">
+                <Banknote className="size-3.5 shrink-0 text-brand" /> <span className="truncate">{activity.priceNote}</span>
               </span>
             )}
           </div>
@@ -262,6 +276,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               </span>
             </p>
           )}
+          <StopFacts activity={activity} />
           <div className="no-print mt-5 flex flex-wrap gap-2">
             <a
               href={mapsSearchUrl(activity.place.name, destination)}
@@ -392,6 +407,8 @@ function DayPanel({
   print,
   weather,
   nowSlot,
+  holidays,
+  arrival,
 }: {
   day: DayItinerary;
   index: number;
@@ -402,13 +419,20 @@ function DayPanel({
   weather?: DayWeather;
   /** Today, during the trip: the slot happening now (or next). */
   nowSlot?: string | null;
+  /** Public holidays falling on this day. */
+  holidays?: Holiday[];
+  /** Getting in from the airport, shown on day 1. */
+  arrival?: TripGuide["arrival"];
 }) {
+  const { fmt: money } = useMoney();
   const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
+  const transport = it.itineraryData.trip?.preferences?.transport;
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
     it.destination,
-    it.itineraryData.trip?.preferences?.transport === "car" ? "driving" : "transit"
+    transport === "car" ? "driving" : "transit"
   );
+  const load = dayLoad(day, transport);
   return (
     <div className="print-break">
       <div className="flex flex-col gap-5">
@@ -418,12 +442,18 @@ function DayPanel({
             {nowSlot !== undefined && (
               <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
             )}
+            {!!holidays?.length && (
+              <span className="rounded-full bg-sun px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Holiday</span>
+            )}
           </p>
           <h3 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.06rem)] leading-[1.02] text-ink">{day.theme || `Day ${index + 1}`}</h3>
           {day.summary && <p className="mt-3 max-w-xl text-stone">{day.summary}</p>}
+          <HolidayNote holidays={holidays} />
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 text-sm">
           <DayForecast day={weather} />
+          <Daylight day={weather} />
+          {load && <DayLoadChip load={load} />}
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3.5 py-2 text-ink ring-1 ring-line">
             <Banknote className="size-4 text-brand" /> {money(day.totalDayCost)}
           </span>
@@ -444,10 +474,18 @@ function DayPanel({
 
       {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
 
+      {index === 0 && <ArrivalPanel arrival={arrival} />}
+
       <ol className="mt-8">
-        {stops.map((s, k) => (
-          <StopCard key={s.key} slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.key} />
-        ))}
+        {stops.map((s, k) => {
+          const leg = k > 0 ? legBetween(stops[k - 1].activity, s.activity, transport) : null;
+          return (
+            <Fragment key={s.key}>
+              {leg && <StopConnector leg={leg} />}
+              <StopCard slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.key} />
+            </Fragment>
+          );
+        })}
       </ol>
 
       {day.dayTip && (
@@ -501,8 +539,11 @@ function BudgetCard({
   dayCosts,
   active,
   onPick,
+  typed,
 }: {
   budget: number;
+  /** The budget exactly as the traveller typed it, when that wasn't in USD. */
+  typed?: { amount: number; currency: string };
   activities: number;
   stay: number | null;
   nights: number;
@@ -512,6 +553,9 @@ function BudgetCard({
   active: number;
   onPick: (i: number) => void;
 }) {
+  const { fmt: money, currency } = useMoney();
+  // Show the budget as typed ("₹1,00,000") rather than a round trip through USD.
+  const budgetText = typed && typed.currency === currency ? formatMoney(typed.amount, currency, 0) : money(budget);
   const planned = activities + (stay ?? 0);
   const left = budget - planned;
   const over = left < 0;
@@ -556,13 +600,13 @@ function BudgetCard({
           <div className="absolute inset-0 grid place-items-center text-center">
             <div>
               <p className="display text-2xl leading-none text-ink">{Math.round((planned / Math.max(budget, 1)) * 100)}%</p>
-              <p className="mt-1 text-[10px] text-stone">of {money(budget)}</p>
+              <p className="mt-1 text-[10px] text-stone">of {budgetText}</p>
             </div>
           </div>
         </div>
         <div className="min-w-0">
           <p className="display text-3xl leading-none text-ink">{money(planned)}</p>
-          <p className="mt-1.5 text-sm text-stone">planned of your {money(budget)} budget</p>
+          <p className="mt-1.5 text-sm text-stone">planned of your {budgetText} budget</p>
           <p className={cn("mt-3 inline-flex rounded-full px-2.5 py-1 text-xs", over ? "bg-destructive/10 text-destructive" : "bg-brand-soft text-brand")}>
             {over ? `${money(-left)} over` : `${money(left)} to spare`}
           </p>
@@ -610,11 +654,13 @@ function BudgetCard({
           </ul>
         </div>
       )}
+      <PriceDisclaimer className="mt-5 border-t border-line pt-4" />
     </div>
   );
 }
 
 function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number; query: BookingQuery }) {
+  const { fmt: money } = useMoney();
   const [primary] = stayPartners(query, `${stay.name}, ${cityOf(query.destination)}`);
   return (
     <motion.article
@@ -691,6 +737,7 @@ export function TripView({
   /** Packages: where "Trip gallery" leads back to (the public gallery, or the dashboard's copy of it). */
   backHref?: string;
 }) {
+  const { fmt: money, convert, currency: shownCurrency } = useMoney();
   const data = it.itineraryData;
   // Guest previews behave like packages (no owner tools), with their own wording and an unlock button.
   const isGuest = variant === "guest";
@@ -707,17 +754,19 @@ export function TripView({
   const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
   const photosUrl = photosEndpoint ?? (isPackage ? packagePhotos : null) ?? (isPackage ? null : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`);
   const fetchedPhotos = useCachedJson<{ photos: Record<string, PlacePhotoData>; fallback: string | null }>(photosUrl);
+  // What this device remembers from the last visit, so photos show before the fresh list arrives.
+  const storedPhotos = useStoredPhotos(it.id, fetchedPhotos.data?.photos);
   const tripPhotos = useMemo(() => {
     const saved = data?.photos ?? {};
-    const photos = { ...saved, ...fetchedPhotos.data?.photos };
+    const photos = { ...saved, ...storedPhotos, ...fetchedPhotos.data?.photos };
     const anyFallback = Object.values(photos).find((p) => p.fallback)?.fallback ?? null;
     return {
       photos,
       fallback: fetchedPhotos.data?.fallback ?? anyFallback,
       city: (data?.summary?.destination || it.destination).split(",")[0].trim(),
-      loading: !!photosUrl && fetchedPhotos.loading,
+      loading: !!photosUrl && fetchedPhotos.loading && !storedPhotos,
     };
-  }, [data, fetchedPhotos.data, fetchedPhotos.loading, photosUrl, it.destination]);
+  }, [data, storedPhotos, fetchedPhotos.data, fetchedPhotos.loading, photosUrl, it.destination]);
   const days = useMemo(() => data?.itinerary ?? [], [data]);
   const [active, setActive] = useState(0);
   const planRef = useRef<HTMLElement>(null);
@@ -763,6 +812,7 @@ export function TripView({
   const { weather, byDate } = useTripWeather(centre, it.startDate, it.numberOfDays);
   const localTime = useLocalTime(weather?.timezone);
   const localCurrency = guide?.currencyCode || currencyFor(flag);
+  const holidays = useHolidays(flag, it.startDate, it.numberOfDays);
 
   // During the trip, open on today and point at what's happening now.
   const [todayIndex, setTodayIndex] = useState<number | null>(null);
@@ -969,7 +1019,10 @@ export function TripView({
             startDate: isoDay(it.startDate, 0),
             numberOfDays: it.numberOfDays,
             numberOfPeople: people,
-            budget: Math.round(it.budget),
+            // In the shown currency: as typed when it matches, else converted.
+            ...(prefs?.budgetLocal && prefs.budgetCurrency === shownCurrency
+              ? { budget: prefs.budgetLocal, budgetCurrency: shownCurrency }
+              : { budget: Math.round(convert(it.budget) ?? it.budget), budgetCurrency: convert(it.budget) === null ? "USD" : shownCurrency }),
             tripType: who || "Trip",
             interests: it.interests,
             note: prefs ? `${labelFor(PACES, prefs.pace)} pace · ${labelFor(STAYS, prefs.stay)}` : undefined,
@@ -986,7 +1039,9 @@ export function TripView({
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
           <section ref={planRef} className="scroll-mt-6">
-            <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>} />
+            <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>}>
+              <CurrencySwitch local={localCurrency} typed={prefs?.budgetCurrency} />
+            </SectionTitle>
 
             {days.length > 1 && (
               <div
@@ -1049,13 +1104,15 @@ export function TripView({
                       onJump={jump}
                       weather={byDate.get(isoDay(it.startDate, active))}
                       nowSlot={todayIndex === active ? nowSlot : undefined}
+                      holidays={holidays.get(isoDay(it.startDate, active))}
+                      arrival={guide?.arrival}
                     />
                   )}
                 </motion.div>
               </AnimatePresence>
               <div className="hidden space-y-14 print:block">
                 {days.map((d, i) => (
-                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} />
+                  <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} holidays={holidays.get(isoDay(it.startDate, i))} arrival={guide?.arrival} />
                 ))}
               </div>
             </div>
@@ -1068,6 +1125,7 @@ export function TripView({
           <div className="space-y-3 lg:sticky lg:top-6">
             <BudgetCard
               budget={it.budget}
+              typed={prefs?.budgetCurrency && prefs.budgetLocal ? { amount: prefs.budgetLocal, currency: prefs.budgetCurrency } : undefined}
               activities={activities}
               stay={stayTotal}
               nights={nights}
@@ -1147,31 +1205,10 @@ export function TripView({
       {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
         <Band>
           <SectionTitle eyebrow="Good to know" title={<>The <span className="accent">essentials.</span></>} />
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {essentials.map((e, i) => (
-              <motion.div
-                key={e.key}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, ease, delay: i * 0.05 }}
-                className={cn(
-                  "print-avoid rounded-[24px] p-5",
-                  e.key === "weather" ? "bg-[linear-gradient(135deg,var(--sun-soft),#fff_72%)] shadow-card ring-1 ring-sun/20 sm:col-span-2" : "glass"
-                )}
-              >
-                <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "duo-sun bg-sun/15 text-ink" : "bg-brand-soft text-brand")}>
-                  <e.icon className="size-5" />
-                </span>
-                <p className="eyebrow mt-4 text-[0.6rem] text-stone">{e.label}</p>
-                <p className={cn("mt-1.5 leading-snug text-ink", e.key === "weather" && "text-lg")}>{data.essentials![e.key]}</p>
-              </motion.div>
-            ))}
-          </div>
+          <EssentialsBento essentials={data?.essentials} weather={weather?.days ?? []} localCurrency={localCurrency} guide={guide} />
           <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-12 lg:items-start empty:hidden">
-            {!!weather?.days.length && <WeatherOutlook days={weather.days} className="lg:col-span-7" />}
-            {localCurrency && <CurrencyCard local={localCurrency} budgetUsd={it.budget} className={weather?.days.length ? "lg:col-span-5" : "lg:col-span-6"} />}
-            {!isPackage && weather?.timezone && <JetLagCard timezone={weather.timezone} departure={isoDay(it.startDate, 0)} className="lg:col-span-12" />}
+            {localCurrency && <CurrencyCard local={localCurrency} budgetUsd={it.budget} className="lg:col-span-5" />}
+            {!isPackage && weather?.timezone && <JetLagCard timezone={weather.timezone} departure={isoDay(it.startDate, 0)} className={localCurrency ? "lg:col-span-7" : "lg:col-span-12"} />}
           </div>
         </Band>
       )}

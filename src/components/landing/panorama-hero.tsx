@@ -12,6 +12,8 @@ import { SplitText } from "@/components/motion/split-text";
 import { PillButton } from "@/components/site/pill";
 import { useTypewriter } from "@/components/site/trip-prompt";
 import { useIntro } from "@/components/site/use-intro";
+import { formatMoney } from "@/lib/currency";
+import { useMoney } from "@/lib/money";
 import { parseTripPrompt, plannerHref, type ParsedPrompt } from "@/lib/prompt-parse";
 import { COMPANIONS, VIBES, labelFor } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -39,7 +41,7 @@ function understood(p: ParsedPrompt) {
   if (p.destination) chips.push({ key: "where", icon: MapPin, text: p.destination });
   if (p.days || p.month) chips.push({ key: "when", icon: CalendarDays, text: [p.days && `${p.days} ${p.days === 1 ? "day" : "days"}`, p.month].filter(Boolean).join(" · ") });
   if (p.companions) chips.push({ key: "who", icon: Users, text: labelFor(COMPANIONS, p.companions) });
-  if (p.budget) chips.push({ key: "budget", icon: Wallet, text: `$${p.budget.toLocaleString("en-US")}` });
+  if (p.budget) chips.push({ key: "budget", icon: Wallet, text: formatMoney(p.budget, p.budgetCurrency ?? "USD", 0) });
   if (p.interests.length) chips.push({ key: "vibes", icon: Heart, text: p.interests.slice(0, 3).map((i) => labelFor(VIBES, i)).join(", ") });
   return chips;
 }
@@ -59,6 +61,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
   const [focused, setFocused] = useState(false);
   const [parsed, setParsed] = useState<ParsedPrompt | null>(null);
   const typed = useTypewriter(ready && !text && !focused, EXAMPLES);
+  const { toUsd } = useMoney();
 
   // Read the description as it's typed, a beat after the last keystroke.
   useEffect(() => {
@@ -96,11 +99,13 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
     const days = Math.min(p.days ?? 3, 7);
     setNotice(null);
     setGuest({ destination: p.destination!, days });
+    // Guest trips are planned in USD; a budget in another currency is converted at today's rate.
+    const budget = p.budget && (!p.budgetCurrency || p.budgetCurrency === "USD" ? p.budget : toUsd(p.budget, p.budgetCurrency));
     try {
       const res = await fetch("/api/guest-itinerary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destination: p.destination, days, budget: p.budget, startDate: p.startDate, companions: p.companions, interests: p.interests }),
+        body: JSON.stringify({ destination: p.destination, days, budget: budget ? Math.round(budget) : undefined, startDate: p.startDate, companions: p.companions, interests: p.interests }),
       });
       const body = await res.json().catch(() => ({}));
       if (body.id) {
@@ -158,11 +163,13 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
           e.preventDefault();
           submit();
         }}
-        className="group/composer relative isolate rounded-[28px] bg-white/45 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(10,30,44,0.18),inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-1 ring-inset ring-white/70 backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/60"
+        className="group/composer relative isolate rounded-[28px] bg-white/25 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(10,30,44,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(60,207,188,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/45"
       >
         {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
-        <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/70 via-white/20 to-transparent" />
+        <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
         <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(90%_70%_at_100%_100%,rgba(52,209,191,0.14),transparent_60%)]" />
+        {/* Frost: a fine grain, like breath on cold glass. */}
+        <span aria-hidden className="frost-grain pointer-events-none absolute inset-0 rounded-[28px] opacity-[0.07] mix-blend-overlay" />
         <span aria-hidden className="composer-glow pointer-events-none absolute -inset-[2px] -z-10 rounded-[30px] opacity-0 blur-md transition-opacity duration-700 group-focus-within/composer:opacity-100" />
         <label htmlFor={id} className="sr-only">
           Describe the trip you want to plan

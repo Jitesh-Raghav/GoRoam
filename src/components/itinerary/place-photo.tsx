@@ -5,6 +5,7 @@
 import { Camera, Star, type LucideIcon } from "@/components/site/icons";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { photoKey, type ActivitySlot, type PlacePhoto as Photo } from "@/lib/trip";
+import { useInstantImage } from "@/lib/use-instant-image";
 import { cn } from "@/lib/utils";
 
 /**
@@ -151,11 +152,18 @@ export function PlacePhoto({
   const loaded = !!url && loadedUrl === url;
   const usingFallback = !!url && url !== photo?.url;
 
+  const quick = useInstantImage(url);
   // Stable per URL, so it runs once when the <img> mounts and catches cache hits.
   const markLoaded = useCallback(
     (img: HTMLImageElement | null) => {
-      if (url && img?.complete && img.naturalWidth > 0) setLoadedUrl(url);
+      if (!img) return;
+      quick.start();
+      if (url && img.complete && img.naturalWidth > 0) {
+        quick.done(true);
+        setLoadedUrl(url);
+      }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per URL; quick's functions only touch refs and state setters
     [url]
   );
 
@@ -179,10 +187,15 @@ export function PlacePhoto({
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           referrerPolicy="no-referrer"
-          onLoad={() => setLoadedUrl(url)}
+          onLoad={() => {
+            quick.done();
+            setLoadedUrl(url);
+          }}
           onError={() => setFailed((f) => [...f, url])}
           className={cn(
-            "absolute inset-0 size-full object-cover transition-[opacity,transform] duration-1000 ease-out-expo print:scale-100 print:opacity-100",
+            "absolute inset-0 size-full object-cover print:scale-100 print:opacity-100",
+            // A photo straight from cache appears at once; one from the network fades in.
+            !quick.instant && "transition-[opacity,transform] duration-1000 ease-out-expo",
             loaded ? "scale-100 opacity-100" : "scale-105 opacity-0",
             imgClassName
           )}

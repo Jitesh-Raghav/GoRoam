@@ -38,8 +38,39 @@ export function homeCurrency(): string {
 export function formatMoney(amount: number, currency: string, maxDigits?: number) {
   try {
     const digits = maxDigits ?? (Math.abs(amount) >= 10 ? 0 : 2);
-    return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: digits, minimumFractionDigits: 0 }).format(amount);
+    // Lakh grouping for rupees (₹1,25,000), the way Indian travellers read prices.
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency, maximumFractionDigits: digits, minimumFractionDigits: 0 }).format(amount);
   } catch {
     return `${Math.round(amount).toLocaleString("en-US")} ${currency}`;
   }
+}
+
+/** "₹1L", "€1.4K", "$750": short amounts for chips. */
+export function compactMoney(amount: number, currency: string) {
+  // Spelled out for rupees: browsers disagree on Indian compact forms ("₹50T").
+  if (currency === "INR" && amount >= 1000) {
+    const [n, unit] = amount >= 1e7 ? [amount / 1e7, "Cr"] : amount >= 1e5 ? [amount / 1e5, "L"] : [amount / 1e3, "k"];
+    return `₹${Number(n.toFixed(1))}${unit}`;
+  }
+  try {
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency, notation: "compact", minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(amount);
+  } catch {
+    return formatMoney(amount, currency, 0);
+  }
+}
+
+/** The nearest amount people actually budget in: 1, 1.5, 2, 2.5, 3, 4, 5, 6 or 7.5 × 10ⁿ. */
+export function roundBudget(n: number) {
+  if (!(n > 0)) return 0;
+  const p = Math.pow(10, Math.floor(Math.log10(n)));
+  const steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 10];
+  const best = steps.reduce((a, b) => (Math.abs(b * p - n) < Math.abs(a * p - n) ? b : a));
+  return best * p;
+}
+
+/** Budget suggestions for a whole trip, in round local numbers. */
+export function budgetPicks(currency: string, usdRate: number | null): number[] {
+  if (currency === "INR") return [50000, 100000, 250000, 500000];
+  if (currency === "USD" || !usdRate) return [750, 1500, 3000, 6000];
+  return [...new Set([750, 1500, 3000, 6000].map((v) => roundBudget(v * usdRate)))];
 }

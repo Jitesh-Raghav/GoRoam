@@ -1,9 +1,14 @@
 import { Check, Gift, ShieldCheck, Sparkles } from "@/components/site/icons";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
+import { Mesh, type MeshTone } from "@/components/site/mesh";
 import { PillLink } from "@/components/site/pill";
-import { PLANS, freeTrips, perTrip } from "@/lib/plans";
+import { PackEach, PackPrice } from "@/components/site/pack-price";
+import { PLANS, freeTrips } from "@/lib/plans";
 import { SectionHeading } from "./section-heading";
+
+/** Each pack's colour, in the mesh that wakes up on hover. */
+const TONE: Record<string, MeshTone> = { starter: "lagoon", explorer: "sunset", adventurer: "sand" };
 
 export function Pricing() {
   return (
@@ -27,24 +32,26 @@ export function Pricing() {
             <Reveal key={p.id} delay={i * 0.08} className="h-full">
               <div
                 className={cn(
-                  "relative flex h-full flex-col overflow-hidden rounded-panel p-8 sm:p-10",
-                  p.popular ? "bg-ocean text-paper shadow-float" : "bg-white text-ink shadow-card ring-1 ring-line"
+                  "mesh-host relative isolate flex h-full flex-col overflow-hidden rounded-panel p-8 transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1.5 sm:p-10",
+                  p.popular ? "bg-ink text-paper shadow-float hover:shadow-[0_60px_120px_-50px_rgba(255,61,151,0.45)]" : "bg-white text-ink shadow-card ring-1 ring-line hover:shadow-float"
                 )}
               >
-                {p.popular && (
-                  <>
-                    <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white">
-                      <Sparkles className="size-3.5" /> Most popular
-                    </span>
-                  </>
-                )}
+                <Mesh tone={TONE[p.id] ?? "lagoon"} />
+                {p.popular ? (
+                  <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-paper/15 px-3 py-1.5 text-xs font-medium text-paper ring-1 ring-inset ring-paper/25 backdrop-blur-md">
+                    <Sparkles className="size-3.5 text-sun-2" /> Most popular
+                  </span>
+                ) : p.id === "adventurer" ? (
+                  <span className="absolute right-6 top-6 inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-xs font-medium text-ink ring-1 ring-inset ring-line backdrop-blur-md">
+                    Best value
+                  </span>
+                ) : null}
                 <p className={cn("eyebrow", p.popular ? "text-paper/60" : "text-stone")}>{p.name}</p>
-                <div className="mt-6 flex items-baseline gap-2">
-                  <span className="display text-[3.25rem] leading-none tabular-nums">${p.price}</span>
-                  <span className={cn("text-sm", p.popular ? "text-paper/60" : "text-stone")}>one-time</span>
+                <div className="mt-6">
+                  <PackPrice plan={p} className="text-[3.25rem]" muted={p.popular ? "text-paper/60" : "text-stone"} />
                 </div>
                 <p className={cn("mt-4 font-medium", p.popular ? "text-brand-2" : "text-brand")}>
-                  {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ {perTrip(p)} per itinerary</span>
+                  {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={p} /> per itinerary</span>
                 </p>
                 <p className={cn("mt-2", p.popular ? "text-paper/70" : "text-stone")}>{p.tagline}</p>
 
@@ -74,7 +81,8 @@ export function Pricing() {
         </div>
 
         <Reveal delay={0.1}>
-          <div className="mt-4 flex flex-col items-start justify-between gap-5 rounded-panel bg-white p-6 shadow-card ring-1 ring-line sm:flex-row sm:items-center sm:p-8">
+          <div className="mesh-host relative isolate mt-4 flex flex-col items-start justify-between gap-5 overflow-hidden rounded-panel bg-white p-6 shadow-card ring-1 ring-line sm:flex-row sm:items-center sm:p-8">
+            <Mesh tone="lagoon" />
             <div className="flex items-center gap-4">
               <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand">
                 <Gift className="size-5" />

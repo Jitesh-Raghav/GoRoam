@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Compass, CreditCard, LogOut, Luggage, Map as MapIcon, Plane, Plus, Settings, X, Menu } from "@/components/site/icons";
+import { clearPhotoMaps } from "@/lib/photo-store";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
@@ -152,7 +153,10 @@ function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onN
           </div>
           <button
             type="button"
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => {
+              clearPhotoMaps();
+              void signOut({ callbackUrl: "/" });
+            }}
             aria-label="Sign out"
             title="Sign out"
             className="grid size-9 shrink-0 place-items-center rounded-full text-ink/60 transition-colors hover:bg-ink hover:text-paper"

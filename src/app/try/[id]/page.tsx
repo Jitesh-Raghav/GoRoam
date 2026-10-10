@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Price } from "@/components/site/price";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { TripView } from "@/components/itinerary/trip-view";
@@ -9,7 +10,6 @@ import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Your trip preview", robots: { index: false, follow: false } };
 
-const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 
 // A signed-out visitor's first trip: Day 1 open, the rest unlocked by signing in.
 export default async function GuestTripPage({ params }: { params: Promise<{ id: string }> }) {
@@ -42,7 +42,7 @@ export default async function GuestTripPage({ params }: { params: Promise<{ id: 
                   <div className="h-3 w-3/5 rounded bg-paper-3" />
                   <div className="h-3 w-2/3 rounded bg-paper-3" />
                 </div>
-                <p className="mt-3 text-xs text-stone">3 stops · about {usd(d.totalDayCost)} · locked</p>
+                <p className="mt-3 text-xs text-stone">3 stops · about <Price usd={d.totalDayCost} /> · locked</p>
               </li>
             ))}
           </ol>

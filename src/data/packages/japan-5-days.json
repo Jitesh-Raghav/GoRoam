@@ -17,7 +17,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit early to avoid crowds and enjoy the peaceful atmosphere."
+        "tip": "Visit early to avoid crowds and enjoy the peaceful atmosphere.",
+        "priceNote": "Free to enter"
       },
       "afternoon": {
         "time": "1:00 PM - 4:00 PM",
@@ -66,7 +67,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Visit during a ceremony to experience authentic Shinto practices."
+        "tip": "Visit during a ceremony to experience authentic Shinto practices.",
+        "priceNote": "Free to enter"
       },
       "afternoon": {
         "time": "1:00 PM - 4:00 PM",
@@ -113,9 +115,10 @@
           "lng": 139.7671
         },
         "duration": "3 hours",
-        "estimatedCost": 250,
+        "estimatedCost": 189,
         "category": "activity",
-        "tip": "Book your tickets in advance for the best prices and window seats."
+        "tip": "Book your tickets in advance for the best prices and window seats.",
+        "priceNote": "Nozomi reserved seat ¥14,170 × 2"
       },
       "afternoon": {
         "time": "1:00 PM - 4:00 PM",
@@ -127,9 +130,10 @@
           "lng": 135.7292
         },
         "duration": "3 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 7,
         "category": "sight",
-        "tip": "Visit in the afternoon for the best light on the pavilion's reflection."
+        "tip": "Visit in the afternoon for the best light on the pavilion's reflection.",
+        "priceNote": "¥500 entry × 2"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -145,7 +149,7 @@
         "category": "food",
         "tip": "Make reservations in advance to secure a table at a popular kaiseki restaurant."
       },
-      "totalDayCost": 420
+      "totalDayCost": 346
     },
     {
       "day": 4,
@@ -164,7 +168,8 @@
         "duration": "3 hours",
         "estimatedCost": 0,
         "category": "sight",
-        "tip": "Go early to enjoy the trails with fewer tourists."
+        "tip": "Go early to enjoy the trails with fewer tourists.",
+        "priceNote": "Free to enter, open 24 hours"
       },
       "afternoon": {
         "time": "1:00 PM - 4:00 PM",
@@ -176,9 +181,10 @@
           "lng": 135.6703
         },
         "duration": "3 hours",
-        "estimatedCost": 30,
+        "estimatedCost": 11,
         "category": "nature",
-        "tip": "Visit the grove in the afternoon when the light filters beautifully through the bamboo."
+        "tip": "Visit the grove in the afternoon when the light filters beautifully through the bamboo.",
+        "priceNote": "Grove free; Monkey Park ¥800 × 2"
       },
       "evening": {
         "time": "6:00 PM - 9:00 PM",
@@ -194,7 +200,7 @@
         "category": "food",
         "tip": "Opt for the chef's special course for an unforgettable culinary experience."
       },
-      "totalDayCost": 230
+      "totalDayCost": 211
     },
     {
       "day": 5,
@@ -211,9 +217,10 @@
           "lng": 135.7438
         },
         "duration": "3 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 17,
         "category": "sight",
-        "tip": "Arrive early for a guided tour to learn about its history."
+        "tip": "Arrive early for a guided tour to learn about its history.",
+        "priceNote": "¥1,300 with Ninomaru Palace × 2"
       },
       "afternoon": {
         "time": "1:00 PM - 4:00 PM",
@@ -239,11 +246,12 @@
           "lng": 135.7786
         },
         "duration": "3 hours",
-        "estimatedCost": 60,
+        "estimatedCost": 42,
         "category": "culture",
-        "tip": "Book your tickets in advance to secure the best seats."
+        "tip": "Book your tickets in advance to secure the best seats.",
+        "priceNote": "¥3,150 show ticket × 2"
       },
-      "totalDayCost": 130
+      "totalDayCost": 109
     }
   ],
   "stays": [
@@ -266,7 +274,7 @@
       "area": "Kyoto Station",
       "type": "Luxury hotel",
       "why": "Conveniently located above the train station with stunning views and top-notch service.",
-      "pricePerNight": 200
+      "pricePerNight": 350
     }
   ],
   "essentials": {
@@ -289,7 +297,7 @@
     "Lightweight backpack for day trips"
   ],
   "summary": {
-    "totalCost": 1060,
+    "totalCost": 946,
     "totalDays": 5,
     "destination": "Tokyo and Kyoto, Japan",
     "overview": "Discover the enchanting blend of modernity and tradition in Japan's most iconic cities. From ancient temples to bustling markets, this trip promises a memorable first experience.",

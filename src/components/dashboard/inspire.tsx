@@ -1,5 +1,6 @@
 "use client";
 
+import { useMoney } from "@/lib/money";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CloudSun, Compass, Loader2, Plane, RefreshCw, Sparkles, Wallet, X } from "@/components/site/icons";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { sceneForDestination } from "@/lib/destinations";
 import { countryCodeFor } from "@/lib/flags";
-import { VIBES, money } from "@/lib/trip";
+import { VIBES } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -35,6 +36,7 @@ export function Inspire({
   onPick: (destination: string, month: number) => void;
   className?: string;
 }) {
+  const { fmt: money } = useMoney();
   const [open, setOpen] = useState(false);
   const now = new Date();
   const months = Array.from({ length: 6 }, (_, i) => new Date(now.getFullYear(), now.getMonth() + i + 1, 1));

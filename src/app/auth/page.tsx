@@ -1,5 +1,6 @@
 "use client";
 
+import { clearPhotoMaps } from "@/lib/photo-store";
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -169,6 +170,7 @@ function AuthPanel() {
 
   const handleSignOut = async () => {
     try {
+      clearPhotoMaps();
       await signOut({ callbackUrl: "/" });
     } catch (error) {
       console.error("Sign-out error:", error);

@@ -64,9 +64,10 @@
           "lng": 77.0584
         },
         "duration": "3 hours",
-        "estimatedCost": 20,
+        "estimatedCost": 3,
         "category": "sight",
-        "tip": "Visit the museum's café for a delightful cup of freshly brewed tea."
+        "tip": "Visit the museum's café for a delightful cup of freshly brewed tea.",
+        "priceNote": "About ₹125 entry × 2"
       },
       "afternoon": {
         "time": "1:00 PM - 3:00 PM",
@@ -96,7 +97,7 @@
         "category": "food",
         "tip": "Try the Kerala fish curry and appam for a true local experience."
       },
-      "totalDayCost": 80
+      "totalDayCost": 63
     },
     {
       "day": 3,
@@ -289,7 +290,7 @@
     "Local currency for markets and small vendors"
   ],
   "summary": {
-    "totalCost": 590,
+    "totalCost": 573,
     "totalDays": 5,
     "destination": "Kochi, India",
     "overview": "Experience the enchanting landscapes and rich culture of Kerala on this 5-day journey. From the historical charm of Kochi to the serene backwaters of Alleppey, every moment is a celebration of nature and heritage.",

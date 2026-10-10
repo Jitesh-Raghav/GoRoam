@@ -29,7 +29,7 @@ export const PACKAGE_SEO: Record<string, PackageSeo> = {
       { q: "Are 3 days enough for Hampi?", a: "Yes. Three days covers the Sacred Centre around Virupaksha, the Vittala complex, the Royal Centre and one evening across the river at Sanapur, without rushing. Add a fourth day for Badami or Anegundi." },
       { q: "What is the best time to visit Hampi?", a: "October to February, when days are 25-30°C and dry. March to May is very hot, and the monsoon (June to September) is green but some boat rides stop." },
       { q: "How do couples get around Hampi?", a: "Hire one auto-rickshaw for the day (about ₹1,000-1,500), or rent a scooter or bicycle. The sites are spread over about 25 km², so walking between all of them isn't practical." },
-      { q: "How much does a 3-day Hampi trip cost for two?", a: "Plan on roughly $450 for two: about $60-330 a night for a stay, ₹600 per foreigner (₹40 for Indians) for the combined ASI ticket, coracle rides around ₹400-500, and simple meals of ₹200-500." },
+      { q: "How much does a 3-day Hampi trip cost for two?", a: "Plan on roughly $500 for two: about $30-500 a night for a stay, ₹600 per foreigner (₹40 for Indians) for the combined ASI ticket (valid on the day you buy it), coracle rides around ₹400-500, and simple meals of ₹200-500." },
     ],
   },
   "jaipur-2-days": {

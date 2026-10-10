@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers/session-provider";
 import { OfflineSupport } from "@/components/site/offline";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { preconnect } from "react-dom";
 
 // Headlines: Space Grotesk. Body and UI: Inter. Times, coordinates and other data: Geist Mono.
 // `subsets` only picks what to preload: every subset is still declared, so a ₹ (latin-ext)
@@ -83,6 +84,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Most trip and destination photos come from these hosts: open the connection early.
+  preconnect("https://images.unsplash.com");
+  preconnect("https://upload.wikimedia.org");
   return (
     <html lang="en" suppressHydrationWarning>
       <body

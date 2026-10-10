@@ -1,10 +1,11 @@
 "use client";
 
+import { useMoney } from "@/lib/money";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Clock3, Dumbbell, GraduationCap, Map as MapIcon, Mountain, Sparkles, type LucideIcon } from "@/components/site/icons";
 import { useRef } from "react";
 import { cityOf, ticketsFor } from "@/lib/booking";
-import { money, type Experience, type ExperienceKind } from "@/lib/trip";
+import { type Experience, type ExperienceKind } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto, asStop } from "../place-photo";
 import { Band } from "../band";
@@ -22,6 +23,7 @@ export const KIND: Record<ExperienceKind, { label: string; icon: LucideIcon; ton
 
 /** Bookable adventures, sports, tours and classes, as a swipeable rail. */
 export function Experiences({ items, destination }: { items: Experience[]; destination: string }) {
+  const { fmt: money } = useMoney();
   const rail = useRef<HTMLDivElement>(null);
   if (!items.length) return null;
   const city = cityOf(destination);

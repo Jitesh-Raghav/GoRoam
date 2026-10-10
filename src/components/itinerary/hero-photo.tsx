@@ -4,6 +4,7 @@
 
 import { useCallback, useState } from "react";
 import type { PlacePhoto } from "@/lib/trip";
+import { useInstantImage } from "@/lib/use-instant-image";
 import { cn } from "@/lib/utils";
 
 /**
@@ -31,18 +32,25 @@ export function HeroPhoto({
   const [state, setState] = useState<{ url: string; ok: boolean } | null>(null);
   const loaded = !!url && state?.url === url && state.ok;
   const broken = !!url && state?.url === url && !state.ok;
+  const quick = useInstantImage(url);
   // Catches a photo that came straight from the browser cache before onLoad was attached.
   const markLoaded = useCallback(
     (img: HTMLImageElement | null) => {
-      if (url && img?.complete && img.naturalWidth > 0) setState({ url, ok: true });
+      if (!img) return;
+      quick.start();
+      if (url && img.complete && img.naturalWidth > 0) {
+        quick.done(true);
+        setState({ url, ok: true });
+      }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per URL; quick's functions only touch refs and state setters
     [url]
   );
 
   if (!url || broken) return null;
   return (
     <div className={cn("pointer-events-none absolute inset-0", className)}>
-      <div className={cn("absolute inset-0 overflow-hidden transition-opacity duration-[1600ms] ease-out", loaded ? "opacity-100" : "opacity-0")}>
+      <div className={cn("absolute inset-0 overflow-hidden", !quick.instant && "transition-opacity duration-[1600ms] ease-out", loaded ? "opacity-100" : "opacity-0")}>
         <img
           key={url}
           ref={markLoaded}
@@ -52,7 +60,10 @@ export function HeroPhoto({
           fetchPriority={lazy ? "low" : "high"}
           loading={lazy ? "lazy" : "eager"}
           referrerPolicy="no-referrer"
-          onLoad={() => setState({ url, ok: true })}
+          onLoad={() => {
+            quick.done();
+            setState({ url, ok: true });
+          }}
           onError={() => setState({ url, ok: false })}
           className={cn("absolute inset-0 size-full object-cover", drift && "hero-kenburns")}
         />
