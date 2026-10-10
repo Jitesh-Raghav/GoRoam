@@ -52,7 +52,7 @@ export function AvatarPicker() {
   return (
     <div className="rounded-2xl bg-white/80 p-5 ring-1 ring-line sm:p-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-        <UserAvatar choice={choice} className="size-20 shrink-0 shadow-[0_16px_36px_-18px_rgba(10,30,44,0.55)] ring-4 ring-white" />
+        <UserAvatar choice={choice} className="size-20 shrink-0 shadow-[0_16px_36px_-18px_rgba(14,31,59,0.55)] ring-4 ring-white" />
         <div className="min-w-0 flex-1">
           <p className="font-medium text-ink">{user?.name || "Traveller"}</p>
           <p className="mt-1 text-sm text-stone">Choose an avatar for your GoRoam profile. Your Google photo is never shown.</p>

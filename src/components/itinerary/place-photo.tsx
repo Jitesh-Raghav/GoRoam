@@ -174,7 +174,7 @@ export function PlacePhoto({
       {(photo === undefined || (url && !loaded)) && <div className="skeleton absolute inset-0 print:hidden" />}
       {empty && (
         <div className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,var(--brand)_0%,#0b4f5c_55%,var(--ink)_100%)]">
-          <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-sun/30 blur-2xl" />
+          <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-brand-2/30 blur-2xl" />
           <Icon className="relative size-10 text-paper/70" strokeWidth={1.4} />
         </div>
       )}

@@ -169,7 +169,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.45, ease }}
             style={{ transformOrigin: "bottom right" }}
-            className="glass fixed inset-x-0 bottom-0 z-50 flex h-[min(92dvh,720px)] flex-col overflow-hidden rounded-t-[30px] shadow-[0_40px_100px_-30px_rgba(10,30,44,0.6)] sm:inset-x-auto sm:bottom-7 sm:right-7 sm:h-[min(78vh,640px)] sm:w-[410px] sm:rounded-[30px]"
+            className="glass fixed inset-x-0 bottom-0 z-50 flex h-[min(92dvh,720px)] flex-col overflow-hidden rounded-t-[30px] shadow-[0_40px_100px_-30px_rgba(14,31,59,0.6)] sm:inset-x-auto sm:bottom-7 sm:right-7 sm:h-[min(78vh,640px)] sm:w-[410px] sm:rounded-[30px]"
           >
             {/* Colour inside the glass so it reads as frosted even over a plain page. */}
             <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -177,7 +177,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
               <div className="absolute -bottom-16 -right-10 size-56 rounded-full bg-sun-2/30 blur-3xl" />
             </div>
             <span aria-hidden className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-ink/15 sm:hidden" />
-            <header className="relative m-2 mb-0 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,rgba(10,30,44,0.94),rgba(11,130,120,0.86))] px-4 pb-4 pt-3.5 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+            <header className="relative m-2 mb-0 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,rgba(14,31,59,0.94),rgba(11,130,120,0.86))] px-4 pb-4 pt-3.5 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
               <div className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-brand-2/40 blur-3xl" />
               <div className="relative flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -217,7 +217,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, ease, delay: 0.15 + i * 0.06 }}
-                        className="block w-full rounded-2xl bg-white/60 px-4 py-3 text-left text-sm text-ink shadow-[0_6px_18px_-12px_rgba(10,30,44,0.4)] ring-1 ring-inset ring-white backdrop-blur-md transition-colors hover:bg-ink hover:text-paper"
+                        className="block w-full rounded-2xl bg-white/60 px-4 py-3 text-left text-sm text-ink shadow-[0_6px_18px_-12px_rgba(14,31,59,0.4)] ring-1 ring-inset ring-white backdrop-blur-md transition-colors hover:bg-ink hover:text-paper"
                       >
                         {s}
                       </motion.button>
@@ -231,8 +231,8 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                       className={cn(
                         "max-w-[88%] whitespace-pre-wrap break-words rounded-[20px] px-4 py-2.5 text-sm leading-relaxed",
                         m.role === "user"
-                          ? "rounded-br-md bg-ink/90 text-paper shadow-[0_10px_24px_-14px_rgba(10,30,44,0.8)] backdrop-blur"
-                          : "rounded-bl-md bg-white/70 text-ink shadow-[0_8px_22px_-14px_rgba(10,30,44,0.45)] ring-1 ring-inset ring-white backdrop-blur-md"
+                          ? "rounded-br-md bg-ink/90 text-paper shadow-[0_10px_24px_-14px_rgba(14,31,59,0.8)] backdrop-blur"
+                          : "rounded-bl-md bg-white/70 text-ink shadow-[0_8px_22px_-14px_rgba(14,31,59,0.45)] ring-1 ring-inset ring-white backdrop-blur-md"
                       )}
                     >
                       {m.content || (
@@ -250,7 +250,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
             </div>
 
             <form onSubmit={submit} className="border-t border-white/70 bg-white/30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3">
-              <div className="flex items-end gap-2 rounded-[22px] bg-white/75 p-1.5 pl-4 shadow-[0_10px_30px_-18px_rgba(10,30,44,0.5)] ring-1 ring-inset ring-white backdrop-blur-md transition-shadow focus-within:ring-2 focus-within:ring-brand/60">
+              <div className="flex items-end gap-2 rounded-[22px] bg-white/75 p-1.5 pl-4 shadow-[0_10px_30px_-18px_rgba(14,31,59,0.5)] ring-1 ring-inset ring-white backdrop-blur-md transition-shadow focus-within:ring-2 focus-within:ring-brand/60">
                 <textarea
                   ref={field}
                   value={input}

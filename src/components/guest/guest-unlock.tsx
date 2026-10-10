@@ -47,7 +47,7 @@ export function GuestUnlock({ id, destination, days }: { id: string; destination
   };
 
   return (
-    <div className="no-print fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl rounded-[22px] bg-ink/95 p-2 pl-4 text-paper shadow-[0_24px_60px_-20px_rgba(10,30,44,0.8)] ring-1 ring-paper/10 backdrop-blur-xl">
+    <div className="no-print fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl rounded-[22px] bg-ink/95 p-2 pl-4 text-paper shadow-[0_24px_60px_-20px_rgba(14,31,59,0.8)] ring-1 ring-paper/10 backdrop-blur-xl">
       <div className="flex items-center gap-3">
         <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-paper/10 text-brand-2">
           {state === "claiming" ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4" />}

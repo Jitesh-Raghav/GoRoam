@@ -56,7 +56,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
         exit={{ y: 24, opacity: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-paper shadow-[0_50px_140px_-40px_rgba(10,30,44,0.7)]"
+        className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-paper shadow-[0_50px_140px_-40px_rgba(14,31,59,0.7)]"
       >
         <div className="relative h-44 overflow-hidden bg-ink sm:h-52">
           <Scene id={scene} intro />

@@ -75,8 +75,8 @@ const SOCIAL_ICONS: Record<SocialId, LucideIcon> = { x: Twitter, instagram: Inst
 /** The plate's line colour: a dim sea-teal, so the harbour reads as quiet texture. */
 const PLATE_LINE = "#5E8790";
 /** The wordmark's: the theme's brass, like gilt lettering catching the moon. */
-const WORDMARK = "#E9C27C";
-const PLATE_BG = "#0A1C27";
+const WORDMARK = "#ffd23f";
+const PLATE_BG = "#0e1f3b";
 
 /** A harbour ferry in the plate's engraved style, bow to the right. */
 function Ferry() {
@@ -225,7 +225,7 @@ function BackToTop() {
       <span className="absolute inset-1 rounded-full bg-paper/[0.06] transition-colors duration-500 group-hover:bg-paper" />
       <svg viewBox="0 0 56 56" className="absolute inset-0 -rotate-90">
         <circle cx="28" cy="28" r="26" fill="none" stroke="currentColor" strokeOpacity={0.15} strokeWidth={1.5} />
-        <motion.circle cx="28" cy="28" r="26" fill="none" stroke="#3CCFBC" strokeWidth={1.5} strokeLinecap="round" style={{ pathLength: progress }} />
+        <motion.circle cx="28" cy="28" r="26" fill="none" stroke="#7cc4ff" strokeWidth={1.5} strokeLinecap="round" style={{ pathLength: progress }} />
       </svg>
       <ArrowUp className="relative size-4 transition-transform duration-500 group-hover:-translate-y-0.5" />
     </button>

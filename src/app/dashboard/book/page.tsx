@@ -198,7 +198,7 @@ function BookContent() {
             </span>
           )}
           <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
-            <p className="display hidden text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.05] text-paper drop-shadow-[0_2px_18px_rgba(10,28,39,0.35)] sm:block">
+            <p className="display hidden text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.05] text-paper drop-shadow-[0_2px_18px_rgba(14,31,59,0.35)] sm:block">
               {place ? (
                 <>
                   {tab.label === "Tickets" ? "Tickets & tours" : tab.label} for <span className="accent">{cityOf(place)}.</span>

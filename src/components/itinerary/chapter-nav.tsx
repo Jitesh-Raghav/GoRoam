@@ -88,7 +88,7 @@ export function ChapterNav({ chapters, title, className }: { chapters: Chapter[]
 
   return (
     <nav ref={nav} aria-label="Trip chapters" className={cn("no-print sticky z-30", className)}>
-      <div className="glass relative flex items-center rounded-full p-1 shadow-[0_18px_40px_-26px_rgba(10,30,44,0.6)]">
+      <div className="glass relative flex items-center rounded-full p-1 shadow-[0_18px_40px_-26px_rgba(14,31,59,0.6)]">
         {title && (
           <span className={cn("hidden shrink-0 items-center overflow-hidden whitespace-nowrap text-sm text-ink transition-[max-width,opacity,padding] duration-500 lg:flex", stuck ? "max-w-60 pl-4 pr-3 opacity-100" : "max-w-0 opacity-0")}>
             <span className="display truncate">{title}</span>

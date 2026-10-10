@@ -8,11 +8,11 @@ import type { ItineraryDetails } from "./trip";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-const INK = "#0a1c27";
-const PAPER = "#f7f6f2";
-const LAGOON = "#3ccfbc";
-const SUN = "#e9c27c";
-const BRAND = "#0b776d";
+const INK = "#0e1f3b";
+const PAPER = "#f5f8fc";
+const LAGOON = "#7cc4ff";
+const SUN = "#ffd23f";
+const BRAND = "#1a5fd6";
 
 /* ------------------------------- Fonts ---------------------------------- */
 
@@ -129,7 +129,7 @@ export async function renderOgCard(card: OgCard) {
           position: "relative",
           fontFamily: sans,
           color: PAPER,
-          background: `linear-gradient(135deg, ${INK} 0%, #0f2c3d 46%, #0b5d5a 100%)`,
+          background: `linear-gradient(135deg, ${INK} 0%, #0f2c3d 46%, #1a5fd6 100%)`,
           overflow: "hidden",
         }}
       >
@@ -197,11 +197,11 @@ export async function renderOgCard(card: OgCard) {
           <div style={{ display: "flex", marginTop: 8, fontFamily: display, fontSize: 34, fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1.05 }}>{card.panel.heading}</div>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 20 }}>
             {card.panel.stops.slice(0, 3).map((s, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 0", borderTop: i ? "1px solid rgba(10,30,44,0.1)" : "none" }}>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 0", borderTop: i ? "1px solid rgba(14,31,59,0.1)" : "none" }}>
                 <div style={{ display: "flex", width: 12, height: 12, borderRadius: 9999, background: i === 0 ? BRAND : i === 1 ? SUN : LAGOON }} />
-                <div style={{ display: "flex", width: 62, fontSize: 16, fontWeight: 500, color: "rgba(10,30,44,0.55)" }}>{s.time}</div>
+                <div style={{ display: "flex", width: 62, fontSize: 16, fontWeight: 500, color: "rgba(14,31,59,0.55)" }}>{s.time}</div>
                 <div style={{ display: "flex", flex: 1, fontSize: 20, fontWeight: 500, letterSpacing: "-0.01em" }}>{s.title}</div>
-                {s.cost ? <div style={{ display: "flex", fontSize: 16, fontWeight: 500, color: "rgba(10,30,44,0.55)" }}>{s.cost}</div> : null}
+                {s.cost ? <div style={{ display: "flex", fontSize: 16, fontWeight: 500, color: "rgba(14,31,59,0.55)" }}>{s.cost}</div> : null}
               </div>
             ))}
           </div>
@@ -212,7 +212,7 @@ export async function renderOgCard(card: OgCard) {
               alignSelf: "flex-start",
               padding: "8px 14px",
               borderRadius: 9999,
-              background: "#dcefea",
+              background: "#e3eeff",
               color: BRAND,
               fontSize: 15,
               fontWeight: 500,

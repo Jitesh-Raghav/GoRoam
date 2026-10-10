@@ -66,7 +66,7 @@ export function ProductFilm() {
       {/* Nearly the full width of the screen, with the page's gutters: the one place the product gets the stage to itself. */}
       <div className="mt-12 px-3 sm:px-4 lg:mt-16">
         <motion.div style={reduce ? undefined : { scale }} className="mx-auto w-full max-w-[1680px] origin-top">
-          <div className="relative mx-auto aspect-video w-[min(100%,calc(86svh*16/9))] overflow-hidden rounded-card bg-ink shadow-[0_60px_120px_-50px_rgba(10,28,39,0.55)] ring-1 ring-ink/10 md:rounded-panel">
+          <div className="relative mx-auto aspect-video w-[min(100%,calc(86svh*16/9))] overflow-hidden rounded-card bg-ink shadow-[0_60px_120px_-50px_rgba(14,31,59,0.55)] ring-1 ring-ink/10 md:rounded-panel">
             <video
               ref={videoRef}
               className="absolute inset-0 size-full object-cover"

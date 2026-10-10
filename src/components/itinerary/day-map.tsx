@@ -93,7 +93,7 @@ export default function DayMap({
             <Polyline
               path={points}
               strokeOpacity={0}
-              icons={[{ icon: { path: "M 0,-1 0,1", strokeOpacity: 0.95, strokeColor: "#34D1BF", scale: 3 }, offset: "0", repeat: "14px" }]}
+              icons={[{ icon: { path: "M 0,-1 0,1", strokeOpacity: 0.95, strokeColor: "#7cc4ff", scale: 3 }, offset: "0", repeat: "14px" }]}
               geodesic
             />
           )}

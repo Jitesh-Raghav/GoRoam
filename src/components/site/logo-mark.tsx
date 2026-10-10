@@ -16,8 +16,8 @@ export function LogoMark({ className }: { className?: string }) {
           <stop offset="1" stopColor="#06131B" />
         </linearGradient>
         <radialGradient id={id("halo")} cx="0.5" cy="0.52" r="0.5">
-          <stop offset="0" stopColor="#34D1BF" stopOpacity="0.32" />
-          <stop offset="1" stopColor="#34D1BF" stopOpacity="0" />
+          <stop offset="0" stopColor="#7cc4ff" stopOpacity="0.32" />
+          <stop offset="1" stopColor="#7cc4ff" stopOpacity="0" />
         </radialGradient>
         <radialGradient id={id("globe")} cx="0.36" cy="0.3" r="0.8">
           <stop offset="0" stopColor="#5BE3D1" />

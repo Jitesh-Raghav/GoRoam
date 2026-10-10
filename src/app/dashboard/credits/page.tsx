@@ -302,7 +302,7 @@ function CreditsPageContent() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
               className={cn(
                 "mesh-host relative flex flex-col overflow-hidden rounded-panel transition-transform duration-500 ease-out-expo hover:-translate-y-1",
-                plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(11,119,109,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
+                plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(26,95,214,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
                 picked === plan.id && "ring-2 ring-brand"
               )}
             >

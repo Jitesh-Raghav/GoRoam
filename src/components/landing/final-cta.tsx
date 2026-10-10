@@ -19,7 +19,7 @@ export function FinalCta() {
     <section ref={ref} className="px-3 pb-3 pt-6 sm:px-4 sm:pb-4">
       <div className="relative flex min-h-[80svh] items-center overflow-hidden rounded-panel bg-ink">
         <motion.div style={{ y }} className="absolute -inset-y-[6%] inset-x-0">
-          <LazyScene id="aurora" intro interactive margin="0px" tint="#0E2837" />
+          <LazyScene id="aurora" intro interactive margin="0px" tint="#0e1f3b" />
           <HeroPhoto photo={photo} lazy credit={false} />
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-b from-ink/45 via-ink/30 to-ink/70" />

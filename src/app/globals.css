@@ -22,6 +22,8 @@
   --color-sun: var(--sun);
   --color-sun-2: var(--sun-2);
   --color-sun-soft: var(--sun-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -51,8 +53,8 @@
   --radius-panel: 1.75rem;
 
   /* Two elevations: resting cards, and things that float over the page. */
-  --shadow-card: 0 1px 2px rgb(10 28 39 / 0.04), 0 14px 34px -22px rgb(10 28 39 / 0.28);
-  --shadow-float: 0 2px 6px -2px rgb(10 28 39 / 0.08), 0 40px 80px -40px rgb(10 28 39 / 0.45);
+  --shadow-card: 0 1px 2px rgb(14 31 59 / 0.04), 0 14px 34px -22px rgb(14 31 59 / 0.28);
+  --shadow-float: 0 2px 6px -2px rgb(14 31 59 / 0.08), 0 40px 80px -40px rgb(14 31 59 / 0.45);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
@@ -61,22 +63,25 @@
 :root {
   --radius: 1rem;
 
-  /* Deep Lagoon on Bone: a calm warm white, deep navy ink, one lagoon teal and a little brass.
-     Text pairs are WCAG AA: ink, stone and brand all read at 5:1 or better on paper. */
-  --paper: #f7f6f2;
-  --paper-2: #efede7;
-  --paper-3: #e2ded4;
-  --ink: #0a1c27;
-  --ink-2: #13303f;
-  --stone: #56656e;
-  --stone-2: #94a0a7;
-  --line: rgba(10, 28, 39, 0.1);
-  --brand: #0b776d;
-  --brand-2: #3ccfbc;
-  --brand-soft: #dcefea;
-  --sun: #c9893a;
-  --sun-2: #e9c27c;
-  --sun-soft: #f4e9d6;
+  /* Riviera: cool white paper, deep navy ink, one Mediterranean azure, sky blue on dark,
+     lemon for highlights and coral for alerts and love. Text pairs are WCAG AA: ink, stone
+     and brand all read at 5:1 or better on paper. */
+  --paper: #f5f8fc;
+  --paper-2: #eaf0f8;
+  --paper-3: #dbe4f0;
+  --ink: #0e1f3b;
+  --ink-2: #16305a;
+  --stone: #55657d;
+  --stone-2: #94a3b8;
+  --line: rgba(14, 31, 59, 0.1);
+  --brand: #1a5fd6;
+  --brand-2: #7cc4ff;
+  --brand-soft: #e3eeff;
+  --sun: #e0a800;
+  --sun-2: #ffd23f;
+  --sun-soft: #fff6d6;
+  --coral: #ff6b5b;
+  --coral-soft: #ffe8e5;
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -94,8 +99,8 @@
   --accent-foreground: var(--ink);
   --destructive: #c2362b;
   --border: var(--line);
-  --input: rgba(10, 28, 39, 0.14);
-  --ring: rgba(11, 119, 109, 0.45);
+  --input: rgba(14, 31, 59, 0.14);
+  --ring: rgba(26, 95, 214, 0.45);
 }
 
 @layer base {
@@ -205,7 +210,7 @@
 /* Deep sea → lagoon, for the big dark panels. */
 @utility bg-ocean {
   background-color: var(--ink);
-  background-image: radial-gradient(ellipse 80% 70% at 100% 0%, rgba(11, 119, 109, 0.28), transparent 62%);
+  background-image: radial-gradient(ellipse 80% 70% at 100% 0%, rgba(26, 95, 214, 0.28), transparent 62%);
 }
 
 @utility no-scrollbar {
@@ -492,11 +497,11 @@ html.lenis, html.lenis body { height: auto; }
   .glass {
     background: rgb(255 255 255 / 0.94);
     box-shadow:
-      0 1px 2px rgb(10 28 39 / 0.04),
-      0 22px 48px -34px rgb(10 28 39 / 0.38);
+      0 1px 2px rgb(14 31 59 / 0.04),
+      0 22px 48px -34px rgb(14 31 59 / 0.38);
   }
   .glass-dark {
-    background: linear-gradient(155deg, rgb(19 52 70 / 0.72), rgb(10 30 44 / 0.5) 60%, rgb(10 30 44 / 0.66));
+    background: linear-gradient(155deg, rgb(19 52 70 / 0.72), rgb(14 31 59 / 0.5) 60%, rgb(14 31 59 / 0.66));
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.14),
       0 30px 70px -40px rgb(0 0 0 / 0.7);
@@ -510,7 +515,7 @@ html.lenis, html.lenis body { height: auto; }
     border-radius: inherit;
     padding: 1px;
     pointer-events: none;
-    background: linear-gradient(150deg, rgb(255 255 255 / 1), rgb(52 209 191 / 0.28) 38%, rgb(10 30 44 / 0.1) 68%, rgb(244 163 64 / 0.3));
+    background: linear-gradient(150deg, rgb(255 255 255 / 1), rgb(52 209 191 / 0.28) 38%, rgb(14 31 59 / 0.1) 68%, rgb(244 163 64 / 0.3));
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -522,7 +527,7 @@ html.lenis, html.lenis body { height: auto; }
   }
   /* Light cards keep to one neutral hairline. */
   .glass::before {
-    background: linear-gradient(180deg, rgb(10 28 39 / 0.07), rgb(10 28 39 / 0.11));
+    background: linear-gradient(180deg, rgb(14 31 59 / 0.07), rgb(14 31 59 / 0.11));
   }
   .glass::after,
   .glass-dark::after {
@@ -665,7 +670,7 @@ html.lenis, html.lenis body { height: auto; }
 /* Landing section rules: one plain hairline that fades out at both ends. */
 .landing-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(10 28 39 / 0.12) 12%, rgb(10 28 39 / 0.12) 88%, transparent);
+  background: linear-gradient(90deg, transparent, rgb(14 31 59 / 0.12) 12%, rgb(14 31 59 / 0.12) 88%, transparent);
 }
 
 /* One or two words of a headline in the brand colour; lagoon on dark surfaces.
@@ -784,9 +789,9 @@ html.lenis, html.lenis body { height: auto; }
 @keyframes mesh-drift-c {
   to { transform: translate(-30%, 8%); }
 }
-.mesh-lagoon { --mesh-1: #38bdf8; --mesh-2: #3ccfbc; --mesh-3: #a5f3fc; }
-.mesh-sunset { --mesh-1: #ff7a1a; --mesh-2: #ff3d97; --mesh-3: #ffd166; }
-.mesh-sand { --mesh-1: #ffd27f; --mesh-2: #ffb4a2; --mesh-3: #9fe3d4; }
+.mesh-lagoon { --mesh-1: #3b82f6; --mesh-2: #7cc4ff; --mesh-3: #b9dcff; }
+.mesh-sunset { --mesh-1: #1f6feb; --mesh-2: #7cc4ff; --mesh-3: #ffd23f; }
+.mesh-sand { --mesh-1: #ff6b5b; --mesh-2: #ffd23f; --mesh-3: #ffb4a2; }
 @media (prefers-reduced-motion: reduce) {
   .mesh > i { animation: none; }
 }

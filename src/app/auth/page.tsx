@@ -234,7 +234,7 @@ function AuthPanel() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={pending}
-              className="group mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white text-[0.95rem] font-medium text-ink shadow-[0_20px_40px_-24px_rgba(10,30,44,0.45)] ring-1 ring-line transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_50px_-24px_rgba(10,30,44,0.5)] disabled:pointer-events-none disabled:opacity-70"
+              className="group mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white text-[0.95rem] font-medium text-ink shadow-[0_20px_40px_-24px_rgba(14,31,59,0.45)] ring-1 ring-line transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_50px_-24px_rgba(14,31,59,0.5)] disabled:pointer-events-none disabled:opacity-70"
             >
               {pending ? <Loader2 className="size-5 animate-spin text-brand" /> : <GoogleMark />}
               {pending ? "Redirecting to Google…" : "Continue with Google"}

@@ -168,7 +168,7 @@ export function DateRangePicker({
                   "relative mx-auto grid size-10 place-items-center rounded-full text-sm tabular-nums transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand",
                   past ? "cursor-not-allowed text-stone-2/50 line-through decoration-stone-2/30" : "text-ink hover:bg-ink hover:text-paper",
                   weekend && !past && !range && "text-brand",
-                  (isStart || isEnd) && "bg-ink !text-paper shadow-[0_8px_18px_-8px_rgba(10,30,44,0.7)] hover:bg-brand",
+                  (isStart || isEnd) && "bg-ink !text-paper shadow-[0_8px_18px_-8px_rgba(14,31,59,0.7)] hover:bg-brand",
                   isSameDay(d, minDate) && !isStart && !isEnd && "ring-1 ring-inset ring-brand/50"
                 )}
               >
@@ -227,7 +227,7 @@ export function DateRangePicker({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.98 }}
               transition={{ duration: 0.4, ease }}
-              className="pointer-events-auto max-h-[92svh] w-full overflow-y-auto rounded-t-[28px] bg-white p-5 shadow-[0_-20px_60px_-20px_rgba(10,30,44,0.4)] ring-1 ring-line sm:w-[min(720px,calc(100vw-3rem))] sm:rounded-[28px] sm:p-7 sm:shadow-[0_40px_90px_-30px_rgba(10,30,44,0.5)]"
+              className="pointer-events-auto max-h-[92svh] w-full overflow-y-auto rounded-t-[28px] bg-white p-5 shadow-[0_-20px_60px_-20px_rgba(14,31,59,0.4)] ring-1 ring-line sm:w-[min(720px,calc(100vw-3rem))] sm:rounded-[28px] sm:p-7 sm:shadow-[0_40px_90px_-30px_rgba(14,31,59,0.5)]"
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm text-stone">

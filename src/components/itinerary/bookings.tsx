@@ -183,7 +183,7 @@ export function Bookings({ tripId, initial, defaultDate, onSaved }: { tripId: st
               const K = KIND[b.kind];
               return (
                 <motion.li key={b.id} layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.4, ease }} className="print-avoid group relative flex gap-4">
-                  <span className="relative z-[1] mt-4 grid size-12 shrink-0 place-items-center rounded-2xl bg-ink text-paper shadow-[0_10px_24px_-12px_rgba(10,30,44,0.7)]">
+                  <span className="relative z-[1] mt-4 grid size-12 shrink-0 place-items-center rounded-2xl bg-ink text-paper shadow-[0_10px_24px_-12px_rgba(14,31,59,0.7)]">
                     <K.icon className="size-5" />
                   </span>
                   <div className="glass min-w-0 flex-1 rounded-[22px] p-5">

@@ -127,8 +127,8 @@ function MapVisual() {
           </pattern>
         </defs>
         <rect width="400" height="240" fill="url(#feat-grid)" />
-        <path d="M0 150Q120 120 200 170T400 140" fill="none" stroke="#d4e4e8" strokeWidth="18" />
-        <path d="M120 0Q150 120 110 240" fill="none" stroke="#d4e4e8" strokeWidth="10" />
+        <path d="M0 150Q120 120 200 170T400 140" fill="none" stroke="#dbe4f0" strokeWidth="18" />
+        <path d="M120 0Q150 120 110 240" fill="none" stroke="#dbe4f0" strokeWidth="10" />
         <motion.path
           d={route}
           fill="none"
@@ -175,7 +175,7 @@ function GuideVisual() {
           initial={{ opacity: 0, x: i % 2 ? 30 : -30 }}
           animate={inView ? { opacity: 1, x: 0 } : undefined}
           transition={{ duration: 0.9, ease, delay: 0.2 + i * 0.18 }}
-          className={cn("flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_14px_30px_-22px_rgba(10,30,44,0.6)] ring-1 ring-line", i === 1 && "ml-8")}
+          className={cn("flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_14px_30px_-22px_rgba(14,31,59,0.6)] ring-1 ring-line", i === 1 && "ml-8")}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- tiny flag */}
           <img src={`https://flagcdn.com/${p.flag}.svg`} alt="" className="h-3.5 w-5 rounded-[2px] object-cover ring-1 ring-black/10" />
@@ -238,7 +238,7 @@ function ToolCard({ className, label, icon: Icon, children, i, inView }: { class
       initial={{ opacity: 0, y: 18 }}
       animate={inView ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.1 }}
-      className={cn("relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white p-3.5 shadow-[0_14px_30px_-24px_rgba(10,30,44,0.6)] ring-1 ring-line", className)}
+      className={cn("relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white p-3.5 shadow-[0_14px_30px_-24px_rgba(14,31,59,0.6)] ring-1 ring-line", className)}
     >
       <span className="flex items-center justify-between gap-2">
         <span className="eyebrow truncate text-[0.55rem] text-stone">{label}</span>

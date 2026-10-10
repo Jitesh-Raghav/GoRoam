@@ -211,7 +211,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
         {!last && <span aria-hidden className="absolute bottom-[-1.25rem] top-12 w-px border-l border-dashed border-brand/35" />}
         <span
           className={cn(
-            "relative mt-5 grid size-9 place-items-center rounded-full font-mono text-sm shadow-[0_10px_24px_-10px_rgba(10,30,44,0.6)] ring-4 ring-paper sm:size-11",
+            "relative mt-5 grid size-9 place-items-center rounded-full font-mono text-sm shadow-[0_10px_24px_-10px_rgba(14,31,59,0.6)] ring-4 ring-paper sm:size-11",
             last ? "bg-sun text-ink" : "bg-ink text-white"
           )}
         >
@@ -221,7 +221,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
       </div>
       <article
         id={stopId(day, slot.key)}
-        className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+        className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(14,31,59,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(14,31,59,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
         <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
@@ -1070,7 +1070,7 @@ export function TripView({
                       onClick={() => jump(i)}
                       className={cn(
                         "group relative min-w-[9.5rem] flex-1 shrink-0 snap-start sm:min-w-[11.5rem] overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
-                        on ? "text-paper shadow-[0_24px_50px_-28px_rgba(10,30,44,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(10,30,44,0.6)]"
+                        on ? "text-paper shadow-[0_24px_50px_-28px_rgba(14,31,59,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(14,31,59,0.6)]"
                       )}
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}

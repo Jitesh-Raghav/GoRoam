@@ -163,7 +163,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
           e.preventDefault();
           submit();
         }}
-        className="group/composer relative isolate rounded-[28px] bg-white/25 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(10,30,44,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(60,207,188,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/45"
+        className="group/composer relative isolate rounded-[28px] bg-white/25 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(14,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(124,196,255,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/45"
       >
         {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
         <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
@@ -229,7 +229,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
               )}
             </AnimatePresence>
           </div>
-          <PillButton type="submit" variant="ink" className="w-full justify-between shadow-[0_12px_24px_-12px_rgba(10,30,44,0.7),inset_0_1px_0_rgba(255,255,255,0.18)] sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
+          <PillButton type="submit" variant="ink" className="w-full justify-between shadow-[0_12px_24px_-12px_rgba(14,31,59,0.7),inset_0_1px_0_rgba(255,255,255,0.18)] sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
             Plan my trip
           </PillButton>
         </div>

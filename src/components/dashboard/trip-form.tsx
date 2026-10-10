@@ -565,7 +565,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
               view without looking like a form. The full pass sits below the form. */}
           <a
             href="#boarding-pass"
-            className="flex items-center gap-3 rounded-[18px] bg-ink px-4 py-3 text-paper shadow-[0_14px_30px_-20px_rgba(10,30,44,0.8)] xl:hidden"
+            className="flex items-center gap-3 rounded-[18px] bg-ink px-4 py-3 text-paper shadow-[0_14px_30px_-20px_rgba(14,31,59,0.8)] xl:hidden"
             aria-label="Your boarding pass so far. Tap to see it in full."
           >
             <Plane className="size-4 shrink-0 text-brand-2" />

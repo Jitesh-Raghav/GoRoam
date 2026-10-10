@@ -7,7 +7,7 @@ import { money, titleCase, type ItineraryDetails } from "../trip";
  * the same in Gmail, Outlook and Apple Mail.
  */
 
-const C = { ink: "#0a1c27", paper: "#f7f6f2", brand: "#0b776d", soft: "#dcefea", stone: "#56656e", sun: "#c9893a", line: "#e6e3dc" };
+const C = { ink: "#0e1f3b", paper: "#f5f8fc", brand: "#1a5fd6", soft: "#e3eeff", stone: "#55657d", sun: "#e0a800", line: "#dbe4f0" };
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
