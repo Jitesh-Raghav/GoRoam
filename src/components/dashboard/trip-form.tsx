@@ -630,14 +630,14 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
               >
                 {step === 0 && (
                   <>
-                    <div className="relative grid gap-3 md:grid-cols-2">
+                    <div className="relative grid gap-3 md:grid-cols-2 md:gap-x-14">
                       <PlaceField id="trip-source" kind="from" label="Starting from" icon={Navigation} value={formData.source} onChange={(v) => set("source", v)} placeholder="e.g. Mumbai, India" error={errors.source} />
                       <PlaceField id="trip-destination" kind="to" label="Destination" icon={Plane} value={formData.destination} onChange={(v) => set("destination", v)} placeholder="e.g. Kyoto, Japan" error={errors.destination} />
                       <button
                         type="button"
                         onClick={() => setFormData((prev) => ({ ...prev, source: prev.destination, destination: prev.source }))}
                         aria-label="Swap origin and destination"
-                        className="absolute left-1/2 top-[2.25rem] hidden size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink text-paper shadow-lg transition-transform duration-500 ease-out-expo hover:rotate-180 md:grid"
+                        className="absolute left-1/2 top-[2.25rem] z-10 hidden size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink text-paper shadow-lg transition-transform duration-500 ease-out-expo hover:rotate-180 md:grid"
                       >
                         <ArrowLeftRight className="size-4" />
                       </button>
