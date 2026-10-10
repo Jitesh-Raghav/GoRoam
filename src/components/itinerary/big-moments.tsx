@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Moon, Sparkles, Sun, Sunrise } from "@/components/site/icons";
-import type { ActivitySlot, DayItinerary } from "@/lib/trip";
+import { dayStops, type ActivitySlot, type DayItinerary } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto } from "./place-photo";
 
@@ -43,7 +43,7 @@ export interface Moment extends Partial<Stop> {
  * two highlights rarely share a photo; with no match, stops are spread in order.
  */
 export function pairMoments(highlights: string[], days: DayItinerary[]): Moment[] {
-  const stops: Stop[] = days.flatMap((d, day) => SLOTS.flatMap((s) => (d[s.key]?.place?.name ? [{ activity: d[s.key], day, slot: s.key }] : [])));
+  const stops: Stop[] = days.flatMap((d, day) => dayStops(d).map((s) => ({ activity: s.activity, day, slot: s.period })));
   const used = new Set<number>();
   return highlights.map((text, i) => {
     const want = new Set(words(text));

@@ -7,14 +7,14 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { track } from "@/lib/analytics";
 import { updateCached } from "@/lib/cached-json";
 import { CHAT_LIMIT } from "@/lib/plans";
-import { type ActivitySlot, type ItineraryData, type ItineraryDetails } from "@/lib/trip";
+import { findStop, periodOf, type ActivitySlot, type ItineraryData, type ItineraryDetails } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { lookUpOwnPhoto } from "./place-photo";
 
-type Slot = "morning" | "afternoon" | "evening";
 interface Target {
   day: number;
-  slot: Slot;
+  /** The stop's key on its day (dayStops). */
+  slot: string;
   current: ActivitySlot;
 }
 
@@ -87,7 +87,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
       const body = await res.json().catch(() => ({}));
       if (!res.ok || !body.success) throw new Error(body.error || "Couldn't save that swap.");
       const next = body.itineraryData as ItineraryData;
-      const swapped = next.itinerary?.[target.day]?.[target.slot];
+      const swapped = findStop(next.itinerary?.[target.day], target.slot)?.activity;
       if (swapped) lookUpOwnPhoto(swapped);
       updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: next } }));
       track("stop_swapped", { day: target.day + 1, slot: target.slot });
@@ -117,7 +117,7 @@ export function SwapProvider({ it, enabled, children }: { it: ItineraryDetails; 
               <header className="flex items-start justify-between gap-4 border-b border-line p-6">
                 <div className="min-w-0">
                   <p className="eyebrow flex items-center gap-2 text-stone">
-                    <ArrowRightLeft className="size-3.5 text-brand" /> Day {target.day + 1} · {target.slot}
+                    <ArrowRightLeft className="size-3.5 text-brand" /> Day {target.day + 1} · {periodOf(target.current.time)}
                   </p>
                   <h3 className="display mt-2 text-[1.7rem] leading-[1] text-ink">
                     Swap <span className="accent">{target.current.place.name}</span>

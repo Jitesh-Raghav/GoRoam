@@ -5,7 +5,7 @@ import { AlertCircle, ArrowUpRight, Car, Clock3, Footprints, Info, Landmark, Pla
 import { useEffect, useMemo, useState } from "react";
 import type { DayWeather } from "@/app/api/weather/route";
 import type { Holiday } from "@/app/api/holidays/route";
-import type { ActivitySlot, DayItinerary, TripGuide } from "@/lib/trip";
+import { dayActivities, type ActivitySlot, type DayItinerary, type TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
 /*
@@ -152,7 +152,7 @@ export interface DayLoad {
 
 /** How full a day is: hours out, stops and the walking between them. */
 export function dayLoad(day: DayItinerary, transport: Transport): DayLoad | null {
-  const stops = [day.morning, day.afternoon, day.evening].filter((s) => s?.place?.name);
+  const stops = dayActivities(day);
   if (!stops.length) return null;
   const hours = stops.reduce((s, a) => s + hoursIn(a.duration), 0);
   let walkKm = 0;

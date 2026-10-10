@@ -4,7 +4,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { ImageResponse } from "next/og";
 import { getMonument, type MonumentId } from "@/components/scenes/monuments";
-import type { ItineraryDetails } from "./trip";
+import { dayActivities, type ItineraryDetails } from "./trip";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
@@ -249,9 +249,8 @@ export function tripCard(trip: ItineraryDetails): OgCard {
   const day = trip.itineraryData.itinerary?.[0];
   const money = (n: number) => (n > 0 ? `$${Math.round(n).toLocaleString("en-US")}` : "Free");
   const stops: OgStop[] = day
-    ? (["morning", "afternoon", "evening"] as const)
-        .map((slot) => day[slot])
-        .filter((s) => s?.place?.name)
+    ? dayActivities(day)
+        .slice(0, 3)
         .map((s) => ({ time: s.time.slice(0, 8), title: s.place.name.length > 22 ? `${s.place.name.slice(0, 21)}…` : s.place.name, cost: money(s.estimatedCost) }))
     : [];
   const days = trip.numberOfDays;

@@ -2,7 +2,7 @@
 import { isoDay } from './booking';
 import { CHAT_LIMIT } from './plans';
 import { prisma } from './prisma';
-import { COMPANIONS, PACES, SPEND, STAYS, labelFor, type ItineraryData } from './trip';
+import { COMPANIONS, PACES, SPEND, STAYS, dayStops, labelFor, type ItineraryData } from './trip';
 
 /** The trip, compactly, for a model's system prompt. */
 export function tripContext(destination: string, start: Date, days: number, budget: number, data: ItineraryData) {
@@ -22,11 +22,10 @@ export function tripContext(destination: string, start: Date, days: number, budg
     if (p.notes) lines.push(`Their notes: ${p.notes}`);
   }
   (data.itinerary ?? []).forEach((d, i) => {
-    const stops = (['morning', 'afternoon', 'evening'] as const)
-      .map((k) => d[k]?.place?.name && `${k}: ${d[k].place.name}${d[k].place.area ? ` (${d[k].place.area})` : ''}`)
-      .filter(Boolean)
+    const stops = dayStops(d)
+      .map(({ activity: a }) => `${a.time ? `${a.time} ` : ''}${a.place.name}${a.place.area ? ` (${a.place.area})` : ''}`)
       .join('; ');
-    lines.push(`Day ${i + 1} (${isoDay(start.toISOString(), i)}) "${d.theme ?? ''}": ${stops}`);
+    lines.push(`Day ${i + 1} (${isoDay(start.toISOString(), i)})${d.city ? ` in ${d.city}` : ''} "${d.theme ?? ''}": ${stops}`);
   });
   if (data.stays?.length) lines.push(`Suggested stays: ${data.stays.map((s) => `${s.name} (${s.area})`).join('; ')}`);
   return lines.join('\n');

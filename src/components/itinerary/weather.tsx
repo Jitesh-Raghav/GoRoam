@@ -3,7 +3,7 @@
 import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun, Umbrella, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import type { DayWeather, TripWeather } from "@/app/api/weather/route";
-import type { DayItinerary } from "@/lib/trip";
+import { dayActivities, type DayItinerary } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
 /** WMO weather codes, grouped into what a traveller cares about. */
@@ -26,7 +26,7 @@ export const temp = (c: number, f: boolean) => `${Math.round(f ? (c * 9) / 5 + 3
 export function tripCentre(days: DayItinerary[]): [number, number] | null {
   const pts: [number, number][] = [];
   for (const d of days) {
-    for (const s of [d.morning, d.afternoon, d.evening]) {
+    for (const s of dayActivities(d)) {
       const { lat, lng } = s?.place ?? {};
       if (Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0) && Math.abs(lat!) <= 90 && Math.abs(lng!) <= 180) pts.push([lat!, lng!]);
     }

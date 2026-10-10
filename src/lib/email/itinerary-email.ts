@@ -1,6 +1,6 @@
 import { cityOf, isoDay, mapsSearchUrl } from "../booking";
 import { countryCodeFor } from "../flags";
-import { money, titleCase, type ItineraryDetails } from "../trip";
+import { dayStops, money, titleCase, type ItineraryDetails } from "../trip";
 
 /**
  * The itinerary as an email: table layout and inline styles only, so it looks
@@ -20,11 +20,7 @@ const esc = (s: unknown) =>
 
 const day = (iso: string, opts: Intl.DateTimeFormatOptions) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { ...opts, timeZone: "UTC" });
 
-const SLOTS = [
-  ["morning", "Morning"],
-  ["afternoon", "Afternoon"],
-  ["evening", "Evening"],
-] as const;
+const PERIOD_LABEL = { morning: "Morning", afternoon: "Afternoon", evening: "Evening" } as const;
 
 export function itineraryEmail(it: ItineraryDetails, link: string, name?: string | null) {
   const data = it.itineraryData;
@@ -44,9 +40,9 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
 
   const days = (data.itinerary ?? [])
     .map((d, i) => {
-      const stops = SLOTS.filter(([k]) => d[k]?.place?.name)
-        .map(([k, label]) => {
-          const s = d[k];
+      const stops = dayStops(d)
+        .map(({ period, activity: s }) => {
+          const label = PERIOD_LABEL[period];
           return `<tr>
             <td valign="top" style="width:86px;padding:10px 0;font:600 10px/1.4 ${SANS};letter-spacing:.14em;text-transform:uppercase;color:${C.brand}">${label}<br><span style="font-weight:400;letter-spacing:0;text-transform:none;color:${C.stone}">${esc(s.time?.split(/\s*[-–]\s*/)[0] ?? "")}</span></td>
             <td valign="top" style="padding:10px 0;border-bottom:1px solid ${C.line}">
@@ -118,7 +114,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
     "",
     ...(data.itinerary ?? []).flatMap((d, i) => [
       `Day ${i + 1}: ${d.theme ?? ""}`,
-      ...SLOTS.filter(([k]) => d[k]?.place?.name).map(([k, label]) => `  ${label}: ${d[k].place.name}`),
+      ...dayStops(d).map(({ period, activity }) => `  ${PERIOD_LABEL[period]}: ${activity.place.name}`),
       "",
     ]),
     `Open the full itinerary: ${link}`,

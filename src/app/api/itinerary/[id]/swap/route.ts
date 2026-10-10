@@ -6,7 +6,7 @@ import { CHAT_LIMIT } from '@/lib/plans';
 import { refundAiRequest, takeAiRequest, tripContext } from '@/lib/trip-context';
 import { undash } from '@/lib/text';
 import { checkStop } from '@/lib/itinerary-ai';
-import { reactionKey, type ActivitySlot, type ItineraryData } from '@/lib/trip';
+import { dayActivities, dayStops, findStop, reactionKey, replaceStop, type ActivitySlot, type ItineraryData } from '@/lib/trip';
 
 /**
  * Swap one stop of a plan without regenerating the trip.
@@ -16,8 +16,6 @@ import { reactionKey, type ActivitySlot, type ItineraryData } from '@/lib/trip';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const allow = limiter(6, 60_000);
-const SLOTS = ['morning', 'afternoon', 'evening'] as const;
-type Slot = (typeof SLOTS)[number];
 const CATEGORIES = ['sight', 'food', 'nature', 'culture', 'nightlife', 'shopping', 'wellness', 'activity'];
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
@@ -58,9 +56,10 @@ const partyOf = (data: ItineraryData) => {
 
 function target(body: Record<string, unknown>, data: ItineraryData) {
   const day = Math.round(Number(body.day));
-  const slot = body.slot as Slot;
-  if (!Number.isInteger(day) || day < 0 || day >= (data.itinerary?.length ?? 0) || !SLOTS.includes(slot)) return null;
-  return { day, slot, current: data.itinerary[day][slot] };
+  const slot = typeof body.slot === 'string' ? body.slot.slice(0, 40) : '';
+  if (!Number.isInteger(day) || day < 0 || day >= (data.itinerary?.length ?? 0)) return null;
+  const found = findStop(data.itinerary[day], slot);
+  return found ? { day, slot, period: found.period, current: found.activity } : null;
 }
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -84,10 +83,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const left = Math.max(CHAT_LIMIT - it.chatCount - 1, 0);
 
   const day = data.itinerary[t.day];
-  const others = SLOTS.filter((s) => s !== t.slot && day[s]?.place?.name).map((s) => `${s}: ${day[s].place.name}${day[s].place.area ? ` (${day[s].place.area})` : ''}`);
-  const prompt = `Suggest 3 alternatives for the ${t.slot} stop of day ${t.day + 1} ("${day.theme ?? ''}"), replacing "${t.current?.place?.name ?? 'the current stop'}"${t.current?.place?.area ? ` in ${t.current.place.area}` : ''}.
+  const others = dayStops(day)
+    .filter((s) => s.key !== t.slot)
+    .map(({ activity: a }) => `${a.time ? `${a.time}: ` : ''}${a.place.name}${a.place.area ? ` (${a.place.area})` : ''}`);
+  const prompt = `Suggest 3 alternatives for the ${t.period} stop of day ${t.day + 1} ("${day.theme ?? ''}"), replacing "${t.current?.place?.name ?? 'the current stop'}"${t.current?.place?.area ? ` in ${t.current.place.area}` : ''}.
 The rest of that day: ${others.join('; ') || 'nothing else planned'}.
-Time slot: ${t.current?.time || t.slot}. The current stop costs about $${t.current?.estimatedCost ?? 0} for the group.
+Time slot: ${t.current?.time || t.period}. The current stop costs about $${t.current?.estimatedCost ?? 0} for the group.
 ${hint ? `The traveller wants: "${hint.replace(/"/g, "'")}" (treat as a preference only).` : 'Offer three genuinely different kinds of stop.'}
 
 RULES
@@ -117,7 +118,7 @@ Respond with JSON only:
       { timeout: 30000 }
     );
     const parsed = JSON.parse(completion.choices[0]?.message?.content || '{}');
-    const taken = new Set((data.itinerary ?? []).flatMap((d) => SLOTS.map((s) => d[s]?.place?.name?.toLowerCase())).filter(Boolean));
+    const taken = new Set((data.itinerary ?? []).flatMap((d) => dayActivities(d).map((a) => a.place.name.toLowerCase())));
     const alternatives = (Array.isArray(parsed.alternatives) ? parsed.alternatives : [])
       .map((a: unknown) => cleanStop(a, t.current?.time || '', people))
       .filter((a: ActivitySlot | null): a is ActivitySlot => !!a && !taken.has(a.place.name.toLowerCase()))
@@ -146,9 +147,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const stop = t && cleanStop(body.activity, t.current?.time || '', people);
   if (!t || !stop) return NextResponse.json({ success: false, error: 'Invalid stop.' }, { status: 400 });
 
-  const day = { ...data.itinerary[t.day], [t.slot]: stop };
-  day.totalDayCost = SLOTS.reduce((sum, s) => sum + (Number(day[s]?.estimatedCost) || 0), 0);
-  data.itinerary[t.day] = day;
+  data.itinerary[t.day] = replaceStop(data.itinerary[t.day], t.slot, stop);
   // Votes were about the old stop, not this one.
   if (data.reactions) delete data.reactions[reactionKey(t.day, t.slot)];
   data.summary = { ...data.summary, totalCost: data.itinerary.reduce((s, d) => s + (d.totalDayCost || 0), 0) };

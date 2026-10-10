@@ -57,9 +57,13 @@ import {
   SPEND,
   STAYS,
   VIBES,
+  dayActivities,
+  dayStops,
   labelFor,
+  periodOf,
   titleCase,
   type ActivitySlot,
+  type DayPeriod,
   type DayItinerary,
   type Essentials,
   type TripGuide,
@@ -111,11 +115,22 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const VIBE_LABELS = Object.fromEntries(VIBES.map((v) => [v.id, v.label]));
 const pad = (n: number) => String(n).padStart(2, "0");
 
-const SLOTS = [
-  { key: "morning", label: "Morning", icon: Sunrise },
-  { key: "afternoon", label: "Afternoon", icon: Sun },
-  { key: "evening", label: "Evening", icon: Moon },
-] as const;
+const PERIOD: Record<DayPeriod, { label: string; icon: typeof Sun }> = {
+  morning: { label: "Morning", icon: Sunrise },
+  afternoon: { label: "Afternoon", icon: Sun },
+  evening: { label: "Evening", icon: Moon },
+};
+
+interface Slot {
+  /** The stop's key on its day. */
+  key: string;
+  label: string;
+  icon: typeof Sun;
+}
+
+/** A day's stops for the page: key, period label and icon, activity. */
+const stopsFor = (day: DayItinerary): (RouteStop & { period: DayPeriod; slot: Slot })[] =>
+  dayStops(day).map((s) => ({ key: s.key, period: s.period, label: PERIOD[s.period].label, activity: s.activity, slot: { key: s.key, ...PERIOD[s.period] } }));
 
 const CATEGORY: Record<string, { label: string; icon: typeof Landmark }> = {
   sight: { label: "Sight", icon: Landmark },
@@ -193,7 +208,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
 
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
-function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
+function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: Slot; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
   const { fmt: money } = useMoney();
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
@@ -362,7 +377,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
     >
       {stops.map((s, k) => {
         const cat = s.activity.category ? CATEGORY[s.activity.category] : undefined;
-        const slot = SLOTS.find((x) => x.key === s.key)!;
+        const slot = { key: s.key, ...PERIOD[periodOf(s.activity.time, "afternoon")] };
         return (
           <motion.button
             key={s.key}
@@ -425,7 +440,7 @@ function DayPanel({
   arrival?: TripGuide["arrival"];
 }) {
   const { fmt: money } = useMoney();
-  const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
+  const stops = stopsFor(day);
   const transport = it.itineraryData.trip?.preferences?.transport;
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
@@ -482,7 +497,7 @@ function DayPanel({
           return (
             <Fragment key={s.key}>
               {leg && <StopConnector leg={leg} />}
-              <StopCard slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.key} />
+              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
             </Fragment>
           );
         })}
@@ -905,7 +920,10 @@ export function TripView({
   ];
   // A later stop's photo for "{city}, unexpectedly", so it isn't the hero shot again.
   const lastDay = days[days.length - 1];
-  const factStop = lastDay?.afternoon ?? lastDay?.evening ?? lastDay?.morning;
+  const factStop = (() => {
+    const all = dayActivities(lastDay);
+    return all[1] ?? all[all.length - 1];
+  })();
   // Each highlight with the stop it's about, for the big-moments mosaic.
   const moments = useMemo(() => pairMoments(data?.summary?.highlights ?? [], days), [data, days]);
   // Opens a day from anywhere above the plan, and brings the plan into view.
@@ -1075,7 +1093,7 @@ export function TripView({
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
                       <span className="relative block h-24 overflow-hidden sm:h-28">
-                        <PlacePhoto activity={d.morning ?? d.afternoon ?? d.evening} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        <PlacePhoto activity={dayActivities(d)[0]} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
                         <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
