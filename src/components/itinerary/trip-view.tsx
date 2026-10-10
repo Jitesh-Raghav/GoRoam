@@ -673,6 +673,7 @@ export function TripView({
   variant = "trip",
   photosEndpoint,
   unlockUrl,
+  backHref = "/itineraries",
 }: {
   it: ItineraryDetails;
   shared?: boolean;
@@ -684,6 +685,8 @@ export function TripView({
   photosEndpoint?: string;
   /** Guest previews: where sign-in returns to, to claim and unlock the trip. */
   unlockUrl?: string;
+  /** Packages: where "Trip gallery" leads back to (the public gallery, or the dashboard's copy of it). */
+  backHref?: string;
 }) {
   const data = it.itineraryData;
   // Guest previews behave like packages (no owner tools), with their own wording and an unlock button.
@@ -859,7 +862,7 @@ export function TripView({
               <Sparkles className="size-4" /> Your free trip preview
             </span>
           ) : isPackage ? (
-            <Link href="/itineraries" className={glass}>
+            <Link href={backHref} className={glass}>
               <ArrowLeft className="size-4" /> Trip gallery
             </Link>
           ) : shared ? (
@@ -1254,7 +1257,7 @@ export function TripView({
               </button>
             ) : isPackage ? (
               <>
-                <Link href="/itineraries" className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
+                <Link href={backHref} className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
                   <ArrowLeft className="size-4" /> More packages
                 </Link>
                 <PillLink href={similar} variant="brand" onClick={() => track("package_customized", { destination: it.destination, where: "outro" })}>

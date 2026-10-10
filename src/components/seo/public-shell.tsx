@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DashboardReturn } from "@/components/seo/dashboard-return";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
@@ -10,24 +11,27 @@ export function PublicShell({ crumbs, children }: { crumbs?: { name: string; hre
       <SiteHeader />
       <main className="min-h-svh bg-paper pt-24 sm:pt-28">
         {crumbs && crumbs.length > 0 && (
-          <nav aria-label="Breadcrumb" className="container-x">
-            <ol className="flex flex-wrap items-center gap-1.5 text-sm text-stone">
-              {crumbs.map((c, i) => (
-                <li key={c.href} className="flex items-center gap-1.5">
-                  {i > 0 && <span aria-hidden className="text-stone-2">/</span>}
-                  {i === crumbs.length - 1 ? (
-                    <span aria-current="page" className="text-ink/80">
-                      {c.name}
-                    </span>
-                  ) : (
-                    <Link href={c.href} className="hover:text-ink">
-                      {c.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <div className="container-x flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-1.5 text-sm text-stone">
+                {crumbs.map((c, i) => (
+                  <li key={c.href} className="flex items-center gap-1.5">
+                    {i > 0 && <span aria-hidden className="text-stone-2">/</span>}
+                    {i === crumbs.length - 1 ? (
+                      <span aria-current="page" className="text-ink/80">
+                        {c.name}
+                      </span>
+                    ) : (
+                      <Link href={c.href} className="hover:text-ink">
+                        {c.name}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+            <DashboardReturn />
+          </div>
         )}
         {children}
       </main>

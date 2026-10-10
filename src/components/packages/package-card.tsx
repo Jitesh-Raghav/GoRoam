@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
  * The photo is the trip's own (embedded) or, failing that, a looked-up photo of the
  * destination; the illustrated scene underneath shows until it loads, or if none exists.
  */
-export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: number }) {
+export function PackageCard({ pkg, index, href = `/itineraries/${pkg.slug}` }: { pkg: PackageCardData; index: number; /** Where the card opens; the dashboard keeps its own copy of each trip. */ href?: string }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const router = useRouter();
   const [broken, setBroken] = useState<string[]>([]);
@@ -32,7 +32,6 @@ export function PackageCard({ pkg, index }: { pkg: PackageCardData; index: numbe
   const looked = usePlacePhoto(pkg.destination, !ownOk);
   const cover = ownOk ? pkg.cover : usable(looked?.url) ? looked : null;
   const src = cover?.url ?? null;
-  const href = `/itineraries/${pkg.slug}`;
 
   // Count an impression once a card is properly on screen.
   useEffect(() => {
