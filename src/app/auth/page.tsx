@@ -1,11 +1,11 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, Loader2 } from "@/components/site/icons";
+import { AlertCircle, ArrowLeft, Check, Loader2, Mail } from "@/components/site/icons";
 import { Scene } from "@/components/scenes/scene";
 import { ScrambleText } from "@/components/motion/scramble-text";
 import { SplitText } from "@/components/motion/split-text";
@@ -21,6 +21,8 @@ const ERRORS: Record<string, string> = {
   OAuthAccountNotLinked: "This email is already linked to another sign-in method.",
   AccessDenied: "Access was denied. Please try another account.",
   Configuration: "Sign-in is temporarily unavailable. Please try again shortly.",
+  EmailSignin: "We couldn't send the sign-in email. Check the address, or try again in a little while.",
+  Verification: "That sign-in link has expired or was already used. Request a new one below.",
 };
 
 function safeCallback(raw: string | null) {
@@ -101,6 +103,33 @@ function AuthPanel() {
   const callbackUrl = safeCallback(params.get("callbackUrl"));
   const errorCode = params.get("error");
   const [pending, setPending] = useState(false);
+  const [emailEnabled, setEmailEnabled] = useState(false);
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(params.get("sent") ? "your inbox" : null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  // The email option only shows when the server can actually send mail.
+  useEffect(() => {
+    getProviders()
+      .then((p) => setEmailEnabled(!!p?.email))
+      .catch(() => {});
+  }, []);
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const address = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) {
+      setEmailError("Enter a valid email address.");
+      return;
+    }
+    setEmailError(null);
+    setSending(true);
+    const res = await signIn("email", { email: address, callbackUrl, redirect: false }).catch(() => null);
+    setSending(false);
+    if (res?.ok && !res.error) setSentTo(address);
+    else setEmailError(ERRORS.EmailSignin);
+  };
 
   useEffect(() => {
     if (session) {
@@ -188,6 +217,53 @@ function AuthPanel() {
               {pending ? <Loader2 className="size-5 animate-spin text-brand" /> : <GoogleMark />}
               {pending ? "Redirecting to Google…" : "Continue with Google"}
             </button>
+
+            {emailEnabled &&
+              (sentTo ? (
+                <div role="status" className="mt-6 rounded-2xl bg-brand-soft/70 p-5 ring-1 ring-brand/20">
+                  <p className="flex items-center gap-2 font-medium text-ink">
+                    <Mail className="size-4 text-brand" /> Check your inbox
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink/75">
+                    We sent a sign-in link to <strong className="font-medium text-ink">{sentTo}</strong>. Open it on this device to continue. It expires in 24 hours; check spam if it doesn&apos;t arrive in a minute.
+                  </p>
+                  <button type="button" onClick={() => setSentTo(null)} className="mt-3 text-sm font-medium text-brand hover:underline">
+                    Use a different email
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.16em] text-stone-2">
+                    <span className="h-px flex-1 bg-line" /> or with email <span className="h-px flex-1 bg-line" />
+                  </div>
+                  <form onSubmit={handleEmailSignIn} noValidate className="space-y-3">
+                    <label htmlFor="auth-email" className="sr-only">
+                      Email address
+                    </label>
+                    <input
+                      id="auth-email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      aria-invalid={!!emailError}
+                      className="h-14 w-full rounded-full bg-white px-6 text-[0.95rem] text-ink ring-1 ring-line outline-none transition-shadow placeholder:text-stone-2 focus:ring-2 focus:ring-brand/50"
+                    />
+                    {emailError && <p className="px-2 text-sm text-destructive">{emailError}</p>}
+                    <button
+                      type="submit"
+                      disabled={sending}
+                      className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-ink text-[0.95rem] font-medium text-paper transition-colors hover:bg-brand disabled:opacity-70"
+                    >
+                      {sending ? <Loader2 className="size-5 animate-spin" /> : <Mail className="size-4" />}
+                      {sending ? "Sending your link…" : "Email me a sign-in link"}
+                    </button>
+                    <p className="px-2 text-center text-xs text-stone">No password needed. Works with any email: Outlook, Yahoo, iCloud, work addresses.</p>
+                  </form>
+                </>
+              ))}
 
             <ul className="mt-10 space-y-3 border-t border-line pt-8">
               {["Your first itinerary, on us", "Day-by-day plans with real places", "Print-ready PDFs for the road"].map((t) => (

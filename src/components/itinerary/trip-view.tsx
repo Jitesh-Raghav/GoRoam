@@ -39,7 +39,6 @@ import {
 } from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
@@ -692,7 +691,8 @@ export function TripView({
   const isPackage = variant === "package" || isGuest;
   const unlock = () => {
     track("guest_unlock_clicked", { destination: it.destination, where: "trip" });
-    void signIn("google", { callbackUrl: unlockUrl ?? "/dashboard" });
+    // The sign-in page offers Google and an email link, then returns here to claim the trip.
+    window.location.href = `/auth?callbackUrl=${encodeURIComponent(unlockUrl ?? "/dashboard")}`;
   };
   // On a public itinerary page the page itself owns the <h1>.
   const HeroHeading = isPackage ? motion.h2 : motion.h1;
