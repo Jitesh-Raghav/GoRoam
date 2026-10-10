@@ -16,6 +16,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Search Console's token. Accepts just the content value or the whole <meta> tag pasted from Google,
+// with or without quotes, so a copy-paste slip can't break verification.
+const googleVerification = (() => {
+  const raw = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+  if (!raw) return undefined;
+  const fromTag = raw.match(/content\s*=\s*["']([^"']+)["']/i)?.[1];
+  return (fromTag ?? raw).replace(/^["']|["']$/g, "").trim() || undefined;
+})();
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL?.startsWith("http") ? process.env.NEXTAUTH_URL : "https://goroam.world"),
   title: {
@@ -29,7 +38,7 @@ export const metadata: Metadata = {
   creator: "Jitesh Raghav",
   alternates: { canonical: "/" },
   // Google Search Console: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION to the "HTML tag" content value.
-  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } : undefined,
+  verification: googleVerification ? { google: googleVerification } : undefined,
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
