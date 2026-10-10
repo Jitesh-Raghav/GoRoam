@@ -97,7 +97,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.paper}"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px">
   <tr><td style="padding:0 0 18px;font:400 22px ${SERIF};color:${C.ink}">GoRoam</td></tr>
-  <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.brand} 0%,#0b4f5c 50%,${C.ink} 100%);padding:40px 32px;color:${C.paper}">
+  <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.brand} 0%,#16305a 50%,${C.ink} 100%);padding:40px 32px;color:${C.paper}">
     <p style="margin:0;font:600 11px/1 ${SANS};letter-spacing:.18em;text-transform:uppercase;color:#bfe9e3">${it.numberOfDays} ${it.numberOfDays === 1 ? "day" : "days"} · ${esc(dates)}</p>
     <h1 style="margin:14px 0 0;font:400 52px/0.95 ${SERIF};color:#fff">${flag ? `<img src="https://flagcdn.com/w80/${flag}.png" width="40" alt="" style="vertical-align:middle;border-radius:4px;margin-right:10px">` : ""}${esc(title)}</h1>
     ${data.summary?.overview ? `<p style="margin:16px 0 0;font:15px/1.6 ${SANS};color:#d8e6ea">${esc(data.summary.overview)}</p>` : ""}

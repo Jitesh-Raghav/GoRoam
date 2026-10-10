@@ -26,7 +26,7 @@ const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, advent
 /** Drawn under each pack's photo, and shown if none loads. */
 const PACK_SCENES: Record<PlanId, SceneId> = { starter: "lake", explorer: "fuji", adventurer: "peaks" };
 /** Each pack's colour, in the mesh that wakes up on hover. */
-const PACK_TONES: Record<PlanId, MeshTone> = { starter: "lagoon", explorer: "sunset", adventurer: "sand" };
+const PACK_TONES: Record<PlanId, MeshTone> = { starter: "azure", explorer: "night", adventurer: "coral" };
 
 /** A pack's header: a photo of the kind of trip it buys, with its size on top. */
 function PackPhoto({ plan }: { plan: Plan }) {

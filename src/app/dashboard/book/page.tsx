@@ -290,7 +290,7 @@ function BookContent() {
                 aria-disabled={!ready}
                 className="mesh-host group relative isolate flex min-w-0 items-center gap-4 overflow-hidden rounded-card bg-white p-4 ring-1 ring-line transition-[box-shadow,transform] duration-500 ease-out-expo hover:-translate-y-0.5 hover:shadow-float aria-disabled:pointer-events-none aria-disabled:opacity-45 sm:p-5"
               >
-                <Mesh tone="lagoon" />
+                <Mesh tone="azure" />
                 <span aria-hidden className="display grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-lg text-ink">
                   {p.name.charAt(0)}
                 </span>

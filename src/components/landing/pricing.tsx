@@ -7,8 +7,24 @@ import { PackEach, PackPrice } from "@/components/site/pack-price";
 import { PLANS, freeTrips } from "@/lib/plans";
 import { SectionHeading } from "./section-heading";
 
-/** Each pack's colour, in the mesh that wakes up on hover. */
-const TONE: Record<string, MeshTone> = { starter: "lagoon", explorer: "sunset", adventurer: "sand" };
+/** Each pack's look: its card, its liquid colours (which flow on hover) and its accents. */
+const LOOK: Record<string, { tone: MeshTone; card: string; badge?: string; check: string; credits: string }> = {
+  starter: { tone: "azure", card: "bg-white text-ink shadow-card ring-1 ring-line hover:shadow-[0_50px_100px_-50px_rgba(31,111,235,0.45)]", check: "bg-brand-soft text-brand", credits: "text-brand" },
+  explorer: {
+    tone: "night",
+    card: "bg-ink text-paper shadow-float hover:shadow-[0_60px_120px_-50px_rgba(31,111,235,0.7)]",
+    badge: "bg-sun-2 text-ink",
+    check: "bg-paper/10 text-brand-2",
+    credits: "text-brand-2",
+  },
+  adventurer: {
+    tone: "coral",
+    card: "bg-[linear-gradient(160deg,#ffffff_40%,#fff3f1)] text-ink shadow-card ring-1 ring-coral/20 hover:shadow-[0_50px_100px_-50px_rgba(255,107,91,0.5)]",
+    badge: "bg-coral text-white",
+    check: "bg-coral-soft text-[#d9483a]",
+    credits: "text-[#d9483a]",
+  },
+};
 
 export function Pricing() {
   return (
@@ -33,24 +49,26 @@ export function Pricing() {
               <div
                 className={cn(
                   "mesh-host relative isolate flex h-full flex-col overflow-hidden rounded-panel p-8 transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1.5 sm:p-10",
-                  p.popular ? "bg-ink text-paper shadow-float hover:shadow-[0_60px_120px_-50px_rgba(255,61,151,0.45)]" : "bg-white text-ink shadow-card ring-1 ring-line hover:shadow-float"
+                  (LOOK[p.id] ?? LOOK.starter).card
                 )}
               >
-                <Mesh tone={TONE[p.id] ?? "lagoon"} />
-                {p.popular ? (
-                  <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-paper/15 px-3 py-1.5 text-xs font-medium text-paper ring-1 ring-inset ring-paper/25 backdrop-blur-md">
-                    <Sparkles className="size-3.5 text-sun-2" /> Most popular
+                <Mesh tone={(LOOK[p.id] ?? LOOK.starter).tone} seed={i * 7} className="[mask-image:linear-gradient(to_bottom,#000_25%,transparent_70%)]" />
+                {LOOK[p.id]?.badge && (
+                  <span className={cn("absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium shadow-sm", LOOK[p.id].badge)}>
+                    {p.popular ? (
+                      <>
+                        <Sparkles className="size-3.5" /> Most popular
+                      </>
+                    ) : (
+                      "Best value"
+                    )}
                   </span>
-                ) : p.id === "adventurer" ? (
-                  <span className="absolute right-6 top-6 inline-flex items-center rounded-full bg-white/70 px-3 py-1.5 text-xs font-medium text-ink ring-1 ring-inset ring-line backdrop-blur-md">
-                    Best value
-                  </span>
-                ) : null}
+                )}
                 <p className={cn("eyebrow", p.popular ? "text-paper/60" : "text-stone")}>{p.name}</p>
                 <div className="mt-6">
                   <PackPrice plan={p} className="text-[3.25rem]" muted={p.popular ? "text-paper/60" : "text-stone"} />
                 </div>
-                <p className={cn("mt-4 font-medium", p.popular ? "text-brand-2" : "text-brand")}>
+                <p className={cn("mt-4 font-medium", (LOOK[p.id] ?? LOOK.starter).credits)}>
                   {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={p} /> per itinerary</span>
                 </p>
                 <p className={cn("mt-2", p.popular ? "text-paper/70" : "text-stone")}>{p.tagline}</p>
@@ -68,7 +86,7 @@ export function Pricing() {
                 <ul className="space-y-3.5">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-3">
-                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", p.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
+                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", (LOOK[p.id] ?? LOOK.starter).check)}>
                         <Check className="size-3.5" />
                       </span>
                       <span className={p.popular ? "text-paper/85" : "text-ink/80"}>{f}</span>
@@ -82,7 +100,7 @@ export function Pricing() {
 
         <Reveal delay={0.1}>
           <div className="mesh-host relative isolate mt-4 flex flex-col items-start justify-between gap-5 overflow-hidden rounded-panel bg-white p-6 shadow-card ring-1 ring-line sm:flex-row sm:items-center sm:p-8">
-            <Mesh tone="lagoon" />
+            <Mesh tone="azure" seed={30} />
             <div className="flex items-center gap-4">
               <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand">
                 <Gift className="size-5" />
