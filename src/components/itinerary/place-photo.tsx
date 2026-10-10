@@ -63,6 +63,9 @@ export const asDish = (name: string): ActivitySlot => {
   return slot;
 };
 
+/** A photo lookup for a thing (a souvenir, a craft): matched by its own name, never the city as a stand-in. */
+export const asThing = asDish;
+
 /** A stop added after the trip's photos were fetched (a swap) looks up its own. */
 export function lookUpOwnPhoto<T extends ActivitySlot>(slot: T): T {
   ownLookup.add(slot);

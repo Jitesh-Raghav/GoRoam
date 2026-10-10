@@ -35,7 +35,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TipCategory, TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
-import { PlacePhoto, asDish } from "../place-photo";
+import { PlacePhoto, asDish, asThing } from "../place-photo";
 import { Band } from "../band";
 import { SectionTitle } from "./section-title";
 
@@ -210,24 +210,25 @@ function Food({ guide, destination }: { guide: TripGuide; destination: string })
   );
 }
 
-function Souvenirs({ guide }: { guide: TripGuide }) {
+function Souvenirs({ guide, destination }: { guide: TripGuide; destination: string }) {
   return (
     <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {guide.souvenirs.map((s, i) => (
-        <li key={i} className="print-avoid flex flex-col rounded-[24px] bg-white p-6 ring-1 ring-line">
-          <div className="flex items-start justify-between gap-3">
-            <span className="grid size-10 place-items-center rounded-xl bg-sun-soft text-ink">
-              <Gift className="size-5" />
-            </span>
-            {s.priceRange && <span className="rounded-full bg-paper-2 px-2.5 py-1 font-mono text-xs text-ink">{s.priceRange}</span>}
+        <li key={i} className="print-avoid group flex flex-col overflow-hidden rounded-[24px] bg-white ring-1 ring-line">
+          <div className="relative h-40 overflow-hidden print:hidden">
+            {/* A photo of the thing itself; the gift tile stands in when none turns up. */}
+            <PlacePhoto activity={asThing(s.name)} destination={destination} icon={Gift} credit={false} imgClassName="group-hover:scale-[1.05]" />
+            {s.priceRange && <span className="absolute right-3 top-3 rounded-full bg-white/95 px-2.5 py-1 font-mono text-xs text-ink shadow-sm">{s.priceRange}</span>}
           </div>
-          <h4 className="display mt-4 text-[1.27rem] leading-[1.05] text-ink">{s.name}</h4>
-          <p className="mt-2 flex-1 text-sm leading-relaxed text-stone">{s.why}</p>
-          {s.where && (
-            <p className="mt-4 flex items-start gap-2 border-t border-line pt-3 text-xs text-ink">
-              <MapPin className="mt-px size-3.5 shrink-0 text-brand" /> {s.where}
-            </p>
-          )}
+          <div className="flex flex-1 flex-col p-5 sm:p-6">
+            <h4 className="display text-[1.27rem] leading-[1.05] text-ink">{s.name}</h4>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-stone">{s.why}</p>
+            {s.where && (
+              <p className="mt-4 flex items-start gap-2 border-t border-line pt-3 text-xs text-ink">
+                <MapPin className="mt-px size-3.5 shrink-0 text-brand" /> {s.where}
+              </p>
+            )}
+          </div>
         </li>
       ))}
     </ol>
@@ -411,11 +412,11 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
   const nudge = (dir: number) => bar.current?.scrollBy({ left: dir * bar.current.clientWidth * 0.6, behavior: "smooth" });
 
   const body = (id: TabId) =>
-    id === "phrases" ? <Phrases guide={guide} /> : id === "food" ? <Food guide={guide} destination={destination} /> : id === "culture" ? <Culture guide={guide} /> : id === "souvenirs" ? <Souvenirs guide={guide} /> : id === "safety" ? <Safety guide={guide} /> : <Tips guide={guide} />;
+    id === "phrases" ? <Phrases guide={guide} /> : id === "food" ? <Food guide={guide} destination={destination} /> : id === "culture" ? <Culture guide={guide} /> : id === "souvenirs" ? <Souvenirs guide={guide} destination={destination} /> : id === "safety" ? <Safety guide={guide} /> : <Tips guide={guide} />;
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
 
   return (
-    <Band tone="aurora">
+    <Band tone="panel">
       <SectionTitle
         eyebrow="Your local guide"
         title={
@@ -438,7 +439,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
       </SectionTitle>
 
       <div className="no-print relative mt-8">
-        <div className="glass rounded-[26px] p-1.5">
+        <div className="rounded-[24px] bg-paper-2/80 p-1.5 ring-1 ring-inset ring-line">
           <div ref={bar} role="tablist" aria-label="Local guide" onScroll={measure} className="no-scrollbar relative flex gap-1 overflow-x-auto scroll-px-10">
             {/* A one-time sweep of light across the bar when it scrolls into view. */}
             {seen && !reduce && (
@@ -481,7 +482,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
         {/* Edge fades and arrows when the bar scrolls sideways (phones). */}
         {edges.left && (
           <>
-            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 left-1.5 w-12 rounded-l-[20px] bg-gradient-to-r from-white/95 to-transparent" />
+            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 left-1.5 w-12 rounded-l-[20px] bg-gradient-to-r from-paper-2 to-transparent" />
             <button type="button" onClick={() => nudge(-1)} aria-label="Earlier topics" className="absolute left-0 top-1/2 grid size-8 -translate-x-1/3 -translate-y-1/2 place-items-center rounded-full bg-ink text-paper shadow-lg">
               <ChevronLeft className="size-4" />
             </button>
@@ -489,7 +490,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
         )}
         {edges.right && (
           <>
-            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 right-1.5 w-12 rounded-r-[20px] bg-gradient-to-l from-white/95 to-transparent" />
+            <span aria-hidden className="pointer-events-none absolute inset-y-1.5 right-1.5 w-12 rounded-r-[20px] bg-gradient-to-l from-paper-2 to-transparent" />
             <button type="button" onClick={() => nudge(1)} aria-label="More topics" className="absolute right-0 top-1/2 grid size-8 -translate-y-1/2 translate-x-1/3 place-items-center rounded-full bg-ink text-paper shadow-lg">
               <ChevronRight className="size-4" />
             </button>
@@ -497,7 +498,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
         )}
       </div>
 
-      <div className="glass mt-3 rounded-[30px] p-3 sm:p-6 print:hidden">
+      <div className="mt-6 print:hidden">
         <p className="eyebrow mb-4 flex items-center gap-2 px-1 text-[0.6rem] text-stone">
           <current.icon className="size-3.5 text-brand" /> {current.label} · {current.count} {current.count === 1 ? "pick" : "picks"}
         </p>

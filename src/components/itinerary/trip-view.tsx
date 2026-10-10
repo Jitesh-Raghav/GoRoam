@@ -43,6 +43,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
+import { PhotoPanel } from "@/components/site/photo-panel";
 import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
@@ -66,12 +67,14 @@ import {
 } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { countryCodeFor } from "@/lib/flags";
+import { BigMoments, pairMoments } from "./big-moments";
 import { BookingPanel } from "./booking-panel";
 import { Checklist } from "./checklist";
 import { track } from "@/lib/analytics";
 import { hasMapsKey, locatedStops } from "@/lib/maps";
 import { Concierge } from "./concierge";
 import { EmailButton } from "./email-button";
+import { ExportMenu, type ExportItem } from "./export-menu";
 import { Experiences } from "./guide/experiences";
 import { Flag } from "./guide/flag";
 import { GuidePending } from "./guide/guide-pending";
@@ -836,19 +839,37 @@ export function TripView({
   // A chapter's first section sits flush with it, so a jump lands on the heading.
   const chapterBox = "mt-24 scroll-mt-28 [&>*:first-child]:mt-0";
   const glass = cn(btn, "bg-paper/15 text-paper ring-1 ring-inset ring-paper/25 hover:bg-paper hover:text-ink");
+  // The trip's take-aways, behind one Export button.
+  const exports: ExportItem[] = [
+    {
+      icon: CalendarPlus,
+      label: "Add to calendar",
+      hint: "Every stop as an event (.ics)",
+      onSelect: () => {
+        downloadIcs(it);
+        track("calendar_downloaded", { destination: it.destination });
+      },
+    },
+    ...(hasMappableStops(it) ? [{ icon: MapIcon, label: "Offline map", hint: "Every stop, for any maps app (.kml)", onSelect: () => downloadKml(it) }] : []),
+    { icon: Printer, label: "Save as PDF", hint: "A print-ready copy of the trip", onSelect: printPdf },
+  ];
+  // A later stop's photo for "{city}, unexpectedly", so it isn't the hero shot again.
+  const lastDay = days[days.length - 1];
+  const factStop = lastDay?.afternoon ?? lastDay?.evening ?? lastDay?.morning;
+  // Each highlight with the stop it's about, for the big-moments mosaic.
+  const moments = useMemo(() => pairMoments(data?.summary?.highlights ?? [], days), [data, days]);
+  // Opens a day from anywhere above the plan, and brings the plan into view.
+  const openDay = (i: number) => {
+    setActive(Math.max(0, Math.min(days.length - 1, i)));
+    const top = planRef.current?.getBoundingClientRect().top;
+    if (top !== undefined) window.scrollTo({ top: window.scrollY + top - 112, behavior: "smooth" });
+  };
 
   return (
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
     <div className="trip-sections relative isolate mx-auto max-w-[82.5rem]">
-      {/* Soft colour behind the page, so the glass cards have something to frost. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden print:hidden">
-        <div className="absolute -right-32 top-[9%] size-[34rem] rounded-full bg-brand-2/15 blur-3xl" />
-        <div className="absolute -left-40 top-[24%] size-[30rem] rounded-full bg-sun-2/20 blur-3xl" />
-        <div className="absolute -right-24 top-[58%] size-[30rem] rounded-full bg-brand-2/15 blur-3xl" />
-        <div className="absolute -left-32 top-[80%] size-[32rem] rounded-full bg-sun-2/15 blur-3xl" />
-      </div>
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[26rem] sm:min-h-[31.25rem] overflow-hidden rounded-panel bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
@@ -877,24 +898,7 @@ export function TripView({
           <div className="flex flex-wrap gap-2">
             {!shared && !isPackage && <ShareButton tripId={it.id} title={title} className={cn(btn, "bg-paper text-ink hover:bg-brand hover:text-white")} />}
             {!shared && !isPackage && <EmailButton tripId={it.id} className={cn(glass, "disabled:opacity-70")} />}
-            <button
-              type="button"
-              onClick={() => {
-                downloadIcs(it);
-                track("calendar_downloaded", { destination: it.destination });
-              }}
-              className={glass}
-            >
-              <CalendarPlus className="size-4" /> <span className="hidden sm:inline">Calendar</span>
-            </button>
-            {hasMappableStops(it) && (
-              <button type="button" onClick={() => downloadKml(it)} className={glass} title="Every stop as an offline map for Google My Maps, Organic Maps or Maps.me">
-                <MapIcon className="size-4" /> <span className="hidden sm:inline">Offline map</span>
-              </button>
-            )}
-            <button type="button" onClick={printPdf} className={glass}>
-              <Printer className="size-4" /> <span className="hidden sm:inline">PDF</span>
-            </button>
+            <ExportMenu items={exports} className={glass} />
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-6 text-paper sm:p-10 lg:flex-row lg:items-end lg:justify-between">
@@ -973,45 +977,10 @@ export function TripView({
         />
       </section>
 
-      {/* The trip at a glance: its big moments, before the detail. */}
-      {(data?.summary?.highlights?.length ?? 0) > 0 && (
-        <section className="print-avoid relative mt-3 overflow-hidden rounded-[32px] bg-ocean p-5 text-paper sm:p-10 print:bg-none print:p-0 print:text-ink">
-          <div className="pointer-events-none absolute -right-24 -top-28 size-80 rounded-full bg-brand-2/30 blur-3xl print:hidden" />
-          <div className="pointer-events-none absolute -bottom-32 -left-16 size-72 rounded-full bg-sun/25 blur-3xl print:hidden" />
-          <div className="relative flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
-                <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
-              </p>
-              <h3 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[1.02]">
-                The <span className="accent">big moments.</span>
-              </h3>
-            </div>
-            <span className="rounded-full bg-paper/10 px-3 py-1.5 font-mono text-[11px] text-paper/70 ring-1 ring-inset ring-paper/15 print:hidden">
-              {data.summary.highlights.length} highlights
-            </span>
-          </div>
-          <ol className="relative mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {data.summary.highlights.map((h, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.6, ease, delay: i * 0.06 }}
-                className="glass-dark group flex min-w-0 items-start gap-4 rounded-[22px] p-4 sm:p-5"
-              >
-                <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[linear-gradient(135deg,var(--sun-2),var(--sun))] font-mono text-sm font-medium text-ink shadow-[0_10px_24px_-12px_rgba(244,163,64,0.9)] transition-transform duration-500 group-hover:-rotate-6">
-                  {pad(i + 1)}
-                </span>
-                <span className="min-w-0 pt-1 text-[1.02rem] leading-snug text-paper/90 print:text-ink">{h}</span>
-              </motion.li>
-            ))}
-          </ol>
-        </section>
-      )}
+      {/* The trip at a glance: its big moments as photos, each opening its day. */}
+      <BigMoments moments={moments} destination={it.destination} onOpen={openDay} />
 
-      <ChapterNav chapters={chapters} className={cn("mt-6", shared ? "top-3" : "top-[calc(4.75rem+env(safe-area-inset-top))] lg:top-4")} />
+      <ChapterNav chapters={chapters} title={`${cityOf(title)} · ${it.numberOfDays} ${it.numberOfDays === 1 ? "day" : "days"}`} className={cn(moments.length ? "mt-14" : "mt-6", shared ? "top-3" : "top-[calc(4.75rem+env(safe-area-inset-top))] lg:top-4")} />
 
       <div id="chapter-plan" className="mt-10 grid scroll-mt-28 gap-10 lg:grid-cols-12 lg:gap-8">
         {/* Plan */}
@@ -1020,7 +989,20 @@ export function TripView({
             <SectionTitle eyebrow="The plan" title={<>Day by <span className="accent">day.</span></>} />
 
             {days.length > 1 && (
-              <div role="tablist" aria-label="Days" className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-1 sm:mx-0 sm:px-0">
+              <div
+                role="tablist"
+                aria-label="Days"
+                onKeyDown={(e) => {
+                  // Arrow keys step through the days, as in any tab bar.
+                  const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+                  if (!step) return;
+                  e.preventDefault();
+                  const next = Math.max(0, Math.min(days.length - 1, active + step));
+                  jump(next);
+                  (e.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]')[next])?.focus();
+                }}
+                className="no-print no-scrollbar -mx-3 mt-6 flex snap-x gap-2 overflow-x-auto px-5 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 sm:scroll-px-0 pb-1 sm:mx-0 sm:px-0"
+              >
                 {days.map((d, i) => {
                   const on = i === active;
                   return (
@@ -1029,6 +1011,7 @@ export function TripView({
                       type="button"
                       role="tab"
                       aria-selected={on}
+                      tabIndex={on ? 0 : -1}
                       onClick={() => jump(i)}
                       className={cn(
                         "group relative min-w-[9.5rem] flex-1 shrink-0 snap-start sm:min-w-[11.5rem] overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
@@ -1102,7 +1085,7 @@ export function TripView({
       </div>
 
       {/* Stays */}
-      <Band tone="brand" id="chapter-stay">
+      <Band id="chapter-stay">
         <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
           <p className="max-w-sm text-sm text-stone">
             Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
@@ -1146,13 +1129,13 @@ export function TripView({
           {hasDo && (
             <div id="chapter-do" className={chapterBox}>
               <Experiences items={guide.experiences} destination={title} />
-              <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} />
+              <Events events={guide.events} month={fmt(it.startDate, { month: "long" })} destination={it.destination} />
               <Videos videos={guide.videos} queries={guide.videoQueries} destination={title} />
             </div>
           )}
           <div id="chapter-local" className={chapterBox}>
             <LocalGuide guide={guide} destination={title} />
-            <CoolFacts facts={guide.facts} city={city} />
+            <CoolFacts facts={guide.facts} city={city} stop={factStop} destination={it.destination} />
           </div>
         </>
       ) : (
@@ -1172,13 +1155,16 @@ export function TripView({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, ease, delay: i * 0.05 }}
-                className={cn("print-avoid rounded-[24px] p-5", e.key === "weather" ? "glass-dark bg-ocean text-paper sm:col-span-2" : "glass")}
+                className={cn(
+                  "print-avoid rounded-[24px] p-5",
+                  e.key === "weather" ? "bg-[linear-gradient(135deg,var(--sun-soft),#fff_72%)] shadow-card ring-1 ring-sun/20 sm:col-span-2" : "glass"
+                )}
               >
-                <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "bg-paper/10 text-sun-2" : "bg-brand-soft text-brand")}>
+                <span className={cn("grid size-10 place-items-center rounded-xl", e.key === "weather" ? "duo-sun bg-sun/15 text-ink" : "bg-brand-soft text-brand")}>
                   <e.icon className="size-5" />
                 </span>
-                <p className={cn("eyebrow mt-4 text-[0.6rem]", e.key === "weather" ? "text-paper/55" : "text-stone")}>{e.label}</p>
-                <p className={cn("mt-1.5 leading-snug", e.key === "weather" ? "text-lg text-paper" : "text-ink")}>{data.essentials![e.key]}</p>
+                <p className="eyebrow mt-4 text-[0.6rem] text-stone">{e.label}</p>
+                <p className={cn("mt-1.5 leading-snug text-ink", e.key === "weather" && "text-lg")}>{data.essentials![e.key]}</p>
               </motion.div>
             ))}
           </div>
@@ -1217,70 +1203,71 @@ export function TripView({
         </div>
       )}
 
-      {/* Outro */}
-      <section className="no-print relative mt-6 overflow-hidden rounded-[32px] bg-ocean p-8 text-paper sm:p-12">
-        <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-sun/20 blur-3xl" />
-        <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
-          <div>
-            <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[1.02]">
+      {/* Outro, over a photo of the place */}
+      <section className="no-print mt-24">
+        <PhotoPanel photo={heroPhoto} scene={scene} shade="left" creditClassName="bottom-auto top-4" className="rounded-panel text-paper">
+          <div className="relative flex min-h-[20rem] flex-col items-start justify-end gap-8 p-8 sm:p-12 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[1.02]">
+                {isGuest ? (
+                  <>
+                    Love Day 1? <span className="accent">There&apos;s more.</span>
+                  </>
+                ) : isPackage ? (
+                  <>
+                    Make it <span className="accent">yours.</span>
+                  </>
+                ) : shared ? (
+                  <>
+                    Dreaming up <span className="accent">your own?</span>
+                  </>
+                ) : (
+                  <>
+                    Bon <span className="accent">voyage.</span>
+                  </>
+                )}
+              </p>
+              <p className="mt-3 max-w-md text-paper/60">
+                {isGuest
+                  ? "Sign in with Google, free, to unlock every day, the map, the local guide, PDF and sharing. It takes ten seconds."
+                  : isPackage
+                  ? "Change the dates, budget, pace or who's coming, and GoRoam re-plans every day around you."
+                  : shared
+                    ? "GoRoam plans a day-by-day trip like this one in under a minute, flights, stays and all."
+                    : "Take it offline, send it to the crew, or start dreaming about the next one."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
               {isGuest ? (
-                <>
-                  Love Day 1? <span className="accent">There&apos;s more.</span>
-                </>
+                <button type="button" onClick={unlock} className={cn(btn, "h-12 bg-brand px-6 text-white hover:bg-brand/90")}>
+                  <Sparkles className="size-4" /> Sign in free to unlock every day
+                </button>
               ) : isPackage ? (
                 <>
-                  Make it <span className="accent">yours.</span>
+                  <Link href={backHref} className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
+                    <ArrowLeft className="size-4" /> More packages
+                  </Link>
+                  <PillLink href={similar} variant="brand" onClick={() => track("package_customized", { destination: it.destination, where: "outro" })}>
+                    Make it mine
+                  </PillLink>
                 </>
               ) : shared ? (
-                <>
-                  Dreaming up <span className="accent">your own?</span>
-                </>
+                <PillLink href="/dashboard" variant="brand" size="lg">
+                  Plan my trip for free
+                </PillLink>
               ) : (
                 <>
-                  Bon <span className="accent">voyage.</span>
+                  <Link href={similar} className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
+                    <Repeat className="size-4" /> Plan a similar trip
+                  </Link>
+                  <PillLink href="/dashboard" variant="brand">
+                    Plan a new trip
+                  </PillLink>
                 </>
               )}
-            </p>
-            <p className="mt-3 max-w-md text-paper/60">
-              {isGuest
-                ? "Sign in with Google, free, to unlock every day, the map, the local guide, PDF and sharing. It takes ten seconds."
-                : isPackage
-                ? "Change the dates, budget, pace or who's coming, and GoRoam re-plans every day around you."
-                : shared
-                  ? "GoRoam plans a day-by-day trip like this one in under a minute, flights, stays and all."
-                  : "Take it offline, send it to the crew, or start dreaming about the next one."}
-            </p>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {isGuest ? (
-              <button type="button" onClick={unlock} className={cn(btn, "h-12 bg-brand px-6 text-white hover:bg-brand/90")}>
-                <Sparkles className="size-4" /> Sign in free to unlock every day
-              </button>
-            ) : isPackage ? (
-              <>
-                <Link href={backHref} className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
-                  <ArrowLeft className="size-4" /> More packages
-                </Link>
-                <PillLink href={similar} variant="brand" onClick={() => track("package_customized", { destination: it.destination, where: "outro" })}>
-                  Make it mine
-                </PillLink>
-              </>
-            ) : shared ? (
-              <PillLink href="/dashboard" variant="brand" size="lg">
-                Plan my trip for free
-              </PillLink>
-            ) : (
-              <>
-                <Link href={similar} className={cn(btn, "h-12 bg-paper/10 px-5 ring-1 ring-inset ring-paper/20 hover:bg-paper hover:text-ink")}>
-                  <Repeat className="size-4" /> Plan a similar trip
-                </Link>
-                <PillLink href="/dashboard" variant="brand">
-                  Plan a new trip
-                </PillLink>
-              </>
-            )}
-          </div>
-        </div>
+        </PhotoPanel>
       </section>
 
       {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
