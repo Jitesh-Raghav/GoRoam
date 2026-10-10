@@ -8,10 +8,11 @@ import type { ItineraryDetails } from "./trip";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-const INK = "#0a1e2c";
-const PAPER = "#f4f8f9";
-const LAGOON = "#34d1bf";
-const SUN = "#ffc876";
+const INK = "#0a1c27";
+const PAPER = "#f7f6f2";
+const LAGOON = "#3ccfbc";
+const SUN = "#e9c27c";
+const BRAND = "#0b776d";
 
 /* ------------------------------- Fonts ---------------------------------- */
 
@@ -32,12 +33,19 @@ async function googleFont(family: string, axis: string, text: string): Promise<A
 
 type Font = { name: string; data: ArrayBuffer; weight: 400 | 500 | 600; style: "normal" };
 
+/** The site's own pair: Space Grotesk for headlines, Inter for everything else. */
 async function loadFonts(text: string): Promise<Font[]> {
-  const [sans, sansMedium, sansRegular] = await Promise.all([googleFont("Geist", "wght@600", text), googleFont("Geist", "wght@500", text), googleFont("Geist", "wght@400", text)]);
+  const [display, displayBold, body, bodyMedium] = await Promise.all([
+    googleFont("Space+Grotesk", "wght@500", text),
+    googleFont("Space+Grotesk", "wght@600", text),
+    googleFont("Inter", "wght@400", text),
+    googleFont("Inter", "wght@500", text),
+  ]);
   const fonts: Font[] = [];
-  if (sans) fonts.push({ name: "Geist", data: sans, weight: 600, style: "normal" });
-  if (sansRegular) fonts.push({ name: "Geist", data: sansRegular, weight: 400, style: "normal" });
-  if (sansMedium) fonts.push({ name: "Geist", data: sansMedium, weight: 500, style: "normal" });
+  if (display) fonts.push({ name: "Space Grotesk", data: display, weight: 500, style: "normal" });
+  if (displayBold) fonts.push({ name: "Space Grotesk", data: displayBold, weight: 600, style: "normal" });
+  if (body) fonts.push({ name: "Inter", data: body, weight: 400, style: "normal" });
+  if (bodyMedium) fonts.push({ name: "Inter", data: bodyMedium, weight: 500, style: "normal" });
   return fonts;
 }
 
@@ -108,7 +116,8 @@ export async function renderOgCard(card: OgCard) {
     ...card.panel.stops.flatMap((s) => [s.time, s.title, s.cost ?? ""]),
   ].join(" ");
   const [fonts, logo] = await Promise.all([loadFonts(text), logoMark()]);
-  const sans = "Geist";
+  const sans = "Inter";
+  const display = "Space Grotesk";
 
   return new ImageResponse(
     (
@@ -143,13 +152,13 @@ export async function renderOgCard(card: OgCard) {
         <div style={{ display: "flex", flexDirection: "column", padding: "64px 0 0 72px", width: 660 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             {logo ? <img src={logo} width={52} height={52} style={{ borderRadius: 14 }} alt="" /> : null}
-            <div style={{ display: "flex", fontSize: 34, fontWeight: 600, letterSpacing: "-0.04em" }}>
+            <div style={{ display: "flex", fontFamily: display, fontSize: 34, fontWeight: 600, letterSpacing: "-0.04em" }}>
               <span style={{ color: LAGOON }}>Go</span>
               <span>Roam</span>
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", marginTop: 54, fontSize: 84, fontWeight: 400, letterSpacing: "-0.035em", lineHeight: 1.04 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", marginTop: 54, fontFamily: display, fontSize: 80, fontWeight: 500, letterSpacing: "-0.035em", lineHeight: 1.04 }}>
             {card.title[0] ? <span style={{ marginRight: 20 }}>{card.title[0]}</span> : null}
             <span style={{ color: LAGOON, marginRight: card.title[2] ? 20 : 0 }}>
               {card.title[1]}
@@ -184,14 +193,14 @@ export async function renderOgCard(card: OgCard) {
             boxShadow: "0 40px 80px -20px rgba(0,0,0,0.55)",
           }}
         >
-          <div style={{ display: "flex", fontSize: 15, fontWeight: 600, letterSpacing: "0.14em", color: "#0b8278", textTransform: "uppercase" }}>{card.panel.eyebrow}</div>
-          <div style={{ display: "flex", marginTop: 8, fontSize: 36, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05 }}>{card.panel.heading}</div>
+          <div style={{ display: "flex", fontSize: 15, fontWeight: 500, letterSpacing: "0.14em", color: BRAND, textTransform: "uppercase" }}>{card.panel.eyebrow}</div>
+          <div style={{ display: "flex", marginTop: 8, fontFamily: display, fontSize: 34, fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1.05 }}>{card.panel.heading}</div>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 20 }}>
             {card.panel.stops.slice(0, 3).map((s, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 0", borderTop: i ? "1px solid rgba(10,30,44,0.1)" : "none" }}>
-                <div style={{ display: "flex", width: 12, height: 12, borderRadius: 9999, background: i === 0 ? "#0b8278" : i === 1 ? SUN : LAGOON }} />
+                <div style={{ display: "flex", width: 12, height: 12, borderRadius: 9999, background: i === 0 ? BRAND : i === 1 ? SUN : LAGOON }} />
                 <div style={{ display: "flex", width: 62, fontSize: 16, fontWeight: 500, color: "rgba(10,30,44,0.55)" }}>{s.time}</div>
-                <div style={{ display: "flex", flex: 1, fontSize: 20, fontWeight: 600, letterSpacing: "-0.02em" }}>{s.title}</div>
+                <div style={{ display: "flex", flex: 1, fontSize: 20, fontWeight: 500, letterSpacing: "-0.01em" }}>{s.title}</div>
                 {s.cost ? <div style={{ display: "flex", fontSize: 16, fontWeight: 500, color: "rgba(10,30,44,0.55)" }}>{s.cost}</div> : null}
               </div>
             ))}
@@ -203,10 +212,10 @@ export async function renderOgCard(card: OgCard) {
               alignSelf: "flex-start",
               padding: "8px 14px",
               borderRadius: 9999,
-              background: "#d6f3ef",
-              color: "#0b8278",
+              background: "#dcefea",
+              color: BRAND,
               fontSize: 15,
-              fontWeight: 600,
+              fontWeight: 500,
             }}
           >
             {card.panel.footer}

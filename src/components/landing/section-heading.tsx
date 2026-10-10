@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
-import { SplitText, type Segment } from "@/components/motion/split-text";
+import type { Segment } from "@/components/motion/split-text";
 
+/**
+ * Every landing section opens the same way: a small label, a headline with one
+ * accent word, and an optional line of description. The block rises in once,
+ * as a whole, so headings read calmly instead of word by word.
+ */
 export function SectionHeading({
-  index,
   label,
   title,
   description,
@@ -14,8 +18,8 @@ export function SectionHeading({
   className,
   children,
 }: {
-  index: string;
   label: string;
+  /** One array per line; a segment with className "accent" is the highlighted word. */
   title: Segment[][];
   description?: ReactNode;
   align?: "left" | "center";
@@ -25,42 +29,33 @@ export function SectionHeading({
   children?: ReactNode;
 }) {
   const center = align === "center";
+  const paper = tone === "paper";
   return (
-    <div className={cn(center && "mx-auto text-center", className)}>
-      <Reveal y={12}>
-        <p className={cn("eyebrow flex items-center gap-3", center && "justify-center", tone === "paper" ? "text-paper/60" : "text-stone")}>
-          <span>({index})</span>
-          <span className={cn("h-px w-8", tone === "paper" ? "bg-paper/30" : "bg-ink/20")} />
-          <span>{label}</span>
-        </p>
-      </Reveal>
+    <Reveal y={16} duration={0.9} className={cn(center && "mx-auto text-center", className)}>
+      <p className={cn("eyebrow", paper ? "text-brand-2" : "text-brand")}>{label}</p>
       <h2
         className={cn(
-          "display mt-6 leading-[0.92]",
-          size === "lg" ? "text-[clamp(2.38rem,5.1vw,4.76rem)]" : "text-[clamp(2.21rem,3.91vw,3.74rem)]",
-          tone === "paper" ? "text-paper" : "text-ink"
+          "display mt-5",
+          size === "lg" ? "text-[clamp(2.25rem,4.2vw,3.5rem)] leading-[1.02]" : "text-[clamp(2rem,3.4vw,2.875rem)] leading-[1.04]",
+          paper ? "text-paper" : "text-ink"
         )}
       >
         {title.map((line, i) => (
           <span key={i} className="block">
-            <SplitText segments={line} delay={0.08 + i * 0.12} />
+            {line.map((seg, k) => (
+              <span key={k} className={seg.className}>
+                {seg.text}
+              </span>
+            ))}
           </span>
         ))}
       </h2>
       {description && (
-        <Reveal delay={0.2}>
-          <div
-            className={cn(
-              "mt-6 max-w-xl text-lg leading-relaxed",
-              center && "mx-auto",
-              tone === "paper" ? "text-paper/65" : "text-stone"
-            )}
-          >
-            {description}
-          </div>
-        </Reveal>
+        <div className={cn("mt-5 max-w-xl text-[1.0625rem] leading-relaxed sm:text-lg", center && "mx-auto", paper ? "text-paper/70" : "text-stone")}>
+          {description}
+        </div>
       )}
       {children}
-    </div>
+    </Reveal>
   );
 }

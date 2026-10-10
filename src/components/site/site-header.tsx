@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { UserRound } from "@/components/site/icons";
+import { ArrowRight } from "@/components/site/icons";
 import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -17,9 +17,8 @@ const LINKS = [
   { href: "/itineraries", label: "Trips" },
   { href: "/destinations", label: "Guides" },
   { href: "/#how", label: "How it works" },
-  { href: "/#book", label: "Book" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "/about", label: "About" },
 ];
 
 export function SiteHeader() {
@@ -60,20 +59,21 @@ export function SiteHeader() {
         <div
           className={cn(
             "transition-[background-color,box-shadow,backdrop-filter] duration-500",
-            scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(10,30,44,0.08)] backdrop-blur-md" : "bg-transparent"
+            scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(10,28,39,0.08)] backdrop-blur-md" : "bg-transparent"
           )}
         >
           <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">
             <Logo />
 
-            <nav aria-label="Primary" className="hidden items-center gap-1 rounded-full border border-line bg-paper/70 p-1 lg:flex">
+            <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
               {LINKS.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="rounded-full px-4 py-2 text-sm text-ink/70 transition-colors duration-300 hover:bg-ink hover:text-paper"
+                  className="group relative py-2 text-[0.94rem] font-medium text-ink/70 transition-colors duration-300 hover:text-ink"
                 >
                   {l.label}
+                  <span className="absolute inset-x-0 bottom-1 h-px origin-left scale-x-0 bg-ink transition-transform duration-500 ease-out-expo group-hover:scale-x-100" />
                 </Link>
               ))}
             </nav>
@@ -92,11 +92,8 @@ export function SiteHeader() {
                 <>
                   <Link
                     href="/auth"
-                    className="group hidden h-12 items-center gap-2.5 rounded-full border border-line bg-white/75 pl-1.5 pr-5 text-[0.95rem] font-medium tracking-[-0.01em] text-ink shadow-[0_10px_28px_-18px_rgba(10,30,44,0.55)] backdrop-blur-md transition-[background-color,color,border-color] duration-500 ease-out-expo hover:border-ink hover:bg-ink hover:text-paper sm:inline-flex"
+                    className="hidden rounded-full px-3 py-2 text-[0.94rem] font-medium text-ink/75 transition-colors duration-300 hover:text-ink sm:inline-flex"
                   >
-                    <span className="grid size-9 place-items-center rounded-full bg-brand-soft text-brand transition-colors duration-500 group-hover:bg-paper/15 group-hover:text-paper">
-                      <UserRound className="size-4" />
-                    </span>
                     Sign in
                   </Link>
                   <PillLink href="/dashboard" size="md" className="hidden sm:inline-flex">
@@ -142,10 +139,10 @@ export function SiteHeader() {
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-baseline justify-between border-b border-line py-4"
+                      className="flex items-center justify-between border-b border-line py-4"
                     >
-                      <span className="display text-4xl">{l.label}</span>
-                      <span className="eyebrow text-stone">0{i + 1}</span>
+                      <span className="display text-[2rem] leading-none">{l.label}</span>
+                      <ArrowRight aria-hidden className="size-5 text-stone" />
                     </Link>
                   </motion.div>
                 </div>

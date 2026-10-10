@@ -224,11 +224,6 @@ export const destinationBySlug = (slug: string) => DESTINATIONS.find((d) => d.sl
 /** The ten wonders featured in the landing gallery. */
 export const WONDERS = DESTINATIONS.slice(0, 10);
 
-/** Scenes that rotate through the hero window. */
-export const HERO_SEQUENCE = ["taj-mahal", "eiffel-tower", "mount-fuji", "santorini", "colosseum", "machu-picchu", "sydney-opera-house", "statue-of-liberty"].map(
-  (s) => destinationBySlug(s)!
-);
-
 export function formatCoords(lat: number, lng: number) {
   const ns = lat >= 0 ? "N" : "S";
   const ew = lng >= 0 ? "E" : "W";

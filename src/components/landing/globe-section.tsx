@@ -12,11 +12,12 @@ import { SectionHeading } from "./section-heading";
 const TOUR = ["taj-mahal", "santorini", "big-ben", "statue-of-liberty", "christ-the-redeemer", "machu-picchu", "golden-gate-bridge", "mount-fuji", "sydney-opera-house", "angkor-wat", "taj-mahal"];
 const FOCUS = ["taj-mahal", "eiffel-tower", "mount-fuji", "santorini", "machu-picchu", "christ-the-redeemer", "sydney-opera-house", "statue-of-liberty"];
 
+// Plain facts about the product, nothing inflated.
 const STATS = [
-  { value: 30, suffix: "", label: "days: the longest trip we'll map out" },
-  { value: 3, suffix: "", label: "curated moments in every single day" },
-  { value: 20, suffix: "", label: "travellers in one shared plan" },
-  { value: 8, suffix: "", label: "travel styles to mix and match" },
+  { value: 30, suffix: "", label: "days: the longest trip we'll plan" },
+  { value: 12, suffix: "", label: "interests to shape every plan" },
+  { value: 3, suffix: "", label: "moments a day: morning, afternoon, evening" },
+  { value: 1, suffix: "", label: "free trip to start, no card needed" },
 ];
 
 const toAngles = (lat: number, lng: number): [number, number] => [
@@ -179,17 +180,16 @@ export function GlobeSection() {
 
   return (
     <section className="px-3 sm:px-4">
-      <div className="relative overflow-hidden rounded-[36px] bg-ocean py-24 text-paper sm:rounded-[48px] lg:py-32">
+      <div className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-28">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(11,130,120,0.16),transparent_55%)]" />
         <div className="container-x relative grid items-center gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <SectionHeading
-              index="04"
               label="Anywhere on Earth"
               tone="paper"
               size="md"
               title={[[{ text: "The whole map," }], [{ text: "planned with " }, { text: "care.", className: "accent" }]]}
-              description="Drag the globe, or pick a wonder. GoRoam plans national getaways and big international journeys with the same care."
+              description="Drag the globe or pick a wonder. A weekend two hours from home or a month across continents, every plan gets the same care."
             />
             <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10">
               {STATS.map((s, i) => (

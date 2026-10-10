@@ -44,11 +44,11 @@ export default async function GalleryPage() {
       />
       <div className="container-x pb-24 pt-8">
         <header className="max-w-3xl">
-          <p className="eyebrow text-stone">Trip gallery</p>
-          <h1 className="display mt-4 text-[clamp(2.4rem,5.2vw,4.25rem)] text-ink">
+          <p className="eyebrow text-brand">Trip gallery</p>
+          <h1 className="display mt-5 text-[clamp(2.4rem,5.2vw,4.25rem)] leading-[1.02] text-ink">
             Ready-made trips, <span className="accent">day by day.</span>
           </h1>
-          <p className="mt-5 text-lg leading-relaxed text-ink/70">
+          <p className="mt-6 text-lg leading-relaxed text-stone">
             Every itinerary here is planned stop by stop with real places, opening-time tips, map coordinates and an honest budget for two. Open one for free, follow it as is, or make it yours in the planner.
           </p>
         </header>
@@ -56,7 +56,7 @@ export default async function GalleryPage() {
         {byRegion.map((g) => (
           <section key={g.region} className="mt-14" aria-labelledby={`region-${g.region}`}>
             <h2 id={`region-${g.region}`} className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
-              {HEADINGS[g.region]} <span className="text-base text-stone">· {g.cards.length} trips</span>
+              {HEADINGS[g.region]} <span className="ml-1 font-sans text-base font-normal tracking-normal text-stone">{g.cards.length} trips</span>
             </h2>
             <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {g.cards.map((pkg, i) => (
@@ -66,7 +66,7 @@ export default async function GalleryPage() {
           </section>
         ))}
 
-        <section className="mt-20 rounded-[32px] bg-white p-6 ring-1 ring-line sm:p-10" aria-labelledby="guides">
+        <section className="mt-20 rounded-panel bg-white p-6 ring-1 ring-line sm:p-10" aria-labelledby="guides">
           <h2 id="guides" className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
             Destination guides
           </h2>

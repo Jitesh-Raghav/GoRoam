@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { WONDERS, formatCoords, type Destination } from "@/lib/destinations";
 import { SCENES } from "@/components/scenes/scenes";
 import { LazyScene } from "@/components/scenes/lazy-scene";
-import { SplitText } from "@/components/motion/split-text";
 import { tripHref } from "@/components/site/trip-prompt";
 import { PillLink } from "@/components/site/pill";
 
@@ -19,7 +18,7 @@ function WonderCard({ d, i }: { d: Destination; i: number }) {
     <Link
       href={tripHref(d.query)}
       className={cn(
-        "group relative block h-[31.25rem] w-[80vw] shrink-0 snap-start overflow-hidden rounded-[28px] bg-paper-2 sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]",
+        "group relative block h-[31.25rem] w-[80vw] shrink-0 snap-start overflow-hidden rounded-panel bg-paper-2 sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]",
         i % 2 === 1 && "lg:translate-y-10"
       )}
       aria-label={`Plan a trip to ${d.name}, ${d.place}`}
@@ -36,7 +35,7 @@ function WonderCard({ d, i }: { d: Destination; i: number }) {
       </div>
       <div className="absolute inset-x-0 bottom-0 p-6 text-paper">
         <p className="font-mono text-[11px] tracking-wide text-paper/65">{formatCoords(d.lat, d.lng)}</p>
-        <h3 className="display mt-2 text-[2.21rem] leading-[0.95]">{d.name}</h3>
+        <h3 className="display mt-2 text-[2.21rem] leading-[1.02]">{d.name}</h3>
         <p className="mt-1 text-sm text-paper/75">{d.place}</p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-paper/12 px-3 py-1.5 ring-1 ring-inset ring-paper/15 backdrop-blur-md">
@@ -102,15 +101,13 @@ export function Wonders() {
       style={desktop ? { height: `calc(100vh + ${distance}px)` } : undefined}
     >
       <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:overflow-hidden">
-        <div className="container-x pt-24 lg:hidden">
-          <p className="eyebrow flex items-center gap-3 text-stone">
-            <span>(02)</span>
-            <span className="h-px w-8 bg-ink/20" />
-            <span>Wonders of the world</span>
-          </p>
-          <h2 className="display mt-6 text-[clamp(2.38rem,9.35vw,3.74rem)] leading-[0.92]">
-            <SplitText text="Ten wonders." className="block" />
-            <SplitText segments={[{ text: "One tap ", className: "accent" }, { text: "away." }]} className="block" delay={0.12} />
+        <div className="container-x pt-20 lg:hidden">
+          <p className="eyebrow text-brand">Wonders of the world</p>
+          <h2 className="display mt-5 text-[clamp(2.25rem,9vw,3.5rem)] leading-[1.02]">
+            <span className="block">Ten wonders.</span>
+            <span className="block">
+              <span className="accent">One tap</span> away.
+            </span>
           </h2>
           <p className="mt-5 max-w-md text-lg leading-relaxed text-stone">
             Every icon here is a trip GoRoam can plan tonight. Tap one and we&apos;ll start your itinerary from there.
@@ -123,14 +120,12 @@ export function Wonders() {
           className="no-scrollbar mt-10 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-8 sm:scroll-px-8 sm:gap-6 sm:px-8 lg:mt-0 lg:w-max lg:snap-none lg:items-center lg:overflow-visible lg:px-0 lg:pb-0 lg:pl-[max(3rem,calc((100vw_-_1440px)/2_+_3rem))] lg:pr-[10vw]"
         >
           <div className="hidden w-[min(34vw,520px)] shrink-0 pr-10 lg:block">
-            <p className="eyebrow flex items-center gap-3 text-stone">
-              <span>(02)</span>
-              <span className="h-px w-8 bg-ink/20" />
-              <span>Wonders of the world</span>
-            </p>
-            <h2 className="display mt-6 text-[clamp(2.89rem,4.76vw,5.1rem)] leading-[0.9]">
-              <SplitText text="Ten wonders." className="block" />
-              <SplitText segments={[{ text: "One tap ", className: "accent" }, { text: "away." }]} className="block" delay={0.12} />
+            <p className="eyebrow text-brand">Wonders of the world</p>
+            <h2 className="display mt-5 text-[clamp(2.5rem,4.2vw,3.75rem)] leading-[1.02]">
+              <span className="block">Ten wonders.</span>
+              <span className="block">
+                <span className="accent">One tap</span> away.
+              </span>
             </h2>
             <p className="mt-6 max-w-sm text-lg leading-relaxed text-stone">
               Every icon here is a trip GoRoam can plan tonight. Pick one and we&apos;ll start your itinerary from there.
@@ -148,10 +143,10 @@ export function Wonders() {
             <WonderCard key={d.slug} d={d} i={i} />
           ))}
 
-          <div className="flex h-[31.25rem] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-[28px] bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
+          <div className="flex h-[31.25rem] w-[80vw] shrink-0 snap-start flex-col justify-between rounded-panel bg-ocean p-8 text-paper sm:w-[380px] lg:h-[min(72vh,640px)] lg:w-[min(30vw,430px)]">
             <p className="eyebrow text-paper/60">And everywhere else</p>
             <div>
-              <p className="display text-[2.38rem] leading-[0.95]">
+              <p className="display text-[2.38rem] leading-[1.02]">
                 Your map,
                 <br />
                 <span className="accent">your rules.</span>

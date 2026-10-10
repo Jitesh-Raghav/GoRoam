@@ -2,21 +2,13 @@
 
 import { animate, motion, useInView } from "framer-motion";
 import {
-  Building2,
-  Camera,
-  Compass,
   Download,
-  FileText,
-  Landmark,
   MapPin,
   Moon,
   Sparkles,
   Sun,
   Sunrise,
-  TreePine,
-  UtensilsCrossed,
   Volume2,
-  Waves,
   ArrowRightLeft,
   CloudSun,
   CloudRain,
@@ -26,10 +18,7 @@ import {
 } from "@/components/site/icons";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
-import { LazyScene } from "@/components/scenes/lazy-scene";
-import { Brackets } from "./guides";
 import { SectionHeading } from "./section-heading";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -37,11 +26,11 @@ const ease = [0.16, 1, 0.3, 1] as const;
 function Tile({ className, visual, visualClassName, title, body, delay = 0 }: { className?: string; visual: ReactNode; visualClassName?: string; title: string; body: string; delay?: number }) {
   return (
     <Reveal delay={delay} className={className}>
-      <div className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white/80 p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.45)]">
-        <div className={cn("relative h-60 overflow-hidden rounded-[22px] bg-paper", visualClassName)}>{visual}</div>
-        <div className="p-5 pt-6">
-          <h3 className="display text-[1.61rem] leading-none text-ink">{title}</h3>
-          <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
+      <div className="group flex h-full flex-col overflow-hidden rounded-panel bg-white p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-float">
+        <div className={cn("relative h-52 overflow-hidden rounded-card bg-paper sm:h-60", visualClassName)}>{visual}</div>
+        <div className="p-5 pt-5 sm:p-6 sm:pt-6">
+          <h3 className="display text-[1.4rem] leading-tight text-ink">{title}</h3>
+          <p className="mt-2.5 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
         </div>
       </div>
     </Reveal>
@@ -167,45 +156,6 @@ function MapVisual() {
   );
 }
 
-function PdfVisual() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.5, once: true });
-  return (
-    <div ref={ref} className="absolute inset-0 flex items-center justify-center">
-      <motion.div
-        initial={{ y: 40, rotate: 6, opacity: 0 }}
-        animate={inView ? { y: 0, rotate: -4, opacity: 1 } : undefined}
-        transition={{ duration: 1.1, ease }}
-        className="relative h-48 w-36 overflow-hidden rounded-xl bg-white p-3 shadow-[0_24px_50px_-24px_rgba(10,30,44,0.5)] ring-1 ring-line"
-      >
-        <div className="relative h-14 overflow-hidden rounded-md">
-          <LazyScene id="santorini" tint="#E98A7C" />
-        </div>
-        <p className="display mt-2 text-lg leading-none">Santorini</p>
-        {[90, 70, 84, 60, 76].map((w, i) => (
-          <motion.div
-            key={i}
-            initial={{ scaleX: 0 }}
-            animate={inView ? { scaleX: 1 } : undefined}
-            transition={{ duration: 0.8, ease, delay: 0.5 + i * 0.1 }}
-            className="mt-1.5 h-1.5 origin-left rounded-full bg-paper-2"
-            style={{ width: `${w}%` }}
-          />
-        ))}
-        <FileText className="absolute bottom-2.5 right-2.5 size-3.5 text-stone-2" />
-      </motion.div>
-      <motion.span
-        initial={{ scale: 0 }}
-        animate={inView ? { scale: 1 } : undefined}
-        transition={{ type: "spring", stiffness: 300, damping: 15, delay: 1 }}
-        className="absolute right-[26%] top-[18%] grid size-12 place-items-center rounded-full bg-brand text-white shadow-lg"
-      >
-        <Download className="features-bob size-5" />
-      </motion.span>
-    </div>
-  );
-}
-
 const PHRASES = [
   { en: "Thank you", local: "ありがとう", say: "Arigatō", flag: "jp" },
   { en: "How much?", local: "Quanto costa?", say: "KWAHN-toh KOH-stah", flag: "it" },
@@ -324,7 +274,7 @@ function ToolsVisual() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.35, once: true });
   return (
-    <div ref={ref} className="absolute inset-0 grid grid-cols-2 grid-rows-[1fr_1fr_auto] gap-2.5 p-3 sm:p-4 lg:grid-cols-5 lg:grid-rows-1">
+    <div ref={ref} className="absolute inset-0 grid grid-cols-2 grid-rows-[1fr_auto] gap-2.5 p-3 sm:grid-rows-[1fr_1fr_auto] sm:p-4 lg:grid-cols-5 lg:grid-rows-1">
       {/* Live weather for every day of the trip. */}
       <ToolCard label="Kyoto · 5 days" icon={CloudSun} i={0} inView={inView}>
         <div className="grid grid-cols-5 gap-1 text-center">
@@ -361,7 +311,7 @@ function ToolsVisual() {
       </ToolCard>
 
       {/* Swap a stop you don't fancy. */}
-      <ToolCard label="Swap a stop" icon={RefreshCw} i={2} inView={inView}>
+      <ToolCard label="Swap a stop" icon={RefreshCw} i={2} inView={inView} className="max-sm:hidden">
         <div className="space-y-1.5">
           <motion.div
             initial={{ opacity: 1 }}
@@ -387,7 +337,7 @@ function ToolsVisual() {
       </ToolCard>
 
       {/* Split costs with the crew. */}
-      <ToolCard label="Trip wallet" icon={Wallet} i={3} inView={inView}>
+      <ToolCard label="Trip wallet" icon={Wallet} i={3} inView={inView} className="max-sm:hidden">
         <div className="space-y-1.5">
           {[
             { who: "You", c: "bg-brand", w: 72, amt: "$184" },
@@ -453,53 +403,15 @@ function ToolsVisual() {
   );
 }
 
-const STYLES = [
-  { icon: Landmark, label: "Iconic sights" },
-  { icon: UtensilsCrossed, label: "Food & drink" },
-  { icon: Building2, label: "History" },
-  { icon: Compass, label: "Hidden gems" },
-  { icon: TreePine, label: "Outdoors" },
-  { icon: Moon, label: "Nightlife" },
-  { icon: Waves, label: "Wellness" },
-  { icon: Camera, label: "Photo spots" },
-];
-
-function StylesVisual() {
-  const row = (items: typeof STYLES, dark: boolean) =>
-    items.map((s) => (
-      <span
-        key={s.label}
-        className={cn(
-          "mr-2.5 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm",
-          dark ? "bg-ink text-paper" : "bg-white text-ink ring-1 ring-line"
-        )}
-      >
-        <s.icon className={cn("size-4", dark ? "text-brand-2" : "text-brand")} />
-        {s.label}
-      </span>
-    ));
-  return (
-    <div className="absolute inset-0 flex flex-col justify-center gap-3 [mask-image:linear-gradient(90deg,transparent,#000_15%,#000_85%,transparent)]">
-      <Marquee duration={26}>{row(STYLES.slice(0, 4), false)}</Marquee>
-      <Marquee duration={30} reverse>
-        {row(STYLES.slice(4), true)}
-      </Marquee>
-      <Marquee duration={22}>{row([...STYLES].reverse().slice(0, 4), false)}</Marquee>
-    </div>
-  );
-}
-
 export function Features() {
   return (
-    <section className="relative py-24 lg:py-36">
+    <section className="relative py-20 lg:py-28">
       <div className="container-x">
         <SectionHeading
-          index="05"
           label="Built for travellers"
           title={[[{ text: "Everything a trip needs." }], [{ text: "Nothing it " }, { text: "doesn't.", className: "accent" }]]}
         />
-        <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-          <Brackets />
+        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
           <Tile
             className="md:col-span-2 lg:col-span-4"
             visual={<DaysVisual />}
@@ -522,36 +434,23 @@ export function Features() {
           <Tile
             className="lg:col-span-2"
             delay={0.08}
-            visual={<PdfVisual />}
-            title="Share, email, sync, print"
-            body="Send the crew a private link, email the plan to yourself, add every stop to your calendar, or save a beautiful PDF."
+            visual={<GuideVisual />}
+            title="A local in your pocket"
+            body="Phrases with audio, the dishes to order, culture do's and don'ts, and what's on that week."
           />
           <Tile
             className="md:col-span-2 lg:col-span-2"
             delay={0.16}
-            visual={<StylesVisual />}
-            title="Made for how you travel"
-            body="Solo or with the kids, slow or full throttle, vegan or anything goes: twelve interests and every preference shape the plan."
-          />
-          <Tile
-            className="md:col-span-1 lg:col-span-3"
-            visual={<GuideVisual />}
-            title="A local in your pocket"
-            body="Five phrases with audio, the dishes to order, culture do's and don'ts, souvenirs worth carrying home, events that week and three facts to impress at dinner."
-          />
-          <Tile
-            className="md:col-span-1 lg:col-span-3"
-            delay={0.08}
             visual={<ConciergeVisual />}
             title="Ask anything, anytime"
-            body="Every trip comes with its own AI concierge that knows your days, stays and budget, for rainy-day swaps, what to wear or how to get there."
+            body="Every trip has its own AI concierge that knows your days, stays and budget: rainy-day swaps, what to wear, how to get there."
           />
           <Tile
             className="md:col-span-2 lg:col-span-6"
             visual={<ToolsVisual />}
-            visualClassName="h-[36rem] sm:h-[24rem] lg:h-64"
+            visualClassName="h-[22rem] sm:h-[24rem] lg:h-64"
             title="Built for the road, not just the planning"
-            body="Live weather for every day, a money converter, swap any stop you don't fancy, split costs with your crew in the trip wallet, and download the whole plan as an offline map."
+            body="Live weather for each day, a money converter, one-tap swaps, a wallet that splits costs with your crew, and the whole plan as a link, PDF, offline map or calendar."
           />
         </div>
       </div>

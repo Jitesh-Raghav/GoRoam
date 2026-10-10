@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DestinationHero } from "@/components/seo/destination-hero";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
+import { PillLink } from "@/components/site/pill";
 import { DESTINATION_GUIDES, guideBySlug } from "@/lib/destination-guides";
 import { packageBySlug } from "@/lib/packages";
 import { PACKAGE_SEO } from "@/lib/packages-seo";
@@ -81,27 +83,30 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
       />
       <article className="container-x pb-24 pt-6">
         <header className="max-w-3xl">
-          <p className="eyebrow text-stone">{g.state}, India · Travel guide</p>
-          <h1 className="display mt-4 text-[clamp(2.3rem,5vw,4rem)] text-ink">
+          <p className="eyebrow text-brand">{g.state}, India · Travel guide</p>
+          <h1 className="display mt-5 text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] text-ink">
             {g.name} <span className="accent">travel guide</span>
           </h1>
-          <p className="mt-4 text-xl text-ink/80">{g.tagline}</p>
+          <p className="mt-5 text-lg text-ink/80 sm:text-xl">{g.tagline}</p>
+        </header>
+
+        <DestinationHero destination={g.destination} label={`${g.name}, ${g.state}, India`} className="mt-10" />
+
+        <div className="mt-10 max-w-3xl">
           {g.overview.map((p) => (
-            <p key={p.slice(0, 20)} className="mt-4 leading-relaxed text-ink/70">
+            <p key={p.slice(0, 20)} className="mt-4 text-[1.0625rem] leading-relaxed text-stone first:mt-0">
               {p}
             </p>
           ))}
-          <div className="mt-6 flex flex-wrap gap-2">
-            <Link href={plan} className="rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper hover:bg-ink/90">
-              Plan my {g.name} trip free →
-            </Link>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <PillLink href={plan}>Plan my {g.name} trip free</PillLink>
             {trips[0] && (
-              <Link href={`/itineraries/${trips[0].slug}`} className="rounded-full bg-white px-5 py-3 text-sm text-ink ring-1 ring-line hover:ring-brand/40">
+              <PillLink href={`/itineraries/${trips[0].slug}`} variant="outline">
                 See a ready-made itinerary
-              </Link>
+              </PillLink>
             )}
           </div>
-        </header>
+        </div>
 
         <nav aria-label="On this page" className="no-scrollbar mt-10 flex gap-2 overflow-x-auto">
           {[
@@ -113,7 +118,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             ["budget", "Budget"],
             ["faq", "FAQ"],
           ].map(([id, label]) => (
-            <a key={id} href={`#${id}`} className="shrink-0 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink/70 hover:bg-ink hover:text-paper">
+            <a key={id} href={`#${id}`} className="shrink-0 rounded-full bg-white px-4 py-2 text-sm text-ink/75 ring-1 ring-line transition-colors hover:bg-ink hover:text-paper">
               {label}
             </a>
           ))}
@@ -125,7 +130,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
               <p className="leading-relaxed text-ink/75">{g.bestTime.summary}</p>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {g.bestTime.months.map((m) => (
-                  <li key={m.label} className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
+                  <li key={m.label} className="flex items-start gap-3 rounded-card bg-white p-4 ring-1 ring-line">
                     <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-xs", RATING[m.rating])}>{m.label}</span>
                     <span className="text-sm text-ink/75">{m.note}</span>
                   </li>
@@ -136,7 +141,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <Section id="getting-there" title={`How to reach ${g.name}`}>
               <dl className="space-y-4">
                 {g.gettingThere.map((t) => (
-                  <div key={t.mode} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <div key={t.mode} className="rounded-card bg-white p-5 ring-1 ring-line">
                     <dt className="font-medium text-ink">{t.mode}</dt>
                     <dd className="mt-1 leading-relaxed text-ink/70">{t.detail}</dd>
                   </div>
@@ -147,7 +152,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <Section id="where-to-stay" title={`Where to stay in ${g.name}`}>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {g.whereToStay.map((s) => (
-                  <li key={s.area} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <li key={s.area} className="rounded-card bg-white p-5 ring-1 ring-line">
                     <h3 className="font-medium text-ink">{s.area}</h3>
                     <p className="mt-1 text-sm leading-relaxed text-ink/70">{s.why}</p>
                   </li>
@@ -158,7 +163,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <Section id="top-sights" title={`Top things to do in ${g.name}`}>
               <ol className="space-y-4">
                 {g.attractions.map((a, i) => (
-                  <li key={a.name} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <li key={a.name} className="rounded-card bg-white p-5 ring-1 ring-line">
                     <h3 className="text-lg font-medium text-ink">
                       <span className="mr-2 font-mono text-sm text-brand">{String(i + 1).padStart(2, "0")}</span>
                       {a.name}
@@ -178,7 +183,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <Section id="food" title={`What to eat in ${g.name}`}>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {g.food.map((f) => (
-                  <li key={f.name} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <li key={f.name} className="rounded-card bg-white p-5 ring-1 ring-line">
                     <h3 className="font-medium text-ink">{f.name}</h3>
                     <p className="mt-1 text-sm leading-relaxed text-ink/70">{f.note}</p>
                   </li>
@@ -221,7 +226,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
 
           <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
             {trips.length > 0 && (
-              <div className="rounded-[28px] bg-white p-6 ring-1 ring-line">
+              <div className="rounded-panel bg-white p-6 ring-1 ring-line">
                 <p className="eyebrow text-stone">Ready-made itineraries</p>
                 <ul className="mt-3 space-y-3">
                   {trips.map((t) => (
@@ -237,14 +242,14 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
                 </ul>
               </div>
             )}
-            <div className="rounded-[28px] bg-ink p-6 text-paper">
+            <div className="rounded-panel bg-ink p-6 text-paper">
               <p className="eyebrow text-paper/60">Your trip, your way</p>
               <p className="mt-3 text-lg">Tell GoRoam your dates, budget and crew, and get a day-by-day {g.name} plan in under a minute.</p>
               <Link href={plan} className="mt-5 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
                 Plan it free →
               </Link>
             </div>
-            <div className="rounded-[28px] bg-white p-6 ring-1 ring-line">
+            <div className="rounded-panel bg-white p-6 ring-1 ring-line">
               <p className="eyebrow text-stone">More guides</p>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {others.map((o) => (

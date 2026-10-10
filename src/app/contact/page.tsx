@@ -29,7 +29,7 @@ export default function ContactPage() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {ROUTES.map((r) => (
-          <div key={r.title} className="rounded-[24px] bg-white/80 p-6 ring-1 ring-line">
+          <div key={r.title} className="rounded-card bg-white p-6 ring-1 ring-line">
             <span className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
               <r.icon className="size-5" />
             </span>
@@ -42,7 +42,7 @@ export default function ContactPage() {
         ))}
       </div>
 
-      <div className="rounded-[24px] bg-ink p-6 text-paper">
+      <div className="rounded-card bg-ink p-6 text-paper">
         <p className="eyebrow flex items-center gap-2 text-paper/60">
           <Mail className="size-3.5" /> Registered business
         </p>

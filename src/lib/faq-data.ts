@@ -16,11 +16,11 @@ export const FAQS = [
   },
   {
     q: "Can I take my itinerary offline?",
-    a: "Yes. Every itinerary has a print-ready layout: hit Download and save it as a PDF, or print it for the road.",
+    a: "Yes. Save any itinerary as a print-ready PDF, download the day maps for offline use, and trips you've opened keep working without signal.",
   },
   {
     q: "Can I book flights and hotels through GoRoam?",
-    a: "Yes. Every itinerary comes with booking already filled in: your route, dates and group size go straight to Google Flights, Skyscanner, Booking.com, Airbnb, GetYourGuide and more, so you can compare and book with trusted partners in a couple of taps.",
+    a: "Yes. Every itinerary comes with booking already filled in: your route, dates and group size go straight to Google Flights, Skyscanner, Booking.com, Airbnb, GetYourGuide and more, so you can compare and book directly with them in a couple of taps. Some of these are affiliate links, so we may earn a small commission at no extra cost to you.",
   },
   {
     q: "Can I share a trip with the people I'm travelling with?",
@@ -28,10 +28,10 @@ export const FAQS = [
   },
   {
     q: "Which destinations can I plan?",
-    a: "Anywhere on Earth. Plan a national weekend getaway or an international journey of up to 30 days, for up to 20 travellers.",
+    a: "Anywhere on Earth. Plan a weekend close to home or an international journey of up to 30 days, solo or for groups of up to 16 adults and 10 children.",
   },
   {
     q: "Can I get a refund?",
-    a: "We offer a 30-day money-back guarantee if you're not satisfied with our service. Contact support and we'll sort it out.",
+    a: "Yes. Every credit pack has a 30-day money-back guarantee. Email jitesh@goroam.world within 30 days of buying and we'll refund it in full.",
   },
 ];

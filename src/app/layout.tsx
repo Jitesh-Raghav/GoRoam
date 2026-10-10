@@ -1,19 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
 import { OfflineSupport } from "@/components/site/offline";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Headlines: Space Grotesk. Body and UI: Inter. Times, coordinates and other data: Geist Mono.
+// `subsets` only picks what to preload: every subset is still declared, so a ₹ (latin-ext)
+// downloads its few kilobytes on the pages that show one instead of on every page.
+const display = Space_Grotesk({
+  variable: "--font-space",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const sans = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+// Rarely above the fold, so it isn't worth a preload.
+const mono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 // Search Console's token. Accepts just the content value or the whole <meta> tag pasted from Google,
@@ -64,7 +74,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f8f9",
+  themeColor: "#f7f6f2",
   viewportFit: "cover",
 };
 
@@ -76,13 +86,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${display.variable} ${sans.variable} ${mono.variable} font-sans antialiased`}
       >
         <Providers>
           {children}
         </Providers>
         <OfflineSupport />
-        <div aria-hidden className="grain" />
         <Analytics />
         <SpeedInsights />
       </body>

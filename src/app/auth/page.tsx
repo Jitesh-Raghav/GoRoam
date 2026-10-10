@@ -6,14 +6,25 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, ArrowLeft, Check, Loader2, Mail } from "@/components/site/icons";
+import { HeroPhoto } from "@/components/itinerary/hero-photo";
 import { Scene } from "@/components/scenes/scene";
 import { ScrambleText } from "@/components/motion/scramble-text";
 import { SplitText } from "@/components/motion/split-text";
 import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
+import { usePlacePhoto } from "@/lib/brand-photos";
 import { destinationBySlug, formatCoords } from "@/lib/destinations";
 
 const SLIDES = ["santorini", "mount-fuji", "taj-mahal", "christ-the-redeemer", "eiffel-tower"].map((s) => destinationBySlug(s)!);
+
+/** "Mount Fuji, Japan": the landmark and its country, which is what the photo lookup searches for. */
+const photoQuery = (d: (typeof SLIDES)[number]) => `${d.name}, ${d.place.split(",").pop()?.trim() ?? ""}`;
+
+/** A real photo of the slide's landmark over its illustration (which shows until the photo loads, or if none turns up). */
+function SlidePhoto({ query }: { query: string }) {
+  const photo = usePlacePhoto(query);
+  return <HeroPhoto photo={photo} credit={false} />;
+}
 
 const ERRORS: Record<string, string> = {
   OAuthSignin: "We couldn't start the Google sign-in. Please try again.",
@@ -47,6 +58,7 @@ function Slideshow() {
     return () => window.clearInterval(t);
   }, []);
   const d = SLIDES[i];
+  const photo = usePlacePhoto(photoQuery(d));
   return (
     <div className="relative h-full overflow-hidden bg-ink">
       <AnimatePresence initial={false}>
@@ -58,6 +70,7 @@ function Slideshow() {
           exit={{ opacity: 1, zIndex: 1, transition: { duration: 1.3 } }}
         >
           <Scene id={d.scene} intro interactive title={`${d.name}, ${d.place}`} />
+          <SlidePhoto query={photoQuery(d)} />
         </motion.div>
       </AnimatePresence>
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-ink/70 via-transparent to-ink/20" />
@@ -77,7 +90,14 @@ function Slideshow() {
                 {d.name}
               </motion.p>
             </AnimatePresence>
-            <p className="mt-2 text-sm text-paper/70">{d.place}</p>
+            <p className="mt-2 text-sm text-paper/70">
+              {d.place}
+              {photo?.credit && (
+                <a href={photo.sourceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-paper/50 hover:text-paper">
+                  · Photo: {photo.credit}
+                </a>
+              )}
+            </p>
           </div>
           <div className="hidden gap-1.5 sm:flex">
             {SLIDES.map((s, k) => (
@@ -171,8 +191,8 @@ function AuthPanel() {
           </div>
         ) : session ? (
           <div>
-            <p className="eyebrow text-stone">Signed in</p>
-            <h1 className="display mt-4 text-4xl leading-[0.95] text-ink">
+            <p className="eyebrow text-brand">Signed in</p>
+            <h1 className="display mt-4 text-4xl leading-[1.02] text-ink">
               Welcome back,
               <br />
               <span className="accent">{session.user?.name?.split(" ")[0] ?? "traveller"}.</span>
@@ -194,12 +214,12 @@ function AuthPanel() {
           </div>
         ) : (
           <div>
-            <p className="eyebrow text-stone">Welcome to GoRoam</p>
-            <h1 className="display mt-4 text-[clamp(2.55rem,5.1vw,3.74rem)] leading-[0.92] text-ink">
+            <p className="eyebrow text-brand">Welcome to GoRoam</p>
+            <h1 className="display mt-4 text-[clamp(2.55rem,5.1vw,3.74rem)] leading-[1] text-ink">
               <SplitText text="Your next trip" trigger="mount" className="block" />
               <SplitText segments={[{ text: "starts here.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
             </h1>
-            <p className="mt-5 text-lg leading-relaxed text-stone">Sign in to start planning your perfect trip with AI-powered itineraries.</p>
+            <p className="mt-5 text-lg leading-relaxed text-stone">Sign in to plan your trip, save it and take it on the road. Your first itinerary is free.</p>
 
             {errorCode && (
               <div role="alert" className="mt-6 flex items-start gap-3 rounded-2xl bg-destructive/[0.06] p-4 text-sm text-destructive ring-1 ring-destructive/20">
@@ -265,7 +285,19 @@ function AuthPanel() {
                 </>
               ))}
 
-            <ul className="mt-10 space-y-3 border-t border-line pt-8">
+            <p className="mt-6 text-center text-xs leading-relaxed text-stone">
+              By continuing you agree to our{" "}
+              <Link href="/terms" className="underline underline-offset-2 hover:text-ink">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+
+            <ul className="mt-8 space-y-3 border-t border-line pt-8">
               {["Your first itinerary, on us", "Day-by-day plans with real places", "Print-ready PDFs for the road"].map((t) => (
                 <li key={t} className="flex items-center gap-3 text-sm text-ink/80">
                   <span className="grid size-5 place-items-center rounded-full bg-brand-soft text-brand">
@@ -279,7 +311,7 @@ function AuthPanel() {
         )}
       </div>
 
-      <p className="text-center text-xs text-stone-2">© {new Date().getFullYear()} GoRoam · Made for the curious</p>
+      <p className="text-center text-xs text-stone">© {new Date().getFullYear()} GoRoam · Gurgaon, India</p>
     </div>
   );
 }
@@ -288,7 +320,7 @@ export default function AuthPage() {
   return (
     <div className="grid min-h-svh bg-paper lg:grid-cols-[1.15fr_1fr]">
       <div className="relative h-[42svh] lg:sticky lg:top-0 lg:h-svh lg:p-3">
-        <div className="h-full overflow-hidden lg:rounded-[28px]">
+        <div className="h-full overflow-hidden lg:rounded-panel">
           <Slideshow />
         </div>
       </div>

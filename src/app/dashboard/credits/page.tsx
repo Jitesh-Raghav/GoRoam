@@ -160,7 +160,7 @@ function CreditsPageContent() {
     <div className="mx-auto max-w-[80rem]">
       <header>
         <p className="eyebrow text-stone">Credits</p>
-        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[1] text-ink">
           <SplitText text="More trips," trigger="mount" className="block" />
           <SplitText segments={[{ text: "fewer " }, { text: "spreadsheets.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
         </h1>

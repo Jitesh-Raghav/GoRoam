@@ -40,7 +40,7 @@ export function SharedTrip() {
             <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent" />
             <div className="relative max-w-lg p-8 py-20 text-paper sm:p-14">
               <p className="eyebrow text-paper/60">Shared trip</p>
-              <h1 className="display mt-4 text-4xl leading-[0.95]">
+              <h1 className="display mt-4 text-4xl leading-[1.02]">
                 This link has <span className="accent">wandered off.</span>
               </h1>
               <p className="mt-4 text-paper/70">{error} Ask whoever sent it for a fresh link.</p>

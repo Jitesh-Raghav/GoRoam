@@ -66,7 +66,7 @@ export function CoolFacts({ facts, city }: { facts: { title: string; fact: strin
         <p className="eyebrow flex items-center gap-2 text-paper/55">
           <Sparkles className="size-3.5 text-sun-2" /> {facts.length} things you didn&apos;t know
         </p>
-        <h2 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.23rem)] leading-[0.95]">
+        <h2 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.23rem)] leading-[1.02]">
           {city}, <span className="accent">unexpectedly.</span>
         </h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">

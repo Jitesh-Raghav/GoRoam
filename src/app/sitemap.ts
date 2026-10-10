@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/destinations", 0.9, "weekly"),
     ...DESTINATION_GUIDES.map((d) => page(`/destinations/${d.slug}`, 0.8)),
     ...PACKAGES.map((p) => page(`/itineraries/${p.slug}`, 0.8)),
+    page("/about", 0.5, "yearly"),
     page("/contact", 0.3, "yearly"),
     page("/terms", 0.2, "yearly"),
     page("/privacy", 0.2, "yearly"),

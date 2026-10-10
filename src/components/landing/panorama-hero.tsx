@@ -267,7 +267,7 @@ export function PanoramaHero() {
       ref={ref}
       id="top"
       aria-label="Plan your next trip"
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[46.25rem] bg-[linear-gradient(180deg,#F4F8F9_0%,#E6F2F3_38%,#D2EAE8_64%,#F3E3C9_100%)]"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[46.25rem] bg-[linear-gradient(180deg,#F7F6F2_0%,#EDF2F0_36%,#DCEAE6_64%,#F2E5CF_100%)]"
     >
       <motion.div style={{ y: skyY }} className="absolute inset-0 -z-20">
         <PanoramaSky className="size-full" />
@@ -279,16 +279,13 @@ export function PanoramaHero() {
           initial={{ opacity: 0, y: 14 }}
           animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1, ease, delay: delay + 0.1 }}
-          className="mb-6 inline-flex items-center gap-2.5 rounded-full bg-white/70 py-1.5 pl-2 pr-4 text-sm text-ink/80 ring-1 ring-ink/[0.06] backdrop-blur-sm"
+          className="mb-6 inline-flex items-center gap-2.5 rounded-full bg-white/70 py-1.5 pl-3 pr-4 text-sm font-medium text-ink/80 ring-1 ring-ink/[0.06] backdrop-blur-sm"
         >
-          <span className="relative grid size-5 place-items-center">
-            <span className="animate-ping-soft absolute inset-0 rounded-full bg-brand/40" />
-            <span className="relative size-2 rounded-full bg-brand" />
-          </span>
-          AI trip planner · your first itinerary is free
+          <span className="size-1.5 rounded-full bg-brand" />
+          AI trip planner · Your first trip is free
         </motion.div>
 
-        <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.8rem,7.6vw,5.2rem)] leading-[1.02] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.4rem]">
+        <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.7rem,7vw,5rem)] leading-[1] tracking-[-0.035em] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.3rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
           </span>
