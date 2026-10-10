@@ -416,7 +416,7 @@ function DayPanel({
               <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
             )}
           </p>
-          <h3 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.06rem)] leading-[0.95] text-ink">{day.theme || `Day ${index + 1}`}</h3>
+          <h3 className="display mt-3 text-[clamp(2.04rem,4.25vw,3.06rem)] leading-[1.02] text-ink">{day.theme || `Day ${index + 1}`}</h3>
           {day.summary && <p className="mt-3 max-w-xl text-stone">{day.summary}</p>}
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 text-sm">
@@ -847,7 +847,7 @@ export function TripView({
         <div className="absolute -left-32 top-[80%] size-[32rem] rounded-full bg-sun-2/15 blur-3xl" />
       </div>
       {/* Hero — doubles as the PDF cover */}
-      <section className="relative h-[min(74vh,660px)] min-h-[26rem] sm:min-h-[31.25rem] overflow-hidden rounded-[32px] bg-ink print:h-[320px] print:min-h-0">
+      <section className="relative h-[min(74vh,660px)] min-h-[26rem] sm:min-h-[31.25rem] overflow-hidden rounded-panel bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
           {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
         </div>
@@ -860,7 +860,7 @@ export function TripView({
             </span>
           ) : isPackage ? (
             <Link href="/itineraries" className={glass}>
-              <ArrowLeft className="size-4" /> All packages
+              <ArrowLeft className="size-4" /> Trip gallery
             </Link>
           ) : shared ? (
             <span className={cn(glass, "pointer-events-none")}>
@@ -905,7 +905,7 @@ export function TripView({
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.1, ease, delay: 0.4 }}
-              className={cn("display mt-3 text-[clamp(2.89rem,7.65vw,7.22rem)] leading-[0.86]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
+              className={cn("display mt-3 text-[clamp(2.89rem,7.65vw,7.22rem)] leading-[0.96]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
             >
               {flag && <Flag code={flag} className="mr-[0.2em] h-[0.4em] -translate-y-[0.12em] align-middle" />}
               {title}
@@ -980,7 +980,7 @@ export function TripView({
               <p className="eyebrow flex items-center gap-2 text-paper/60 print:text-stone">
                 <Sparkles className="size-3.5 text-sun-2" /> Don&apos;t miss
               </p>
-              <h3 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
+              <h3 className="display mt-3 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[1.02]">
                 The <span className="accent">big moments.</span>
               </h3>
             </div>
@@ -1218,7 +1218,7 @@ export function TripView({
         <div className="pointer-events-none absolute -bottom-40 -right-20 size-96 rounded-full bg-sun/20 blur-3xl" />
         <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div>
-            <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[0.95]">
+            <p className="display text-[clamp(2.21rem,4.25vw,3.4rem)] leading-[1.02]">
               {isGuest ? (
                 <>
                   Love Day 1? <span className="accent">There&apos;s more.</span>

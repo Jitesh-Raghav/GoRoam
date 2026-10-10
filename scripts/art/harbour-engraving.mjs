@@ -13,7 +13,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const LINE = "#5E8790"; // a dim sea-teal: quiet texture under the footer's gold wordmark
-const BG = "#0A1E2C"; // the footer's ink
+const BG = "#0A1C27"; // the footer's ink
 
 const W = 2400;
 const H = 800;

@@ -87,7 +87,7 @@ export function TripPrompt({
           submit(value);
         }}
         className={cn(
-          "group relative flex h-16 items-center gap-3 rounded-full pl-5 pr-2 transition-shadow duration-500",
+          "group relative flex h-16 items-center gap-3 rounded-full pl-5 pr-2 text-left transition-shadow duration-500",
           tone === "light"
             ? "bg-white shadow-[0_24px_60px_-28px_rgba(10,30,44,0.45)] ring-1 ring-ink/[0.07] focus-within:ring-2 focus-within:ring-brand/40"
             : "bg-white/12 ring-1 ring-white/25 backdrop-blur-xl focus-within:ring-white/60"

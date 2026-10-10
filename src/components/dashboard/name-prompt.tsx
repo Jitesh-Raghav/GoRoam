@@ -108,7 +108,7 @@ export function NamePrompt() {
             className="grid w-full max-w-3xl overflow-hidden rounded-[32px] bg-paper shadow-[0_40px_100px_-30px_rgba(10,30,44,0.7)] ring-1 ring-white/60 md:grid-cols-[1fr_1.1fr]"
           >
             {/* The face they'll travel as, big, with the choices around it. */}
-            <div className="relative flex flex-col items-center justify-center gap-6 bg-[linear-gradient(160deg,#0a1e2c_0%,#133246_55%,#0b5d5a_100%)] p-8 text-paper">
+            <div className="relative flex flex-col items-center justify-center gap-6 bg-[linear-gradient(160deg,#0a1c27_0%,#13303f_55%,#0b5a54_100%)] p-8 text-paper">
               <div className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-brand-2/25 blur-3xl" />
               <motion.div key={`${selected.style}:${selected.seed}`} initial={{ scale: 0.85, rotate: -6 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
                 <UserAvatar choice={selected} className="size-32 ring-4 ring-white/80 shadow-[0_24px_50px_-20px_rgba(0,0,0,0.6)]" />

@@ -71,7 +71,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
             <p className="eyebrow text-paper/65">
               {days} {days === 1 ? "day" : "days"} · ready to plan
             </p>
-            <h2 id="paywall-title" className="display mt-2 text-[clamp(1.87rem,4.25vw,2.72rem)] leading-[0.95]">
+            <h2 id="paywall-title" className="display mt-2 text-[clamp(1.87rem,4.25vw,2.72rem)] leading-[1.02]">
               {place} is <span className="accent">one step away.</span>
             </h2>
           </div>

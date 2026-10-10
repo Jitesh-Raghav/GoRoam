@@ -95,8 +95,11 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
       {/* What the search result promised, readable before any script runs. */}
       <section className="container-x pt-6">
         <div className="max-w-3xl">
-          <h1 className="display text-[clamp(2.1rem,4.6vw,3.6rem)] text-ink">{seo?.seoTitle ?? pkg.title}</h1>
-          <p className="mt-5 text-lg leading-relaxed text-ink/75">{seo?.intro ?? pkg.tagline}</p>
+          <p className="eyebrow text-brand">
+            {pkg.country} · Ready-made itinerary
+          </p>
+          <h1 className="display mt-5 text-[clamp(2.1rem,4.6vw,3.5rem)] leading-[1.04] text-ink">{seo?.seoTitle ?? pkg.title}</h1>
+          <p className="mt-5 text-lg leading-relaxed text-stone">{seo?.intro ?? pkg.tagline}</p>
         </div>
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
@@ -105,7 +108,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
             { k: "Best time", v: pkg.bestTime },
             { k: "Pace", v: pkg.pace[0].toUpperCase() + pkg.pace.slice(1) },
           ].map((f) => (
-            <div key={f.k} className="rounded-2xl bg-white p-4 ring-1 ring-line">
+            <div key={f.k} className="rounded-card bg-white p-4 ring-1 ring-line">
               <dt className="eyebrow text-[0.6rem] text-stone">{f.k}</dt>
               <dd className="mt-1.5 text-ink">{f.v}</dd>
             </div>
@@ -120,7 +123,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
         {/* The plan at a glance, as plain text for readers and crawlers. */}
         <ol className="mt-10 grid gap-3 md:grid-cols-2">
           {days.map((d, i) => (
-            <li key={i} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+            <li key={i} className="rounded-card bg-white p-5 ring-1 ring-line">
               <h2 className="text-lg font-medium text-ink">
                 Day {i + 1}: {d.theme}
               </h2>
@@ -154,7 +157,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
             )}
           </div>
           <aside className="space-y-4">
-            <div className="rounded-[28px] bg-ink p-6 text-paper">
+            <div className="rounded-panel bg-ink p-6 text-paper">
               <p className="eyebrow text-paper/60">Make it yours</p>
               <p className="mt-3 text-lg">Different dates, budget or crew? Plan your own version in a minute.</p>
               <Link href={plan} className="mt-5 inline-flex rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
@@ -162,14 +165,14 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
               </Link>
             </div>
             {guide && (
-              <Link href={`/destinations/${guide.slug}`} className="block rounded-[28px] bg-white p-6 ring-1 ring-line hover:ring-brand/40">
+              <Link href={`/destinations/${guide.slug}`} className="block rounded-panel bg-white p-6 ring-1 ring-line hover:ring-brand/40">
                 <p className="eyebrow text-stone">Destination guide</p>
                 <p className="mt-2 text-lg text-ink">{guide.name} travel guide →</p>
                 <p className="mt-1 text-sm text-stone">Best time, where to stay, costs and top sights.</p>
               </Link>
             )}
             {related.length > 0 && (
-              <div className="rounded-[28px] bg-white p-6 ring-1 ring-line">
+              <div className="rounded-panel bg-white p-6 ring-1 ring-line">
                 <p className="eyebrow text-stone">More trips like this</p>
                 <ul className="mt-3 space-y-2">
                   {related.map((r) => (

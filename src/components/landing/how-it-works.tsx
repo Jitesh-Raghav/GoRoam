@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import {
   Check,
   Download,
@@ -8,7 +8,6 @@ import {
   MapPin,
   Moon,
   Navigation,
-  PenLine,
   Sparkles,
   Sun,
   Sunrise,
@@ -24,22 +23,16 @@ import { SectionHeading } from "./section-heading";
 
 const STEPS = [
   {
-    icon: PenLine,
-    title: "Tell us the dream.",
-    body: "Where you're starting and headed, who's coming, your pace, where you like to stay and what you love. Four quick steps.",
-    points: ["Solo, couple, family or friends", "Pace, spending style & stay", "Food needs, occasions & must-sees"],
+    title: "Tell us the dream",
+    body: "Where you're going, who's coming, your pace, budget and what you love. Type it in one line or fill four quick steps.",
   },
   {
-    icon: Sparkles,
-    title: "We craft the days.",
-    body: "GoRoam's AI weighs your budget, pace and interests to build a morning, afternoon and evening for every day: real places, not placeholders.",
-    points: ["Icons and hidden gems, geographically grouped", "Costs and an insider tip for every stop", "Where to stay, what to pack, local essentials"],
+    title: "We plan every day",
+    body: "A morning, afternoon and evening for each day: real places grouped by area, with timings, costs and an insider tip for every stop.",
   },
   {
-    icon: Navigation,
-    title: "Book it. Go.",
-    body: "Flights, stays and tickets open prefilled with your dates. Share the plan with the crew, sync it to your calendar, and tick off the packing list.",
-    points: ["Flights, stays & tickets in two taps", "Private share links & calendar sync", "Packing list & pre-trip checklist"],
+    title: "Book it and go",
+    body: "Flights, stays and tickets open with your dates filled in. Share the plan, sync it to your calendar and take it offline.",
   },
 ];
 
@@ -259,7 +252,7 @@ function ResultState() {
 
 function PlannerMock({ step, className }: { step: number; className?: string }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-[28px] bg-paper-2 ring-1 ring-line sm:rounded-[36px]", className)}>
+    <div className={cn("relative overflow-hidden rounded-panel bg-paper-2 ring-1 ring-line", className)}>
       <LazyScene id="fuji" className="opacity-95" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink/20" />
       <div className="relative flex h-full items-center justify-center px-3 py-8 sm:p-10">
@@ -284,96 +277,75 @@ function PlannerMock({ step, className }: { step: number; className?: string }) 
   );
 }
 
+const STEP_MS = 5200;
+
 export function HowItWorks() {
   const [step, setStep] = useState(0);
-  const [desktop, setDesktop] = useState(false);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const mobileRef = useRef<HTMLDivElement>(null);
-  const mobileInView = useInView(mobileRef, { amount: 0.4 });
+  const [tick, setTick] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.35 });
+  const reduce = useReducedMotion();
 
+  // While the section is on screen the mock plays through the three steps; picking one restarts the clock.
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const update = () => setDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+    if (!inView || reduce) return;
+    const t = window.setTimeout(() => setStep((s) => (s + 1) % STEPS.length), STEP_MS);
+    return () => window.clearTimeout(t);
+  }, [inView, reduce, step, tick]);
 
-  // Desktop: the step crossing the middle of the viewport drives the mock.
-  useEffect(() => {
-    if (!desktop) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) setStep(Number((e.target as HTMLElement).dataset.step));
-        }
-      },
-      { rootMargin: "-48% 0px -48% 0px" }
-    );
-    stepRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, [desktop]);
-
-  // Mobile: the mock plays through the steps on its own while visible.
-  useEffect(() => {
-    if (desktop || !mobileInView) return;
-    const t = window.setInterval(() => setStep((s) => (s + 1) % STEPS.length), 4200);
-    return () => window.clearInterval(t);
-  }, [desktop, mobileInView]);
+  const pick = (i: number) => {
+    setStep(i);
+    setTick((t) => t + 1);
+  };
 
   return (
-    <section id="how" className="relative scroll-mt-10 py-24 lg:py-36">
-      <div className="container-x">
-        <SectionHeading
-          index="03"
-          label="How it works"
-          title={[[{ text: "One sentence in." }], [{ text: "A whole " }, { text: "journey", className: "accent" }, { text: " out." }]]}
-          description="Three steps, a few seconds, zero spreadsheets. Here's what happens after you hit plan."
-        />
-
-        <div ref={mobileRef} className="mt-12 lg:hidden">
-          <PlannerMock step={step} />
+    <section id="how" className="relative scroll-mt-16 py-20 lg:py-28">
+      <div ref={ref} className="container-x grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <SectionHeading
+            label="How it works"
+            size="md"
+            title={[[{ text: "One sentence in." }], [{ text: "A whole " }, { text: "journey", className: "accent" }, { text: " out." }]]}
+            description="Three steps, about a minute, zero spreadsheets."
+          />
+          <ol className="mt-10 border-t border-line" aria-label="The three steps">
+            {STEPS.map((s, i) => {
+              const active = step === i;
+              return (
+                <li key={s.title} className="border-b border-line">
+                  <button
+                    type="button"
+                    onClick={() => pick(i)}
+                    aria-current={active ? "step" : undefined}
+                    className="group relative flex w-full gap-5 py-5 text-left"
+                  >
+                    <span className={cn("display w-8 shrink-0 text-lg leading-7 tabular-nums transition-colors duration-500", active ? "text-brand" : "text-ink/30")}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0">
+                      <span className={cn("display block text-[1.35rem] leading-7 transition-colors duration-500", active ? "text-ink" : "text-ink/45 group-hover:text-ink/70")}>
+                        {s.title}
+                      </span>
+                      <span className={cn("mt-2 block text-[0.98rem] leading-relaxed transition-colors duration-500", active ? "text-stone" : "text-stone/60")}>{s.body}</span>
+                    </span>
+                    {/* How long until the mock moves on. */}
+                    <span aria-hidden className="absolute inset-x-0 -bottom-px h-px overflow-hidden">
+                      {active && (
+                        <span
+                          key={`${step}-${tick}`}
+                          className={cn("block h-full origin-left bg-ink", inView && !reduce ? "animate-fill-x" : "scale-x-100")}
+                          style={{ animationDuration: `${STEP_MS}ms` }}
+                        />
+                      )}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
         </div>
-
-        <div className="mt-12 grid gap-10 lg:mt-8 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            {STEPS.map((s, i) => (
-              <div
-                key={s.title}
-                ref={(el) => {
-                  stepRefs.current[i] = el;
-                }}
-                data-step={i}
-                className="flex flex-col justify-center border-t border-line py-8 lg:min-h-[78vh] lg:border-t-0 lg:py-0"
-              >
-                <div className={cn("transition-opacity duration-700", desktop && step !== i ? "lg:opacity-30" : "opacity-100")}>
-                  <div className="flex items-center gap-4">
-                    <span className={cn("display text-5xl leading-none transition-colors duration-700", step === i ? "text-brand" : "text-ink/20")}>
-                      0{i + 1}
-                    </span>
-                    <span className={cn("grid size-11 place-items-center rounded-full transition-colors duration-700", step === i ? "bg-ink text-paper" : "bg-paper-2 text-ink/50")}>
-                      <s.icon className="size-5" />
-                    </span>
-                  </div>
-                  <h3 className="display mt-6 text-[2.21rem] leading-[0.98] lg:text-[2.89rem]">{s.title}</h3>
-                  <p className="mt-4 max-w-md text-lg leading-relaxed text-stone">{s.body}</p>
-                  <ul className="mt-5 space-y-2.5 sm:mt-6">
-                    {s.points.map((p) => (
-                      <li key={p} className="flex items-center gap-3 text-ink/80">
-                        <span className="size-1.5 rounded-full bg-brand" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="hidden lg:col-span-7 lg:block">
-            <div className="sticky top-[11vh] h-[78vh]">
-              <PlannerMock step={step} className="h-full" />
-            </div>
-          </div>
+        <div className="lg:col-span-7">
+          <PlannerMock step={step} className="h-[34rem] sm:h-[36rem]" />
         </div>
       </div>
     </section>

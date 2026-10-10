@@ -3,14 +3,11 @@
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { BedDouble, Check, Plane, Star, Ticket, TrainFront } from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
-import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { PillLink } from "@/components/site/pill";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "./section-heading";
-
-const PARTNERS = ["Google Flights", "Skyscanner", "Kayak", "Booking.com", "Expedia", "Airbnb", "Hostelworld", "GetYourGuide", "Viator", "Klook", "Rome2Rio"];
 
 const TABS = [
   { id: "flights", label: "Flights", icon: Plane },
@@ -19,13 +16,13 @@ const TABS = [
   { id: "transport", label: "Transport", icon: TrainFront },
 ] as const;
 
-const POINTS = ["Your route, dates and party filled in for you", "Compare the best partners side by side", "Book direct with them, never a markup"];
+const POINTS = ["Your route, dates and party filled in for you", "Compare the big booking sites side by side", "Book direct with them, never a markup"];
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 function FlightCard({ on }: { on: boolean }) {
   return (
-    <div className="rounded-[24px] bg-white p-5 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
+    <div className="rounded-card bg-white p-5 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
       <div className="flex items-center justify-between text-xs text-stone">
         <span className="eyebrow text-[0.58rem]">Flight · Sat, Oct 3</span>
         <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] text-brand">1 stop</span>
@@ -62,7 +59,7 @@ function FlightCard({ on }: { on: boolean }) {
 
 function StayCard() {
   return (
-    <div className="flex gap-4 rounded-[24px] bg-white p-3 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
+    <div className="flex gap-4 rounded-card bg-white p-3 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
       <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-2xl">
         <LazyScene id="berlin" tint="#4B4F8C" />
       </div>
@@ -79,7 +76,7 @@ function StayCard() {
 
 function TicketCard() {
   return (
-    <div className="relative flex items-center gap-4 overflow-hidden rounded-[24px] bg-brand p-5 text-white shadow-[0_30px_60px_-30px_rgba(11,130,120,0.8)]">
+    <div className="relative flex items-center gap-4 overflow-hidden rounded-card bg-brand p-5 text-white shadow-[0_30px_60px_-30px_rgba(11,130,120,0.8)]">
       <span className="absolute -left-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-ink" />
       <span className="absolute -right-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-ink" />
       <Ticket className="size-6 shrink-0" />
@@ -93,7 +90,7 @@ function TicketCard() {
 
 function TransportCard() {
   return (
-    <div className="flex items-center gap-4 rounded-[24px] bg-paper p-5 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
+    <div className="flex items-center gap-4 rounded-card bg-paper p-5 text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]">
       <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-ink text-paper">
         <TrainFront className="size-5" />
       </span>
@@ -120,96 +117,89 @@ export function BookingSection() {
   const cards = [<FlightCard key="f" on={inView} />, <StayCard key="s" />, <TicketCard key="t" />, <TransportCard key="r" />];
 
   return (
-    <section id="book" className="relative scroll-mt-10 overflow-hidden bg-ink py-24 text-paper lg:py-36">
-      <div className="pointer-events-none absolute -left-40 top-20 size-[36rem] rounded-full bg-brand/15 blur-[120px]" />
-      <div className="container-x relative grid items-center gap-16 lg:grid-cols-2">
-        <div>
-          <SectionHeading
-            index="06"
-            label="Book it all"
-            tone="paper"
-            size="md"
-            title={[[{ text: "Plan it here." }], [{ text: "Book it in " }, { text: "two taps.", className: "accent" }]]}
-            description="Every itinerary comes with flights, stays, tickets and transfers ready to book, prefilled with your dates and group, from the partners travellers already trust."
-          />
-          <ul className="mt-8 space-y-3">
-            {POINTS.map((p, i) => (
-              <Reveal key={p} delay={0.1 + i * 0.06}>
-                <li className="flex items-center gap-3 text-paper/85">
-                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white">
-                    <Check className="size-3.5" />
-                  </span>
-                  {p}
-                </li>
-              </Reveal>
-            ))}
-          </ul>
-          <Reveal delay={0.3}>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <PillLink href="/dashboard" variant="brand" size="lg">
-                Plan & book a trip
-              </PillLink>
-              <PillLink href="/dashboard/book" variant="glass" size="lg">
-                Just book travel
-              </PillLink>
-            </div>
-          </Reveal>
-        </div>
+    <section id="book" className="scroll-mt-10 px-3 sm:px-4">
+      <div className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-28">
+        <div className="container-x relative grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionHeading
+              label="Book it all"
+              tone="paper"
+              size="md"
+              title={[[{ text: "Plan it here." }], [{ text: "Book it in " }, { text: "two taps.", className: "accent" }]]}
+              description="Every itinerary comes with flights, stays, tickets and transfers ready to book, with your dates and group filled in, on the sites you already use."
+            />
+            <ul className="mt-8 space-y-3">
+              {POINTS.map((p, i) => (
+                <Reveal key={p} delay={0.1 + i * 0.06}>
+                  <li className="flex items-center gap-3 text-paper/85">
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white">
+                      <Check className="size-3.5" />
+                    </span>
+                    {p}
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+            <Reveal delay={0.3}>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <PillLink href="/dashboard" variant="brand" size="lg">
+                  Plan & book a trip
+                </PillLink>
+                <PillLink href="/dashboard/book" variant="glass" size="lg">
+                  Just book travel
+                </PillLink>
+              </div>
+              <p className="mt-6 max-w-md text-xs leading-relaxed text-paper/50">
+                Some booking links are affiliate links: we may earn a small commission, at no extra cost to you. It never changes what we recommend.
+              </p>
+            </Reveal>
+          </div>
 
-        <div ref={ref} className="relative">
-          <div className="relative mx-auto max-w-md rounded-[32px] bg-paper/[0.06] p-4 ring-1 ring-inset ring-paper/10 sm:p-6">
-            <div className="grid grid-cols-4 gap-1 rounded-2xl bg-paper/[0.06] p-1">
-              {TABS.map((t, i) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setActive(i)}
-                  className={cn("relative flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] transition-colors", active === i ? "text-ink" : "text-paper/60 hover:text-paper")}
+          <div ref={ref} className="relative">
+            <div className="relative mx-auto max-w-md rounded-panel bg-paper/[0.06] p-4 ring-1 ring-inset ring-paper/10 sm:p-6">
+              <div className="grid grid-cols-4 gap-1 rounded-2xl bg-paper/[0.06] p-1">
+                {TABS.map((t, i) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    className={cn("relative flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] transition-colors", active === i ? "text-ink" : "text-paper/60 hover:text-paper")}
+                  >
+                    {active === i && <motion.span layoutId="landing-book-tab" className="absolute inset-0 rounded-xl bg-paper" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+                    <t.icon className="relative size-4" />
+                    <span className="relative">{t.label}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-5 space-y-3">
+                {cards.map((card, i) => (
+                  <motion.button
+                    key={i}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    aria-label={`Show ${TABS[i].label.toLowerCase()}`}
+                    animate={{ opacity: active === i ? 1 : 0.42, scale: active === i ? 1 : 0.96, x: active === i ? 0 : 6 }}
+                    transition={{ duration: 0.7, ease }}
+                    className="block w-full text-left"
+                  >
+                    {card}
+                  </motion.button>
+                ))}
+              </div>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={active}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="mt-5 text-center font-mono text-[11px] text-paper/50"
                 >
-                  {active === i && <motion.span layoutId="landing-book-tab" className="absolute inset-0 rounded-xl bg-paper" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
-                  <t.icon className="relative size-4" />
-                  <span className="relative">{t.label}</span>
-                </button>
-              ))}
+                  {["Google Flights · Skyscanner · Kayak", "Booking.com · Expedia · Airbnb", "GetYourGuide · Viator · Klook", "Rome2Rio · Kayak Cars"][active]}
+                </motion.p>
+              </AnimatePresence>
             </div>
-            <div className="mt-5 space-y-3">
-              {cards.map((card, i) => (
-                <motion.button
-                  key={i}
-                  type="button"
-                  onClick={() => setActive(i)}
-                  aria-label={`Show ${TABS[i].label.toLowerCase()}`}
-                  animate={{ opacity: active === i ? 1 : 0.42, scale: active === i ? 1 : 0.96, x: active === i ? 0 : 6 }}
-                  transition={{ duration: 0.7, ease }}
-                  className="block w-full text-left"
-                >
-                  {card}
-                </motion.button>
-              ))}
-            </div>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={active}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                className="mt-5 text-center font-mono text-[11px] text-paper/50"
-              >
-                {["Google Flights · Skyscanner · Kayak", "Booking.com · Expedia · Airbnb", "GetYourGuide · Viator · Klook", "Rome2Rio · Kayak Cars"][active]}
-              </motion.p>
-            </AnimatePresence>
           </div>
         </div>
-      </div>
-
-      <div className="relative mt-20 border-y border-paper/10 py-6 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
-        <Marquee duration={36}>
-          {PARTNERS.map((p) => (
-            <span key={p} className="display mx-8 text-2xl text-paper/40 sm:text-3xl">
-              {p}
-            </span>
-          ))}
-        </Marquee>
       </div>
     </section>
   );

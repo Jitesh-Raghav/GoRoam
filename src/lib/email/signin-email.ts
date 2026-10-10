@@ -3,7 +3,7 @@
  * styles only, so it renders the same in every mail client.
  */
 
-const C = { ink: "#0a1e2c", paper: "#f4f8f9", brand: "#0b8278", lagoon: "#34d1bf", stone: "#54707f", line: "#e3ecef" };
+const C = { ink: "#0a1c27", paper: "#f7f6f2", brand: "#0b776d", lagoon: "#3ccfbc", stone: "#56656e", line: "#e6e3dc" };
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
 export function signInEmail(url: string) {

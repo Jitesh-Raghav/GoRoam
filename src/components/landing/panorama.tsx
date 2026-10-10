@@ -4,7 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "rea
 import { circle, mountainRidge, mulberry32, palmTree, r1, rect, rollingRidge, umbrellaPine, cypressTree, canopyBlobs } from "@/components/scenes/geometry";
 import { getMonument, type MonumentId, type Tone } from "@/components/scenes/monuments";
 import { LondonClock } from "@/components/scenes/london-clock";
-import { Birds, Clouds, Layer, Monument, Sun } from "@/components/scenes/primitives";
+import { Clouds, Layer, Monument, Sun } from "@/components/scenes/primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -580,18 +580,16 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
   );
 }
 
-const PLANE =
-  "M38 0C38 -3 35 -5 30 -5L10 -5L-8 -32L-18 -32L-6 -5L-24 -5L-31 -15L-38 -15L-34 0L-38 15L-31 15L-24 5L-6 5L-18 32L-8 32L10 5L30 5C35 5 38 3 38 0Z";
-
-/** The sky behind the hero copy: sun, two-tone clouds, birds and a passing plane. */
+/**
+ * The sky behind the hero copy: the low sun and two soft clouds drifting at the
+ * edges, kept clear of the headline so nothing competes with it.
+ */
 export function PanoramaSky({ className }: { className?: string }) {
   const uid = "sky" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const { ref, paused } = useLiveScene(true);
   const clouds = [
-    { x: 40, y: 200, w: 520, seed: 3, speed: 86 },
-    { x: 1120, y: 340, w: 430, seed: 9, speed: 100 },
-    { x: 300, y: 470, w: 250, seed: 14, speed: 72 },
-    { x: 1280, y: 130, w: 300, seed: 21, speed: 118 },
+    { x: -60, y: 190, w: 440, seed: 3, speed: 120 },
+    { x: 1300, y: 260, w: 360, seed: 21, speed: 140 },
   ];
 
   return (
@@ -604,12 +602,6 @@ export function PanoramaSky({ className }: { className?: string }) {
       aria-hidden
       focusable="false"
     >
-      <defs>
-        <linearGradient id={`${uid}-trail`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
-          <stop offset="1" stopColor="#FFFFFF" stopOpacity="0.95" />
-        </linearGradient>
-      </defs>
       <Layer depth={0.04}>
         {/* Long, soft rays turning slowly around the sun. */}
         <g className="pano-rays" style={{ transformOrigin: "1150px 668px" }}>
@@ -620,20 +612,8 @@ export function PanoramaSky({ className }: { className?: string }) {
         <Sun uid={uid} x={1150} y={668} r={54} color="#FFF3DD" glow="#FFC876" halo={6} haloOpacity={0.4} />
       </Layer>
       <Layer depth={0.1}>
-        {/* Warm undersides first, then the sunlit tops, drifting together. */}
-        <g transform="translate(0 14)">
-          <Clouds color="#F6E4CB" opacity={0.95} items={clouds} />
-        </g>
-        <Clouds color="#FFFFFF" opacity={0.96} items={clouds} />
+        <Clouds color="#FFFFFF" opacity={0.7} items={clouds} />
       </Layer>
-      <Birds x={900} y={560} count={4} color="#3E6170" scale={0.85} duration={56} delay={-14} />
-      <Birds x={260} y={360} count={3} color="#3E6170" scale={0.7} duration={64} delay={-30} seed={11} />
-      <g className="pano-plane">
-        <g transform="translate(0 150)">
-          <path d="M-360 0H-34" stroke={`url(#${uid}-trail)`} strokeWidth={4} strokeLinecap="round" strokeDasharray="1 0" />
-          <path d={PLANE} transform="scale(0.42)" fill="#16324A" opacity={0.8} />
-        </g>
-      </g>
     </svg>
   );
 }

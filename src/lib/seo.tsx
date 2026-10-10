@@ -1,4 +1,5 @@
 // Server-only helpers for search: the canonical origin and JSON-LD structured data.
+import { COMPANY, activeSocials } from "./company";
 
 export const SITE_URL = "https://goroam.world";
 export const SITE_NAME = "GoRoam";
@@ -34,9 +35,10 @@ export const organization = {
   name: SITE_NAME,
   url: SITE_URL,
   logo: absolute("/icon-512.png"),
-  email: "jitesh@goroam.world",
-  founder: { "@type": "Person", name: "Jitesh Raghav", url: "https://jiteshraghav.xyz" },
-  sameAs: ["https://x.com/okayjitesh", "https://github.com/Jitesh-Raghav"],
+  email: COMPANY.email,
+  address: { "@type": "PostalAddress", addressLocality: "Gurgaon", addressRegion: "Haryana", addressCountry: "IN" },
+  founder: { "@type": "Person", name: COMPANY.founder.name, url: "https://jiteshraghav.xyz" },
+  sameAs: activeSocials().map((s) => s.href),
 };
 
 export const website = {

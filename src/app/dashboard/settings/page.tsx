@@ -58,7 +58,7 @@ function SettingsContent() {
     <div className="mx-auto max-w-[68.75rem]">
       <header className="mb-10">
         <p className="eyebrow text-stone">Settings</p>
-        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[1] text-ink">
           <SplitText text="Make it" trigger="mount" className="inline" />{" "}
           <SplitText segments={[{ text: "yours.", className: "accent" }]} trigger="mount" delay={0.1} className="inline" />
         </h1>

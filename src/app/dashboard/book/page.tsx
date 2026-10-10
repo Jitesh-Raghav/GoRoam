@@ -97,7 +97,7 @@ function BookContent() {
     <div className="mx-auto max-w-[80rem]">
       <header>
         <p className="eyebrow text-stone">Book travel</p>
-        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[0.92] text-ink">
+        <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[1] text-ink">
           <SplitText text="Flights, stays" trigger="mount" className="block" />
           <SplitText segments={[{ text: "& the " }, { text: "good stuff.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
         </h1>

@@ -5,7 +5,7 @@ import { SITE_URL } from "../seo";
  * so it renders the same in Gmail, Outlook and Apple Mail.
  */
 
-const C = { ink: "#0a1e2c", ink2: "#133246", paper: "#f4f8f9", brand: "#0b8278", lagoon: "#34d1bf", soft: "#d6f3ef", stone: "#54707f", sun: "#ffc876", line: "#e3ecef" };
+const C = { ink: "#0a1c27", ink2: "#13303f", paper: "#f7f6f2", brand: "#0b776d", lagoon: "#3ccfbc", soft: "#dcefea", stone: "#56656e", sun: "#e9c27c", line: "#e6e3dc" };
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
 const esc = (s: unknown) =>

@@ -103,7 +103,7 @@ export function Inspire({
                     <p className="eyebrow flex items-center gap-2 text-paper/60">
                       <Sparkles className="size-3.5 text-sun-2" /> Inspire me
                     </p>
-                    <h3 className="display mt-2 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[0.95]">
+                    <h3 className="display mt-2 text-[clamp(1.7rem,3.4vw,2.38rem)] leading-[1.02]">
                       Where&apos;s at its <span className="accent">best</span> then?
                     </h3>
                   </div>

@@ -39,7 +39,7 @@ export function PublicShell({ crumbs, children }: { crumbs?: { name: string; hre
 /** A FAQ list rendered as plain HTML (details/summary), so it's readable without JavaScript. */
 export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
   return (
-    <div className="divide-y divide-line overflow-hidden rounded-[28px] bg-white ring-1 ring-line">
+    <div className="divide-y divide-line overflow-hidden rounded-panel bg-white ring-1 ring-line">
       {faqs.map((f) => (
         <details key={f.q} className="group px-5 py-4 sm:px-7 sm:py-5">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] text-ink">

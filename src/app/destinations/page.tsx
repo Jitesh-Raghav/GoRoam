@@ -30,18 +30,18 @@ export default function DestinationsPage() {
       />
       <div className="container-x pb-24 pt-8">
         <header className="max-w-3xl">
-          <p className="eyebrow text-stone">Destination guides</p>
-          <h1 className="display mt-4 text-[clamp(2.4rem,5.2vw,4.25rem)] text-ink">
+          <p className="eyebrow text-brand">Destination guides</p>
+          <h1 className="display mt-5 text-[clamp(2.4rem,5.2vw,4.25rem)] leading-[1.02] text-ink">
             Know before <span className="accent">you go.</span>
           </h1>
-          <p className="mt-5 text-lg leading-relaxed text-ink/70">
+          <p className="mt-6 text-lg leading-relaxed text-stone">
             Honest, practical guides to India&apos;s favourite trips: the months that work, how to get there, which area to stay in, the sights worth your time and what a day really costs.
           </p>
         </header>
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {DESTINATION_GUIDES.map((d) => (
             <li key={d.slug}>
-              <Link href={`/destinations/${d.slug}`} className="group block h-full rounded-[28px] bg-white p-6 ring-1 ring-line transition-shadow hover:shadow-[0_30px_60px_-40px_rgba(10,30,44,0.5)]">
+              <Link href={`/destinations/${d.slug}`} className="group block h-full rounded-panel bg-white p-6 ring-1 ring-line transition-shadow hover:shadow-float">
                 <p className="eyebrow text-stone">{d.state}</p>
                 <h2 className="display mt-3 text-3xl text-ink group-hover:text-brand">{d.name}</h2>
                 <p className="mt-3 leading-relaxed text-stone">{d.tagline}</p>
