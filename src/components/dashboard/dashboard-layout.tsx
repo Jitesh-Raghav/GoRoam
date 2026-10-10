@@ -1,5 +1,6 @@
 "use client";
 
+import { NamePrompt } from "@/components/dashboard/name-prompt";
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
@@ -252,6 +253,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <CreditContext.Provider value={{ credits, creditsLoaded, refreshCredits: fetchCredits }}>
+      <NamePrompt />
       <div className="min-h-svh bg-paper lg:flex">
         {/* Desktop sidebar */}
         <aside className="no-print sticky top-0 hidden h-svh w-72 shrink-0 border-r border-line bg-paper-2/50 lg:block">

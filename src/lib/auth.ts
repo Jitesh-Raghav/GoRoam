@@ -6,7 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { emailConfigured, sendEmail } from "@/lib/email/send";
 import { signInEmail } from "@/lib/email/signin-email";
-import { welcomeEmail } from "@/lib/email/welcome-email";
+import { sendWelcomeOnce } from "@/lib/email/welcome";
 
 // At most 3 links per address per hour, so the form can't be used to spam someone's inbox.
 const linkRequests = new Map<string, number[]>();
@@ -39,6 +39,15 @@ const emailLinkProvider: EmailConfig = {
   },
 };
 
+// Accounts created before the first-sign-in step shipped are treated as onboarded,
+// so existing travellers are never asked.
+const ONBOARDING_SINCE = new Date("2026-10-10T00:00:00Z");
+
+async function needsOnboarding(userId: string) {
+  const u = await prisma.user.findUnique({ where: { id: userId }, select: { onboardedAt: true, createdAt: true } });
+  return !!u && !u.onboardedAt && u.createdAt >= ONBOARDING_SINCE;
+}
+
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -66,18 +75,20 @@ export const authOptions = {
         return {
           ...token,
           userId: user.id,
+          needsOnboarding: await needsOnboarding(user.id).catch(() => false),
         };
       }
       // After the avatar changes, read it back from the database (never trust the client's copy).
       if (trigger === "update" && token.email) {
-        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { image: true } });
-        if (fresh) return { ...token, picture: fresh.image };
+        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { id: true, image: true, name: true } });
+        if (fresh) return { ...token, picture: fresh.image, name: fresh.name, needsOnboarding: await needsOnboarding(fresh.id).catch(() => false) };
       }
       return token;
     },
     async session({ session, token }: any) {
       if (token && session.user) {
         session.user.id = token.userId as string;
+        session.user.needsOnboarding = !!token.needsOnboarding;
       }
       return session;
     },
@@ -85,12 +96,13 @@ export const authOptions = {
   events: {
     async createUser({ user }: any) {
       console.log("New user created:", user.email);
-      // A one-time welcome note. Awaited, because on Vercel the function can be frozen
-      // as soon as sign-in responds, killing an un-awaited send. sendEmail never throws.
-      if (user.email) {
-        const { subject, html, text } = welcomeEmail(user.name);
-        await sendEmail({ to: user.email, subject, html, text });
-      }
+      // Google gives us a name straight away; email-link users are welcomed after
+      // they tell us what to call them (see /api/user/profile).
+      if (user.id && user.name) await sendWelcomeOnce(user.id);
+    },
+    // Also on every sign-in, so a welcome that failed to send (or was cut off) is retried, still only once.
+    async signIn({ user }: any) {
+      if (user?.id && user.name) await sendWelcomeOnce(user.id);
     },
   },
 }; 
