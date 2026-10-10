@@ -49,6 +49,7 @@ import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, t
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
 import { useMoney } from "@/lib/money";
+import { useStoredPhotos } from "@/lib/photo-store";
 import { downloadIcs } from "@/lib/ics";
 import {
   COMPANIONS,
@@ -753,17 +754,19 @@ export function TripView({
   const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
   const photosUrl = photosEndpoint ?? (isPackage ? packagePhotos : null) ?? (isPackage ? null : shared ? (shareToken ? `/api/shared/${it.id}/photos?t=${encodeURIComponent(shareToken)}` : null) : `/api/itinerary/${it.id}/photos`);
   const fetchedPhotos = useCachedJson<{ photos: Record<string, PlacePhotoData>; fallback: string | null }>(photosUrl);
+  // What this device remembers from the last visit, so photos show before the fresh list arrives.
+  const storedPhotos = useStoredPhotos(it.id, fetchedPhotos.data?.photos);
   const tripPhotos = useMemo(() => {
     const saved = data?.photos ?? {};
-    const photos = { ...saved, ...fetchedPhotos.data?.photos };
+    const photos = { ...saved, ...storedPhotos, ...fetchedPhotos.data?.photos };
     const anyFallback = Object.values(photos).find((p) => p.fallback)?.fallback ?? null;
     return {
       photos,
       fallback: fetchedPhotos.data?.fallback ?? anyFallback,
       city: (data?.summary?.destination || it.destination).split(",")[0].trim(),
-      loading: !!photosUrl && fetchedPhotos.loading,
+      loading: !!photosUrl && fetchedPhotos.loading && !storedPhotos,
     };
-  }, [data, fetchedPhotos.data, fetchedPhotos.loading, photosUrl, it.destination]);
+  }, [data, storedPhotos, fetchedPhotos.data, fetchedPhotos.loading, photosUrl, it.destination]);
   const days = useMemo(() => data?.itinerary ?? [], [data]);
   const [active, setActive] = useState(0);
   const planRef = useRef<HTMLElement>(null);

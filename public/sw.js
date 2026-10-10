@@ -2,12 +2,20 @@
  * GoRoam offline support. Trips you've opened keep working without signal:
  *   - your itinerary pages and their data: network first, saved copy when offline
  *   - the app's static files: cached once, served from cache
- * Signing out clears every saved trip from this device.
+ *   - trip and destination photos (Unsplash, Wikimedia): cached once, so a
+ *     trip you open again shows its photos at once; the 400 most recent are
+ *     kept for 30 days. Google Places photos are left to the browser's own cache.
+ * Signing out clears every saved trip from this device (and the page clears
+ * the photo cache when you sign out yourself).
  */
 const VERSION = "goroam-v1";
 const STATIC = `${VERSION}-static`;
 const PAGES = `${VERSION}-pages`;
 const DATA = `${VERSION}-data`;
+const IMAGES = `${VERSION}-images`;
+const IMAGE_HOSTS = /(^|\.)(images\.unsplash\.com|upload\.wikimedia\.org|thumb\.wikimedia\.org)$/;
+const IMAGE_MAX = 400;
+const IMAGE_DAYS = 30;
 
 const PAGE = /^\/(dashboard(\/itineraries|\/itinerary\/[^/]+)?|trip\/[^/]+)\/?$/;
 const API = /^\/api\/(itinerary\/[^/]+(\/photos)?|itineraries|shared\/[^/]+(\/photos)?|auth\/session|user\/credits|weather|fx|destination-photo)$/;
@@ -48,6 +56,42 @@ async function cacheFirst(request) {
   return response;
 }
 
+/** Keep the image cache to its newest IMAGE_MAX entries (keys are in insertion order). */
+async function trimImages() {
+  const cache = await caches.open(IMAGES);
+  const keys = await cache.keys();
+  for (const key of keys.slice(0, Math.max(0, keys.length - IMAGE_MAX))) await cache.delete(key);
+}
+
+/**
+ * Photos: from the cache when we have a fresh copy, otherwise from the network.
+ * The page's <img> asks without CORS, which would give an unreadable (opaque)
+ * response that is costly to store, so fetch a CORS copy here instead and
+ * cache that; if the host refuses CORS, fall back to the page's own request.
+ */
+async function image(request) {
+  const cache = await caches.open(IMAGES);
+  const saved = await cache.match(request.url);
+  if (saved) {
+    const at = Number(saved.headers.get("x-goroam-cached") || 0);
+    if (Date.now() - at < IMAGE_DAYS * 864e5) return saved;
+  }
+  try {
+    const response = await fetch(request.url, { mode: "cors", credentials: "omit", referrerPolicy: "no-referrer" });
+    if (response.ok) {
+      const headers = new Headers(response.headers);
+      headers.set("x-goroam-cached", String(Date.now()));
+      const body = await response.blob();
+      await cache.put(request.url, new Response(body, { status: 200, headers }));
+      trimImages();
+      return new Response(body, { status: 200, headers: response.headers });
+    }
+    return response;
+  } catch {
+    return saved || fetch(request);
+  }
+}
+
 /** Signed out (an empty session): forget every saved trip on this device. */
 async function watchSession(request) {
   const response = await networkFirst(request, DATA, 6000);
@@ -65,7 +109,10 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+  if (url.origin !== self.location.origin) {
+    if (request.destination === "image" && IMAGE_HOSTS.test(url.hostname)) event.respondWith(image(request));
+    return;
+  }
 
   if (url.pathname.startsWith("/_next/static/")) {
     event.respondWith(cacheFirst(request));
