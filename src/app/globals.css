@@ -693,11 +693,6 @@ html.lenis, html.lenis body { height: auto; }
   opacity: 0.38;
 }
 
-/* The landing globe's little orbiting plane. */
-@keyframes globe-orbit { to { transform: rotate(360deg); } }
-.globe-orbit { animation: globe-orbit 22s linear infinite; }
-@media (prefers-reduced-motion: reduce) { .globe-orbit { animation: none; } }
-
 /* The hero composer's focus glow: a slow lagoon-and-sun ring turning behind the glass. */
 @property --glow-angle {
   syntax: "<angle>";
