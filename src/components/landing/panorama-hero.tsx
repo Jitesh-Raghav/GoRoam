@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
 import { CalendarDays, Heart, MapPin, Send, Sparkles, Users, Wallet } from "@/components/site/icons";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
@@ -112,7 +112,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
       if (body.signedIn) return router.push(plannerHref(p));
       if (body.limited) {
         track("guest_trip_limited", { destination: p.destination });
-        return void signIn("google", { callbackUrl: plannerHref(p) });
+        return void router.push(`/auth?callbackUrl=${encodeURIComponent(plannerHref(p))}`);
       }
       setNotice(body.error ?? "We couldn't plan that just now. Try again in a moment.");
     } catch {

@@ -68,9 +68,18 @@ export function GuestUnlock({ id, destination, days }: { id: string; destination
             Open planner
           </a>
         ) : (
-          <button type="button" onClick={unlock} disabled={state === "claiming"} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-medium text-white hover:bg-brand/90 disabled:opacity-60">
-            <Sparkles className="size-4" /> <span className="hidden sm:inline">Continue with</span> Google
-          </button>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <a
+              href={`/auth?callbackUrl=${encodeURIComponent(returnTo)}`}
+              onClick={() => track("guest_unlock_clicked", { destination, where: "bar-email" })}
+              className="rounded-full px-3 py-2.5 text-sm text-paper/80 ring-1 ring-inset ring-paper/20 hover:bg-paper/10"
+            >
+              Email
+            </a>
+            <button type="button" onClick={unlock} disabled={state === "claiming"} className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-medium text-white hover:bg-brand/90 disabled:opacity-60">
+              <Sparkles className="size-4" /> <span className="hidden sm:inline">Continue with</span> Google
+            </button>
+          </div>
         )}
       </div>
     </div>

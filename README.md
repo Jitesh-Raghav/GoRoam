@@ -162,7 +162,7 @@ The one exception is a change that would **drop or truncate a column with data i
 2. Set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=<that value>` in Vercel and redeploy, then click **Verify**. (Or verify the whole domain with a DNS TXT record instead.)
 3. Under **Sitemaps**, submit `sitemap.xml`. Use **URL inspection → Request indexing** for the most important pages.
 
-**Email (Resend)**: `RESEND_API_KEY` and `EMAIL_FROM="GoRoam <jitesh@goroam.world>"`. Verify `goroam.world` in Resend (it gives DNS records to add). Used for the welcome email on sign-up and for emailing an itinerary.
+**Email (Resend)**: `RESEND_API_KEY` and `EMAIL_FROM="GoRoam <jitesh@goroam.world>"`. Verify `goroam.world` in Resend (it gives DNS records to add). Used for email sign-in links (the "or with email" option appears on /auth only once these are set), the welcome email on sign-up, and emailing an itinerary. For local testing, `EMAIL_DEV_LOG=1` prints emails to the dev-server console instead of sending.
 
 **Guest first trip**: signed-out visitors who type a trip in the landing hero get it planned without an account (`/api/guest-itinerary`, the `GuestTrip` model), see Day 1 at `/try/[id]`, and sign in to claim the rest. Limits: one per device and three per IP a day, plus `GUEST_DAILY_LIMIT` (default 300) across everyone.
 

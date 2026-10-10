@@ -5,7 +5,10 @@
  * (the domain must be verified in Resend). Returns false, with a log line,
  * when email isn't configured or Resend refuses, so callers can carry on.
  */
-export const emailConfigured = () => !!(process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim());
+/** Local development: EMAIL_DEV_LOG=1 prints emails to the server console instead of sending (never in production). */
+const devLog = () => process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEV_LOG === '1';
+
+export const emailConfigured = () => devLog() || !!(process.env.RESEND_API_KEY?.trim() && process.env.EMAIL_FROM?.trim());
 
 export async function sendEmail(mail: {
   to: string;
@@ -15,6 +18,10 @@ export async function sendEmail(mail: {
   replyTo?: string;
   attachments?: { filename: string; content: string }[];
 }): Promise<boolean> {
+  if (devLog()) {
+    console.log(`\n[email to ${mail.to}] ${mail.subject}\n${mail.text}\n`);
+    return true;
+  }
   const key = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
   if (!key || !from) {
