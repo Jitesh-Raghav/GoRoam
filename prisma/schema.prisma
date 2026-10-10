@@ -52,6 +52,8 @@ model User {
   
   // User specific fields for GoRoam
   credits       Int       @default(1)
+  // When the welcome email went out (null: not yet). Lets every sign-in path retry it safely, once.
+  welcomeSentAt DateTime?
   subscription  String?   @default("free")
   
   accounts Account[]

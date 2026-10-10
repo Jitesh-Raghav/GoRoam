@@ -6,7 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { emailConfigured, sendEmail } from "@/lib/email/send";
 import { signInEmail } from "@/lib/email/signin-email";
-import { welcomeEmail } from "@/lib/email/welcome-email";
+import { sendWelcomeOnce } from "@/lib/email/welcome";
 
 // At most 3 links per address per hour, so the form can't be used to spam someone's inbox.
 const linkRequests = new Map<string, number[]>();
@@ -70,8 +70,8 @@ export const authOptions = {
       }
       // After the avatar changes, read it back from the database (never trust the client's copy).
       if (trigger === "update" && token.email) {
-        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { image: true } });
-        if (fresh) return { ...token, picture: fresh.image };
+        const fresh = await prisma.user.findUnique({ where: { email: token.email }, select: { image: true, name: true } });
+        if (fresh) return { ...token, picture: fresh.image, name: fresh.name };
       }
       return token;
     },
@@ -85,12 +85,13 @@ export const authOptions = {
   events: {
     async createUser({ user }: any) {
       console.log("New user created:", user.email);
-      // A one-time welcome note. Awaited, because on Vercel the function can be frozen
-      // as soon as sign-in responds, killing an un-awaited send. sendEmail never throws.
-      if (user.email) {
-        const { subject, html, text } = welcomeEmail(user.name);
-        await sendEmail({ to: user.email, subject, html, text });
-      }
+      // Google gives us a name straight away; email-link users are welcomed after
+      // they tell us what to call them (see /api/user/profile).
+      if (user.id && user.name) await sendWelcomeOnce(user.id);
+    },
+    // Also on every sign-in, so a welcome that failed to send (or was cut off) is retried, still only once.
+    async signIn({ user }: any) {
+      if (user?.id && user.name) await sendWelcomeOnce(user.id);
     },
   },
 }; 
