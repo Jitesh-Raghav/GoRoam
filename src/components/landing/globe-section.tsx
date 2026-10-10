@@ -284,7 +284,7 @@ export function GlobeSection() {
                           <span className={cn("display block truncate text-[1.12rem] leading-6 transition-colors duration-500", on ? "text-paper" : "text-paper/60 group-hover:text-paper/85")}>
                             {d.name}
                           </span>
-                          <span className="block truncate text-xs text-paper/40">{d.place}</span>
+                          <span className="hidden truncate text-xs text-paper/40 sm:block">{d.place}</span>
                         </span>
                         <span className={cn("inline-flex shrink-0 items-center gap-2 font-mono text-sm tabular-nums transition-colors duration-500", on ? "text-paper" : "text-paper/50")}>
                           {now && (day ? <Sun className="size-3.5 text-sun-2/90" /> : <Moon className="size-3.5 text-paper/45" />)}
