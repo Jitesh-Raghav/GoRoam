@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { GalleryGrid } from "@/components/packages/gallery-grid";
+import { GuideChip } from "@/components/seo/guide-media";
 import { PublicShell } from "@/components/seo/public-shell";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { packageCards } from "@/lib/packages-data";
@@ -53,9 +53,7 @@ export default async function GalleryPage() {
           <p className="mt-2 text-stone">Best time to go, where to stay, what it costs, and the sights worth your time.</p>
           <div className="mt-6 flex flex-wrap gap-2">
             {DESTINATION_GUIDES.map((d) => (
-              <Link key={d.slug} href={`/destinations/${d.slug}`} className="rounded-full bg-paper px-4 py-2 text-sm text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper">
-                {d.name} travel guide
-              </Link>
+              <GuideChip key={d.slug} slug={d.slug} name={`${d.name} travel guide`} destination={d.destination} className="bg-paper" />
             ))}
           </div>
         </section>

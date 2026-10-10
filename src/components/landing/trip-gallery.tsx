@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { PackageCard } from "@/components/packages/package-card";
+import { GuideChip } from "@/components/seo/guide-media";
 import { PillLink } from "@/components/site/pill";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { packageCards } from "@/lib/packages-data";
@@ -31,12 +31,10 @@ export async function TripGallery() {
           </div>
         ))}
       </div>
-      <nav aria-label="Destination guides" className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-        <span className="eyebrow text-stone">Destination guides</span>
+      <nav aria-label="Destination guides" className="mt-10 flex flex-wrap items-center gap-2">
+        <span className="eyebrow mr-2 text-stone">Destination guides</span>
         {DESTINATION_GUIDES.map((d) => (
-          <Link key={d.slug} href={`/destinations/${d.slug}`} className="text-ink/75 underline decoration-line decoration-1 underline-offset-4 transition-colors hover:text-brand hover:decoration-brand">
-            {d.name}
-          </Link>
+          <GuideChip key={d.slug} slug={d.slug} name={d.name} destination={d.destination} />
         ))}
       </nav>
     </section>

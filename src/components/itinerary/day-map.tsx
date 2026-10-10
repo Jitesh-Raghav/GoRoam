@@ -35,7 +35,20 @@ function FitBounds({ points }: { points: google.maps.LatLngLiteral[] }) {
  * route between them, and a card with directions when a pin is tapped.
  * Zooms with the controls, Ctrl + scroll, or two fingers (so it never traps page scrolling).
  */
-export default function DayMap({ stops, destination, className, onFail }: { stops: RouteStop[]; destination: string; className?: string; onFail?: () => void }) {
+export default function DayMap({
+  stops,
+  destination,
+  className,
+  onFail,
+  route = true,
+}: {
+  stops: RouteStop[];
+  destination: string;
+  className?: string;
+  onFail?: () => void;
+  /** Draw the visiting order (a day's route). Off for places that aren't a sequence, like a guide's sights. */
+  route?: boolean;
+}) {
   const located: Located[] = useMemo(
     () => locatedStops(stops).map((s) => ({ ...s, position: { lat: s.activity.place.lat!, lng: s.activity.place.lng! } })),
     [stops]
@@ -76,7 +89,7 @@ export default function DayMap({ stops, destination, className, onFail }: { stop
           className="absolute inset-0"
         >
           <FitBounds points={points} />
-          {points.length > 1 && (
+          {route && points.length > 1 && (
             <Polyline
               path={points}
               strokeOpacity={0}
@@ -85,7 +98,7 @@ export default function DayMap({ stops, destination, className, onFail }: { stop
             />
           )}
           {located.map((s, i) => {
-            const last = i === located.length - 1;
+            const last = route && i === located.length - 1;
             return (
               <AdvancedMarker key={s.key} position={s.position} title={`${i + 1}. ${s.activity.place.name}`} onClick={() => setOpen(s.key)} zIndex={open === s.key ? 10 : i}>
                 <span
