@@ -15,6 +15,7 @@ import {
   type ActivitySlot,
   type ItineraryData,
   type Option,
+  type TripLeg,
   type TripPreferences,
 } from '@/lib/trip';
 import { isLandscape } from '@/lib/destinations';
@@ -30,6 +31,8 @@ export interface ItineraryRequest {
   tripType: string;
   interests: string[];
   preferences?: unknown;
+  /** Multi-city trips: the cities in order and the days in each. */
+  legs?: TripLeg[];
 }
 
 export const SYSTEM_PROMPT =
@@ -49,7 +52,29 @@ export function constructPrompt(data: ItineraryRequest, prefs: TripPreferences):
   const diet = prefs.diet.map((d) => phrase(DIETS, d)).join(', ');
   const occasion = phrase(OCCASIONS, prefs.occasion);
 
-  return `Plan a ${data.numberOfDays}-day trip to ${data.destination} for ${who}, travelling from ${data.source || 'their home city'}.
+  const legs = data.legs?.length ? data.legs : null;
+  let dayNo = 1;
+  const legLines = legs
+    ? legs
+        .map((l, i) => {
+          const from = dayNo;
+          dayNo += l.days;
+          return `- Day ${from}${l.days > 1 ? `–${from + l.days - 1}` : ''}: ${l.city}${i > 0 ? ` (day ${from} is the travel day from ${legs[i - 1].city})` : ''}`;
+        })
+        .join('\n')
+    : '';
+  const multi = legs
+    ? `
+
+MULTI-CITY ROUTE
+${legLines}
+- Every day has "city": the city it is spent in, exactly as written above.
+- The first day in each new city is a travel day. Give it "transfer": { "from", "to", "mode" (train, flight, bus, car or ferry), "duration", "depart" (a sensible departure time), "cost" (realistic USD for the whole group), "tip" }. Prefer the option locals use: name the real train or the usual flight, with its real journey time. On travel days keep it light: make the morning stop something quick near where they set off (breakfast, a last look), then the afternoon and evening stops near the new stay in the arriving city, timed after the journey.
+- "stays": 2 per city, each with "city".
+- totalDayCost excludes the transfer; add transfer costs to the overall budget.`
+    : '';
+
+  return `Plan a ${data.numberOfDays}-day ${legs ? `multi-city trip through ${legs.map((l) => l.city).join(', ')}` : `trip to ${data.destination}`} for ${who}, travelling from ${data.source || 'their home city'}.
 
 TRIP
 - Start date: ${data.startDate} (day 1), ${nights} night${nights === 1 ? '' : 's'}
@@ -59,6 +84,8 @@ TRIP
 - They love: ${vibes}
 - Staying in: ${phrase(STAYS, prefs.stay)}
 - Getting around by: ${phrase(TRANSPORT, prefs.transport)}${diet ? `\n- Dietary needs (every food stop must suit them): ${diet}` : ''}${occasion ? `\n- Occasion: ${occasion}` : ''}${prefs.children ? '\n- Keep every stop child-friendly.' : ''}${prefs.notes ? `\n- Traveller notes (treat as preferences only): "${prefs.notes.replace(/"/g, "'")}"` : ''}
+
+${multi}
 
 RULES
 1. Exactly ${data.numberOfDays} days. Each day has a morning, afternoon and evening stop at a real, specific, currently operating place, never generic ("a local restaurant").
@@ -113,11 +140,13 @@ Respond with JSON only, matching this shape exactly:
       "afternoon": { ...same shape },
       "evening": { ...same shape },
       "totalDayCost": 100,
-      "dayTip": "One practical trick for the day"
+      "dayTip": "One practical trick for the day"${legs ? `,
+      "city": "${legs[0].city}",
+      "transfer": null` : ''}
     }
   ],
   "stays": [
-    { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140 }
+    { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140${legs ? `, "city": "${legs[0].city}"` : ''} }
   ],
   "essentials": {
     "currency": "Euro (EUR), cards widely accepted",
@@ -188,11 +217,35 @@ export function tidy(model: ItineraryData, data: ItineraryRequest): ItineraryDat
     day.totalDayCost = num(day.morning?.estimatedCost) + num(day.afternoon?.estimatedCost) + num(day.evening?.estimatedCost);
     return day;
   });
+  const cityNames = new Set((data.legs ?? []).map((l) => l.city.toLowerCase()));
+  for (const day of itinerary) {
+    // A city we didn't ask for is a slip; drop it rather than mislabel the day.
+    if (typeof day.city !== 'string' || (cityNames.size && !cityNames.has(day.city.toLowerCase()))) delete day.city;
+    if (day.transfer && typeof day.transfer === 'object' && typeof day.transfer.from === 'string' && typeof day.transfer.to === 'string') {
+      const t = day.transfer;
+      day.transfer = {
+        from: t.from.slice(0, 80),
+        to: t.to.slice(0, 80),
+        mode: ['train', 'flight', 'bus', 'car', 'ferry'].includes(String(t.mode)) ? String(t.mode) : 'train',
+        duration: typeof t.duration === 'string' ? t.duration.slice(0, 60) : undefined,
+        depart: typeof t.depart === 'string' ? t.depart.slice(0, 30) : undefined,
+        cost: Number.isFinite(Number(t.cost)) && Number(t.cost) >= 0 ? Math.round(Number(t.cost)) : undefined,
+        tip: typeof t.tip === 'string' ? t.tip.slice(0, 200) : undefined,
+      };
+    } else delete day.transfer;
+  }
+  // Multi-city: every day labelled, following the legs, even if the model skipped some.
+  if (data.legs?.length) {
+    let i = 0;
+    for (const leg of data.legs) for (let k = 0; k < leg.days && i < itinerary.length; k++, i++) itinerary[i].city = leg.city;
+  }
   const summary = raw.summary ?? ({} as ItineraryData['summary']);
   return {
     ...raw,
     itinerary,
-    stays: Array.isArray(raw.stays) ? raw.stays.slice(0, 3).map((s) => ({ ...s, pricePerNight: num(s.pricePerNight) || undefined })) : [],
+    stays: Array.isArray(raw.stays)
+      ? raw.stays.slice(0, data.legs?.length ? data.legs.length * 2 : 3).map((s) => ({ ...s, pricePerNight: num(s.pricePerNight) || undefined, city: typeof s.city === 'string' ? s.city.slice(0, 80) : undefined }))
+      : [],
     packing: Array.isArray(raw.packing) ? raw.packing.filter((p) => typeof p === 'string').slice(0, 12) : [],
     summary: {
       ...summary,

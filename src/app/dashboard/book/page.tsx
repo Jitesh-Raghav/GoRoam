@@ -198,7 +198,7 @@ function BookContent() {
             </span>
           )}
           <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
-            <p className="display hidden text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.05] text-paper drop-shadow-[0_2px_18px_rgba(10,28,39,0.35)] sm:block">
+            <p className="display hidden text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.05] text-paper drop-shadow-[0_2px_18px_rgba(14,31,59,0.35)] sm:block">
               {place ? (
                 <>
                   {tab.label === "Tickets" ? "Tickets & tours" : tab.label} for <span className="accent">{cityOf(place)}.</span>
@@ -290,7 +290,7 @@ function BookContent() {
                 aria-disabled={!ready}
                 className="mesh-host group relative isolate flex min-w-0 items-center gap-4 overflow-hidden rounded-card bg-white p-4 ring-1 ring-line transition-[box-shadow,transform] duration-500 ease-out-expo hover:-translate-y-0.5 hover:shadow-float aria-disabled:pointer-events-none aria-disabled:opacity-45 sm:p-5"
               >
-                <Mesh tone="lagoon" />
+                <Mesh tone="azure" />
                 <span aria-hidden className="display grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-lg text-ink">
                   {p.name.charAt(0)}
                 </span>

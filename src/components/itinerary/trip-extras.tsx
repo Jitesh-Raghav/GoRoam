@@ -1,11 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowUpRight, Car, Clock3, Footprints, Info, Landmark, PlaneLanding, Sparkles, Sun, Sunrise, Ticket, TrainFront } from "@/components/site/icons";
+import { AlertCircle, ArrowRight, ArrowUpRight, Bus, Car, Clock3, Footprints, Info, Landmark, PlaneLanding, Sparkles, Sun, Sunrise, Ticket, TrainFront, Plane, Sailboat } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import type { DayWeather } from "@/app/api/weather/route";
 import type { Holiday } from "@/app/api/holidays/route";
-import type { ActivitySlot, DayItinerary, TripGuide } from "@/lib/trip";
+import { dayActivities, type ActivitySlot, type DayItinerary, type Transfer, type TripGuide } from "@/lib/trip";
+import { transferLinks } from "@/lib/booking";
+import { useMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 /*
@@ -152,7 +154,7 @@ export interface DayLoad {
 
 /** How full a day is: hours out, stops and the walking between them. */
 export function dayLoad(day: DayItinerary, transport: Transport): DayLoad | null {
-  const stops = [day.morning, day.afternoon, day.evening].filter((s) => s?.place?.name);
+  const stops = dayActivities(day);
   if (!stops.length) return null;
   const hours = stops.reduce((s, a) => s + hoursIn(a.duration), 0);
   let walkKm = 0;
@@ -338,5 +340,70 @@ export function CheckPrice() {
     <span className="inline-flex items-center gap-1" title="This estimate looked unusually high, so check the official price">
       <AlertCircle className="size-3.5 text-sun" /> Check price
     </span>
+  );
+}
+
+const TRANSFER_ICON: Record<string, typeof Car> = { train: TrainFront, flight: Plane, bus: Bus, car: Car, ferry: Sailboat };
+
+/** A multi-city trip's travel day: how to get to the next city, and where to book it. */
+export function TransferCard({ transfer, date, people }: { transfer?: Transfer; date: string; people: number }) {
+  const { fmt: money } = useMoney();
+  if (!transfer) return null;
+  const Icon = TRANSFER_ICON[transfer.mode] ?? TrainFront;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease }}
+      className="print-avoid mt-6 overflow-hidden rounded-[26px] bg-[linear-gradient(135deg,var(--ink),var(--ink-2))] p-5 text-paper sm:p-6"
+    >
+      <div className="flex flex-wrap items-center gap-4">
+        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand text-white shadow-[0_12px_30px_-12px_rgba(31,111,235,0.9)]">
+          <Icon className="size-6" />
+        </span>
+        <div className="min-w-0 flex-1 basis-[11rem]">
+          <p className="eyebrow text-[0.6rem] text-paper/60">Travel day · by {transfer.mode}</p>
+          <p className="display mt-1 flex flex-wrap items-center gap-x-3 text-[1.45rem] leading-tight">
+            {transfer.from.split(",")[0]}
+            <ArrowRight className="size-5 text-brand-2" />
+            <span className="text-brand-2">{transfer.to.split(",")[0]}</span>
+          </p>
+        </div>
+        <dl className="flex w-full flex-wrap gap-x-6 gap-y-2 font-mono text-xs sm:w-auto">
+          {transfer.depart && (
+            <div>
+              <dt className="text-paper/50">Leave</dt>
+              <dd className="mt-0.5 text-sm text-paper">{transfer.depart}</dd>
+            </div>
+          )}
+          {transfer.duration && (
+            <div>
+              <dt className="text-paper/50">Takes</dt>
+              <dd className="mt-0.5 text-sm text-paper">{transfer.duration}</dd>
+            </div>
+          )}
+          {transfer.cost ? (
+            <div>
+              <dt className="text-paper/50">About</dt>
+              <dd className="mt-0.5 text-sm text-paper">{money(transfer.cost)}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+      {transfer.tip && <p className="mt-4 text-sm leading-relaxed text-paper/70">{transfer.tip}</p>}
+      <div className="no-print mt-4 flex flex-wrap gap-2">
+        {transferLinks(transfer, date, people).map((l, i) => (
+          <a
+            key={l.name}
+            href={l.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn("inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-colors", i === 0 ? "bg-paper text-ink hover:bg-brand-2" : "bg-paper/10 text-paper hover:bg-paper/20")}
+          >
+            {l.name} <ArrowUpRight className="size-3.5" />
+          </a>
+        ))}
+      </div>
+    </motion.div>
   );
 }

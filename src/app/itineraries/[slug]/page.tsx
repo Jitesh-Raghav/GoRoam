@@ -11,7 +11,7 @@ import { loadPackage, packageTrip } from "@/lib/packages-data";
 import { PACKAGE_SEO } from "@/lib/packages-seo";
 import { plannerHref } from "@/lib/prompt-parse";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
-import type { DayItinerary } from "@/lib/trip";
+import { dayActivities, type DayItinerary } from "@/lib/trip";
 
 export const dynamicParams = false;
 export const generateStaticParams = () => PACKAGES.map((p) => ({ slug: p.slug }));
@@ -31,8 +31,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: { card: "summary_large_image", title, description },
   };
 }
-
-const SLOTS = ["morning", "afternoon", "evening"] as const;
 
 export default async function ItineraryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -56,11 +54,12 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free itinerary" },
     itinerary: {
       "@type": "ItemList",
-      numberOfItems: days.length * 3,
-      itemListElement: days.flatMap((d, di) =>
-        SLOTS.map((s) => d[s]).filter(Boolean).map((a, si) => ({
+      numberOfItems: days.reduce((n, d) => n + dayActivities(d).length, 0),
+      itemListElement: days
+        .flatMap((d) => dayActivities(d))
+        .map((a, n) => ({
           "@type": "ListItem",
-          position: di * 3 + si + 1,
+          position: n + 1,
           item: {
             "@type": "TouristAttraction",
             name: a.place.name,
@@ -68,8 +67,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
             ...(a.place.lat && a.place.lng ? { geo: { "@type": "GeoCoordinates", latitude: a.place.lat, longitude: a.place.lng } } : {}),
             ...(a.place.area ? { address: { "@type": "PostalAddress", addressLocality: a.place.area, addressCountry: pkg.country } } : {}),
           },
-        }))
-      ),
+        })),
     },
   };
 
@@ -129,7 +127,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
                 Day {i + 1}: {d.theme}
               </h2>
               <ul className="mt-2 space-y-1 text-sm text-stone">
-                {SLOTS.map((s) => d[s]).filter(Boolean).map((a) => (
+                {dayActivities(d).map((a) => (
                   <li key={a.place.name}>
                     <span className="text-ink/80">{a.time.split(" - ")[0]}</span> · {a.place.name}
                     {a.place.area ? `, ${a.place.area}` : ""}

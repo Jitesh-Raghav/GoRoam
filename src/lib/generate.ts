@@ -55,7 +55,7 @@ export async function generateItineraryData(data: ItineraryRequest, prefs: TripP
     console.error('Failed to parse GPT response:', text.slice(0, 500), error);
     throw new Error('Invalid response format from AI');
   }
-  itineraryData.trip = { source: data.source, preferences: prefs };
+  itineraryData.trip = { source: data.source, preferences: prefs, ...(data.legs?.length ? { legs: data.legs } : {}) };
   delete itineraryData.guide;
   const guide = await guidePromise;
   if (guide) itineraryData.guide = guide;
@@ -72,11 +72,30 @@ function fakeTrip(data: ItineraryRequest, prefs: TripPreferences): ItineraryData
     category: 'sight',
     tip: 'Go early to beat the crowds.',
   });
+  const legOf = (i: number) => {
+    let n = 0;
+    for (const l of data.legs ?? []) if (i < (n += l.days)) return l;
+    return undefined;
+  };
   const itinerary = Array.from({ length: data.numberOfDays }, (_, i) => {
     const m = slot('9:00 AM - 12:00 PM', `${city} Old Fort ${i + 1}`, 10, 15.33 + i * 0.01, 76.46);
     const a = slot('1:00 PM - 4:00 PM', `${city} Market ${i + 1}`, 20, 15.34 + i * 0.01, 76.47);
     const e = slot('6:00 PM - 9:00 PM', `${city} Sunset Point ${i + 1}`, 15, 15.35 + i * 0.01, 76.45);
-    return { day: i + 1, date: data.startDate, theme: `Day ${i + 1} in ${city}`, summary: `Exploring ${city}.`, morning: m, afternoon: a, evening: e, totalDayCost: 45 };
+    const leg = legOf(i);
+    const prev = i > 0 ? legOf(i - 1) : undefined;
+    const here = leg?.city.split(',')[0] ?? city;
+    return {
+      day: i + 1,
+      date: data.startDate,
+      theme: `Day ${i + 1} in ${here}`,
+      summary: `Exploring ${here}.`,
+      morning: m,
+      afternoon: a,
+      evening: e,
+      totalDayCost: 45,
+      ...(leg ? { city: leg.city } : {}),
+      ...(leg && prev && prev !== leg ? { transfer: { from: prev.city, to: leg.city, mode: 'train', duration: '4h 30m', depart: '7:00 AM', cost: 30, tip: 'Book a window seat on the left for the view.' } } : {}),
+    };
   });
   return {
     itinerary,

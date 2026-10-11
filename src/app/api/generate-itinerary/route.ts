@@ -2,7 +2,7 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { normalizePreferences, titleCase, type ItineraryData } from '@/lib/trip';
+import { normalizeLegs, normalizePreferences, titleCase, type ItineraryData } from '@/lib/trip';
 import { type ItineraryRequest } from '@/lib/itinerary-ai';
 import { generateItineraryData } from '@/lib/generate';
 import { FREE_CREDITS } from '@/lib/plans';
@@ -74,6 +74,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
       tripType: String(body.tripType ?? ''),
       interests: Array.isArray(body.interests) ? body.interests.filter((i: unknown) => typeof i === 'string').slice(0, 8) : [],
     };
+    // Multi-city: "Delhi, Jaipur & Udaipur", with the legs for the planner.
+    const legs = normalizeLegs(body.legs, data.numberOfDays);
+    if (legs) {
+      data.legs = legs;
+      const names = legs.map((l) => l.city.split(',')[0]);
+      data.destination = `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`.slice(0, 120);
+    }
 
     // Validate required fields
     if (!data.destination || !data.numberOfDays || !data.budget) {

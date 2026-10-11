@@ -3,7 +3,7 @@
 import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow, CloudSun, Sun, Umbrella, type LucideIcon } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import type { DayWeather, TripWeather } from "@/app/api/weather/route";
-import type { DayItinerary } from "@/lib/trip";
+import { dayActivities, type DayItinerary } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
 /** WMO weather codes, grouped into what a traveller cares about. */
@@ -26,7 +26,7 @@ export const temp = (c: number, f: boolean) => `${Math.round(f ? (c * 9) / 5 + 3
 export function tripCentre(days: DayItinerary[]): [number, number] | null {
   const pts: [number, number][] = [];
   for (const d of days) {
-    for (const s of [d.morning, d.afternoon, d.evening]) {
+    for (const s of dayActivities(d)) {
       const { lat, lng } = s?.place ?? {};
       if (Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0) && Math.abs(lat!) <= 90 && Math.abs(lng!) <= 180) pts.push([lat!, lng!]);
     }
@@ -177,4 +177,59 @@ export function WeatherOutlook({ days, className }: { days: DayWeather[]; classN
       </ul>
     </div>
   );
+}
+
+/**
+ * Weather for a trip that may move between cities: each run of days in one
+ * city gets that city's forecast (from its stops' centre), merged by date.
+ * The time zone is the first city's. Single-city trips work as before.
+ */
+export function useRouteWeather(days: DayItinerary[], start: string, enabled = true) {
+  const groups = useMemo(() => {
+    if (!enabled || !days.length) return [];
+    const out: { from: number; days: DayItinerary[] }[] = [];
+    days.forEach((d, i) => {
+      const last = out[out.length - 1];
+      if (last && (last.days[0].city ?? "") === (d.city ?? "")) last.days.push(d);
+      else out.push({ from: i, days: [d] });
+    });
+    return out
+      .map((g) => ({ ...g, centre: tripCentre(g.days) }))
+      .filter((g): g is { from: number; days: DayItinerary[]; centre: [number, number] } => !!g.centre)
+      .slice(0, 6);
+  }, [days, enabled]);
+  const keys = groups.map((g) => {
+    const d = new Date(`${start.slice(0, 10)}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + g.from);
+    return `lat=${g.centre[0].toFixed(3)}&lng=${g.centre[1].toFixed(3)}&start=${d.toISOString().slice(0, 10)}&days=${g.days.length}`;
+  });
+  const signature = keys.join("|");
+  const [results, setResults] = useState<(TripWeather | null)[]>([]);
+  useEffect(() => {
+    if (!signature) return;
+    let live = true;
+    Promise.all(
+      signature.split("|").map((key) => {
+        let hit = asked.get(key);
+        if (!hit) {
+          hit = fetch(`/api/weather?${key}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null);
+          asked.set(key, hit);
+          hit.then((w) => !w && asked.delete(key));
+        }
+        return hit;
+      })
+    ).then((all) => live && setResults(all));
+    return () => {
+      live = false;
+    };
+  }, [signature]);
+  const weather = useMemo<TripWeather | null>(() => {
+    const ok = results.filter((r): r is TripWeather => !!r);
+    if (!ok.length) return null;
+    return { timezone: ok[0].timezone, days: ok.flatMap((r) => r.days).sort((a, b) => a.date.localeCompare(b.date)) };
+  }, [results]);
+  const byDate = useMemo(() => new Map((weather?.days ?? []).map((d) => [d.date, d])), [weather]);
+  return { weather, byDate };
 }

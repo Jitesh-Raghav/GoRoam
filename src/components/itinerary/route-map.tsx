@@ -152,7 +152,7 @@ export function RouteMap({ stops, seed, className }: { stops: RouteStop[]; seed:
           >
             <span
               className={cn(
-                "absolute left-0 top-0 grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-xs text-white shadow-[0_8px_20px_-6px_rgba(10,30,44,0.6)] ring-[3px] ring-white",
+                "absolute left-0 top-0 grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-xs text-white shadow-[0_8px_20px_-6px_rgba(14,31,59,0.6)] ring-[3px] ring-white",
                 i === stops.length - 1 ? "bg-sun text-ink" : "bg-ink"
               )}
             >

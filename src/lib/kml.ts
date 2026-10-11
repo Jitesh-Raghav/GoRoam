@@ -1,5 +1,5 @@
 import { cityOf, isoDay } from "./booking";
-import type { ItineraryDetails } from "./trip";
+import { dayActivities, type ItineraryDetails } from "./trip";
 
 /**
  * Every stop as a KML map, one folder (and pin colour) per day. Import it into
@@ -23,8 +23,7 @@ export function buildKml(it: ItineraryDetails) {
   ).join("");
   const folders = days
     .map((d, i) => {
-      const pins = (["morning", "afternoon", "evening"] as const)
-        .map((k) => d[k])
+      const pins = dayActivities(d)
         .filter((s) => s?.place?.name && Number.isFinite(s.place.lat) && Number.isFinite(s.place.lng) && (s.place.lat !== 0 || s.place.lng !== 0))
         .map(
           (s, n) => `<Placemark><name>${esc(`${n + 1}. ${s.place.name}`)}</name><styleUrl>#d${i % DAY_COLOURS.length}</styleUrl><description>${esc(
@@ -39,7 +38,7 @@ export function buildKml(it: ItineraryDetails) {
 }
 
 export const hasMappableStops = (it: ItineraryDetails) =>
-  (it.itineraryData?.itinerary ?? []).some((d) => [d.morning, d.afternoon, d.evening].some((s) => Number.isFinite(s?.place?.lat) && Number.isFinite(s?.place?.lng) && (s.place.lat !== 0 || s.place.lng !== 0)));
+  (it.itineraryData?.itinerary ?? []).some((d) => dayActivities(d).some((s) => Number.isFinite(s?.place?.lat) && Number.isFinite(s?.place?.lng) && (s.place.lat !== 0 || s.place.lng !== 0)));
 
 export function downloadKml(it: ItineraryDetails) {
   const blob = new Blob([buildKml(it)], { type: "application/vnd.google-earth.kml+xml" });

@@ -174,8 +174,8 @@ function Globe({ focus, onGrab }: { focus: string; onGrab: () => void }) {
   return (
     <div ref={wrapRef} className="relative aspect-square w-full">
       {/* A soft lagoon halo behind the sphere, then a thin bright rim of atmosphere. */}
-      <div className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(60,207,188,0.22),transparent_64%)] blur-2xl" />
-      <div className="pointer-events-none absolute inset-[9.5%] rounded-full shadow-[0_0_60px_8px_rgba(60,207,188,0.14),inset_0_0_40px_rgba(60,207,188,0.2)] ring-1 ring-brand-2/20" />
+      <div className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(124,196,255,0.22),transparent_64%)] blur-2xl" />
+      <div className="pointer-events-none absolute inset-[9.5%] rounded-full shadow-[0_0_60px_8px_rgba(124,196,255,0.14),inset_0_0_40px_rgba(124,196,255,0.2)] ring-1 ring-brand-2/20" />
       <canvas
         ref={canvasRef}
         className="relative size-full scale-95 cursor-grab touch-none opacity-0 transition-[opacity,transform] duration-[1400ms] ease-out [&[style*='opacity:_1']]:scale-100"
@@ -279,7 +279,7 @@ export function GlobeSection() {
   return (
     <section className="px-3 sm:px-4">
       <div ref={ref} className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-24">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_30%,rgba(11,119,109,0.18),transparent_55%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_30%,rgba(26,95,214,0.18),transparent_55%)]" />
         <div className="container-x relative">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-12">
             <SectionHeading

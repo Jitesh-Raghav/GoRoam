@@ -1,13 +1,13 @@
 import { cityOf, isoDay, mapsSearchUrl } from "../booking";
 import { countryCodeFor } from "../flags";
-import { money, titleCase, type ItineraryDetails } from "../trip";
+import { dayStops, money, titleCase, type ItineraryDetails } from "../trip";
 
 /**
  * The itinerary as an email: table layout and inline styles only, so it looks
  * the same in Gmail, Outlook and Apple Mail.
  */
 
-const C = { ink: "#0a1c27", paper: "#f7f6f2", brand: "#0b776d", soft: "#dcefea", stone: "#56656e", sun: "#c9893a", line: "#e6e3dc" };
+const C = { ink: "#0e1f3b", paper: "#f5f8fc", brand: "#1a5fd6", soft: "#e3eeff", stone: "#55657d", sun: "#e0a800", line: "#dbe4f0" };
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
@@ -20,11 +20,7 @@ const esc = (s: unknown) =>
 
 const day = (iso: string, opts: Intl.DateTimeFormatOptions) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { ...opts, timeZone: "UTC" });
 
-const SLOTS = [
-  ["morning", "Morning"],
-  ["afternoon", "Afternoon"],
-  ["evening", "Evening"],
-] as const;
+const PERIOD_LABEL = { morning: "Morning", afternoon: "Afternoon", evening: "Evening" } as const;
 
 export function itineraryEmail(it: ItineraryDetails, link: string, name?: string | null) {
   const data = it.itineraryData;
@@ -44,9 +40,9 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
 
   const days = (data.itinerary ?? [])
     .map((d, i) => {
-      const stops = SLOTS.filter(([k]) => d[k]?.place?.name)
-        .map(([k, label]) => {
-          const s = d[k];
+      const stops = dayStops(d)
+        .map(({ period, activity: s }) => {
+          const label = PERIOD_LABEL[period];
           return `<tr>
             <td valign="top" style="width:86px;padding:10px 0;font:600 10px/1.4 ${SANS};letter-spacing:.14em;text-transform:uppercase;color:${C.brand}">${label}<br><span style="font-weight:400;letter-spacing:0;text-transform:none;color:${C.stone}">${esc(s.time?.split(/\s*[-–]\s*/)[0] ?? "")}</span></td>
             <td valign="top" style="padding:10px 0;border-bottom:1px solid ${C.line}">
@@ -97,7 +93,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.paper}"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px">
   <tr><td style="padding:0 0 18px;font:400 22px ${SERIF};color:${C.ink}">GoRoam</td></tr>
-  <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.brand} 0%,#0b4f5c 50%,${C.ink} 100%);padding:40px 32px;color:${C.paper}">
+  <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.brand} 0%,#16305a 50%,${C.ink} 100%);padding:40px 32px;color:${C.paper}">
     <p style="margin:0;font:600 11px/1 ${SANS};letter-spacing:.18em;text-transform:uppercase;color:#bfe9e3">${it.numberOfDays} ${it.numberOfDays === 1 ? "day" : "days"} · ${esc(dates)}</p>
     <h1 style="margin:14px 0 0;font:400 52px/0.95 ${SERIF};color:#fff">${flag ? `<img src="https://flagcdn.com/w80/${flag}.png" width="40" alt="" style="vertical-align:middle;border-radius:4px;margin-right:10px">` : ""}${esc(title)}</h1>
     ${data.summary?.overview ? `<p style="margin:16px 0 0;font:15px/1.6 ${SANS};color:#d8e6ea">${esc(data.summary.overview)}</p>` : ""}
@@ -118,7 +114,7 @@ export function itineraryEmail(it: ItineraryDetails, link: string, name?: string
     "",
     ...(data.itinerary ?? []).flatMap((d, i) => [
       `Day ${i + 1}: ${d.theme ?? ""}`,
-      ...SLOTS.filter(([k]) => d[k]?.place?.name).map(([k, label]) => `  ${label}: ${d[k].place.name}`),
+      ...dayStops(d).map(({ period, activity }) => `  ${PERIOD_LABEL[period]}: ${activity.place.name}`),
       "",
     ]),
     `Open the full itinerary: ${link}`,

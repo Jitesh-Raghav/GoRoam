@@ -1,6 +1,6 @@
 "use client";
 
-import { APIProvider, AdvancedMarker, ColorScheme, InfoWindow, Map, Polyline, useMap } from "@vis.gl/react-google-maps";
+import { APIProvider, AdvancedMarker, ColorScheme, InfoWindow, Map, Polyline, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { ArrowUpRight } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
 import { track } from "@/lib/analytics";
@@ -31,6 +31,44 @@ function FitBounds({ points }: { points: google.maps.LatLngLiteral[] }) {
 }
 
 /**
+ * The day's route along real streets, from Google's Directions service, with
+ * the time it takes. Walking when the stops are close, driving otherwise.
+ * Until it answers (or if the key isn't allowed Directions) the dashed
+ * straight-line route stays.
+ */
+function StreetRoute({ points, drive, onRoute }: { points: google.maps.LatLngLiteral[]; drive?: boolean; onRoute: (r: { path: google.maps.LatLngLiteral[]; mins: number; km: number; mode: string } | null) => void }) {
+  const routes = useMapsLibrary("routes");
+  useEffect(() => {
+    if (!routes || points.length < 2) return;
+    let live = true;
+    const straight = points.slice(1).reduce((n, p, i) => n + Math.hypot(p.lat - points[i].lat, (p.lng - points[i].lng) * Math.cos((p.lat * Math.PI) / 180)) * 111, 0);
+    const mode = drive || straight > 5 ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.WALKING;
+    new routes.DirectionsService()
+      .route({ origin: points[0], destination: points[points.length - 1], waypoints: points.slice(1, -1).map((location) => ({ location, stopover: true })), travelMode: mode })
+      .then((res) => {
+        if (!live) return;
+        const r = res.routes[0];
+        const legs = r?.legs ?? [];
+        onRoute(
+          r
+            ? {
+                path: r.overview_path.map((p) => p.toJSON()),
+                mins: Math.round(legs.reduce((n, l) => n + (l.duration?.value ?? 0), 0) / 60),
+                km: legs.reduce((n, l) => n + (l.distance?.value ?? 0), 0) / 1000,
+                mode: mode === google.maps.TravelMode.WALKING ? "on foot" : "by road",
+              }
+            : null
+        );
+      })
+      .catch(() => live && onRoute(null));
+    return () => {
+      live = false;
+    };
+  }, [routes, points, drive, onRoute]);
+  return null;
+}
+
+/**
  * A live, dark Google map of one day: numbered pins in visiting order, a dashed
  * route between them, and a card with directions when a pin is tapped.
  * Zooms with the controls, Ctrl + scroll, or two fingers (so it never traps page scrolling).
@@ -41,6 +79,7 @@ export default function DayMap({
   className,
   onFail,
   route = true,
+  drive,
 }: {
   stops: RouteStop[];
   destination: string;
@@ -48,6 +87,8 @@ export default function DayMap({
   onFail?: () => void;
   /** Draw the visiting order (a day's route). Off for places that aren't a sequence, like a guide's sights. */
   route?: boolean;
+  /** Travelling by car or taxi: route by road. */
+  drive?: boolean;
 }) {
   const located: Located[] = useMemo(
     () => locatedStops(stops).map((s) => ({ ...s, position: { lat: s.activity.place.lat!, lng: s.activity.place.lng! } })),
@@ -56,6 +97,7 @@ export default function DayMap({
   const points = useMemo(() => located.map((s) => s.position), [located]);
   const [open, setOpen] = useState<string | null>(null);
   const selected = located.find((s) => s.key === open);
+  const [street, setStreet] = useState<{ path: google.maps.LatLngLiteral[]; mins: number; km: number; mode: string } | null>(null);
 
   // Google calls this global when the key is rejected; fall back to the illustrated route.
   useEffect(() => {
@@ -89,11 +131,13 @@ export default function DayMap({
           className="absolute inset-0"
         >
           <FitBounds points={points} />
-          {route && points.length > 1 && (
+          {route && points.length > 1 && <StreetRoute points={points} drive={drive} onRoute={setStreet} />}
+          {route && street && <Polyline path={street.path} strokeColor="#7cc4ff" strokeOpacity={0.95} strokeWeight={4} />}
+          {route && !street && points.length > 1 && (
             <Polyline
               path={points}
               strokeOpacity={0}
-              icons={[{ icon: { path: "M 0,-1 0,1", strokeOpacity: 0.95, strokeColor: "#34D1BF", scale: 3 }, offset: "0", repeat: "14px" }]}
+              icons={[{ icon: { path: "M 0,-1 0,1", strokeOpacity: 0.95, strokeColor: "#7cc4ff", scale: 3 }, offset: "0", repeat: "14px" }]}
               geodesic
             />
           )}
@@ -135,6 +179,11 @@ export default function DayMap({
           )}
         </Map>
       </APIProvider>
+      {street && (
+        <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[11px] text-paper backdrop-blur">
+          {street.km.toFixed(1)} km · ~{street.mins} min {street.mode}
+        </span>
+      )}
     </div>
   );
 }

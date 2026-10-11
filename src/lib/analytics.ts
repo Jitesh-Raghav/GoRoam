@@ -64,7 +64,16 @@ export type AnalyticsEvent =
   | "guest_trip_limited"
   | "guest_unlock_clicked"
   | "guest_trip_claimed"
-  | "film_played";
+  | "film_played"
+  | "rain_plan_previewed"
+  | "day_replan_previewed"
+  | "rain_plan_applied"
+  | "day_replanned"
+  | "day_optimised"
+  | "plan_edited"
+  | "place_added"
+  | "whatsapp_subscribed"
+  | "whatsapp_shared";
 
 export function track(event: AnalyticsEvent, properties?: Record<string, string | number | boolean | null | undefined>) {
   withClient((ph) => ph.capture(event, properties));

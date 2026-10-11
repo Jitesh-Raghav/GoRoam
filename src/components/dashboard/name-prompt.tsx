@@ -105,7 +105,7 @@ export function NamePrompt() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.5, ease }}
-            className="grid w-full max-w-3xl overflow-hidden rounded-[32px] bg-paper shadow-[0_40px_100px_-30px_rgba(10,30,44,0.7)] ring-1 ring-white/60 md:grid-cols-[1fr_1.1fr]"
+            className="grid w-full max-w-3xl overflow-hidden rounded-[32px] bg-paper shadow-[0_40px_100px_-30px_rgba(14,31,59,0.7)] ring-1 ring-white/60 md:grid-cols-[1fr_1.1fr]"
           >
             {/* The face they'll travel as, big, with the choices around it. */}
             <div className="relative flex flex-col items-center justify-center gap-6 bg-[linear-gradient(160deg,#0a1c27_0%,#13303f_55%,#0b5a54_100%)] p-8 text-paper">

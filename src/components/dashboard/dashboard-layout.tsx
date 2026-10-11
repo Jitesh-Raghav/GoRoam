@@ -114,7 +114,7 @@ function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onN
               {active && (
                 <motion.span
                   layoutId="sidebar-active"
-                  className="absolute inset-0 rounded-xl bg-white shadow-[0_8px_24px_-16px_rgba(10,30,44,0.4)] ring-1 ring-line"
+                  className="absolute inset-0 rounded-xl bg-white shadow-[0_8px_24px_-16px_rgba(14,31,59,0.4)] ring-1 ring-line"
                   transition={{ type: "spring", stiffness: 420, damping: 36 }}
                 />
               )}

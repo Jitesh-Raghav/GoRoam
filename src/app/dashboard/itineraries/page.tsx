@@ -61,7 +61,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
-      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(10,30,44,0.5)]"
+      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(14,31,59,0.5)]"
       // Opening a trip is instant when its data is already on the way.
       onPointerEnter={() => prefetchJson(`/api/itinerary/${it.id}`)}
       onFocusCapture={() => prefetchJson(`/api/itinerary/${it.id}`)}

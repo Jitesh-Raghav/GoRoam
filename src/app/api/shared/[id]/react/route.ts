@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { limiter } from '@/lib/owned-trip';
 import { verifyShareToken } from '@/lib/share';
 import { undashText } from '@/lib/text';
-import { reactionKey, type ItineraryData, type StopReaction } from '@/lib/trip';
+import { findStop, reactionKey, type ItineraryData, type StopReaction } from '@/lib/trip';
 
 /**
  * Friends with a share link vote on stops (and can leave a short note), so the
@@ -11,7 +11,6 @@ import { reactionKey, type ItineraryData, type StopReaction } from '@/lib/trip';
  */
 
 const allow = limiter(20, 60_000);
-const SLOTS = ['morning', 'afternoon', 'evening'];
 const MAX_NOTES = 20;
 const MAX_VOTES = 500;
 const str = (v: unknown, max: number) => (typeof v === 'string' ? undashText(v.replace(/\s+/g, ' ').trim()).slice(0, max) : '');
@@ -26,18 +25,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   const body = await request.json().catch(() => ({}));
   const day = Math.round(Number(body.day));
-  const slot = String(body.slot);
+  const slot = String(body.slot ?? '').slice(0, 40);
   const vote = body.vote === 'up' || body.vote === 'down' ? body.vote : null;
   const text = str(body.text, 200);
   const name = str(body.name, 30) || 'A friend';
-  if (!Number.isInteger(day) || day < 0 || !SLOTS.includes(slot) || !vote) {
+  if (!Number.isInteger(day) || day < 0 || !slot || !vote) {
     return NextResponse.json({ success: false, error: 'Pick a stop and a vote.' }, { status: 400 });
   }
 
   const row = await prisma.itinerary.findUnique({ where: { id }, select: { itineraryData: true } });
   if (!row) return NextResponse.json({ success: false, error: 'This trip is no longer available.' }, { status: 404 });
   const data = JSON.parse(row.itineraryData) as ItineraryData;
-  if (!data.itinerary?.[day]?.[slot as 'morning']?.place?.name) {
+  if (!findStop(data.itinerary?.[day], slot)) {
     return NextResponse.json({ success: false, error: 'That stop is not in the plan.' }, { status: 400 });
   }
 

@@ -42,7 +42,7 @@ export function Events({ events, month, destination }: { events: TripEvent[]; mo
               <PlacePhoto activity={asStop(e.where || e.name)} destination={destination} icon={CalendarHeart} credit={false} imgClassName="group-hover:scale-[1.05]" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 to-transparent" />
               {/* A desk-calendar leaf for the month. */}
-              <span className="absolute left-3 top-3 w-12 overflow-hidden rounded-lg bg-white text-center shadow-[0_10px_24px_-12px_rgba(10,28,39,0.7)]">
+              <span className="absolute left-3 top-3 w-12 overflow-hidden rounded-lg bg-white text-center shadow-[0_10px_24px_-12px_rgba(14,31,59,0.7)]">
                 <span className="block bg-sun py-0.5 font-mono text-[9px] tracking-[0.16em] text-ink">{mon}</span>
                 <CalendarHeart className="duo-sun mx-auto my-1.5 size-5 text-ink" />
               </span>

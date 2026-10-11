@@ -5,7 +5,7 @@ import { SITE_URL } from "../seo";
  * so it renders the same in Gmail, Outlook and Apple Mail.
  */
 
-const C = { ink: "#0a1c27", ink2: "#13303f", paper: "#f7f6f2", brand: "#0b776d", lagoon: "#3ccfbc", soft: "#dcefea", stone: "#56656e", sun: "#e9c27c", line: "#e6e3dc" };
+const C = { ink: "#0e1f3b", ink2: "#16305a", paper: "#f5f8fc", brand: "#1a5fd6", lagoon: "#7cc4ff", soft: "#e3eeff", stone: "#55657d", sun: "#ffd23f", line: "#dbe4f0" };
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
 const esc = (s: unknown) =>
@@ -78,7 +78,7 @@ export function welcomeEmail(name?: string | null) {
           <span style="color:${C.brand};">Go</span>Roam
         </td></tr>
 
-        <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.ink} 0%,${C.ink2} 55%,#0b5d5a 100%);padding:40px 32px;">
+        <tr><td style="border-radius:28px;background:${C.ink};background-image:linear-gradient(135deg,${C.ink} 0%,${C.ink2} 55%,#1a5fd6 100%);padding:40px 32px;">
           <div style="font-family:${SANS};font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:${C.lagoon};">Your boarding pass is ready</div>
           <h1 style="margin:12px 0 0;font-family:${SANS};font-size:34px;line-height:1.08;font-weight:500;letter-spacing:-0.03em;color:#ffffff;">${hello}. <span style="color:${C.lagoon};">Where to first?</span></h1>
           <p style="margin:16px 0 26px;font-family:${SANS};font-size:16px;line-height:1.6;color:rgba(244,248,249,0.78);">

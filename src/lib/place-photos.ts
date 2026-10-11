@@ -1,5 +1,5 @@
 // Server-only: finds real photos for itinerary stops.
-import { photoKey, type ItineraryData, type PlacePhoto } from '@/lib/trip';
+import { dayActivities, photoKey, type ItineraryData, type PlacePhoto } from '@/lib/trip';
 
 /**
  * A real photo for a recommended stop, from the first source that has one:
@@ -454,7 +454,7 @@ export function tripStops(data: ItineraryData): StopQuery[] {
   const seen = new Set<string>();
   const out: StopQuery[] = [];
   for (const day of data.itinerary ?? []) {
-    for (const slot of [day.morning, day.afternoon, day.evening]) {
+    for (const slot of dayActivities(day)) {
       const p = slot?.place;
       if (!p?.name || seen.has(p.name)) continue;
       seen.add(p.name);

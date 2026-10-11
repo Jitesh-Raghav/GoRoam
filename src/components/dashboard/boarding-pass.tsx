@@ -82,7 +82,7 @@ export function BoardingPass({
   const serial = `GR-${(hashString(`${data.source}${data.destination}${data.startDate}`) % 900000) + 100000}`;
 
   return (
-    <div className={cn("overflow-hidden rounded-[28px] bg-white shadow-[0_40px_80px_-50px_rgba(10,30,44,0.55)] ring-1 ring-line", className)}>
+    <div className={cn("overflow-hidden rounded-[28px] bg-white shadow-[0_40px_80px_-50px_rgba(14,31,59,0.55)] ring-1 ring-line", className)}>
       <div className="relative h-52 overflow-hidden bg-paper-2">
         <AnimatePresence initial={false}>
           <motion.div

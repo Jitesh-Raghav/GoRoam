@@ -197,7 +197,7 @@ export function PlaceField({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-x-0 top-[calc(100%+0.5rem)] origin-top overflow-hidden rounded-2xl bg-white/90 p-1.5 shadow-[0_28px_60px_-28px_rgba(10,30,44,0.55)] ring-1 ring-line backdrop-blur-xl"
+            className="absolute inset-x-0 top-[calc(100%+0.5rem)] origin-top overflow-hidden rounded-2xl bg-white/90 p-1.5 shadow-[0_28px_60px_-28px_rgba(14,31,59,0.55)] ring-1 ring-line backdrop-blur-xl"
           >
             {hint && <li className="eyebrow px-3 pb-1 pt-2 text-[0.6rem] text-stone">{hint === "recent" ? "Recent" : "Popular right now"}</li>}
             {items.map((s, i) => (

@@ -48,6 +48,7 @@ import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
+import { WhatsAppCard } from "./whatsapp-card";
 import { useMoney } from "@/lib/money";
 import { useStoredPhotos } from "@/lib/photo-store";
 import { downloadIcs } from "@/lib/ics";
@@ -57,9 +58,13 @@ import {
   SPEND,
   STAYS,
   VIBES,
+  dayActivities,
+  dayStops,
   labelFor,
+  periodOf,
   titleCase,
   type ActivitySlot,
+  type DayPeriod,
   type DayItinerary,
   type Essentials,
   type TripGuide,
@@ -92,13 +97,14 @@ import { Bookings } from "./bookings";
 import { CurrencyCard } from "./currency-card";
 import { CurrencySwitch } from "./currency-switch";
 import { EssentialsBento } from "./essentials-bento";
-import { ArrivalPanel, CheckPrice, Daylight, DayLoadChip, HolidayNote, PriceDisclaimer, StopConnector, StopFacts, dayLoad, legBetween, useHolidays } from "./trip-extras";
+import { ArrivalPanel, CheckPrice, TransferCard, Daylight, DayLoadChip, HolidayNote, PriceDisclaimer, StopConnector, StopFacts, dayLoad, legBetween, useHolidays } from "./trip-extras";
 import type { Holiday } from "@/app/api/holidays/route";
 import { JetLagCard } from "./jetlag-card";
 import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
+import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
-import { DayForecast, WeatherChip, tripCentre, useLocalTime, useTripWeather } from "./weather";
+import { DayForecast, WeatherChip, useLocalTime, useRouteWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
 import { currencyFor, formatMoney } from "@/lib/currency";
 import { downloadKml, hasMappableStops } from "@/lib/kml";
@@ -111,11 +117,22 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const VIBE_LABELS = Object.fromEntries(VIBES.map((v) => [v.id, v.label]));
 const pad = (n: number) => String(n).padStart(2, "0");
 
-const SLOTS = [
-  { key: "morning", label: "Morning", icon: Sunrise },
-  { key: "afternoon", label: "Afternoon", icon: Sun },
-  { key: "evening", label: "Evening", icon: Moon },
-] as const;
+const PERIOD: Record<DayPeriod, { label: string; icon: typeof Sun }> = {
+  morning: { label: "Morning", icon: Sunrise },
+  afternoon: { label: "Afternoon", icon: Sun },
+  evening: { label: "Evening", icon: Moon },
+};
+
+interface Slot {
+  /** The stop's key on its day. */
+  key: string;
+  label: string;
+  icon: typeof Sun;
+}
+
+/** A day's stops for the page: key, period label and icon, activity. */
+const stopsFor = (day: DayItinerary): (RouteStop & { period: DayPeriod; slot: Slot })[] =>
+  dayStops(day).map((s) => ({ key: s.key, period: s.period, label: PERIOD[s.period].label, activity: s.activity, slot: { key: s.key, ...PERIOD[s.period] } }));
 
 const CATEGORY: Record<string, { label: string; icon: typeof Landmark }> = {
   sight: { label: "Sight", icon: Landmark },
@@ -193,7 +210,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
 
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
-function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: (typeof SLOTS)[number]; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
+function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: Slot; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
   const { fmt: money } = useMoney();
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
@@ -211,7 +228,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
         {!last && <span aria-hidden className="absolute bottom-[-1.25rem] top-12 w-px border-l border-dashed border-brand/35" />}
         <span
           className={cn(
-            "relative mt-5 grid size-9 place-items-center rounded-full font-mono text-sm shadow-[0_10px_24px_-10px_rgba(10,30,44,0.6)] ring-4 ring-paper sm:size-11",
+            "relative mt-5 grid size-9 place-items-center rounded-full font-mono text-sm shadow-[0_10px_24px_-10px_rgba(14,31,59,0.6)] ring-4 ring-paper sm:size-11",
             last ? "bg-sun text-ink" : "bg-ink text-white"
           )}
         >
@@ -221,7 +238,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
       </div>
       <article
         id={stopId(day, slot.key)}
-        className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(10,30,44,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(10,30,44,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+        className="scroll-mt-6 overflow-hidden rounded-[28px] bg-white ring-1 ring-line shadow-[0_24px_60px_-48px_rgba(14,31,59,0.55)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-42px_rgba(14,31,59,0.5)] md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       >
         <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
@@ -324,7 +341,7 @@ const DayMap = dynamic(() => import("./day-map"), { ssr: false });
  * The day's route: a live, zoomable dark Google map when a Maps key is set,
  * otherwise (or if Google rejects the key) the illustrated route.
  */
-function DayRoute({ stops, seed, destination, className }: { stops: RouteStop[]; seed: string; destination: string; className?: string }) {
+function DayRoute({ stops, seed, destination, className, drive }: { stops: RouteStop[]; seed: string; destination: string; className?: string; drive?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -342,7 +359,7 @@ function DayRoute({ stops, seed, destination, className }: { stops: RouteStop[];
   return (
     <div ref={ref} className={cn("relative", className)}>
       <RouteMap stops={stops} seed={seed} className="absolute inset-0" />
-      {live && near && <DayMap stops={stops} destination={destination} className="absolute inset-0" onFail={() => setFailed(true)} />}
+      {live && near && <DayMap stops={stops} destination={destination} drive={drive} className="absolute inset-0" onFail={() => setFailed(true)} />}
     </div>
   );
 }
@@ -362,7 +379,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
     >
       {stops.map((s, k) => {
         const cat = s.activity.category ? CATEGORY[s.activity.category] : undefined;
-        const slot = SLOTS.find((x) => x.key === s.key)!;
+        const slot = { key: s.key, ...PERIOD[periodOf(s.activity.time, "afternoon")] };
         return (
           <motion.button
             key={s.key}
@@ -425,11 +442,13 @@ function DayPanel({
   arrival?: TripGuide["arrival"];
 }) {
   const { fmt: money } = useMoney();
-  const stops: RouteStop[] = SLOTS.flatMap((s) => (day[s.key]?.place?.name ? [{ key: s.key, label: s.label, activity: day[s.key] }] : []));
+  const stops = stopsFor(day);
   const transport = it.itineraryData.trip?.preferences?.transport;
+  // Multi-city trips: everything on this day is looked up in its own city.
+  const place = day.city ?? it.destination;
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
-    it.destination,
+    place,
     transport === "car" ? "driving" : "transit"
   );
   const load = dayLoad(day, transport);
@@ -439,6 +458,11 @@ function DayPanel({
         <div className="min-w-0">
           <p className="eyebrow flex flex-wrap items-center gap-2 text-stone">
             Day {pad(index + 1)} · {dayLabel(it.startDate, index)}
+            {day.city && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-soft px-2 py-1 text-[0.55rem] tracking-[0.18em] text-brand">
+                <MapPin className="size-3" /> {day.city.split(",")[0]}
+              </span>
+            )}
             {nowSlot !== undefined && (
               <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
             )}
@@ -470,9 +494,17 @@ function DayPanel({
         </div>
       </div>
 
-      <DayGlance stops={stops} day={index} destination={it.destination} />
+      {!print && (
+        <div className="mt-4">
+          <DayActions index={index} day={day} rainy={!!weather && (weather.source === "forecast" ? (weather.rain ?? 0) >= 50 : (weather.rain ?? 0) >= 4)} />
+        </div>
+      )}
 
-      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
+      <TransferCard transfer={day.transfer} date={isoDay(it.startDate, index)} people={it.numberOfPeople} />
+
+      <DayGlance stops={stops} day={index} destination={place} />
+
+      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={place} drive={transport === "car" || transport === "rides"} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
 
       {index === 0 && <ArrivalPanel arrival={arrival} />}
 
@@ -482,7 +514,7 @@ function DayPanel({
           return (
             <Fragment key={s.key}>
               {leg && <StopConnector leg={leg} />}
-              <StopCard slot={SLOTS.find((x) => x.key === s.key)!} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.key} />
+              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} destination={place} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
             </Fragment>
           );
         })}
@@ -685,6 +717,7 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
         <h4 className="display text-[1.61rem] leading-[1.02] text-ink">{stay.name}</h4>
         <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-stone">
           <MapPin className="size-3.5 text-brand" /> {stay.area}
+          {stay.city && <span>· {stay.city.split(",")[0]}</span>}
           {stay.type && <span>· {stay.type}</span>}
         </p>
         <p className="mt-3 flex-1 leading-relaxed text-stone">{stay.why}</p>
@@ -808,8 +841,7 @@ export function TripView({
   const owner = !shared && !isPackage;
 
   // Live forecast (or last year's weather on these dates) and the destination's clock.
-  const centre = useMemo(() => (isPackage ? null : tripCentre(days)), [days, isPackage]);
-  const { weather, byDate } = useTripWeather(centre, it.startDate, it.numberOfDays);
+  const { weather, byDate } = useRouteWeather(days, it.startDate, !isPackage);
   const localTime = useLocalTime(weather?.timezone);
   const localCurrency = guide?.currencyCode || currencyFor(flag);
   const holidays = useHolidays(flag, it.startDate, it.numberOfDays);
@@ -905,7 +937,10 @@ export function TripView({
   ];
   // A later stop's photo for "{city}, unexpectedly", so it isn't the hero shot again.
   const lastDay = days[days.length - 1];
-  const factStop = lastDay?.afternoon ?? lastDay?.evening ?? lastDay?.morning;
+  const factStop = (() => {
+    const all = dayActivities(lastDay);
+    return all[1] ?? all[all.length - 1];
+  })();
   // Each highlight with the stop it's about, for the big-moments mosaic.
   const moments = useMemo(() => pairMoments(data?.summary?.highlights ?? [], days), [data, days]);
   // Opens a day from anywhere above the plan, and brings the plan into view.
@@ -918,6 +953,7 @@ export function TripView({
   return (
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
+    <PlanToolsProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
     <div className="trip-sections relative isolate mx-auto max-w-[82.5rem]">
       {/* Hero — doubles as the PDF cover */}
@@ -1070,14 +1106,20 @@ export function TripView({
                       onClick={() => jump(i)}
                       className={cn(
                         "group relative min-w-[9.5rem] flex-1 shrink-0 snap-start sm:min-w-[11.5rem] overflow-hidden rounded-[22px] text-left ring-1 transition-[color,box-shadow] duration-300",
-                        on ? "text-paper shadow-[0_24px_50px_-28px_rgba(10,30,44,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(10,30,44,0.6)]"
+                        on ? "text-paper shadow-[0_24px_50px_-28px_rgba(14,31,59,0.7)] ring-ink" : "bg-white text-ink ring-line hover:shadow-[0_20px_40px_-30px_rgba(14,31,59,0.6)]"
                       )}
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
                       <span className="relative block h-24 overflow-hidden sm:h-28">
-                        <PlacePhoto activity={d.morning ?? d.afternoon ?? d.evening} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        <PlacePhoto activity={dayActivities(d)[0]} destination={d.city ?? it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
+                        {d.city && (
+                          <span className="absolute left-2 top-2 max-w-[70%] truncate rounded-full bg-ink/45 px-2 py-0.5 text-[10px] text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-sm">
+                            {d.transfer ? "→ " : ""}
+                            {d.city.split(",")[0]}
+                          </span>
+                        )}
                         <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
                         <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{money(d.totalDayCost)}</span>
                       </span>
@@ -1153,7 +1195,7 @@ export function TripView({
         {data?.stays?.length ? (
           <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
             {data.stays.map((s, i) => (
-              <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={query} />
+              <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
             ))}
           </div>
         ) : (
@@ -1237,6 +1279,7 @@ export function TripView({
           localCurrency={localCurrency}
           onSaved={(wallet) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, wallet } } }))}
         />
+        <WhatsAppCard it={it} timezone={weather?.timezone} dayIndex={todayIndex ?? active} />
         </div>
       )}
 
@@ -1310,6 +1353,7 @@ export function TripView({
       {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
     </div>
     </ReactionsProvider>
+    </PlanToolsProvider>
     </SwapProvider>
     </TripPhotosProvider>
   );

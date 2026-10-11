@@ -1,5 +1,5 @@
 import { cityOf, isoDay } from "./booking";
-import type { ActivitySlot, ItineraryDetails } from "./trip";
+import { dayStops, type ActivitySlot, type ItineraryDetails } from "./trip";
 
 const SLOT_DEFAULTS = {
   morning: [9, 0, 12, 0],
@@ -43,11 +43,10 @@ export function buildIcs(it: ItineraryDetails) {
   const now = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
   (it.itineraryData?.itinerary ?? []).forEach((day, i) => {
     const date = isoDay(it.startDate, i);
-    (["morning", "afternoon", "evening"] as const).forEach((key) => {
-      const slot: ActivitySlot | undefined = day[key];
-      if (!slot?.place?.name) return;
+    dayStops(day).forEach(({ key, period, activity }) => {
+      const slot: ActivitySlot = activity;
       const range = parseRange(slot.time);
-      const d = SLOT_DEFAULTS[key];
+      const d = SLOT_DEFAULTS[period];
       const [start, end] = range ?? [
         [d[0], d[1]],
         [d[2], d[3]],

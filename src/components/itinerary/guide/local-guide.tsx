@@ -468,7 +468,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
                     on ? "text-paper" : "text-ink hover:bg-white/70"
                   )}
                 >
-                  {on && <motion.span layoutId="guide-tab" className="absolute inset-0 rounded-[20px] bg-ink shadow-[0_14px_30px_-14px_rgba(10,30,44,0.8)]" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+                  {on && <motion.span layoutId="guide-tab" className="absolute inset-0 rounded-[20px] bg-ink shadow-[0_14px_30px_-14px_rgba(14,31,59,0.8)]" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
                   <span className={cn("relative grid size-8 shrink-0 place-items-center rounded-xl transition-colors", on ? "bg-paper/10 text-sun-2" : "bg-brand-soft text-brand")}>
                     <t.icon className="size-4" />
                   </span>
