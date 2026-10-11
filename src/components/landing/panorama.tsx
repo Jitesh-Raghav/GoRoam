@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
-import { circle, forestOnRidge, mountainRidge, mulberry32, palmTree, pineTree, r1, rect, rollingRidge, umbrellaPine, cypressTree, canopyBlobs } from "@/components/scenes/geometry";
+import { circle, forestOnRidge, hatch, mountainRidge, mulberry32, palmTree, pineTree, r1, rect, rollingRidge, umbrellaPine, cypressTree, canopyBlobs } from "@/components/scenes/geometry";
 import { getMonument, type MonumentId, type Tone } from "@/components/scenes/monuments";
 import { LondonClock } from "@/components/scenes/london-clock";
 import { Birds, Layer, Monument, Stars, Sun } from "@/components/scenes/primitives";
@@ -54,20 +54,6 @@ const WALKERS = [
 ];
 /** Where the moon sits over the landscape: monuments east of it are lit from the left. */
 const SUN_X = 1720;
-
-/** Short brush strokes over a slope — the grass and rock texture of a painted hillside. */
-function hatch(at: (x: number) => number, seed: number, count: number, depth: number, len: number, x0 = 0, x1 = PANO_W) {
-  const rand = mulberry32(seed);
-  let d = "";
-  for (let i = 0; i < count; i++) {
-    const x = x0 + rand() * (x1 - x0);
-    const y = at(x) + 6 + rand() * depth;
-    const l = len * (0.5 + rand());
-    const lean = (rand() - 0.5) * l * 0.6;
-    d += `M${r1(x)} ${r1(y)}l${r1(lean)} ${r1(-l)}`;
-  }
-  return d;
-}
 
 /** Vertical rock striations down a mountain face. */
 function striations(at: (x: number) => number, seed: number, count: number, x0: number, x1: number, below: number) {
@@ -312,9 +298,9 @@ function useLandscape(uid: string) {
       corcovado: corcovado.d,
       corcovadoLines: striations(corcovado.at, 7, 18, 2160, 2310, 140),
       hill: hill.d,
-      hillHatch: hatch(hill.at, 5, 520, 70, 9),
+      hillHatch: hatch(hill.at, 5, 520, 70, 9, 0, PANO_W),
       front: front.d,
-      frontHatch: hatch(front.at, 9, 420, 40, 12),
+      frontHatch: hatch(front.at, 9, 420, 40, 12, 0, PANO_W),
       monuments,
       christ,
       rounds,
