@@ -855,3 +855,29 @@ html.lenis, html.lenis body { height: auto; }
 @media print {
   .mesh { display: none; }
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Trip-type card illustrations: small loops that make each scene feel alive. */
+/* -------------------------------------------------------------------------- */
+.art-rise { transform-box: fill-box; animation: art-rise 4.2s ease-in-out infinite; }
+@keyframes art-rise { 0% { transform: translateY(8px) scale(0.8); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-26px) scale(1.05); opacity: 0; } }
+.art-float { animation: art-float 4s ease-in-out infinite alternate; }
+@keyframes art-float { from { transform: translateY(2px); } to { transform: translateY(-6px); } }
+.art-hop { animation: art-hop 1.6s ease-in-out infinite; }
+@keyframes art-hop { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+.art-spark { animation: art-spark 1.8s ease-out infinite; }
+@keyframes art-spark { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(8px, -34px); opacity: 0; } }
+.art-walk { animation: art-walk 0.9s ease-in-out infinite; }
+@keyframes art-walk { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+.art-drive { offset-rotate: auto; animation: art-drive 6s linear infinite; }
+@keyframes art-drive { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+.art-dash { animation: art-dash 1.4s linear infinite; }
+@keyframes art-dash { to { stroke-dashoffset: -26; } }
+.art-tick { transform-origin: 0 0; animation: art-tick 6s steps(12) infinite; }
+@keyframes art-tick { to { transform: rotate(360deg); } }
+.art-drop { animation: art-drop 2.7s cubic-bezier(0.5, 0, 0.9, 0.6) infinite; }
+@keyframes art-drop { 0% { transform: translateY(-10px); opacity: 0; } 15% { opacity: 1; } 70% { transform: translateY(40px); opacity: 1; } 80%, 100% { transform: translateY(42px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .art-rise, .art-float, .art-hop, .art-spark, .art-walk, .art-drive, .art-dash, .art-tick, .art-drop { animation: none; }
+  .art-drive { offset-distance: 45%; }
+}

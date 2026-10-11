@@ -3,12 +3,12 @@
 import { animate, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-/** Counts up to `value` the first time it scrolls into view. */
+/** Counts up to `value` the first time it scrolls into view. The real number is in the HTML, so crawlers and slow devices never see 0. */
 export function Counter({ value, duration = 1.8, prefix = "", suffix = "", className }: { value: number; duration?: number; prefix?: string; suffix?: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const reduce = useReducedMotion();
-  const [display, setDisplay] = useState(reduce ? value : 0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!inView || reduce) return;
