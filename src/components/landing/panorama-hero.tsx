@@ -38,7 +38,7 @@ const SUGGESTIONS = [
 /** What the composer understood so far, as small chips. */
 function understood(p: ParsedPrompt) {
   const chips: { key: string; icon: typeof MapPin; text: string }[] = [];
-  if (p.destination) chips.push({ key: "where", icon: MapPin, text: p.destination });
+  if (p.destination) chips.push({ key: "where", icon: MapPin, text: p.legs && p.legs.length > 1 ? p.legs.map((l) => l.city).join(" → ") : p.destination });
   if (p.days || p.month) chips.push({ key: "when", icon: CalendarDays, text: [p.days && `${p.days} ${p.days === 1 ? "day" : "days"}`, p.month].filter(Boolean).join(" · ") });
   if (p.companions) chips.push({ key: "who", icon: Users, text: labelFor(COMPANIONS, p.companions) });
   if (p.budget) chips.push({ key: "budget", icon: Wallet, text: formatMoney(p.budget, p.budgetCurrency ?? "USD", 0) });

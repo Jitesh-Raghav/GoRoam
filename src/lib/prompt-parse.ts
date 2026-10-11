@@ -16,6 +16,8 @@ export interface ParsedPrompt {
   /** The budget as written, in `budgetCurrency`. */
   budget?: number;
   budgetCurrency?: string;
+  /** Multi-city: every city in order (the first is `destination`), with days each. */
+  legs?: { city: string; days: number }[];
   companions?: Companions;
   interests: string[];
   diet: string[];
@@ -193,6 +195,53 @@ function findPlace(raw: string, t: string): string | undefined {
   return undefined;
 }
 
+/**
+ * "Delhi, Jaipur and Udaipur", "Tokyo then Kyoto", "Lisbon → Porto": two or
+ * more known places joined by a list word, in the order written. Days are
+ * shared out evenly (earlier cities get any extra).
+ */
+function findLegs(t: string, days?: number): { city: string; days: number }[] | undefined {
+  const padded = ` ${t.replace(/->|→|–|—/g, " then ").replace(/[^a-z0-9' ,&]+/g, " ")} `;
+  const hits: { p: string; at: number }[] = [];
+  for (const p of PLACES) {
+    if (p.length < 3 || AMBIGUOUS.has(p)) continue;
+    let at = padded.indexOf(` ${p} `);
+    if (at === -1) at = padded.indexOf(` ${p},`);
+    while (at !== -1) {
+      if (!hits.some((h) => at < h.at + h.p.length + 1 && h.at < at + p.length + 1)) {
+        const before = padded.slice(Math.max(0, at - 8), at);
+        if (!/\bfrom\s*$/.test(before)) hits.push({ p, at });
+      }
+      const next = padded.indexOf(` ${p} `, at + 1);
+      at = next;
+    }
+  }
+  hits.sort((a, b) => a.at - b.at);
+  const route: string[] = [];
+  for (let i = 0; i < hits.length; i++) {
+    if (route.includes(hits[i].p)) continue;
+    if (route.length) {
+      // Only places joined by a list word count as a route ("Delhi, Jaipur and Udaipur").
+      const gap = padded.slice(hits[i - 1].at + hits[i - 1].p.length + 1, hits[i].at);
+      if (!/^\s*(,|and|&|then|to|,\s*and|,\s*then|and then|before|after that)\s*$/.test(gap)) {
+        // A region before its cities ("Kerala: Kochi, Munnar") isn't a stop: start again from here.
+        if (route.length === 1) {
+          route.length = 0;
+          route.push(hits[i].p);
+          continue;
+        }
+        break;
+      }
+    }
+    route.push(hits[i].p);
+  }
+  if (route.length < 2) return undefined;
+  const cities = route.slice(0, 5);
+  const total = Math.max(days ?? cities.length * 2, cities.length);
+  const base = Math.floor(total / cities.length);
+  return cities.map((c, i) => ({ city: titleCase(c), days: base + (i < total % cities.length ? 1 : 0) }));
+}
+
 export function parseTripPrompt(text: string, now = new Date()): ParsedPrompt {
   const raw = text.replace(/\s+/g, " ").trim();
   const t = raw.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -201,9 +250,12 @@ export function parseTripPrompt(text: string, now = new Date()): ParsedPrompt {
     .map(([id]) => id)
     .slice(0, 5);
   const budget = findBudget(t);
+  const days = findDays(t);
+  const legs = findLegs(t, days);
   return {
-    destination: findPlace(raw, t),
-    days: findDays(t),
+    destination: legs ? legs[0].city : findPlace(raw, t),
+    legs,
+    days: legs && !days ? legs.reduce((n, l) => n + l.days, 0) : days,
     month: month === undefined ? undefined : titleCase(MONTHS[month]),
     startDate: month === undefined ? undefined : iso(startFor(month, now)),
     budget: budget?.amount,
@@ -220,6 +272,7 @@ export function plannerHref(p: ParsedPrompt) {
   const q = new URLSearchParams();
   if (p.destination) q.set("destination", p.destination);
   if (p.days) q.set("days", String(p.days));
+  if (p.legs && p.legs.length > 1) q.set("legs", p.legs.slice(1).map((l) => `${l.city}:${l.days}`).join(","));
   if (p.budget) q.set("budget", String(p.budget));
   if (p.budget && p.budgetCurrency && p.budgetCurrency !== "USD") q.set("cur", p.budgetCurrency);
   if (p.startDate) q.set("start", p.startDate);

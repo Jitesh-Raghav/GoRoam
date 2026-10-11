@@ -227,11 +227,33 @@ export interface Transfer {
   tip?: string;
 }
 
-/** One leg of a multi-city trip: a city and how many nights there. */
+/** One leg of a multi-city trip: a city and how many days are spent there. */
 export interface TripLeg {
   city: string;
-  nights: number;
+  days: number;
 }
+
+/** Up to five cities, 1–30 days each, adding up to `total` (the last leg absorbs any difference). */
+export function normalizeLegs(input: unknown, total: number): TripLeg[] | undefined {
+  if (!Array.isArray(input)) return undefined;
+  const legs = input
+    .map((l) => ({ city: typeof l?.city === "string" ? l.city.replace(/\s+/g, " ").trim().slice(0, 80) : "", days: Math.max(1, Math.min(30, Math.round(Number(l?.days)) || 1)) }))
+    .filter((l) => l.city)
+    .slice(0, 5);
+  if (legs.length < 2) return undefined;
+  let sum = legs.reduce((n, l) => n + l.days, 0);
+  // Fit the legs to the trip: trim from the end, or let the last leg take the extra days.
+  for (let i = legs.length - 1; sum > total && i >= 0; i--) {
+    const cut = Math.min(legs[i].days - 1, sum - total);
+    legs[i].days -= cut;
+    sum -= cut;
+  }
+  if (sum < total) legs[legs.length - 1].days += total - sum;
+  return sum > total ? undefined : legs;
+}
+
+/** "Delhi → Jaipur → Udaipur". */
+export const legsLabel = (legs: TripLeg[]) => legs.map((l) => l.city.split(",")[0]).join(" → ");
 
 export type DayPeriod = "morning" | "afternoon" | "evening";
 const PERIODS: DayPeriod[] = ["morning", "afternoon", "evening"];

@@ -33,6 +33,7 @@ import {
   Palmtree,
   Plane,
   Plus,
+  Route,
   Sailboat,
   ShoppingBag,
   Sofa,
@@ -43,6 +44,7 @@ import {
   Users,
   UtensilsCrossed,
   Wallet,
+  X,
 } from "@/components/site/icons";
 
 import { useCredits } from "@/components/dashboard/dashboard-layout";
@@ -66,6 +68,8 @@ import {
   TRANSPORT,
   VIBES,
   labelFor,
+  legsLabel,
+  type TripLeg,
   type TripPreferences,
 } from "@/lib/trip";
 import { PLANS, perTrip } from "@/lib/plans";
@@ -121,6 +125,8 @@ export interface TripFormData {
   budget: number;
   budgetCurrency: string;
   interests: string[];
+  /** Multi-city: the route after the first city (which is `destination`), with days in each. Empty for one city. */
+  legs?: TripLeg[];
 }
 
 interface TripFormProps {
@@ -301,6 +307,82 @@ function Label({ children, aside }: { children: ReactNode; aside?: ReactNode }) 
   );
 }
 
+/**
+ * A multi-city route: the destination is the first city, then each next city
+ * with its days. The trip's length follows the days, and changing the trip's
+ * length elsewhere adjusts the last city.
+ */
+function CityRoute({
+  first,
+  firstDays,
+  legs,
+  onFirstDays,
+  onChange,
+  error,
+}: {
+  first: string;
+  firstDays: number;
+  legs: TripLeg[];
+  onFirstDays: (d: number) => void;
+  onChange: (legs: TripLeg[]) => void;
+  error?: string;
+}) {
+  const days = (value: number, set: (v: number) => void, label: string) => (
+    <div className="flex shrink-0 items-center gap-1 rounded-full bg-white px-1 py-1 ring-1 ring-line" aria-label={label}>
+      <button type="button" onClick={() => set(Math.max(1, value - 1))} className="grid size-7 place-items-center rounded-full text-ink hover:bg-paper-2" aria-label={`Fewer days: ${label}`}>
+        <Minus className="size-3.5" />
+      </button>
+      <span className="w-14 text-center text-sm text-ink">
+        {value} {value === 1 ? "day" : "days"}
+      </span>
+      <button type="button" onClick={() => set(Math.min(30, value + 1))} className="grid size-7 place-items-center rounded-full text-ink hover:bg-paper-2" aria-label={`More days: ${label}`}>
+        <Plus className="size-3.5" />
+      </button>
+    </div>
+  );
+  return (
+    <div className={cn("rounded-[22px] bg-paper/60 p-4 ring-1", error ? "ring-destructive/60" : "ring-line")}>
+      <p className="eyebrow mb-3 flex items-center gap-2 text-[0.6rem] text-stone">
+        <Route className="size-3.5 text-brand" /> Your route · {legs.length + 1} cities
+      </p>
+      <ol className="space-y-2">
+        <li className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2.5 ring-1 ring-line">
+          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ink font-mono text-[11px] text-paper">1</span>
+          <span className={cn("min-w-0 flex-1 truncate text-sm", first ? "text-ink" : "text-stone")}>{first || "Your destination above"}</span>
+          {days(firstDays, onFirstDays, first || "first city")}
+        </li>
+        {legs.map((leg, i) => (
+          <li key={i} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-2 pl-3 ring-1 ring-line sm:flex-nowrap">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brand font-mono text-[11px] text-white">{i + 2}</span>
+            <div className="min-w-0 flex-1 basis-40">
+              <PlaceField
+                id={`trip-leg-${i}`}
+                kind="to"
+                label={`Then on to`}
+                icon={MapPin}
+                value={leg.city}
+                onChange={(v) => onChange(legs.map((l, k) => (k === i ? { ...l, city: v } : l)))}
+                placeholder={i === 0 ? "e.g. Jaipur" : "e.g. Udaipur"}
+              />
+            </div>
+            {days(leg.days, (d) => onChange(legs.map((l, k) => (k === i ? { ...l, days: d } : l))), leg.city || `city ${i + 2}`)}
+            <button type="button" onClick={() => onChange(legs.filter((_, k) => k !== i))} className="grid size-8 shrink-0 place-items-center rounded-full text-stone hover:bg-destructive/10 hover:text-destructive" aria-label={`Remove ${leg.city || `city ${i + 2}`}`}>
+              <X className="size-4" />
+            </button>
+          </li>
+        ))}
+      </ol>
+      {legs.length < 4 && (
+        <button type="button" onClick={() => onChange([...legs, { city: "", days: 2 }])} className="mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-brand transition-colors hover:bg-brand-soft">
+          <Plus className="size-4" /> Add another city
+        </button>
+      )}
+      <p className="mt-2 px-1 text-xs text-stone">The first day in each new city is a travel day: we&apos;ll pick the train, flight or road option locals use, with times and costs.</p>
+      <FieldError message={error} />
+    </div>
+  );
+}
+
 /** Currencies offered for the budget, besides the traveller's own. */
 const BUDGET_CURRENCIES = ["USD", "EUR", "GBP", "INR", "JPY", "AUD", "CAD", "SGD", "AED", "CHF"];
 
@@ -361,6 +443,15 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     const days = Number(q.get("days"));
     const budget = Number(q.get("budget"));
     const cur = /^[A-Z]{3}$/.test(q.get("cur") ?? "") ? q.get("cur")! : "USD";
+    // "Jaipur:2,Udaipur:2": the cities after the destination, from the landing prompt.
+    const urlLegs = (q.get("legs") ?? "")
+      .split(",")
+      .map((p) => {
+        const [city, n] = p.split(":");
+        return { city: (city ?? "").trim().slice(0, 80), days: Math.max(1, Math.min(30, Math.round(Number(n)) || 2)) };
+      })
+      .filter((l) => l.city.length >= 2)
+      .slice(0, 4);
     if (budget > 0) budgetSet.current = true;
     const start = q.get("start") ?? "";
     const vibes = (q.get("vibes") ?? "").split(",").filter((v) => VIBES.some((o) => o.id === v)).slice(0, 5);
@@ -371,6 +462,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
       ...(budget > 0 ? { budget: Math.round(budget), budgetCurrency: cur } : {}),
       ...(/^\d{4}-\d{2}-\d{2}$/.test(start) && start >= today ? { startDate: start } : {}),
       ...(vibes.length ? { interests: vibes } : {}),
+      ...(urlLegs.length ? { legs: urlLegs } : {}),
     }));
 
     // From the landing page's free-form trip description.
@@ -402,6 +494,30 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   }, [money.live, money.region, money.rates]);
 
   const people = prefs.adults + prefs.children;
+  const legs = formData.legs ?? [];
+  const legDays = legs.reduce((n, l) => n + l.days, 0);
+  const firstDays = Math.max(1, formData.numberOfDays - legDays);
+  const setLegs = (next: TripLeg[], first = firstDays) => {
+    setFormData((prev) => ({ ...prev, legs: next, numberOfDays: Math.min(30, first + next.reduce((n, l) => n + l.days, 0)) }));
+    if (errors.legs) setErrors((prev) => ({ ...prev, legs: "" }));
+  };
+  /** The whole route, first city included, for the planner. */
+  const route = useMemo<TripLeg[] | undefined>(
+    () => (formData.legs?.length ? [{ city: formData.destination, days: firstDays }, ...formData.legs] : undefined),
+    [formData.legs, formData.destination, firstDays]
+  );
+  // If the trip gets shorter elsewhere (the date picker), take days from the last cities first.
+  useEffect(() => {
+    if (!formData.legs?.length || formData.numberOfDays - formData.legs.reduce((n, l) => n + l.days, 0) >= 1) return;
+    let over = 1 - (formData.numberOfDays - formData.legs.reduce((n, l) => n + l.days, 0));
+    const next = [...formData.legs].map((l) => ({ ...l }));
+    for (let i = next.length - 1; over > 0 && i >= 0; i--) {
+      const cut = Math.min(next[i].days - 1, over);
+      next[i].days -= cut;
+      over -= cut;
+    }
+    setFormData((prev) => ({ ...prev, legs: over > 0 ? next.slice(0, Math.max(0, prev.numberOfDays - 1)) : next }));
+  }, [formData.numberOfDays, formData.legs]);
   const cur = formData.budgetCurrency;
   /** The budget in USD, which is what the planner and the AI work in; null until rates arrive for a non-USD budget. */
   const budgetUsd = cur === "USD" ? formData.budget : money.toUsd(formData.budget, cur);
@@ -450,6 +566,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
       if (!formData.startDate) e.startDate = "Pick a start date.";
       else if (formData.startDate < today) e.startDate = "Pick a date from today onwards.";
       if (formData.numberOfDays < 1 || formData.numberOfDays > 30) e.numberOfDays = "Trips can be 1 to 30 days.";
+      if (legs.length && legs.some((l) => l.city.trim().length < 2)) e.legs = "Name every city on your route, or remove the empty one.";
     }
     if (upTo >= 1) {
       if (budgetUsd === null) e.budget = "We couldn't load exchange rates. Switch the budget to USD and try again.";
@@ -461,7 +578,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     setErrors(e);
     const bad = Object.keys(e);
     if (bad.length) {
-      const first = STEPS.findIndex((_, i) => (i === 0 ? ["source", "destination", "startDate", "numberOfDays"] : i === 1 ? ["budget"] : i === 2 ? ["interests"] : []).some((k) => bad.includes(k)));
+      const first = STEPS.findIndex((_, i) => (i === 0 ? ["source", "destination", "startDate", "numberOfDays", "legs"] : i === 1 ? ["budget"] : i === 2 ? ["interests"] : []).some((k) => bad.includes(k)));
       if (first >= 0 && first !== step) {
         setDir(first > step ? 1 : -1);
         setStep(first);
@@ -499,6 +616,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         body: JSON.stringify({
           ...formData,
           budget: Math.round(budgetUsd ?? formData.budget),
+          legs: route,
           numberOfPeople: people,
           tripType: prefs.companions,
           preferences: cur === "USD" ? prefs : { ...prefs, budgetCurrency: cur, budgetLocal: formData.budget },
@@ -544,11 +662,12 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   const pass = useMemo(
     () => ({
       ...formData,
+      ...(route ? { destination: legsLabel(route) } : {}),
       numberOfPeople: people,
       tripType: labelFor(COMPANIONS, prefs.companions),
       note: `${labelFor(PACES, prefs.pace)} pace · ${labelFor(STAYS, prefs.stay)} · ${labelFor(SPEND, prefs.spend)}`,
     }),
-    [formData, people, prefs]
+    [formData, people, prefs, route]
   );
   const vibeLabels = useMemo(() => Object.fromEntries(VIBES.map((v) => [v.id, v.label])), []);
 
@@ -642,6 +761,17 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                         <ArrowLeftRight className="size-4" />
                       </button>
                     </div>
+                    {legs.length ? (
+                      <CityRoute first={formData.destination.split(",")[0]} firstDays={firstDays} legs={legs} onFirstDays={(d) => setLegs(legs, d)} onChange={(next) => setLegs(next)} error={errors.legs} />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setLegs([{ city: "", days: Math.max(1, Math.min(3, formData.numberOfDays - 1)) }], Math.max(1, formData.numberOfDays - Math.max(1, Math.min(3, formData.numberOfDays - 1))))}
+                        className="-mt-4 inline-flex items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-sm text-brand ring-1 ring-brand/25 transition-colors hover:bg-brand-soft"
+                      >
+                        <Route className="size-4" /> Visiting more than one city? Add a stop
+                      </button>
+                    )}
                     <Inspire
                       className="-mt-4"
                       from={formData.source}

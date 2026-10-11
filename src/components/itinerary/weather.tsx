@@ -178,3 +178,58 @@ export function WeatherOutlook({ days, className }: { days: DayWeather[]; classN
     </div>
   );
 }
+
+/**
+ * Weather for a trip that may move between cities: each run of days in one
+ * city gets that city's forecast (from its stops' centre), merged by date.
+ * The time zone is the first city's. Single-city trips work as before.
+ */
+export function useRouteWeather(days: DayItinerary[], start: string, enabled = true) {
+  const groups = useMemo(() => {
+    if (!enabled || !days.length) return [];
+    const out: { from: number; days: DayItinerary[] }[] = [];
+    days.forEach((d, i) => {
+      const last = out[out.length - 1];
+      if (last && (last.days[0].city ?? "") === (d.city ?? "")) last.days.push(d);
+      else out.push({ from: i, days: [d] });
+    });
+    return out
+      .map((g) => ({ ...g, centre: tripCentre(g.days) }))
+      .filter((g): g is { from: number; days: DayItinerary[]; centre: [number, number] } => !!g.centre)
+      .slice(0, 6);
+  }, [days, enabled]);
+  const keys = groups.map((g) => {
+    const d = new Date(`${start.slice(0, 10)}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + g.from);
+    return `lat=${g.centre[0].toFixed(3)}&lng=${g.centre[1].toFixed(3)}&start=${d.toISOString().slice(0, 10)}&days=${g.days.length}`;
+  });
+  const signature = keys.join("|");
+  const [results, setResults] = useState<(TripWeather | null)[]>([]);
+  useEffect(() => {
+    if (!signature) return;
+    let live = true;
+    Promise.all(
+      signature.split("|").map((key) => {
+        let hit = asked.get(key);
+        if (!hit) {
+          hit = fetch(`/api/weather?${key}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null);
+          asked.set(key, hit);
+          hit.then((w) => !w && asked.delete(key));
+        }
+        return hit;
+      })
+    ).then((all) => live && setResults(all));
+    return () => {
+      live = false;
+    };
+  }, [signature]);
+  const weather = useMemo<TripWeather | null>(() => {
+    const ok = results.filter((r): r is TripWeather => !!r);
+    if (!ok.length) return null;
+    return { timezone: ok[0].timezone, days: ok.flatMap((r) => r.days).sort((a, b) => a.date.localeCompare(b.date)) };
+  }, [results]);
+  const byDate = useMemo(() => new Map((weather?.days ?? []).map((d) => [d.date, d])), [weather]);
+  return { weather, byDate };
+}

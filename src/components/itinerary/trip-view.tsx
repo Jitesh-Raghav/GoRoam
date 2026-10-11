@@ -96,14 +96,14 @@ import { Bookings } from "./bookings";
 import { CurrencyCard } from "./currency-card";
 import { CurrencySwitch } from "./currency-switch";
 import { EssentialsBento } from "./essentials-bento";
-import { ArrivalPanel, CheckPrice, Daylight, DayLoadChip, HolidayNote, PriceDisclaimer, StopConnector, StopFacts, dayLoad, legBetween, useHolidays } from "./trip-extras";
+import { ArrivalPanel, CheckPrice, TransferCard, Daylight, DayLoadChip, HolidayNote, PriceDisclaimer, StopConnector, StopFacts, dayLoad, legBetween, useHolidays } from "./trip-extras";
 import type { Holiday } from "@/app/api/holidays/route";
 import { JetLagCard } from "./jetlag-card";
 import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
-import { DayForecast, WeatherChip, tripCentre, useLocalTime, useTripWeather } from "./weather";
+import { DayForecast, WeatherChip, useLocalTime, useRouteWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
 import { currencyFor, formatMoney } from "@/lib/currency";
 import { downloadKml, hasMappableStops } from "@/lib/kml";
@@ -443,9 +443,11 @@ function DayPanel({
   const { fmt: money } = useMoney();
   const stops = stopsFor(day);
   const transport = it.itineraryData.trip?.preferences?.transport;
+  // Multi-city trips: everything on this day is looked up in its own city.
+  const place = day.city ?? it.destination;
   const route = dayRouteUrl(
     stops.map((s) => s.activity.place.name),
-    it.destination,
+    place,
     transport === "car" ? "driving" : "transit"
   );
   const load = dayLoad(day, transport);
@@ -455,6 +457,11 @@ function DayPanel({
         <div className="min-w-0">
           <p className="eyebrow flex flex-wrap items-center gap-2 text-stone">
             Day {pad(index + 1)} · {dayLabel(it.startDate, index)}
+            {day.city && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-soft px-2 py-1 text-[0.55rem] tracking-[0.18em] text-brand">
+                <MapPin className="size-3" /> {day.city.split(",")[0]}
+              </span>
+            )}
             {nowSlot !== undefined && (
               <span className="rounded-full bg-brand px-2 py-1 text-[0.55rem] tracking-[0.18em] text-white">Today</span>
             )}
@@ -492,9 +499,11 @@ function DayPanel({
         </div>
       )}
 
-      <DayGlance stops={stops} day={index} destination={it.destination} />
+      <TransferCard transfer={day.transfer} date={isoDay(it.startDate, index)} people={it.numberOfPeople} />
 
-      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} drive={transport === "car" || transport === "rides"} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
+      <DayGlance stops={stops} day={index} destination={place} />
+
+      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={place} drive={transport === "car" || transport === "rides"} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
 
       {index === 0 && <ArrivalPanel arrival={arrival} />}
 
@@ -504,7 +513,7 @@ function DayPanel({
           return (
             <Fragment key={s.key}>
               {leg && <StopConnector leg={leg} />}
-              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} destination={it.destination} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
+              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} destination={place} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
             </Fragment>
           );
         })}
@@ -707,6 +716,7 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
         <h4 className="display text-[1.61rem] leading-[1.02] text-ink">{stay.name}</h4>
         <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-stone">
           <MapPin className="size-3.5 text-brand" /> {stay.area}
+          {stay.city && <span>· {stay.city.split(",")[0]}</span>}
           {stay.type && <span>· {stay.type}</span>}
         </p>
         <p className="mt-3 flex-1 leading-relaxed text-stone">{stay.why}</p>
@@ -830,8 +840,7 @@ export function TripView({
   const owner = !shared && !isPackage;
 
   // Live forecast (or last year's weather on these dates) and the destination's clock.
-  const centre = useMemo(() => (isPackage ? null : tripCentre(days)), [days, isPackage]);
-  const { weather, byDate } = useTripWeather(centre, it.startDate, it.numberOfDays);
+  const { weather, byDate } = useRouteWeather(days, it.startDate, !isPackage);
   const localTime = useLocalTime(weather?.timezone);
   const localCurrency = guide?.currencyCode || currencyFor(flag);
   const holidays = useHolidays(flag, it.startDate, it.numberOfDays);
@@ -1101,9 +1110,15 @@ export function TripView({
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
                       <span className="relative block h-24 overflow-hidden sm:h-28">
-                        <PlacePhoto activity={dayActivities(d)[0]} destination={it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        <PlacePhoto activity={dayActivities(d)[0]} destination={d.city ?? it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
+                        {d.city && (
+                          <span className="absolute left-2 top-2 max-w-[70%] truncate rounded-full bg-ink/45 px-2 py-0.5 text-[10px] text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-sm">
+                            {d.transfer ? "→ " : ""}
+                            {d.city.split(",")[0]}
+                          </span>
+                        )}
                         <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
                         <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{money(d.totalDayCost)}</span>
                       </span>
@@ -1179,7 +1194,7 @@ export function TripView({
         {data?.stays?.length ? (
           <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
             {data.stays.map((s, i) => (
-              <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={query} />
+              <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
             ))}
           </div>
         ) : (

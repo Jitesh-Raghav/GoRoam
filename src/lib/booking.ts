@@ -260,3 +260,16 @@ export function isoDay(startIso: string, offset = 0) {
   d.setUTCDate(d.getUTCDate() + offset);
   return d.toISOString().slice(0, 10);
 }
+
+/** Where to book a multi-city trip's journey between two cities. */
+export function transferLinks(t: { from: string; to: string; mode: string }, date: string, people: number): { name: string; href: string }[] {
+  const from = cityOf(t.from);
+  const to = cityOf(t.to);
+  const links: { name: string; href: string }[] = [];
+  if (t.mode === "flight") {
+    links.push({ name: "Google Flights", href: `https://www.google.com/travel/flights?${qs({ q: `Flights from ${from} to ${to} on ${date} for ${people}`, curr: "USD" })}` });
+  }
+  links.push({ name: t.mode === "flight" ? "Other ways" : "Trains & buses", href: `https://www.rome2rio.com/map/${enc(from)}/${enc(to)}` });
+  links.push({ name: "Route", href: `https://www.google.com/maps/dir/?api=1&${qs({ origin: t.from, destination: t.to, travelmode: t.mode === "car" ? "driving" : "transit" })}` });
+  return links;
+}
