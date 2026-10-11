@@ -190,10 +190,10 @@ export function DateRangePicker({
         aria-expanded={open}
         className={cn(
           "flex h-[4.5rem] w-full items-center gap-3 rounded-2xl bg-paper/60 px-4 text-left ring-1 transition-shadow hover:bg-white",
-          error ? "ring-destructive/60" : open ? "bg-white ring-2 ring-brand/50" : "ring-line"
+          error ? "ring-destructive/60" : open ? "bg-white ring-2 ring-brand/50" : "ring-line-strong"
         )}
       >
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line-strong">
           <CalendarDays className="size-4" />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
@@ -227,7 +227,7 @@ export function DateRangePicker({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.98 }}
               transition={{ duration: 0.4, ease }}
-              className="pointer-events-auto max-h-[92svh] w-full overflow-y-auto rounded-t-[28px] bg-white p-5 shadow-[0_-20px_60px_-20px_rgba(14,31,59,0.4)] ring-1 ring-line sm:w-[min(720px,calc(100vw-3rem))] sm:rounded-[28px] sm:p-7 sm:shadow-[0_40px_90px_-30px_rgba(14,31,59,0.5)]"
+              className="pointer-events-auto max-h-[92svh] w-full overflow-y-auto rounded-t-[28px] bg-white p-5 shadow-[0_-20px_60px_-20px_rgba(14,31,59,0.4)] ring-1 ring-line-strong sm:w-[min(720px,calc(100vw-3rem))] sm:rounded-[28px] sm:p-7 sm:shadow-[0_40px_90px_-30px_rgba(14,31,59,0.5)]"
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm text-stone">

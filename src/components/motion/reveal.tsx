@@ -13,16 +13,20 @@ interface RevealProps {
   /** Fraction of the element that must be visible before revealing. */
   amount?: number;
   duration?: number;
+  /** Fade in as well as rise (default). Off for frosted glass, which can't blur inside a fading parent. */
+  fade?: boolean;
 }
 
 /** Fade + rise into place once the element scrolls into view. */
-export function Reveal({ children, className, delay = 0, y = 28, amount = 0.25, duration = 1 }: RevealProps) {
+export function Reveal({ children, className, delay = 0, y = 28, amount = 0.25, duration = 1, fade = true }: RevealProps) {
   const reduce = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: reduce ? 0 : y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      // fade={false} keeps opacity at 1, for content with backdrop-filter glass:
+      // browsers skip the blur inside a fading ancestor until the fade ends.
+      initial={fade ? { opacity: 0, y: reduce ? 0 : y } : { y: reduce ? 0 : y, scale: reduce ? 1 : 0.97 }}
+      whileInView={fade ? { opacity: 1, y: 0 } : { y: 0, scale: 1 }}
       viewport={{ once: true, amount }}
       transition={{ duration, ease: EASE_OUT_EXPO, delay }}
     >

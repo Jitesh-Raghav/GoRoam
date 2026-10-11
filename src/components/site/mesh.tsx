@@ -55,7 +55,7 @@ export function Mesh({ tone, className, seed = 0 }: { tone: MeshTone; className?
         <i />
         <i />
       </span>
-      {near && <ShaderCanvas frag={FLUID_FRAG} colors={COLORS[tone]} active={active} speed={1.4} seed={seed} scale={0.5} className="absolute inset-0 size-full" />}
+      {near && <ShaderCanvas frag={FLUID_FRAG} colors={COLORS[tone]} active={active} speed={0.34} inertia={0.8} seed={seed} scale={0.5} className="absolute inset-0 size-full" />}
     </span>
   );
 }

@@ -165,7 +165,7 @@ export function Inspire({
                         const scene = sceneForDestination(idea.destination, idea.landscape);
                         const flag = countryCodeFor(idea.destination);
                         return (
-                          <motion.article key={idea.destination} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease, delay: i * 0.07 }} className="group flex flex-col overflow-hidden rounded-[24px] bg-white ring-1 ring-line">
+                          <motion.article key={idea.destination} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease, delay: i * 0.07 }} className="group flex flex-col overflow-hidden rounded-[24px] bg-white ring-1 ring-line-strong">
                             <div className="relative h-36 overflow-hidden">
                               <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
                                 <LazyScene id={scene} tint={SCENES[scene].tint} />
@@ -215,7 +215,7 @@ export function Inspire({
                       })}
                     </div>
                     <div className="mt-4 flex justify-center">
-                      <button type="button" onClick={() => find(true)} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-stone ring-1 ring-line transition-colors hover:bg-ink hover:text-paper">
+                      <button type="button" onClick={() => find(true)} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm text-stone ring-1 ring-line-strong transition-colors hover:bg-ink hover:text-paper">
                         <RefreshCw className="size-3.5" /> Show me others
                       </button>
                     </div>

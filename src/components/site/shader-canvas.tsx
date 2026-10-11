@@ -25,6 +25,8 @@ export interface ShaderCanvasProps {
   seed?: number;
   /** Render resolution as a fraction of CSS pixels (the shaders are soft; 0.5 is plenty). */
   scale?: number;
+  /** How quickly the flow gathers and settles (per second). Lower feels thicker, like honey. */
+  inertia?: number;
   className?: string;
 }
 
@@ -36,7 +38,7 @@ function rgb(hex: string): [number, number, number] {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
-export function ShaderCanvas({ frag, colors, active = true, speed = 1, seed = 0, scale = 0.5, className }: ShaderCanvasProps) {
+export function ShaderCanvas({ frag, colors, active = true, speed = 1, seed = 0, scale = 0.5, inertia = 3, className }: ShaderCanvasProps) {
   const ref = useRef<HTMLDivElement>(null);
   const activeRef = useRef(active);
   activeRef.current = active;
@@ -105,7 +107,7 @@ export function ShaderCanvas({ frag, colors, active = true, speed = 1, seed = 0,
       last = now;
       const target = activeRef.current && !reduced ? 1 : 0;
       // Ease the flow in and out, like a liquid gathering speed and settling.
-      rate += (target - rate) * Math.min(1, dt * 3);
+      rate += (target - rate) * Math.min(1, dt * inertia);
       t += dt * rate * speed;
       resize();
       draw();
@@ -174,7 +176,7 @@ uniform vec2 u_res;uniform float u_time;uniform vec3 u_c0,u_c1,u_c2,u_c3;
 ${NOISE}
 void main(){
   vec2 uv=gl_FragCoord.xy/u_res;
-  vec2 p=uv*vec2(u_res.x/u_res.y,1.)*1.6;
+  vec2 p=uv*vec2(u_res.x/u_res.y,1.)*1.25;
   float t=u_time*.22;
   vec2 q=vec2(fbm(p+vec2(0.,t)),fbm(p+vec2(5.2,1.3)-t*.7));
   vec2 r=vec2(fbm(p+3.5*q+vec2(1.7,9.2)+t*.6),fbm(p+3.5*q+vec2(8.3,2.8)-t*.4));

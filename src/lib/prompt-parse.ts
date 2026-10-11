@@ -253,7 +253,8 @@ export function parseTripPrompt(text: string, now = new Date()): ParsedPrompt {
   const days = findDays(t);
   const legs = findLegs(t, days);
   return {
-    destination: legs ? legs[0].city : findPlace(raw, t),
+    // Multi-city: the last city is where the trip ends; the others are stops on the way.
+    destination: legs ? legs[legs.length - 1].city : findPlace(raw, t),
     legs,
     days: legs && !days ? legs.reduce((n, l) => n + l.days, 0) : days,
     month: month === undefined ? undefined : titleCase(MONTHS[month]),
@@ -272,7 +273,10 @@ export function plannerHref(p: ParsedPrompt) {
   const q = new URLSearchParams();
   if (p.destination) q.set("destination", p.destination);
   if (p.days) q.set("days", String(p.days));
-  if (p.legs && p.legs.length > 1) q.set("legs", p.legs.slice(1).map((l) => `${l.city}:${l.days}`).join(","));
+  if (p.legs && p.legs.length > 1) {
+    // The stops on the way, in order; the destination's own days are what's left of the trip.
+    q.set("stops", p.legs.slice(0, -1).map((l) => `${l.city}:${l.days}`).join(","));
+  }
   if (p.budget) q.set("budget", String(p.budget));
   if (p.budget && p.budgetCurrency && p.budgetCurrency !== "USD") q.set("cur", p.budgetCurrency);
   if (p.startDate) q.set("start", p.startDate);

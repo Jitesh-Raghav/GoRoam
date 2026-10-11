@@ -397,6 +397,35 @@ export function canopyBlobs(x: number, y: number, r: number, count: number, seed
   });
 }
 
+/** Short brush strokes over a slope: the grass and rock texture of a painted hillside. */
+export function hatch(at: (x: number) => number, seed: number, count: number, depth: number, len: number, x0 = 0, x1 = 1600) {
+  const rand = mulberry32(seed);
+  let d = "";
+  for (let i = 0; i < count; i++) {
+    const x = x0 + rand() * (x1 - x0);
+    const y = at(x) + 6 + rand() * depth;
+    const l = len * (0.5 + rand());
+    const lean = (rand() - 0.5) * l * 0.6;
+    d += `M${r1(x)} ${r1(y)}l${r1(lean)} ${r1(-l)}`;
+  }
+  return d;
+}
+
+/** Tiny people in silhouette, standing about along a line: a head and a body each. */
+export function figures(seed: number, at: (x: number) => number, from: number, to: number, count: number, s = 1) {
+  const rand = mulberry32(seed);
+  let d = "";
+  for (let i = 0; i < count; i++) {
+    const x = from + rand() * (to - from);
+    const y = at(x);
+    const h = (15 + rand() * 6) * s;
+    const w = (4 + rand() * 1.6) * s;
+    d += `M${r1(x - w / 2)} ${r1(y)}L${r1(x - w / 2)} ${r1(y - h + w)}Q${r1(x - w / 2)} ${r1(y - h + w * 0.4)} ${r1(x)} ${r1(y - h + w * 0.4)}Q${r1(x + w / 2)} ${r1(y - h + w * 0.4)} ${r1(x + w / 2)} ${r1(y - h + w)}L${r1(x + w / 2)} ${r1(y)}Z`;
+    d += circle(x, y - h - 0.6 * s, 2.5 * s);
+  }
+  return d;
+}
+
 /** A forest of pines standing on a ridge. */
 export function forestOnRidge(
   ridge: Ridge,

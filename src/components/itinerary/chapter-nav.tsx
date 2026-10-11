@@ -88,7 +88,7 @@ export function ChapterNav({ chapters, title, className }: { chapters: Chapter[]
 
   return (
     <nav ref={nav} aria-label="Trip chapters" className={cn("no-print sticky z-30", className)}>
-      <div className="glass relative flex items-center rounded-full p-1 shadow-[0_18px_40px_-26px_rgba(14,31,59,0.6)]">
+      <div data-stuck={stuck ? "true" : undefined} className="liquid-glass flex items-center rounded-full p-1 transition-shadow duration-500">
         {title && (
           <span className={cn("hidden shrink-0 items-center overflow-hidden whitespace-nowrap text-sm text-ink transition-[max-width,opacity,padding] duration-500 lg:flex", stuck ? "max-w-60 pl-4 pr-3 opacity-100" : "max-w-0 opacity-0")}>
             <span className="display truncate">{title}</span>
@@ -110,10 +110,10 @@ export function ChapterNav({ chapters, title, className }: { chapters: Chapter[]
                 }}
                 className={cn(
                   "relative inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm transition-colors sm:flex-1 sm:justify-center",
-                  on ? "text-paper" : "text-ink/70 hover:text-ink"
+                  on ? "text-paper" : "text-ink/80 hover:text-ink"
                 )}
               >
-                {on && <motion.span layoutId="chapter-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+                {on && <motion.span layoutId="chapter-pill" className="absolute inset-0 rounded-full bg-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_6px_14px_-6px_rgba(14,31,59,0.6)]" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
                 <span className={cn("relative size-1.5 rounded-full transition-colors", on ? "bg-sun-2" : "bg-brand/40")} />
                 <span className="relative whitespace-nowrap">{c.label}</span>
               </a>

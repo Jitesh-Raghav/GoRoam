@@ -6,7 +6,9 @@ import {
   circle,
   cypressTree,
   ellipse,
+  figures,
   forestOnRidge,
+  hatch,
   mountainRidge,
   mulberry32,
   palmTree,
@@ -202,12 +204,85 @@ function Petals({ seed, count, color }: { seed: number; count: number; color: st
 }
 
 /* -------------------------------------------------------------------------- */
+/*                          Detail kit (shared bits)                          */
+/* -------------------------------------------------------------------------- */
+
+/** Long, faint rays turning slowly around a low sun. */
+function SunRays({ x, y, color, length = 260, count = 14, opacity = 0.18 }: { x: number; y: number; color: string; length?: number; count?: number; opacity?: number }) {
+  return (
+    <g className="pano-rays" style={{ transformOrigin: `${x}px ${y}px` }}>
+      {Array.from({ length: count }, (_, i) => (
+        <path key={i} d={`M${x} ${y}L${x - 9} ${y - length}L${x + 9} ${y - length}Z`} fill={color} opacity={i % 2 ? opacity * 0.6 : opacity} transform={`rotate(${(i * 360) / count} ${x} ${y})`} />
+      ))}
+    </g>
+  );
+}
+
+/** Thin, high streaks of cloud, drawn as soft rounded strokes. */
+function Streaks({ seed, color, y0, y1, count = 7, opacity = 0.45 }: { seed: number; color: string; y0: number; y1: number; count?: number; opacity?: number }) {
+  const rand = mulberry32(seed);
+  return (
+    <g stroke={color} strokeLinecap="round" opacity={opacity} className="scene-drift" style={{ animationDuration: "90s" }}>
+      {Array.from({ length: count }, (_, i) => {
+        const y = y0 + rand() * (y1 - y0);
+        const x = rand() * VIEW_W;
+        const l = 80 + rand() * 220;
+        return <path key={i} d={`M${r1(x)} ${r1(y)}h${r1(l)}`} strokeWidth={r1(3 + rand() * 5)} />;
+      })}
+    </g>
+  );
+}
+
+/** Lamp posts along a path, each with a warm, slowly breathing glow. */
+function Lamps({ uid, at, xs, h, post, glow }: { uid: string; at: (x: number) => number; xs: number[]; h: number; post: string; glow: string }) {
+  const id = `${uid}-lamp`;
+  return (
+    <g>
+      <defs>
+        <radialGradient id={id}>
+          <stop offset="0" stopColor={glow} stopOpacity="0.85" />
+          <stop offset="0.4" stopColor={glow} stopOpacity="0.25" />
+          <stop offset="1" stopColor={glow} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {xs.map((x, i) => {
+        const y = at(x);
+        const s = h / 40;
+        return (
+          <g key={i}>
+            <path d={rect(x - 0.9 * s, y - h, 1.8 * s, h) + rect(x - 2.6 * s, y - h - 4 * s, 5.2 * s, 4.4 * s)} fill={post} />
+            <circle cx={x} cy={y - h - 2 * s} r={7 * s} fill={`url(#${id})`} className="scene-breathe" style={{ animationDelay: `${-i * 0.9}s` }} />
+            <circle cx={x} cy={y - h - 2 * s} r={1.5 * s} fill={glow} />
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+/** Short glints on still water, shimmering out of step. */
+function Glints({ seed, x0, x1, y0, y1, count, color = "#ffffff", width = 2 }: { seed: number; x0: number; x1: number; y0: number; y1: number; count: number; color?: string; width?: number }) {
+  const rand = mulberry32(seed);
+  return (
+    <g stroke={color} strokeWidth={width} strokeLinecap="round">
+      {Array.from({ length: count }, (_, i) => {
+        const t = rand();
+        const y = y0 + t * (y1 - y0);
+        const x = x0 + rand() * (x1 - x0);
+        const l = 8 + t * 26 * rand();
+        return <path key={i} d={`M${r1(x - l / 2)} ${r1(y)}h${r1(l)}`} className="scene-shimmer" style={{ animationDelay: `${r1(-rand() * 3.4)}s` }} />;
+      })}
+    </g>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                  Scenes                                    */
 /* -------------------------------------------------------------------------- */
 
 const taj: SceneDef = {
   id: "taj",
-  tint: "#2F7C84",
+  tint: "#26408F",
   dark: true,
   render: (uid) => {
     const far = rollingRidge({ seed: 3, y: 744, amp: 16, waves: 4 });
@@ -222,43 +297,79 @@ const taj: SceneDef = {
     }));
     const pool = `M${vx - 14} ${ground + 4}L${vx + 14} ${ground + 4}L${vx + 110} 1000L${vx - 110} 1000Z`;
     const walk = `M${vx - 30} ${ground + 4}L${vx + 30} ${ground + 4}L${vx + 260} 1000L${vx - 260} 1000Z`;
-    const tones = { body: "#DCE8E4", shade: "#A9C6C2", light: "#F7FBF9", glow: "#FFE6B8" };
+    // Moonlit marble: cool white with a sky-blue shade, lanterns glowing warm.
+    const tones = { body: "#E9EFFD", shade: "#A7B9EA", light: "#FFFFFF", glow: "#FFE08A" };
+    // The garden's red sandstone walls and gateways either side, in dusk blue.
+    const wallY = ground + 2;
+    let walls = "";
+    let arches = "";
+    for (const side of [-1, 1]) {
+      const x0 = side < 0 ? 0 : vx + 300;
+      const x1 = side < 0 ? vx - 300 : VIEW_W;
+      walls += rect(x0, wallY - 34, x1 - x0, 34);
+      for (let x = x0 + 18; x < x1 - 20; x += 46) arches += `M${x} ${wallY}L${x} ${wallY - 16}Q${x + 11} ${wallY - 30} ${x + 22} ${wallY - 16}L${x + 22} ${wallY}Z`;
+    }
+    // Pavilion domes (chhatris) on the walls.
+    const chhatris = [140, 420, VIEW_W - 420, VIEW_W - 140]
+      .map((x) => `M${x - 16} ${wallY - 34}L${x - 16} ${wallY - 48}L${x + 16} ${wallY - 48}L${x + 16} ${wallY - 34}Z M${x - 18} ${wallY - 48}Q${x} ${wallY - 78} ${x + 18} ${wallY - 48}Z M${x - 1} ${wallY - 72}l1 -10l1 10Z`)
+      .join("");
+    // Visitors along the walkway, smaller towards the mausoleum.
+    const walkEdge = (x: number) => ground + 8 + ((Math.abs(x - vx) - 30) / 230) * 200;
+    const people = figures(41, (x) => Math.min(990, walkEdge(x)), vx - 230, vx - 70, 5, 1.4) + figures(43, (x) => Math.min(990, walkEdge(x)), vx + 70, vx + 230, 5, 1.4);
     return (
       <>
-        <Sky uid={uid} stops={[[0, "#0F2F42"], [0.34, "#1F6475"], [0.66, "#5FA8A6"], [0.88, "#CFE3CF"], [1, "#F6D9A6"]]} />
+        <Sky uid={uid} stops={[[0, "#111B3D"], [0.3, "#22397A"], [0.58, "#4766C4"], [0.84, "#9DB4F0"], [1, "#DCE5FF"]]} />
+        <Stars seed={9} count={90} maxY={430} opacity={0.8} />
         <Layer depth={0.1}>
-          <Sun uid={uid} x={912} y={410} r={88} color="#FFF3D6" glow="#FFC876" />
+          <Sun uid={uid} x={1060} y={360} r={62} color="#F4F7FF" glow="#C9D8FF" halo={4} haloOpacity={0.55} />
+          <circle cx={1046} cy={346} r={12} fill="#DCE5FB" opacity={0.6} />
+          <circle cx={1078} cy={380} r={8} fill="#DCE5FB" opacity={0.5} />
         </Layer>
-        <Clouds color="#D9F0EB" opacity={0.4} items={[{ x: 170, y: 250, w: 300, seed: 4, speed: 70 }, { x: 1120, y: 180, w: 240, seed: 9, speed: 90 }]} />
-        <Birds x={980} y={300} count={5} color="#0F3140" scale={0.9} duration={46} delay={-8} />
+        <Clouds color="#B4C6F5" opacity={0.22} items={[{ x: 170, y: 250, w: 300, seed: 4, speed: 70 }, { x: 1120, y: 180, w: 240, seed: 9, speed: 90 }]} />
+        <Birds x={980} y={300} count={5} color="#16224A" scale={0.9} duration={46} delay={-8} />
         <Layer depth={0.2}>
-          <path d={far.d} fill="#7FB5AF" />
+          <path d={forestOnRidge(far, { seed: 31, density: 0.09, minH: 10, maxH: 26 })} fill="#7C9BE6" />
+          <path d={far.d} fill="#7C9BE6" />
         </Layer>
         <Layer depth={0.35}>
-          <path d={mid.d} fill="#5A9791" />
+          <path d={mid.d} fill="#5371C6" />
+          <path d={hatch(mid.at, 17, 160, 10, 7)} stroke="#6F8DE0" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
         </Layer>
         <Layer depth={0.5}>
           <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} detailed />
+          {/* Lanterns lit in the arches and the minarets' balconies. */}
+          {[-150, -66, 66, 150].map((dx, i) => (
+            <circle key={i} cx={vx + dx} cy={ground - 40} r={2.6} fill="#FFE08A" className="scene-twinkle" style={{ animationDelay: `${-i * 1.1}s` }} />
+          ))}
+        </Layer>
+        <Layer depth={0.62}>
+          <path d={walls} fill="#2A4590" />
+          <path d={chhatris} fill="#3A56AC" />
+          <path d={arches} fill="#1B2D66" />
         </Layer>
         <Layer depth={0.7}>
-          <rect x="0" y={ground} width={VIEW_W} height={1000 - ground} fill="#1F5654" />
-          <path d={walk} fill="#C9DDD6" />
+          <rect x="0" y={ground} width={VIEW_W} height={1000 - ground} fill="#16264F" />
+          <path d={hatch(() => ground, 23, 260, 190, 9)} stroke="#22397A" strokeWidth={2} strokeLinecap="round" />
+          <path d={walk} fill="#B9CDF7" />
           <defs>
             <clipPath id={`${uid}-pool`}>
               <path d={pool} />
             </clipPath>
           </defs>
-          <path d={pool} fill="#8FCBC4" />
+          <path d={pool} fill="#6F8DE0" />
           <g clipPath={`url(#${uid}-pool)`}>
-            <Reflection uid={uid} y={ground + 4} opacity={0.5}>
+            <Reflection uid={uid} y={ground + 4} opacity={0.55}>
               <Monument id="taj" x={vx} y={ground} scale={1} tones={tones} />
             </Reflection>
+            <Glints seed={5} x0={vx - 90} x1={vx + 90} y0={ground + 30} y1={990} count={16} color="#EEF3FF" />
           </g>
+          <path d={people} fill="#16224A" />
+          <Lamps uid={uid} at={(x) => Math.min(996, walkEdge(x))} xs={[vx - 250, vx - 150, vx + 150, vx + 250]} h={52} post="#16224A" glow="#FFD23F" />
           {trees
             .slice()
             .reverse()
             .map((tr) => (
-              <g key={tr.t} fill={mix("#4E8F86", "#0C2E32", Math.min(tr.t * 1.1, 1))}>
+              <g key={tr.t} fill={mix("#3A56AC", "#0B1533", Math.min(tr.t * 1.1, 1))}>
                 <path d={cypressTree(vx - tr.dx, tr.y, tr.h)} />
                 <path d={cypressTree(vx + tr.dx, tr.y, tr.h)} />
               </g>
@@ -274,7 +385,7 @@ const eiffel: SceneDef = {
   tint: "#A56488",
   dark: true,
   render: (uid) => {
-    const farRoofs = parisRoofs(31, 812, -20, 1640, 22, 62);
+    const farRoofs = parisRoofs(31, 812, -20, 1640, 22, 62, 0.07);
     const nearRoofs = parisRoofs(7, 910, -20, 1640, 30, 78, 0.16);
     const rand = mulberry32(4);
     const sparkles = Array.from({ length: 80 }, (_, i) => {
@@ -306,6 +417,7 @@ const eiffel: SceneDef = {
         </g>
         <Layer depth={0.25}>
           <path d={farRoofs.body} fill="#7C4E74" />
+          <path d={farRoofs.lit} fill="#FFC98A" opacity={0.45} />
         </Layer>
         <Layer depth={0.45}>
           <Monument id="eiffel" x={800} y={baseY} scale={s} tones={{ body: "#241D3D", shade: "#191330" }} detailed />
@@ -323,7 +435,12 @@ const eiffel: SceneDef = {
             .map((c, i) => (
               <circle key={i} cx={r1(c.cx)} cy={r1(c.cy)} r={r1(c.r)} fill="#221933" />
             ))}
+          {/* The quay below: lamps coming on and people out for the sparkle. */}
+          <rect x="0" y="984" width={VIEW_W} height="16" fill="#1A1328" />
+          <Lamps uid={uid} at={() => 985} xs={[360, 560, 1040, 1240]} h={74} post="#1A1328" glow="#FFD9A0" />
+          <path d={figures(12, () => 986, 400, 1200, 9, 1.7)} fill="#1A1328" />
         </Layer>
+        <Birds x={420} y={300} count={3} color="#2A2148" scale={0.8} duration={58} delay={-30} />
       </>
     );
   },
@@ -348,13 +465,17 @@ const colosseum: SceneDef = {
       <>
         <Sky uid={uid} stops={[[0, "#EDB97E"], [0.4, "#F3CB94"], [0.75, "#F8DDB4"], [1, "#FAE8CB"]]} />
         <Layer depth={0.1}>
+          <SunRays x={1150} y={380} color="#FFF3D6" length={420} opacity={0.12} />
           <Sun uid={uid} x={1150} y={380} r={84} color="#FFF8E4" glow="#FFD08C" />
         </Layer>
+        <Streaks seed={7} color="#FFF1DA" y0={120} y1={480} count={8} />
         <Clouds color="#FBE3BF" opacity={0.6} items={[{ x: 160, y: 210, w: 320, seed: 11, speed: 75 }, { x: 1250, y: 150, w: 200, seed: 3, speed: 85 }]} />
         <Birds x={260} y={330} count={6} color="#9A5B38" scale={0.8} duration={42} />
         <Layer depth={0.2}>
           <path d={far.d} fill="#E8BD86" />
           <path d={`M1300 ${far.at(1300) + 2}q24-40 58-40t58 40Z`} fill="#E8BD86" />
+          <path d={forestOnRidge(far, { seed: 13, density: 0.05, minH: 14, maxH: 30, gapChance: 0.4 })} fill="#E1B07A" />
+          <path d={hatch(far.at, 19, 90, 30, 7)} stroke="#D9A872" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
         </Layer>
         <Layer depth={0.32}>
           <path d={pines.d + pineRow} fill="#D6A06D" />
@@ -364,7 +485,26 @@ const colosseum: SceneDef = {
         </Layer>
         <Layer depth={0.72}>
           <path d={front.d} fill="#9A5B39" />
+          <path d={hatch(front.at, 27, 140, 40, 8)} stroke="#B87048" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
+          {/* The Arch of Constantine, and visitors crossing to it. */}
+          {(() => {
+            const ax = 300;
+            const ay = front.at(ax) + 6;
+            const body = rect(ax - 86, ay - 112, 172, 112) + rect(ax - 92, ay - 134, 184, 24) + rect(ax - 96, ay - 116, 192, 6);
+            const arch = (x: number, w: number, h: number) => `M${x - w / 2} ${ay}V${ay - h + w / 2}A${w / 2} ${w / 2} 0 0 1 ${x + w / 2} ${ay - h + w / 2}V${ay}Z`;
+            const holes = arch(ax, 46, 86) + arch(ax - 58, 24, 52) + arch(ax + 58, 24, 52);
+            const cols = [-74, -40, 40, 74].map((dx) => rect(ax + dx - 3, ay - 110, 6, 110)).join("");
+            return (
+              <g>
+                <path d={body} fill="#B06A43" />
+                <path d={cols} fill="#C9814F" />
+                <path d={holes} fill="#6E3A24" />
+              </g>
+            );
+          })()}
+          <path d={figures(33, (x) => front.at(x) + 8, 470, 1180, 11, 1.25)} fill="#6E3A24" />
           <path d={grass.d} fill="#7F4A2E" />
+          <path d={hatch(grass.at, 29, 160, 60, 10)} stroke="#93583A" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
         </Layer>
         <Layer depth={0.9}>
           <path
@@ -391,12 +531,17 @@ const pyramids: SceneDef = {
       <>
         <Sky uid={uid} stops={[[0, "#E6AC74"], [0.4, "#EEC28E"], [0.75, "#F5D8AE"], [1, "#F9E6CA"]]} />
         <Layer depth={0.1}>
+          <SunRays x={1180} y={420} color="#FFF3DC" length={440} opacity={0.12} />
           <Sun uid={uid} x={1180} y={420} r={92} color="#FFF8E8" glow="#FFD39A" />
         </Layer>
+        <Streaks seed={17} color="#FFF0D6" y0={140} y1={520} count={7} />
         <Clouds color="#FAE2BE" opacity={0.5} items={[{ x: 140, y: 280, w: 280, seed: 21, speed: 80 }]} />
         <Birds x={1010} y={250} count={3} color="#A9703F" scale={0.8} duration={52} delay={-20} />
         <Layer depth={0.22}>
           <path d={far.d} fill="#E7BA84" />
+          {/* Saqqara's step pyramid on the far horizon. */}
+          <path d={`M300 ${far.at(330)}L310 ${far.at(330) - 10}L318 ${far.at(330) - 10}L326 ${far.at(330) - 20}L334 ${far.at(330) - 20}L342 ${far.at(330) - 30}L358 ${far.at(330) - 30}L366 ${far.at(330) - 20}L374 ${far.at(330) - 20}L382 ${far.at(330) - 10}L390 ${far.at(330) - 10}L400 ${far.at(330)}Z`} fill="#DDAE78" />
+          <path d={hatch(far.at, 43, 110, 24, 9)} stroke="#F0C995" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
           {[70, 118, 150].map((x, i) => (
             <path key={i} d={palmTree(x, far.at(x) + 6, 46 + i * 8, 0.12 - i * 0.08, i + 2)} fill="#C9935C" />
           ))}
@@ -404,15 +549,34 @@ const pyramids: SceneDef = {
         <Layer depth={0.45}>
           <Monument id="pyramids" x={800} y={plain - 10} scale={0.76} tones={{ body: "#D69B5F", shade: "#AE6D3D", light: "#F4CF98" }} />
           <rect x="0" y={plain - 12} width={VIEW_W} height={VIEW_H - plain + 12} fill="#DDA66B" />
+          {/* The Sphinx keeping watch in front of the pyramids. */}
+          {(() => {
+            const x = 1060;
+            const y = plain + 4;
+            const k = 1.5;
+            const p = (dx: number, dy: number) => `${r1(x + dx * k)} ${r1(y + dy * k)}`;
+            const body = `M${p(-62, 0)}L${p(-62, -10)}Q${p(-50, -18)} ${p(-24, -17)}L${p(14, -17)}L${p(16, -38)}Q${p(18, -50)} ${p(30, -50)}Q${p(40, -50)} ${p(42, -38)}L${p(44, -26)}L${p(40, -17)}L${p(54, -14)}L${p(66, -6)}L${p(66, 0)}Z`;
+            const headdress = `M${p(14, -38)}L${p(24, -52)}L${p(40, -52)}L${p(46, -34)}L${p(40, -26)}L${p(18, -26)}Z`;
+            return (
+              <g>
+                <path d={body} fill="#C98C55" />
+                <path d={headdress} fill="#B57A45" />
+                <path d={`M${p(-62, -3)}L${p(66, -3)}`} stroke="#A9703F" strokeWidth={2} />
+              </g>
+            );
+          })()}
           <g className="scene-walk">
             <path d={caravan} fill="#9A5C2C" />
           </g>
         </Layer>
         <Layer depth={0.62}>
           <path d={mid.d} fill="#CD9053" />
+          <path d={hatch(mid.at, 37, 120, 50, 22)} stroke="#DDA66B" strokeWidth={1.6} strokeLinecap="round" opacity={0.7} />
+          <path d={figures(39, (x) => mid.at(x) + 6, 1180, 1420, 3, 1.4)} fill="#8A4F25" />
         </Layer>
         <Layer depth={0.85}>
           <path d={near.d} fill="#B27037" />
+          <path d={hatch(near.at, 41, 140, 60, 26)} stroke="#C88446" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
         </Layer>
       </>
     );
@@ -468,6 +632,7 @@ const fuji: SceneDef = {
           <Sun uid={uid} x={1230} y={250} r={52} color="#FFF6F3" glow="#FFD5DD" haloOpacity={0.45} />
         </Layer>
         <Clouds color="#FBE4E6" opacity={0.6} items={[{ x: 220, y: 230, w: 300, seed: 13, speed: 70 }]} />
+        <Streaks seed={37} color="#FFF4F4" y0={110} y1={380} count={7} opacity={0.5} />
         <Layer depth={0.14}>
           <path d={mountain} fill="#A9A2C6" />
           <path d={shadeFace} fill="#968FB6" />
@@ -486,6 +651,28 @@ const fuji: SceneDef = {
         <Layer depth={0.48}>
           <path d={hill + forestOnRidge({ d: "", at: hillAt }, { seed: 9, from: 0, to: 1600, density: 0.05, minH: 20, maxH: 46, gapChance: 0.35 })} fill="#6F5470" />
           <Monument id="pagoda" x={690} y={782} scale={0.9} tones={{ body: "#AB4A43", shade: "#7A2E33", glow: "#FFDDBE" }} detailed />
+          {/* A torii on the path up, with stone lanterns and a few walkers. */}
+          {(() => {
+            const tx = 1080;
+            const ty = hillAt(tx) + 14;
+            const h = 96;
+            const posts = rect(tx - 34, ty - h, 7, h) + rect(tx + 27, ty - h, 7, h);
+            const kasagi = `M${tx - 54} ${ty - h - 6}Q${tx} ${ty - h - 2} ${tx + 54} ${ty - h - 6}L${tx + 50} ${ty - h - 16}Q${tx} ${ty - h - 10} ${tx - 50} ${ty - h - 16}Z`;
+            const nuki = rect(tx - 44, ty - h + 16, 88, 6);
+            const lanterns = [tx - 80, tx + 80].map((x) => rect(x - 4, ty - 22, 8, 22) + rect(x - 8, ty - 30, 16, 9) + `M${x - 10} ${ty - 30}L${x} ${ty - 38}L${x + 10} ${ty - 30}Z`).join("");
+            return (
+              <g>
+                <path d={posts + nuki} fill="#C2463E" />
+                <path d={kasagi} fill="#3B2230" />
+                <path d={lanterns} fill="#8D7A86" />
+                {[tx - 80, tx + 80].map((x, i) => (
+                  <rect key={i} x={x - 4} y={ty - 28} width={8} height={5} fill="#FFD9A0" className="scene-twinkle" style={{ animationDelay: `${-i * 1.6}s` }} />
+                ))}
+              </g>
+            );
+          })()}
+          <path d={figures(51, (x) => hillAt(x) + 16, 900, 1240, 4, 1.2)} fill="#4B2C3B" />
+          <path d={hatch(hillAt, 53, 140, 70, 8)} stroke="#7E6080" strokeWidth={1.6} strokeLinecap="round" opacity={0.55} />
         </Layer>
         <Layer depth={0.85}>
           {[left1, right1].map((tree, i) => (
@@ -704,18 +891,23 @@ const machupicchu: SceneDef = {
           <Sun uid={uid} x={1260} y={220} r={48} color="#FFFCF2" glow="#FFF0D0" haloOpacity={0.45} />
         </Layer>
         <Birds x={560} y={340} count={1} color="#3E5A52" scale={1.6} duration={70} delay={-30} />
+        <Streaks seed={27} color="#F4F8F4" y0={180} y1={460} count={8} opacity={0.55} />
         <Layer depth={0.12}>
           <path d={far.d} fill="#B6CFC6" />
         </Layer>
         <Mist uid={uid} y={560} h={140} opacity={0.6} speed={55} />
         <Layer depth={0.22}>
           <path d={far2.d} fill="#98BAAE" />
+          <path d={hatch(far2.at, 73, 140, 60, 14)} stroke="#88AC9F" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
         </Layer>
         <Mist uid={uid} y={690} h={120} opacity={0.5} speed={45} />
         <Layer depth={0.38}>
           <path d={una} fill="#4B7766" />
           <path d={peak} fill="#4E7C69" />
           <path d={peakShade} fill="#416C5B" />
+          {/* The switchback trail up Huayna Picchu. */}
+          <path d="M760 760L800 700L760 650L812 590L786 540L840 470L822 420L870 330L880 280" fill="none" stroke="#7FA88E" strokeWidth={2.2} strokeDasharray="5 6" strokeLinecap="round" opacity={0.8} />
+          <path d={hatch((x) => 300 + Math.abs(x - 900) * 1.4, 61, 90, 380, 12, 700, 1100)} stroke="#5D8A76" strokeWidth={1.6} strokeLinecap="round" opacity={0.5} />
         </Layer>
         <Mist uid={uid} y={772} h={90} opacity={0.55} speed={38} />
         <Layer depth={0.58}>
@@ -725,7 +917,9 @@ const machupicchu: SceneDef = {
           <path d={stone} fill="#D8D0BD" />
           <path d={stoneShade} fill="#B2A994" />
           <path d={slits} fill="#6A6556" />
-          <path d={llama(470, 800) + llama(500, 803)} fill="#F1E9DA" />
+          <path d={llama(470, 800) + llama(500, 803) + llama(1150, 796)} fill="#F1E9DA" />
+          <path d={figures(63, () => 750, 600, 1040, 6, 1)} fill="#3E5A52" />
+          <path d={hatch(() => 830, 67, 120, 150, 9, 200, 1420)} stroke="#5F8A66" strokeWidth={1.8} strokeLinecap="round" opacity={0.55} />
         </Layer>
         <Layer depth={0.9}>
           <path d="M0 1000L0 700C80 760 170 860 240 1000Z" fill="#2E5245" />
@@ -771,7 +965,17 @@ const rio: SceneDef = {
         </Layer>
         <Layer depth={0.34}>
           <path d={left.d} fill="#244E55" />
+          {/* Hillside neighbourhoods coming on for the evening. */}
+          <g fill="#FFD48E">
+            {Array.from({ length: 46 }, (_, i) => {
+              const r = mulberry32(300 + i);
+              const x = 40 + r() * 600;
+              const y = left.at(x) + 14 + r() * 50;
+              return <rect key={i} x={r1(x)} y={r1(y)} width={2.6} height={2.2} opacity={0.5 + r() * 0.5} className={i % 3 ? undefined : "scene-twinkle"} style={i % 3 ? undefined : { animationDelay: `${-i * 0.37}s` }} />;
+            })}
+          </g>
         </Layer>
+        <Birds x={1000} y={420} count={3} color="#12303A" scale={1.2} duration={64} delay={-14} />
         <Layer depth={0.5}>
           <path d={corcovado} fill="#1C4448" />
           <defs>
@@ -790,6 +994,7 @@ const rio: SceneDef = {
               <circle key={l.i} cx={l.x} cy={l.y} r={1.6} className="scene-twinkle" style={{ animationDelay: `${l.d}s` }} />
             ))}
           </g>
+          <path d={sailboat(560, 880, 0.9) + sailboat(1080, 930, 1.2)} fill="#0F272B" />
         </Layer>
         <Layer depth={0.9}>
           <path d={palmTree(110, 1010, 420, 0.22, 4) + palmTree(1520, 1010, 360, -0.2, 8) + palmTree(1440, 1010, 280, -0.1, 12)} fill="#0F272B" />
@@ -841,6 +1046,25 @@ const sydney: SceneDef = {
           <path d={bridge.arch + bridge.pylons + bridge.deck} fill="#44507E" />
           <path d={bridge.truss} stroke="#44507E" strokeWidth={2} />
         </Layer>
+        {/* New Year's fireworks over the bridge. */}
+        <Layer depth={0.14}>
+          {[
+            { x: 1235, y: 470, r: 70, c: "#FFD23F", d: 0 },
+            { x: 1080, y: 520, r: 52, c: "#FF9F8F", d: -1.6 },
+            { x: 1390, y: 430, r: 46, c: "#BFD4FF", d: -0.8 },
+          ].map((f, i) => (
+            <g key={i} fill={f.c} className="scene-sparkle" style={{ animationDelay: `${f.d}s`, animationDuration: "3.2s" }}>
+              {Array.from({ length: 18 }, (_, k) => {
+                const a = (k / 18) * Math.PI * 2;
+                return <circle key={k} cx={r1(f.x + Math.cos(a) * f.r)} cy={r1(f.y + Math.sin(a) * f.r)} r={2.4} />;
+              })}
+              {Array.from({ length: 12 }, (_, k) => {
+                const a = (k / 12) * Math.PI * 2 + 0.2;
+                return <circle key={`i${k}`} cx={r1(f.x + Math.cos(a) * f.r * 0.55)} cy={r1(f.y + Math.sin(a) * f.r * 0.55)} r={1.6} />;
+              })}
+            </g>
+          ))}
+        </Layer>
         <Layer depth={0.45}>
           <Monument id="opera" x={700} y={800} scale={0.8} tones={tones} detailed />
         </Layer>
@@ -855,6 +1079,8 @@ const sydney: SceneDef = {
             <path d="M18 870h8v5h-8zM32 870h8v5h-8zM46 870h8v5h-8z" fill="#FFD48E" />
             <path d="M26 856h14v10h-14z" fill="#1E2A4A" />
           </g>
+          <path d={sailboat(1180, 900, 1.1)} fill="#E9E4F2" opacity={0.9} />
+          <Glints seed={71} x0={900} x1={1550} y0={812} y1={980} count={14} color="#FFE2C0" />
         </Layer>
       </>
     );
@@ -902,6 +1128,8 @@ const newyork: SceneDef = {
           </defs>
           <circle cx={724} cy={236} r={60} fill={`url(#${uid}-torch)`} className="scene-breathe" />
           <Monument id="liberty" x={760} y={792} scale={0.92} tones={tones} detailed />
+          <Lamps uid={uid} at={(x) => 806 - (1 - Math.min(1, Math.abs(x - 755) / 285)) * 22} xs={[560, 640, 880, 960]} h={26} post="#0E1C26" glow="#FFD27A" />
+          <path d={figures(81, (x) => 806 - (1 - Math.min(1, Math.abs(x - 755) / 285)) * 22, 540, 990, 7, 0.8)} fill="#0E1C26" />
           <Reflection uid={uid} y={804} opacity={0.22}>
             <Monument id="liberty" x={760} y={792} scale={0.92} tones={tones} />
           </Reflection>
@@ -912,6 +1140,8 @@ const newyork: SceneDef = {
             <path d="M14 884h92v18h-92z" fill="#E98A55" />
             <path d="M22 889h9v6h-9zM38 889h9v6h-9zM54 889h9v6h-9zM70 889h9v6h-9zM86 889h9v6h-9z" fill="#FFE2A8" />
           </g>
+          <path d={sailboat(1260, 950, 1.1)} fill="#0E1C26" />
+          <Birds x={300} y={520} count={4} color="#0D1A33" scale={0.9} duration={56} delay={-6} />
         </Layer>
       </>
     );
