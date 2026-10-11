@@ -30,7 +30,7 @@ export function FinalCta() {
           <Reveal y={16} delay={0.08}>
             <h2 className="display mt-6 text-[clamp(2.6rem,6vw,5.25rem)] leading-[1] tracking-[-0.035em]">The world is waiting.</h2>
           </Reveal>
-          <Reveal delay={0.25} className="mx-auto mt-10 max-w-xl">
+          <Reveal delay={0.25} fade={false} className="mx-auto mt-10 max-w-xl">
             <TripPrompt tone="glass" />
             <p className="mt-5 text-sm text-paper/70">Your first itinerary is free. No card needed.</p>
           </Reveal>

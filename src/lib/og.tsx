@@ -134,7 +134,7 @@ export async function renderOgCard(card: OgCard) {
         }}
       >
         {/* Glows and a faint grid */}
-        <div style={{ position: "absolute", left: -160, top: -220, width: 620, height: 620, borderRadius: 9999, background: "radial-gradient(circle, rgba(52,209,191,0.32), rgba(52,209,191,0) 70%)" }} />
+        <div style={{ position: "absolute", left: -160, top: -220, width: 620, height: 620, borderRadius: 9999, background: "radial-gradient(circle, rgba(124,196,255,0.32), rgba(124,196,255,0) 70%)" }} />
         <div style={{ position: "absolute", right: -140, bottom: -260, width: 640, height: 640, borderRadius: 9999, background: "radial-gradient(circle, rgba(255,200,118,0.26), rgba(255,200,118,0) 70%)" }} />
         <div
           style={{

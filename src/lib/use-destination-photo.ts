@@ -22,15 +22,16 @@ function lookup(destination: string) {
 
 /** A real photo of the destination, or null (keep showing the illustration). */
 export function useDestinationPhoto(destination: string | null | undefined, enabled = true) {
-  const [photo, setPhoto] = useState<PlacePhoto | null>(null);
+  // Remember which place the photo is of, so a new place never shows the last one's photo while it loads.
+  const [found, setFound] = useState<{ q: string; photo: PlacePhoto | null } | null>(null);
   const q = destination?.replace(/\s+/g, " ").trim() ?? "";
   useEffect(() => {
     if (!q || !enabled) return;
     let live = true;
-    lookup(q).then((p) => live && setPhoto(p));
+    lookup(q).then((photo) => live && setFound({ q, photo }));
     return () => {
       live = false;
     };
   }, [q, enabled]);
-  return photo;
+  return found?.q === q ? found.photo : null;
 }

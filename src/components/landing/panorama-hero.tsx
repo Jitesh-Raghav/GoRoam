@@ -167,7 +167,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
       >
         {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
         <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
-        <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(90%_70%_at_100%_100%,rgba(52,209,191,0.14),transparent_60%)]" />
+        <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(90%_70%_at_100%_100%,rgba(124,196,255,0.18),transparent_60%)]" />
         {/* Frost: a fine grain, like breath on cold glass. */}
         <span aria-hidden className="frost-grain pointer-events-none absolute inset-0 rounded-[28px] opacity-[0.07] mix-blend-overlay" />
         <span aria-hidden className="composer-glow pointer-events-none absolute -inset-[2px] -z-10 rounded-[30px] opacity-0 blur-md transition-opacity duration-700 group-focus-within/composer:opacity-100" />

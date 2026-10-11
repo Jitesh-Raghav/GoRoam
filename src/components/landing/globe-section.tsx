@@ -216,7 +216,8 @@ function SectionGlobe({ focus, onGrab }: { focus: string; onGrab: () => void }) 
 
 /** The place the globe is over: a real photo, the essentials, and a way to plan it. */
 function Postcard({ place, className }: { place: Destination; className?: string }) {
-  const photo = sizedPhoto(usePlacePhoto(place.query), 900);
+  // The landmark itself, not just its city ("Agra" could be any street in Agra).
+  const photo = sizedPhoto(usePlacePhoto(`${place.name}, ${place.place}`), 900);
   return (
     <div className={className}>
       <AnimatePresence mode="wait" initial={false}>
