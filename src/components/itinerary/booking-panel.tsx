@@ -41,7 +41,7 @@ export function PartnerRow({ partner, dark, index = 0 }: { partner: Partner; dar
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: index * 0.05 }}
       href={partner.href}
       target="_blank"
-      rel="noopener noreferrer sponsored"
+      rel="noopener noreferrer sponsored nofollow"
       onClick={() => track("booking_partner_clicked", { partner: partner.id, where: "trip" })}
       className={cn(
         "group flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-colors",
@@ -130,7 +130,7 @@ export function BookingPanel({ query, className, dark = true }: { query: Booking
           </motion.div>
         </AnimatePresence>
         <p className={cn("mt-4 text-[11px] leading-relaxed", dark ? "text-paper/40" : "text-stone-2")}>
-          Opens our partners with your dates and party filled in. Prices and availability are theirs.
+          Opens our partners with your dates and party filled in. Prices and availability are theirs; some links earn GoRoam a small commission, never a markup.
         </p>
       </div>
     </div>

@@ -308,7 +308,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
               <a
                 href={ticketsFor(activity.place.name, destination)}
                 target="_blank"
-                rel="noopener noreferrer sponsored"
+                rel="noopener noreferrer sponsored nofollow"
                 className="inline-flex items-center gap-2 rounded-full bg-paper-2 px-4 py-2 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
               >
                 <Ticket className="size-4" /> Tickets & tours
@@ -725,7 +725,7 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
           <a
             href={primary.href}
             target="_blank"
-            rel="noopener noreferrer sponsored"
+            rel="noopener noreferrer sponsored nofollow"
             className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-brand"
           >
             Check dates on {primary.name} <ArrowUpRight className="size-4" />
@@ -1205,7 +1205,7 @@ export function TripView({
                 key={p.id}
                 href={p.href}
                 target="_blank"
-                rel="noopener noreferrer sponsored"
+                rel="noopener noreferrer sponsored nofollow"
                 className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
               >
                 <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
