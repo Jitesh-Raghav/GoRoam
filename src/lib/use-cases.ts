@@ -246,4 +246,4 @@ export const USE_CASES: UseCase[] = [
   },
 ];
 
-export const useCaseBySlug = (slug: string) => USE_CASES.find((u) => u.slug === slug);
+export const tripTypeBySlug = (slug: string) => USE_CASES.find((u) => u.slug === slug);

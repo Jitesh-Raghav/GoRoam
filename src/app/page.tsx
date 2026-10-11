@@ -5,6 +5,7 @@ import { FinalCta } from "@/components/landing/final-cta";
 import { FounderNote } from "@/components/landing/founder-note";
 import { GlobeSection } from "@/components/landing/globe-section";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { TripTypes } from "@/components/landing/trip-types";
 import { Pricing } from "@/components/landing/pricing";
 import { PanoramaHero } from "@/components/landing/panorama-hero";
 import { ProductFilm } from "@/components/landing/product-film";
@@ -33,6 +34,8 @@ export default async function Home() {
           <Wonders />
           <SectionRule />
           <HowItWorks />
+          <SectionRule />
+          <TripTypes />
           <GlobeSection />
           <TripGallery />
           <SectionRule />
