@@ -13,6 +13,9 @@
  *   NEXT_PUBLIC_VIATOR_MCID          Viator campaign id (mcid)
  *   NEXT_PUBLIC_KLOOK_AID            Klook affiliate id (aid)                  affiliate.klook.com
  *   NEXT_PUBLIC_SKYSCANNER_ASSOCIATE Skyscanner associate id                   partners.skyscanner.net
+ *   NEXT_PUBLIC_AIRALO_URL           Airalo tracking link (from Impact)        airalo.com/affiliate-partners
+ *   NEXT_PUBLIC_SAFETYWING_REF       SafetyWing referenceID                    safetywing.com/affiliates
+ *   NEXT_PUBLIC_SHERPA_AFFILIATE     Sherpa affiliateId                        joinsherpa.com/partners
  *
  * Every partner link goes through /go, which checks the host, counts the click
  * and redirects, so clicks show up in analytics per partner.
@@ -65,6 +68,11 @@ export const PARTNER_HOSTS = [
   "viator.com",
   "klook.com",
   "rome2rio.com",
+  "airalo.com",
+  "airalo.pxf.io",
+  "safetywing.com",
+  "acko.com",
+  "joinsherpa.com",
 ];
 
 /** The tracked link for a partner URL: /go counts the click, then redirects. */
@@ -352,3 +360,19 @@ export function transferLinks(t: { from: string; to: string; mode: string }, dat
   links.push({ name: "Route", href: `https://www.google.com/maps/dir/?api=1&${qs({ origin: t.from, destination: t.to, travelmode: t.mode === "car" ? "driving" : "transit" })}` });
   return links;
 }
+
+/* ------------------------- Before you go: visa, eSIM, cover ------------------------- */
+
+/** Entry rules for the traveller's passport (Sherpa). */
+export const visaLink = (destination: string) =>
+  partnerHref("sherpa", `https://apply.joinsherpa.com/travel-restrictions?${qs({ destination: cityOf(destination), affiliateId: process.env.NEXT_PUBLIC_SHERPA_AFFILIATE })}`);
+
+/** A data eSIM for the destination (Airalo). */
+export const esimLink = () => partnerHref("airalo", process.env.NEXT_PUBLIC_AIRALO_URL || "https://www.airalo.com/");
+
+/** Travel insurance: SafetyWing for most trips, Acko for travellers from India. */
+export const insuranceLinks = (fromIndia: boolean) => {
+  const safetywing = { id: "safetywing", name: "SafetyWing", blurb: "Flexible cover, buy mid-trip", href: partnerHref("safetywing", `https://safetywing.com/nomad-insurance?${qs({ referenceID: process.env.NEXT_PUBLIC_SAFETYWING_REF })}`) };
+  const acko = { id: "acko", name: "Acko", blurb: "Instant policy, Indian passport", href: partnerHref("acko", "https://www.acko.com/travel-insurance/") };
+  return fromIndia ? [acko, safetywing] : [safetywing];
+};
