@@ -533,6 +533,34 @@ export interface ItineraryData {
   reactions?: Record<string, StopReaction>;
   /** What the traveller asked for (added when the planner got richer fields). */
   trip?: { source?: string; preferences?: TripPreferences; legs?: TripLeg[] };
+  /** Trip intelligence: crowds, places to eat, packing, getting around, money manners and carbon. */
+  insights?: TripInsights;
+}
+
+/** What a stop is like to visit, keyed in TripInsights.stops by the place name in lower case. */
+export interface StopInsight {
+  crowd?: "quiet" | "busy" | "packed";
+  /** When it's calmest: "before 9 AM", "weekday afternoons". */
+  quietest?: string;
+  /** Days of the week it's closed: ["Monday"]. */
+  closedOn?: string[];
+  kids?: boolean;
+  accessible?: boolean;
+  /** Where the best photo is, and when. */
+  photo?: string;
+}
+
+export interface TripInsights {
+  stops: Record<string, StopInsight>;
+  /** Places to eat near each day's stops. */
+  eats: { day: number; near: string; name: string; cuisine: string; price: 1 | 2 | 3 | 4; veg: boolean; rating?: number; note: string }[];
+  packing: { item: string; why: string }[];
+  /** What to wear at temples, mosques and the like. */
+  dress?: string;
+  transit: { mode: string; cost: string; tip: string }[];
+  rideApps: string[];
+  money: { tipping: string; bargaining: string };
+  carbon: { totalKg: number; parts: { label: string; kg: number }[]; greener: string[] };
 }
 
 export interface ItineraryDetails {

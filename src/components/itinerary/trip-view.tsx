@@ -104,6 +104,7 @@ import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
+import { DayEats, InsightsProvider, KnowBeforeYouGo, SpendChart, StopInsightRow } from "./insights";
 import { DayForecast, WeatherChip, useLocalTime, useRouteWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
 import { currencyFor, formatMoney } from "@/lib/currency";
@@ -210,7 +211,7 @@ function Countdown({ start, days }: { start: string; days: number }) {
 
 const stopId = (day: number, key: string) => `stop-${day}-${key}`;
 
-function StopCard({ slot, activity, index, day, destination, last, eager, live }: { slot: Slot; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
+function StopCard({ slot, activity, index, day, destination, last, eager, live, date }: { date: string; slot: Slot; activity: ActivitySlot; index: number; day: number; destination: string; last: boolean; eager?: boolean; live?: boolean }) {
   const { fmt: money } = useMoney();
   const cat = activity.category ? CATEGORY[activity.category] : undefined;
   const Icon = slot.icon;
@@ -294,6 +295,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live }
             </p>
           )}
           <StopFacts activity={activity} />
+          <StopInsightRow activity={activity} date={date} />
           <div className="no-print mt-5 flex flex-wrap gap-2">
             <a
               href={mapsSearchUrl(activity.place.name, destination)}
@@ -514,7 +516,7 @@ function DayPanel({
           return (
             <Fragment key={s.key}>
               {leg && <StopConnector leg={leg} />}
-              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} destination={place} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
+              <StopCard slot={s.slot} activity={s.activity} index={k} day={index} date={isoDay(it.startDate, index)} destination={place} last={k === stops.length - 1} eager={print} live={!!nowSlot && nowSlot === s.period} />
             </Fragment>
           );
         })}
@@ -536,6 +538,8 @@ function DayPanel({
           </span>
         </motion.div>
       )}
+
+      <DayEats day={index} destination={it.destination} />
 
       {onJump && total > 1 && (
         <div className="no-print mt-8 flex items-center justify-between gap-3">
@@ -933,7 +937,7 @@ export function TripView({
       },
     },
     ...(hasMappableStops(it) ? [{ icon: MapIcon, label: "Offline map", hint: "Every stop, for any maps app (.kml)", onSelect: () => downloadKml(it) }] : []),
-    { icon: Printer, label: "Save as PDF", hint: "A print-ready copy of the trip", onSelect: printPdf },
+    { icon: Printer, label: "Trip booklet (PDF)", hint: "A printable booklet of the whole trip", onSelect: printPdf },
   ];
   // A later stop's photo for "{city}, unexpectedly", so it isn't the hero shot again.
   const lastDay = days[days.length - 1];
@@ -952,6 +956,7 @@ export function TripView({
 
   return (
     <TripPhotosProvider value={tripPhotos}>
+    <InsightsProvider tripId={it.id} stored={data?.insights} canWrite={owner}>
     <SwapProvider it={it} enabled={owner}>
     <PlanToolsProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
@@ -1243,6 +1248,11 @@ export function TripView({
       )}
 
       <div id="chapter-before" className={chapterBox}>
+      <Band>
+        <SectionTitle eyebrow="Know before you go" title={<>Sorted before <span className="accent">take-off.</span></>} />
+        <KnowBeforeYouGo it={it} guide={guide} />
+      </Band>
+
       {/* Essentials */}
       {(essentials.length > 0 || !!weather?.days.length || !!localCurrency) && (
         <Band>
@@ -1271,6 +1281,7 @@ export function TripView({
           defaultDate={isoDay(it.startDate, -2)}
           onSaved={(bookings) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, bookings } } }))}
         />
+        <SpendChart wallet={data?.wallet} budgetUsd={it.budget} startDate={it.startDate} days={it.numberOfDays} />
         <TripWallet
           tripId={it.id}
           initial={data?.wallet}
@@ -1355,6 +1366,7 @@ export function TripView({
     </ReactionsProvider>
     </PlanToolsProvider>
     </SwapProvider>
+    </InsightsProvider>
     </TripPhotosProvider>
   );
 }
