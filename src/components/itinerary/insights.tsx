@@ -29,7 +29,7 @@ import {
   Wifi,
   type LucideIcon,
 } from "@/components/site/icons";
-import { PlacePhoto, asStop, asThing } from "./place-photo";
+import { PlacePhoto, asStop } from "./place-photo";
 import { cityOf, esimLink, insuranceLinks, mapsSearchUrl, visaLink } from "@/lib/booking";
 import { formatMoney } from "@/lib/currency";
 import { useMoney } from "@/lib/money";
@@ -142,17 +142,18 @@ export function StopInsightRow({ activity, date }: { activity: ActivitySlot; dat
 const NoIcon = (() => null) as unknown as LucideIcon;
 
 /** A real photo (Google Places, then Wikimedia, then the city) filling its positioned parent. */
-function Pic({ name, area, thing, credit = true, className }: { name: string; area?: string; thing?: boolean; credit?: boolean; className?: string }) {
-  const slot = useMemo(() => (thing ? asThing(name) : asStop(name, area)), [name, area, thing]);
+function Pic({ name, area, credit = true, className }: { name: string; area?: string; credit?: boolean; className?: string }) {
+  // Always a place lookup, so a miss still falls back to the trip's city photo.
+  const slot = useMemo(() => asStop(name, area), [name, area]);
   // No camera glyph when nothing is found: the card's own gradient carries it.
   return <PlacePhoto activity={slot} credit={credit} icon={NoIcon} className={className} />;
 }
 
 /** A card whose background is a photo under a deep scrim, for text that stays readable. */
-function PhotoCard({ photo, area, thing, className, scrim = "from-ink via-ink/80 to-ink/25", delay = 0, children }: { photo: string; area?: string; thing?: boolean; className?: string; scrim?: string; delay?: number; children: ReactNode }) {
+function PhotoCard({ photo, area, className, scrim = "from-ink via-ink/80 to-ink/25", delay = 0, children }: { photo: string; area?: string; className?: string; scrim?: string; delay?: number; children: ReactNode }) {
   return (
     <Card className={cn("isolate text-paper", className)} delay={delay}>
-      <Pic name={photo} area={area} thing={thing} credit={false} className="-z-10 transition-transform duration-[1.6s] group-hover:scale-105" />
+      <Pic name={photo} area={area} credit={false} className="-z-10 transition-transform duration-[1.6s] group-hover:scale-105" />
       <span aria-hidden className={cn("absolute inset-0 -z-10 bg-gradient-to-t", scrim)} />
       {children}
     </Card>
@@ -343,7 +344,7 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
               </ul>
             </Card>
             {insights.dress && (
-              <PhotoCard photo={sacred ?? `temple ${city}`} thing={!sacred} className="flex min-h-[22rem] flex-col justify-end lg:col-span-4" delay={0.06}>
+              <PhotoCard photo={sacred ?? `temple ${city}`} className="flex min-h-[22rem] flex-col justify-end lg:col-span-4" delay={0.06}>
                 <CardHead icon={Sparkles} eyebrow="Temples, mosques & shrines" title="What to wear" dark />
                 <p className="mt-4 leading-relaxed text-paper/90">{insights.dress}</p>
                 {sacred && <p className="mt-3 text-xs text-paper/60">Pictured: {sacred}</p>}
@@ -363,7 +364,7 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
                       <div className="flex items-center justify-between gap-2">
                         <span className="inline-flex min-w-0 items-center gap-2.5 text-sm text-ink">
                           <span className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-white">
-                            <Pic name={`${city} ${t.mode}`} thing credit={false} />
+                            <Pic name={`${city} ${t.mode}`} credit={false} />
                           </span>
                           <Icon className="size-4 shrink-0 text-brand" /> <span className="truncate">{t.mode}</span>
                         </span>
@@ -424,19 +425,24 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
             <div className="mt-3">
               <div className={cn("no-scrollbar flex snap-x gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-2 md:overflow-visible", events.length >= 3 && "lg:grid-cols-4")}>
                 {events.slice(0, 4).map((e, i) => (
-                  <PhotoCard key={e.name} photo={`${e.name} ${city}`} thing delay={i * 0.06} className="flex min-h-[20rem] min-w-[80%] snap-start flex-col justify-end md:min-w-0">
-                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] text-paper ring-1 ring-white/25 backdrop-blur-md">
-                      <Sparkles className="size-3 text-sun-2" /> {e.when}
+                  <Card key={e.name} delay={i * 0.06} className="flex min-w-[80%] snap-start flex-col bg-white p-0 ring-1 ring-line sm:p-0 md:min-w-0">
+                    <div className="relative h-44 overflow-hidden [mask-image:linear-gradient(to_bottom,black_45%,transparent)]">
+                      <Pic name={e.where || e.name} area={city} credit={false} className="transition-transform duration-[1.6s] group-hover:scale-105" />
+                    </div>
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-[11px] text-ink ring-1 ring-white/60 backdrop-blur-md">
+                      <Sparkles className="size-3 text-sun" /> {e.when}
                     </span>
-                    {i === 0 && <span className="eyebrow mb-2 block text-[0.55rem] text-sun-2">While you&apos;re there</span>}
-                    <span className="display block text-2xl leading-tight">{e.name}</span>
-                    <span className="mt-2 block text-sm leading-relaxed text-paper/80">{e.what}</span>
-                    {e.where && (
-                      <span className="mt-3 inline-flex items-center gap-1 text-xs text-paper/70">
-                        <MapPin className="size-3" /> {e.where}
-                      </span>
-                    )}
-                  </PhotoCard>
+                    <div className="-mt-6 px-5 pb-5 sm:px-6 sm:pb-6">
+                      {i === 0 && <span className="eyebrow mb-1.5 block text-[0.55rem] text-brand">While you&apos;re there</span>}
+                      <span className="display block text-2xl leading-tight text-ink">{e.name}</span>
+                      <span className="mt-2 block text-sm leading-relaxed text-stone">{e.what}</span>
+                      {e.where && (
+                        <span className="mt-3 inline-flex items-center gap-1 text-xs text-ink/70">
+                          <MapPin className="size-3 text-brand" /> {e.where}
+                        </span>
+                      )}
+                    </div>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -444,8 +450,10 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
           <div className="mt-3 grid gap-3 lg:grid-cols-12">
             {carbon && carbon.totalKg > 0 && (
               <Card className="isolate bg-[#0B3B2E] text-paper lg:col-span-12" delay={0.06}>
-                <Pic name={`${city} forest`} thing credit={false} className="-z-10 opacity-40 mix-blend-luminosity" />
-                <span aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(110deg,#0B3B2E_20%,rgba(11,59,46,0.85)_55%,rgba(14,31,59,0.6))]" />
+                <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-48 opacity-50 [mask-image:linear-gradient(to_bottom,black_20%,transparent)] lg:inset-y-0 lg:left-auto lg:h-auto lg:w-[48%] lg:opacity-60 lg:[mask-image:linear-gradient(to_left,black_35%,transparent)]">
+                  <Pic name={city} credit={false} className="saturate-[0.8]" />
+                  <span className="absolute inset-0 bg-[#0B3B2E]/35 mix-blend-multiply" />
+                </div>
                 <div className="max-w-2xl">
                 <span aria-hidden className="absolute -right-14 -top-14 size-48 rounded-full bg-emerald-400/20 blur-3xl" />
                 <CardHead icon={Leaf} eyebrow="Carbon footprint" title="This trip's footprint" dark />
