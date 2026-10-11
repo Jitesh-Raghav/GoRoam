@@ -69,11 +69,11 @@ export function PanoramaHero() {
             initial={{ opacity: 0 }}
             animate={intro.ready ? { opacity: 1 } : undefined}
             transition={{ duration: 1, delay: delay + 1 }}
-            className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-paper/70"
+            className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-medium text-ink/65"
           >
             {["First trip free", "No card needed", "Any city, any country", "Works offline"].map((t, i) => (
               <span key={t} className="inline-flex items-center gap-3">
-                {i > 0 && <span aria-hidden className="size-1 rounded-full bg-paper/40" />}
+                {i > 0 && <span aria-hidden className="size-1 rounded-full bg-ink/30" />}
                 {t}
               </span>
             ))}

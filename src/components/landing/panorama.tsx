@@ -599,9 +599,55 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
  * thickening towards the top and a glow still lingering over the horizon,
  * kept quiet around the headline (birds fly over the land, not the copy).
  */
+/** Snowy peaks far behind the wonders, their feet lost in a sea of clouds. */
+function useHighPeaks() {
+  return useMemo(() => {
+    // Tallest on the flanks, so the headline sits over open sky.
+    const ridge = mountainRidge({
+      seed: 5,
+      y: 560,
+      amp: 120,
+      rough: 0.6,
+      detail: 8,
+      width: 1600,
+      bottom: 1000,
+      shape: (t) => -bump(t, 0.12, 0.08, 230) - bump(t, 0.26, 0.06, 120) - bump(t, 0.76, 0.07, 150) - bump(t, 0.9, 0.08, 250) - bump(t, 0.5, 0.12, 40),
+    });
+    const far = mountainRidge({ seed: 9, y: 590, amp: 90, rough: 0.58, detail: 8, width: 1600, bottom: 1000, shape: (t) => -bump(t, 0.2, 0.12, 120) - bump(t, 0.82, 0.12, 130) });
+    // Snow caps follow each summit down to a ragged snow line, deeper on the tallest peaks.
+    const jag = mulberry32(17);
+    let snowline = "M-10 0";
+    for (let x = -10; x <= 1610; x += 9) {
+      const top = ridge.at(Math.max(0, Math.min(1600, x)));
+      const depth = Math.max(0, 500 - top) * 0.42 + (jag() - 0.5) * 16 + (x % 27 < 9 ? 10 : 0);
+      snowline += `L${x} ${r1(top + Math.max(4, depth))}`;
+    }
+    snowline += "L1610 0Z";
+    // Shadowed east faces: a darker copy of the ridge, shifted, showing where it falls behind the summits.
+    const shade = mountainRidge({ seed: 5, y: 572, amp: 120, rough: 0.6, detail: 8, width: 1600, bottom: 1000, shape: (t) => -bump(t, 0.125, 0.07, 220) - bump(t, 0.265, 0.05, 110) - bump(t, 0.765, 0.06, 140) - bump(t, 0.905, 0.07, 240) });
+    const gullies = hatch(ridge.at, 13, 90, 60, 22, 0, 1600);
+    // The cloud sea: overlapping puffs along a gently waving top edge.
+    const rand = mulberry32(31);
+    const puffs = Array.from({ length: 26 }, (_, i) => ({
+      cx: r1(-60 + i * 68 + rand() * 30),
+      cy: r1(600 + Math.sin(i * 0.9) * 10 + rand() * 12),
+      rx: r1(70 + rand() * 60),
+      ry: r1(24 + rand() * 18),
+    }));
+    const puffs2 = Array.from({ length: 22 }, (_, i) => ({
+      cx: r1(-40 + i * 80 + rand() * 40),
+      cy: r1(628 + rand() * 14),
+      rx: r1(90 + rand() * 70),
+      ry: r1(26 + rand() * 16),
+    }));
+    return { ridge: ridge.d, far: far.d, shade: shade.d, snowline, gullies, puffs, puffs2 };
+  }, []);
+}
+
 export function PanoramaSky({ className }: { className?: string }) {
   const uid = "sky" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const { ref, paused } = useLiveScene(true);
+  const peaks = useHighPeaks();
 
   return (
     <svg
@@ -622,6 +668,57 @@ export function PanoramaSky({ className }: { className?: string }) {
         <circle cx={1316} cy={207} r={7} fill="#DCE5FB" opacity={0.7} />
         <circle cx={1336} cy={228} r={4.5} fill="#DCE5FB" opacity={0.6} />
         <circle cx={1331} cy={199} r={3} fill="#DCE5FB" opacity={0.55} />
+      </Layer>
+      {/* High peaks in the deep distance, snow catching the moon, rising out of a sea of clouds. */}
+      <defs>
+        <linearGradient id={`${uid}-rock`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8EA8EC" />
+          <stop offset="1" stopColor="#5D7BD0" />
+        </linearGradient>
+        <linearGradient id={`${uid}-snow`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F6F9FF" />
+          <stop offset="1" stopColor="#CBD8FA" />
+        </linearGradient>
+        <linearGradient id={`${uid}-cloud`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#EEF3FF" />
+          <stop offset="1" stopColor="#B9CAF6" />
+        </linearGradient>
+        <clipPath id={`${uid}-snowline`}>
+          <path d={peaks.snowline} />
+        </clipPath>
+        <clipPath id={`${uid}-ridge`}>
+          <path d={peaks.ridge} />
+        </clipPath>
+        <filter id={`${uid}-soft`} x="-10%" y="-60%" width="120%" height="220%">
+          <feGaussianBlur stdDeviation="7" />
+        </filter>
+      </defs>
+      <Layer depth={0.045}>
+        <path d={peaks.far} fill="#A9BCF2" opacity={0.75} />
+        <path d={peaks.ridge} fill={`url(#${uid}-rock)`} />
+        <g clipPath={`url(#${uid}-ridge)`}>
+          <path d={peaks.gullies} stroke="#4E6BC2" strokeOpacity={0.4} strokeWidth={2} strokeLinecap="round" />
+          <g clipPath={`url(#${uid}-snowline)`}>
+            <path d={peaks.ridge} fill={`url(#${uid}-snow)`} />
+            {/* the moon is to the right: west faces sit in blue shadow */}
+            <path d={peaks.shade} fill="#9FB3EC" opacity={0.55} transform="translate(-26 0)" />
+          </g>
+        </g>
+      </Layer>
+      <Layer depth={0.07}>
+        <g filter={`url(#${uid}-soft)`}>
+          <g className="scene-drift" style={{ animationDuration: "110s" }}>
+            {peaks.puffs.map((c, i) => (
+              <ellipse key={i} cx={c.cx} cy={c.cy} rx={c.rx} ry={c.ry} fill={`url(#${uid}-cloud)`} opacity={0.9} />
+            ))}
+          </g>
+          <g className="scene-drift" style={{ animationDuration: "80s", animationDirection: "alternate-reverse" }}>
+            {peaks.puffs2.map((c, i) => (
+              <ellipse key={i} cx={c.cx} cy={c.cy} rx={c.rx} ry={c.ry} fill="#DDE6FF" opacity={0.95} />
+            ))}
+          </g>
+          <rect x="-100" y="632" width="1800" height="400" fill="#D3DEFA" />
+        </g>
       </Layer>
       {/* Light still lingering low over the horizon. */}
       <defs>

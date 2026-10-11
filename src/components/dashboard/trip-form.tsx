@@ -262,7 +262,7 @@ function ChoiceCard({
       className={cn(
         "relative flex rounded-2xl text-left ring-1 transition-colors duration-300",
         compact ? "items-center gap-3 p-3.5" : "flex-col items-start gap-5 p-4",
-        active ? "text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/35"
+        active ? "text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/25"
       )}
     >
       {active && <motion.span layoutId={layoutGroup} className="absolute inset-0 rounded-2xl bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
@@ -289,7 +289,7 @@ function Chip({ label, icon: Icon, active, onClick, disabled }: { label: string;
       disabled={disabled && !active}
       className={cn(
         "inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm ring-1 transition-colors duration-300 disabled:opacity-40",
-        active ? "bg-ink text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/35"
+        active ? "bg-ink text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/25"
       )}
     >
       {Icon && <Icon className={cn("size-4", active ? "text-brand-2" : "text-brand")} />}
@@ -1068,7 +1068,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                             onClick={() => setPref("pace", o.id)}
                             className={cn(
                               "relative rounded-2xl p-4 text-left ring-1 transition-colors duration-300",
-                              prefs.pace === o.id ? "text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/35"
+                              prefs.pace === o.id ? "text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/25"
                             )}
                           >
                             {prefs.pace === o.id && <motion.span layoutId="pace" className="absolute inset-0 rounded-2xl bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
