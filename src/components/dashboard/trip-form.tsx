@@ -559,6 +559,8 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paywall, setPaywall] = useState(false);
+  // "Inspire me where to go" on the home page lands here with ?inspire=1.
+  const [inspireNow, setInspireNow] = useState(false);
   const outOfCredits = creditsLoaded && credits < 1;
   const today = new Date().toISOString().split("T")[0];
 
@@ -566,6 +568,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   // saved when the traveller went to top up their credits.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
+    if (q.get("inspire")) setInspireNow(true);
     try {
       const raw = window.sessionStorage.getItem(PLANNER_DRAFT_KEY);
       const prefilled = ["destination", "days", "budget", "start", "with", "vibes", "diet", "notes"].some((k) => q.get(k));
@@ -925,6 +928,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                       errors={errors}
                     />
                     <Inspire
+                      autoOpen={inspireNow}
                       from={formData.source}
                       companions={prefs.companions}
                       budget={Math.round(budgetUsd ?? 0) || 2000}

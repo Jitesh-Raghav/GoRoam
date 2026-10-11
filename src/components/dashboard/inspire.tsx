@@ -27,6 +27,7 @@ export function Inspire({
   interests,
   onPick,
   className,
+  autoOpen = false,
 }: {
   from: string;
   companions: string;
@@ -35,6 +36,8 @@ export function Inspire({
   interests: string[];
   onPick: (destination: string, month: number) => void;
   className?: string;
+  /** Open straight away ("Inspire me where to go" on the home page). */
+  autoOpen?: boolean;
 }) {
   const { fmt: money } = useMoney();
   const [open, setOpen] = useState(false);
@@ -46,6 +49,10 @@ export function Inspire({
   const [seen, setSeen] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (autoOpen) setOpen(true);
+  }, [autoOpen]);
 
   useEffect(() => {
     if (!open) return;
