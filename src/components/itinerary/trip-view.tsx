@@ -340,7 +340,7 @@ const DayMap = dynamic(() => import("./day-map"), { ssr: false });
  * The day's route: a live, zoomable dark Google map when a Maps key is set,
  * otherwise (or if Google rejects the key) the illustrated route.
  */
-function DayRoute({ stops, seed, destination, className }: { stops: RouteStop[]; seed: string; destination: string; className?: string }) {
+function DayRoute({ stops, seed, destination, className, drive }: { stops: RouteStop[]; seed: string; destination: string; className?: string; drive?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -358,7 +358,7 @@ function DayRoute({ stops, seed, destination, className }: { stops: RouteStop[];
   return (
     <div ref={ref} className={cn("relative", className)}>
       <RouteMap stops={stops} seed={seed} className="absolute inset-0" />
-      {live && near && <DayMap stops={stops} destination={destination} className="absolute inset-0" onFail={() => setFailed(true)} />}
+      {live && near && <DayMap stops={stops} destination={destination} drive={drive} className="absolute inset-0" onFail={() => setFailed(true)} />}
     </div>
   );
 }
@@ -494,7 +494,7 @@ function DayPanel({
 
       <DayGlance stops={stops} day={index} destination={it.destination} />
 
-      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
+      {stops.length > 1 && <DayRoute stops={stops} seed={`${it.id}-${index}`} destination={it.destination} drive={transport === "car" || transport === "rides"} className="no-print mt-3 aspect-[100/48] sm:aspect-[100/40]" />}
 
       {index === 0 && <ArrivalPanel arrival={arrival} />}
 
