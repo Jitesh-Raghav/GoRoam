@@ -280,6 +280,12 @@ export function withStops(day: DayItinerary, stops: ActivitySlot[]): DayItinerar
   return { ...rest, stops, totalDayCost: stops.reduce((n, s) => n + (Number(s.estimatedCost) || 0), 0) };
 }
 
+/** Stops that a downpour spoils: open-air by category or by name. */
+export function isOutdoor(s: ActivitySlot) {
+  if (s.category === 'nature') return true;
+  return /\b(park|garden|grove|beach|viewpoint|lookout|hike|trail|walk|stroll|cruise|boat|ghat|lake|falls|waterfall|square|piazza|bridge|street|market|bazaar|zoo|safari|pass|dunes|ruins|fort|shrine|inari)\b/i.test(`${s.place.name} ${s.place.description ?? ''}`) && !/\b(covered|indoor|museum|gallery|hall)\b/i.test(s.place.name);
+}
+
 /** The stop with this key on the day, if any. */
 export const findStop = (day: DayItinerary | undefined | null, key: string) => dayStops(day).find((s) => s.key === key);
 

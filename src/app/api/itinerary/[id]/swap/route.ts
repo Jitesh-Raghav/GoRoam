@@ -5,7 +5,7 @@ import { limiter, ownedItinerary } from '@/lib/owned-trip';
 import { CHAT_LIMIT } from '@/lib/plans';
 import { refundAiRequest, takeAiRequest, tripContext } from '@/lib/trip-context';
 import { undash } from '@/lib/text';
-import { checkStop } from '@/lib/itinerary-ai';
+import { CATEGORIES, cleanStop, partyOf, str } from '@/lib/stops';
 import { dayActivities, dayStops, findStop, reactionKey, replaceStop, type ActivitySlot, type ItineraryData } from '@/lib/trip';
 
 /**
@@ -16,44 +16,6 @@ import { dayActivities, dayStops, findStop, reactionKey, replaceStop, type Activ
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const allow = limiter(6, 60_000);
-const CATEGORIES = ['sight', 'food', 'nature', 'culture', 'nightlife', 'shopping', 'wellness', 'activity'];
-
-const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
-const coord = (v: unknown, lim: number) => {
-  const n = Number(v);
-  return Number.isFinite(n) && Math.abs(n) <= lim ? Math.round(n * 10000) / 10000 : undefined;
-};
-
-/** Anything a client or a model sends back, reduced to a safe stop. */
-function cleanStop(raw: unknown, fallbackTime: string, people: number): ActivitySlot | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const r = undash(raw) as Record<string, unknown>;
-  const place = (r.place && typeof r.place === 'object' ? r.place : {}) as Record<string, unknown>;
-  const name = str(place.name, 140);
-  if (!name) return null;
-  const cost = Math.round(Number(r.estimatedCost));
-  return checkStop({
-    time: str(r.time, 40) || fallbackTime,
-    duration: str(r.duration, 40) || '2 hours',
-    estimatedCost: Number.isFinite(cost) && cost >= 0 && cost < 100000 ? cost : 0,
-    category: CATEGORIES.includes(String(r.category)) ? String(r.category) : undefined,
-    tip: str(r.tip, 240) || undefined,
-    place: { name, description: str(place.description, 400), area: str(place.area, 80) || undefined, lat: coord(place.lat, 90), lng: coord(place.lng, 180) },
-    priceNote: str(r.priceNote, 80) || undefined,
-    hours: str(r.hours, 90) || undefined,
-    bookAhead: str(r.bookAhead, 90) || undefined,
-    bestTime: str(r.bestTime, 90) || undefined,
-    wear: str(r.wear, 90) || undefined,
-    access: str(r.access, 90) || undefined,
-  }, people);
-}
-
-/** How many are travelling, for the per-person price check. */
-const partyOf = (data: ItineraryData) => {
-  const p = data.trip?.preferences;
-  return p ? Math.max(1, (Number(p.adults) || 0) + (Number(p.children) || 0)) : 2;
-};
-
 function target(body: Record<string, unknown>, data: ItineraryData) {
   const day = Math.round(Number(body.day));
   const slot = typeof body.slot === 'string' ? body.slot.slice(0, 40) : '';

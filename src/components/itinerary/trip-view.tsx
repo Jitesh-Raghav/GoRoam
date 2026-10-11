@@ -101,6 +101,7 @@ import type { Holiday } from "@/app/api/holidays/route";
 import { JetLagCard } from "./jetlag-card";
 import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
+import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
 import { DayForecast, WeatherChip, tripCentre, useLocalTime, useTripWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
@@ -484,6 +485,12 @@ function DayPanel({
           )}
         </div>
       </div>
+
+      {!print && (
+        <div className="mt-4">
+          <DayActions index={index} day={day} rainy={!!weather && (weather.source === "forecast" ? (weather.rain ?? 0) >= 50 : (weather.rain ?? 0) >= 4)} />
+        </div>
+      )}
 
       <DayGlance stops={stops} day={index} destination={it.destination} />
 
@@ -936,6 +943,7 @@ export function TripView({
   return (
     <TripPhotosProvider value={tripPhotos}>
     <SwapProvider it={it} enabled={owner}>
+    <PlanToolsProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
     <div className="trip-sections relative isolate mx-auto max-w-[82.5rem]">
       {/* Hero — doubles as the PDF cover */}
@@ -1328,6 +1336,7 @@ export function TripView({
       {!shared && !isPackage && <Concierge tripId={it.id} city={city} asked={it.chatCount ?? 0} />}
     </div>
     </ReactionsProvider>
+    </PlanToolsProvider>
     </SwapProvider>
     </TripPhotosProvider>
   );
