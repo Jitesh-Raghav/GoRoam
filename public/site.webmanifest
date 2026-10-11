@@ -1,15 +1,33 @@
 {
-  "name": "GoRoam - AI Travel Planning",
+  "name": "GoRoam: AI Trip Planner",
   "short_name": "GoRoam",
-  "description": "Plan your perfect trip with AI-powered itineraries",
+  "description": "Plan any trip in seconds: day-by-day itineraries with real places, honest budgets and a local guide.",
   "icons": [
-    { "src": "/favicon.ico", "sizes": "48x48 32x32 16x16", "type": "image/x-icon" },
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" },
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ],
-  "theme_color": "#0a1e2c",
-  "background_color": "#f4f8f9",
+  "theme_color": "#0e1f3b",
+  "background_color": "#f5f8fc",
   "display": "standalone",
   "start_url": "/",
   "scope": "/"

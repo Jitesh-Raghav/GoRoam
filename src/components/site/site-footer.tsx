@@ -28,6 +28,18 @@ const COLUMNS = [
     ],
   },
   {
+    // The "Plan a trip for…" pages, listed by hand to keep the long page copy out of the footer's bundle.
+    title: "Plan a trip for",
+    links: [
+      { label: "Couples & honeymoons", href: "/plan/couples" },
+      { label: "Families with kids", href: "/plan/family" },
+      { label: "Friends & groups", href: "/plan/friends" },
+      { label: "Road trips", href: "/plan/road-trip" },
+      { label: "Weekend getaways", href: "/plan/weekend-getaway" },
+      { label: "All trip types", href: "/plan" },
+    ],
+  },
+  {
     // Kept to a short, hand-picked list: the full guide data is too heavy to ship in every page's footer.
     title: "Destinations",
     links: [
@@ -321,7 +333,7 @@ export function SiteFooter({ cta = true }: { cta?: boolean }) {
             </a>
           </div>
         </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:col-span-8 lg:pl-8">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:col-span-8 lg:grid-cols-5 lg:gap-x-6 lg:pl-8">
           {COLUMNS.map((col, c) => (
             <motion.div key={col.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, ease, delay: c * 0.06 }}>
               <p className="eyebrow text-paper/45">{col.title}</p>

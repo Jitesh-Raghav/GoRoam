@@ -5,6 +5,7 @@ import { FinalCta } from "@/components/landing/final-cta";
 import { FounderNote } from "@/components/landing/founder-note";
 import { GlobeSection } from "@/components/landing/globe-section";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { TripTypes } from "@/components/landing/trip-types";
 import { Pricing } from "@/components/landing/pricing";
 import { PanoramaHero } from "@/components/landing/panorama-hero";
 import { ProductFilm } from "@/components/landing/product-film";
@@ -15,12 +16,12 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { FAQS } from "@/lib/faq-data";
-import { JsonLd, faqPage, organization, softwareApp, website } from "@/lib/seo";
+import { JsonLd, faqPage, organization, siteNavigation, softwareApp, website } from "@/lib/seo";
 
 export default async function Home() {
   return (
     <>
-      <JsonLd data={[organization, website, softwareApp, faqPage(FAQS)]} />
+      <JsonLd data={[organization, website, softwareApp, siteNavigation, faqPage(FAQS)]} />
       <SmoothScroll />
       <SiteHeader />
       <main>
@@ -33,6 +34,8 @@ export default async function Home() {
           <Wonders />
           <SectionRule />
           <HowItWorks />
+          <SectionRule />
+          <TripTypes />
           <GlobeSection />
           <TripGallery />
           <SectionRule />

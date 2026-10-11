@@ -1,261 +1,14 @@
 "use client";
 
-import { AnimatePresence, motion, useAnimationControls, useScroll, useTransform } from "framer-motion";
-import { CalendarDays, Heart, MapPin, Send, Sparkles, Users, Wallet } from "@/components/site/icons";
-import { useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { createPortal } from "react-dom";
-import { track } from "@/lib/analytics";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { SplitText } from "@/components/motion/split-text";
-import { PillButton } from "@/components/site/pill";
-import { useTypewriter } from "@/components/site/trip-prompt";
+import { TripComposer } from "@/components/site/trip-composer";
 import { useIntro } from "@/components/site/use-intro";
-import { formatMoney } from "@/lib/currency";
-import { useMoney } from "@/lib/money";
-import { parseTripPrompt, plannerHref, type ParsedPrompt } from "@/lib/prompt-parse";
-import { COMPANIONS, VIBES, labelFor } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PanoramaLandscape, PanoramaSky } from "./panorama";
 
 const ease = [0.16, 1, 0.3, 1] as const;
-
-const EXAMPLES = [
-  "7 days in Japan this October, food markets, quiet temples and a hike or two, away from the crowds.",
-  "A 5-day honeymoon in Bali with sunsets, a spa day and great seafood.",
-  "Long weekend in Lisbon with friends, around $1,200, nightlife and pastéis de nata.",
-  "10 days in Rajasthan with the kids: forts, palaces and vegetarian food.",
-];
-
-const SUGGESTIONS = [
-  { label: "Japan in autumn", text: EXAMPLES[0] },
-  { label: "Bali honeymoon", text: EXAMPLES[1] },
-  { label: "Lisbon with friends", text: EXAMPLES[2] },
-  { label: "Rajasthan with kids", text: EXAMPLES[3] },
-];
-
-/** What the composer understood so far, as small chips. */
-function understood(p: ParsedPrompt) {
-  const chips: { key: string; icon: typeof MapPin; text: string }[] = [];
-  if (p.destination) chips.push({ key: "where", icon: MapPin, text: p.legs && p.legs.length > 1 ? p.legs.map((l) => l.city).join(" → ") : p.destination });
-  if (p.days || p.month) chips.push({ key: "when", icon: CalendarDays, text: [p.days && `${p.days} ${p.days === 1 ? "day" : "days"}`, p.month].filter(Boolean).join(" · ") });
-  if (p.companions) chips.push({ key: "who", icon: Users, text: labelFor(COMPANIONS, p.companions) });
-  if (p.budget) chips.push({ key: "budget", icon: Wallet, text: formatMoney(p.budget, p.budgetCurrency ?? "USD", 0) });
-  if (p.interests.length) chips.push({ key: "vibes", icon: Heart, text: p.interests.slice(0, 3).map((i) => labelFor(VIBES, i)).join(", ") });
-  return chips;
-}
-
-// The planning overlay, only loaded when a guest trip is being made.
-const GeneratingOverlay = dynamic(() => import("@/components/dashboard/generating-overlay").then((m) => m.GeneratingOverlay), { ssr: false });
-
-function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
-  const router = useRouter();
-  const { status } = useSession();
-  const [guest, setGuest] = useState<{ destination: string; days: number } | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-  const id = useId();
-  const area = useRef<HTMLTextAreaElement>(null);
-  const shake = useAnimationControls();
-  const [text, setText] = useState("");
-  const [focused, setFocused] = useState(false);
-  const [parsed, setParsed] = useState<ParsedPrompt | null>(null);
-  const typed = useTypewriter(ready && !text && !focused, EXAMPLES);
-  const { toUsd } = useMoney();
-
-  // Read the description as it's typed, a beat after the last keystroke.
-  useEffect(() => {
-    const t = window.setTimeout(() => setParsed(text.trim() ? parseTripPrompt(text) : null), 220);
-    return () => window.clearTimeout(t);
-  }, [text]);
-
-  // Grow with the text, up to five lines.
-  useEffect(() => {
-    const el = area.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 168)}px`;
-  }, [text]);
-
-  const chips = useMemo(() => (parsed ? understood(parsed) : []), [parsed]);
-
-  const submit = () => {
-    const value = text.trim();
-    if (!value) {
-      area.current?.focus();
-      shake.start({ x: [0, -8, 7, -5, 3, 0], transition: { duration: 0.45 } });
-      return;
-    }
-    const p = parseTripPrompt(value);
-    track("hero_prompt_submitted", { length: value.length });
-    // A bare place name ("Lisbon") is a destination even if we've never heard of it.
-    if (!p.destination && value.split(/\s+/).length <= 4 && !/\d/.test(value)) p.destination = value;
-    if (status === "authenticated" || !p.destination) return router.push(plannerHref(p));
-    void planAsGuest(p);
-  };
-
-  // Signed out: plan the first trip right here, no account needed. Days 2+ unlock on sign-in.
-  const planAsGuest = async (p: ParsedPrompt) => {
-    const days = Math.min(p.days ?? 3, 7);
-    setNotice(null);
-    setGuest({ destination: p.destination!, days });
-    // Guest trips are planned in USD; a budget in another currency is converted at today's rate.
-    const budget = p.budget && (!p.budgetCurrency || p.budgetCurrency === "USD" ? p.budget : toUsd(p.budget, p.budgetCurrency));
-    try {
-      const res = await fetch("/api/guest-itinerary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destination: p.destination, days, budget: budget ? Math.round(budget) : undefined, startDate: p.startDate, companions: p.companions, interests: p.interests }),
-      });
-      const body = await res.json().catch(() => ({}));
-      if (body.id) {
-        if (!body.existing) track("guest_trip_generated", { destination: p.destination, days });
-        router.push(`/try/${body.id}`);
-        return;
-      }
-      setGuest(null);
-      if (body.signedIn) return router.push(plannerHref(p));
-      if (body.limited) {
-        track("guest_trip_limited", { destination: p.destination });
-        return void router.push(`/auth?callbackUrl=${encodeURIComponent(plannerHref(p))}`);
-      }
-      setNotice(body.error ?? "We couldn't plan that just now. Try again in a moment.");
-    } catch {
-      setGuest(null);
-      setNotice("We couldn't reach GoRoam. Check your connection and try again.");
-    }
-  };
-
-  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-      e.preventDefault();
-      submit();
-    }
-  };
-
-  const pick = (value: string) => {
-    setText(value);
-    requestAnimationFrame(() => {
-      const el = area.current;
-      if (!el) return;
-      el.focus();
-      el.setSelectionRange(value.length, value.length);
-    });
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 26 }}
-      animate={ready ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 1.2, ease, delay: delay + 0.55 }}
-      className="mx-auto w-full max-w-[46rem]"
-    >
-      {/* Portalled: the composer sits in a transformed container, which would trap a fixed overlay. */}
-      {guest && createPortal(<GeneratingOverlay destination={guest.destination} days={guest.days} />, document.body)}
-      {notice && (
-        <p role="alert" className="mb-3 rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink ring-1 ring-sun/40 backdrop-blur">
-          {notice}
-        </p>
-      )}
-      <motion.form
-        animate={shake}
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-        className="group/composer relative isolate rounded-[28px] bg-white/[0.86] p-2 text-left shadow-[0_40px_90px_-36px_rgba(8,18,46,0.75),0_8px_24px_-12px_rgba(14,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(124,196,255,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/95"
-      >
-        {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
-        <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
-        <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.55),transparent_45%),radial-gradient(90%_70%_at_100%_100%,rgba(124,196,255,0.18),transparent_60%)]" />
-        {/* Frost: a fine grain, like breath on cold glass. */}
-        <span aria-hidden className="frost-grain pointer-events-none absolute inset-0 rounded-[28px] opacity-[0.07] mix-blend-overlay" />
-        <span aria-hidden className="composer-glow pointer-events-none absolute -inset-[2px] -z-10 rounded-[30px] opacity-0 blur-md transition-opacity duration-700 group-focus-within/composer:opacity-100" />
-        <label htmlFor={id} className="sr-only">
-          Describe the trip you want to plan
-        </label>
-        <div className="relative">
-          <textarea
-            id={id}
-            ref={area}
-            rows={2}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            onKeyDown={onKeyDown}
-            enterKeyHint="go"
-            maxLength={400}
-            placeholder={focused ? "Where, how long, who's coming and what you love…" : ""}
-            className="relative block min-h-[4.75rem] w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[1.0625rem] leading-relaxed text-ink outline-none placeholder:text-ink/40 sm:px-5"
-          />
-          {!text && !focused && (
-            <span aria-hidden className="pointer-events-none absolute inset-0 px-4 pt-3.5 text-[1.0625rem] leading-relaxed text-ink/55 sm:px-5">
-              {typed}
-              <span className="ml-0.5 inline-block h-[1.1em] w-px translate-y-[0.2em] animate-pulse bg-ink/70" />
-            </span>
-          )}
-        </div>
-
-        <div className="relative flex flex-col gap-3 border-t border-white/60 px-2 pb-1 pt-2.5 sm:flex-row sm:items-center sm:justify-between sm:pl-3">
-          <div className="flex min-h-9 min-w-0 flex-1 flex-wrap items-center gap-1.5">
-            <AnimatePresence initial={false} mode="popLayout">
-              {chips.length ? (
-                chips.map((c) => (
-                  <motion.span
-                    key={c.key}
-                    layout
-                    initial={{ opacity: 0, scale: 0.8, y: 4 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.85 }}
-                    transition={{ type: "spring", stiffness: 520, damping: 32 }}
-                    className="inline-flex max-w-[15rem] items-center gap-1.5 rounded-full bg-white/60 px-2.5 py-1 text-xs text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-inset ring-white/80 backdrop-blur"
-                  >
-                    <c.icon className="size-3.5 shrink-0 text-brand" />
-                    <span className="truncate">{c.text}</span>
-                  </motion.span>
-                ))
-              ) : (
-                <motion.span
-                  key="hint"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="hidden items-center gap-1.5 text-xs text-ink/60 sm:inline-flex"
-                >
-                  <Sparkles className="size-3.5 text-brand" />
-                  Mention where, how long, who&apos;s coming and what you love
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
-          <PillButton type="submit" variant="ink" className="w-full justify-between shadow-[0_12px_24px_-12px_rgba(14,31,59,0.7),inset_0_1px_0_rgba(255,255,255,0.18)] sm:w-auto" icon={<Send className="size-4 -rotate-12" />}>
-            Plan my trip
-          </PillButton>
-        </div>
-      </motion.form>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={ready ? { opacity: 1 } : undefined}
-        transition={{ duration: 1, delay: delay + 0.85 }}
-        className="mt-4 flex flex-wrap items-center justify-center gap-2"
-      >
-        <span className="eyebrow mr-1 text-paper/65">Try</span>
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s.label}
-            type="button"
-            onClick={() => pick(s.text)}
-            className="rounded-full bg-white/[0.12] px-3.5 py-1.5 text-sm text-paper/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] ring-1 ring-inset ring-white/25 backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-ink"
-          >
-            {s.label}
-          </button>
-        ))}
-      </motion.div>
-    </motion.div>
-  );
-}
 
 export function PanoramaHero() {
   const ref = useRef<HTMLElement>(null);
@@ -312,6 +65,19 @@ export function PanoramaHero() {
 
         <div className="mt-7">
           <TripComposer ready={intro.ready} delay={delay} />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={intro.ready ? { opacity: 1 } : undefined}
+            transition={{ duration: 1, delay: delay + 1 }}
+            className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-paper/70"
+          >
+            {["First trip free", "No card needed", "Any city, any country", "Works offline"].map((t, i) => (
+              <span key={t} className="inline-flex items-center gap-3">
+                {i > 0 && <span aria-hidden className="size-1 rounded-full bg-paper/40" />}
+                {t}
+              </span>
+            ))}
+          </motion.p>
         </div>
 
       </motion.div>

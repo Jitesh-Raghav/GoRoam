@@ -6,6 +6,7 @@ import { OfflineSupport } from "@/components/site/offline";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { preconnect } from "react-dom";
+import { SITE_URL } from "@/lib/seo";
 
 // Headlines: Space Grotesk. Body and UI: Inter. Times, coordinates and other data: Geist Mono.
 // `subsets` only picks what to preload: every subset is still declared, so a ₹ (latin-ext)
@@ -37,14 +38,30 @@ const googleVerification = (() => {
 })();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL?.startsWith("http") ? process.env.NEXTAUTH_URL : "https://goroam.world"),
+  // Always the production www origin, so canonical links never point at a preview or the redirecting bare domain.
+  metadataBase: new URL(SITE_URL),
+  applicationName: "GoRoam",
   title: {
-    default: "GoRoam: AI Trip Planner for Day-by-Day Itineraries",
+    default: "GoRoam: AI Trip Planner 2026 | Free Day-by-Day Itineraries",
     template: "%s · GoRoam",
   },
   description:
-    "Describe your trip in one sentence and GoRoam's AI trip planner builds a day-by-day itinerary with real places, timings, an honest budget and a local guide. Your first trip is free.",
-  keywords: ["AI trip planner", "AI itinerary generator", "travel itinerary planner", "trip planner India", "day by day itinerary"],
+    "Plan any trip in seconds with GoRoam, the free AI trip planner. Day-by-day itineraries with real places, honest budgets, stays and a local guide, for couples, families and friends.",
+  keywords: [
+    "AI trip planner",
+    "AI travel planner",
+    "AI itinerary generator",
+    "travel itinerary planner",
+    "trip planner India",
+    "couple trip planner",
+    "family vacation planner",
+    "road trip planner",
+    "honeymoon planner",
+    "weekend getaway planner",
+    "multi-city trip planner",
+    "day by day itinerary",
+  ],
+  category: "travel",
   authors: [{ name: "Jitesh Raghav", url: "https://jiteshraghav.xyz" }],
   creator: "Jitesh Raghav",
   alternates: { canonical: "/" },
@@ -60,7 +77,8 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "GoRoam: AI Trip Planner for Day-by-Day Itineraries",
+    title: "GoRoam: AI Trip Planner 2026 | Free Day-by-Day Itineraries",
+    url: "/",
     description: "One sentence in, a whole trip out: real places, honest budgets and a guide for the road. First trip free.",
     type: "website",
     siteName: "GoRoam",
