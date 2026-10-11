@@ -8,7 +8,6 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowDownUp,
-  ArrowLeftRight,
   ArrowRight,
   Baby,
   Bike,
