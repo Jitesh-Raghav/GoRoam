@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrivalLines } from "./hairlines";
 import { motion } from "framer-motion";
 import { AlertCircle, ArrowRight, ArrowUpRight, Bus, Car, Clock3, Footprints, Info, Landmark, PlaneLanding, Sparkles, Sun, Sunrise, Ticket, TrainFront, Plane, Sailboat } from "@/components/site/icons";
 import { useEffect, useMemo, useState } from "react";
@@ -293,9 +294,10 @@ export function ArrivalPanel({ arrival }: { arrival?: TripGuide["arrival"] }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease }}
-      className="print-avoid mt-6 overflow-hidden rounded-[26px] bg-ink text-paper"
+      className="print-avoid relative mt-6 overflow-hidden rounded-[26px] bg-ink text-paper"
     >
-      <div className="flex items-center gap-3 px-5 pt-5 sm:px-6">
+      <ArrivalLines />
+      <div className="relative flex items-center gap-3 px-5 pb-4 pt-5 sm:px-6">
         <span className="grid size-10 place-items-center rounded-2xl bg-paper/10 text-brand-2">
           <PlaneLanding className="size-5" />
         </span>
@@ -304,9 +306,9 @@ export function ArrivalPanel({ arrival }: { arrival?: TripGuide["arrival"] }) {
           <p className="text-paper">Getting into town</p>
         </div>
       </div>
-      <ul className={cn("mt-4 grid gap-px bg-paper/10", arrival.length === 3 ? "sm:grid-cols-3" : arrival.length === 2 ? "sm:grid-cols-2" : "")}>
+      <ul className={cn("relative grid divide-y divide-paper/10 border-t border-paper/10 sm:divide-y-0 sm:divide-x", arrival.length === 3 ? "sm:grid-cols-3" : arrival.length === 2 ? "sm:grid-cols-2" : "")}>
         {arrival.map((a) => (
-          <li key={a.mode} className="bg-ink px-5 py-4 sm:px-6">
+          <li key={a.mode} className="px-5 py-4 sm:px-6">
             <p className="text-paper">{a.mode}</p>
             <p className="mt-1 flex flex-wrap gap-x-3 font-mono text-xs text-paper/70">
               {a.time && (

@@ -9,11 +9,12 @@ import { loadRates, useMoney } from "@/lib/money";
 import type { Essentials, TripGuide } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { useSpeech } from "./guide/local-guide";
+import { LanguageLines } from "./hairlines";
 import { temp, weatherInfo } from "./weather";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function Tile({ icon: Icon, label, children, className, tone = "glass", delay = 0 }: { icon: typeof Plug; label: string; children: ReactNode; className?: string; tone?: "glass" | "sun" | "ink"; delay?: number }) {
+function Tile({ icon: Icon, label, children, className, tone = "glass", delay = 0, art }: { art?: ReactNode; icon: typeof Plug; label: string; children: ReactNode; className?: string; tone?: "glass" | "sun" | "ink"; delay?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -28,7 +29,8 @@ function Tile({ icon: Icon, label, children, className, tone = "glass", delay = 
         className
       )}
     >
-      <div className="flex items-center gap-3">
+      {art}
+      <div className="relative flex items-center gap-3">
         <span className={cn("grid size-9 shrink-0 place-items-center rounded-xl", tone === "ink" ? "bg-paper/10 text-brand-2" : tone === "sun" ? "duo-sun bg-sun/15 text-ink" : "bg-brand-soft text-brand")}>
           <Icon className="size-[1.1rem]" />
         </span>
@@ -218,7 +220,8 @@ function LanguageTile({ text, phrase, guide, className }: { text?: string; phras
   const { canSpeak, say, speaking } = useSpeech(guide?.languageCode);
   const p = guide?.phrases?.[0];
   return (
-    <Tile icon={Languages} label="Language" tone="ink" className={className} delay={0.05}>
+    <Tile icon={Languages} label="Language" tone="ink" className={className} delay={0.05} art={<LanguageLines speaking={speaking != null} />}>
+      <div className="relative flex flex-1 flex-col">
       {text && <p className="mt-4 text-sm text-paper/75">{text}</p>}
       {p ? (
         <div className="mt-auto flex items-end justify-between gap-3 pt-5">
@@ -243,6 +246,7 @@ function LanguageTile({ text, phrase, guide, className }: { text?: string; phras
       ) : (
         phrase && <p className="mt-auto pt-5 text-lg leading-snug text-paper">{phrase}</p>
       )}
+      </div>
     </Tile>
   );
 }
