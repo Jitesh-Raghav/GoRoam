@@ -9,7 +9,6 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type R
 import { createPortal } from "react-dom";
 import { track } from "@/lib/analytics";
 import { PillButton } from "@/components/site/pill";
-import { useTypewriter } from "@/components/site/trip-prompt";
 import { formatMoney } from "@/lib/currency";
 import { useMoney } from "@/lib/money";
 import { parseTripPrompt, plannerHref, type ParsedPrompt } from "@/lib/prompt-parse";
@@ -187,7 +186,14 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
   const [parsed, setParsed] = useState<ParsedPrompt | null>(null);
   const [menu, setMenu] = useState<PickKey | null>(null);
   const [picked, setPicked] = useState<Partial<Record<PickKey, { label: string; phrase: string }>>>({});
-  const typed = useTypewriter(ready && !text && !focused, EXAMPLES);
+  // Example prompts rotate as whole sentences, easing in and out.
+  const [example, setExample] = useState(0);
+  const showExamples = ready && !text && !focused;
+  useEffect(() => {
+    if (!showExamples || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setInterval(() => setExample((i) => (i + 1) % EXAMPLES.length), 4200);
+    return () => window.clearInterval(t);
+  }, [showExamples]);
   const { toUsd, fmt } = useMoney();
   // Dictation appends to whatever was there when the mic started.
   const before = useRef("");
@@ -379,9 +385,19 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
             className="relative block min-h-[4.75rem] w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[1.0625rem] leading-relaxed text-ink outline-none placeholder:text-ink/40 sm:px-5"
           />
           {!text && !focused && (
-            <span aria-hidden className="pointer-events-none absolute inset-0 px-4 pt-3.5 text-[1.0625rem] leading-relaxed text-ink/55 sm:px-5">
-              {typed}
-              <span className="ml-0.5 inline-block h-[1.1em] w-px translate-y-[0.2em] animate-pulse bg-ink/70" />
+            <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden px-4 pt-3.5 text-[1.0625rem] leading-relaxed text-ink/55 sm:px-5">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={example}
+                  className="block"
+                  initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+                  transition={{ duration: 0.6, ease }}
+                >
+                  {EXAMPLES[example]}
+                </motion.span>
+              </AnimatePresence>
             </span>
           )}
         </div>

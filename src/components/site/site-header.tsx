@@ -64,7 +64,9 @@ export function SiteHeader() {
         <div
           className={cn(
             "transition-[background-color,box-shadow,backdrop-filter] duration-500",
-            scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_rgba(14,31,59,0.08)] backdrop-blur-md" : "bg-transparent"
+            scrolled && !open
+              ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(236,243,252,0.48))] shadow-[inset_0_-1px_0_rgba(255,255,255,0.6),0_1px_0_rgba(14,31,59,0.07),0_12px_32px_-20px_rgba(14,31,59,0.35)] backdrop-blur-2xl backdrop-saturate-[1.8]"
+              : "bg-transparent"
           )}
         >
           <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">

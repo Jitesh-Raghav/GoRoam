@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "@/components/site/icons";
 import type { UseCase } from "@/lib/use-cases";
 import { FALLBACK_ICON, USE_CASE_ICON } from "@/lib/use-case-icons";
-import { TripArt } from "./trip-art";
+import { TripPhoto } from "./trip-photo";
 
 /** A card for one kind of trip: a living illustration on top, the name and a line underneath. */
 export function TripTypeCard({ u }: { u: UseCase }) {
@@ -14,7 +14,7 @@ export function TripTypeCard({ u }: { u: UseCase }) {
     >
       <div className="relative aspect-[16/10] overflow-hidden">
         <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.06]">
-          <TripArt slug={u.slug} />
+          <TripPhoto slug={u.slug} />
         </div>
         <span className="absolute left-3 top-3 grid size-9 place-items-center rounded-xl bg-white/80 text-brand shadow-[0_6px_16px_-8px_rgba(14,31,59,0.6)] ring-1 ring-white/70 backdrop-blur-md">
           <Icon className="size-[18px]" />
