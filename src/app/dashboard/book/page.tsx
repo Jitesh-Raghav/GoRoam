@@ -285,7 +285,7 @@ function BookContent() {
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
                 href={ready ? p.href : undefined}
                 target="_blank"
-                rel="noopener noreferrer sponsored"
+                rel="noopener noreferrer sponsored nofollow"
                 onClick={() => track("booking_partner_clicked", { partner: p.id, kind, where: "book" })}
                 aria-disabled={!ready}
                 className="mesh-host group relative isolate flex min-w-0 items-center gap-4 overflow-hidden rounded-card bg-white p-4 ring-1 ring-line transition-[box-shadow,transform] duration-500 ease-out-expo hover:-translate-y-0.5 hover:shadow-float aria-disabled:pointer-events-none aria-disabled:opacity-45 sm:p-5"

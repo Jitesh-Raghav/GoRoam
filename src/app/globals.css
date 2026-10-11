@@ -76,7 +76,7 @@
   --stone-2: #94a3b8;
   --line: rgba(14, 31, 59, 0.1);
   /* Form fields: a firmer outline, so inputs read as inputs. */
-  --line-strong: rgba(14, 31, 59, 0.2);
+  --line-strong: rgba(14, 31, 59, 0.14);
   --brand: #1a5fd6;
   --brand-2: #7cc4ff;
   --brand-soft: #e3eeff;

@@ -494,7 +494,7 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
               className={cn(
                 "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm backdrop-blur-md transition-colors duration-300",
                 dark
-                  ? "bg-white/[0.12] text-paper/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] ring-1 ring-inset ring-white/25 hover:bg-white hover:text-ink"
+                  ? "bg-[rgba(22,36,79,0.42)] text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_8px_20px_-12px_rgba(8,18,46,0.6)] ring-1 ring-inset ring-white/25 backdrop-saturate-150 hover:bg-white hover:text-ink"
                   : "bg-white text-ink/80 ring-1 ring-inset ring-line-strong hover:bg-ink hover:text-paper"
               )}
             >

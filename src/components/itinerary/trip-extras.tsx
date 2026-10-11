@@ -397,7 +397,7 @@ export function TransferCard({ transfer, date, people }: { transfer?: Transfer; 
             key={l.name}
             href={l.href}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer sponsored nofollow"
             className={cn("inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-colors", i === 0 ? "bg-paper text-ink hover:bg-brand-2" : "bg-paper/10 text-paper hover:bg-paper/20")}
           >
             {l.name} <ArrowUpRight className="size-3.5" />

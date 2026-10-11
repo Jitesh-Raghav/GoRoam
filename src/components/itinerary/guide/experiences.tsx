@@ -87,7 +87,7 @@ export function Experiences({ items, destination }: { items: Experience[]; desti
                 <a
                   href={ticketsFor(e.name, city)}
                   target="_blank"
-                  rel="noopener noreferrer sponsored"
+                  rel="noopener noreferrer sponsored nofollow"
                   className="no-print mt-5 inline-flex items-center justify-between gap-2 rounded-full bg-ink px-4 py-2.5 text-sm text-paper transition-colors hover:bg-brand"
                 >
                   See packages & book <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />

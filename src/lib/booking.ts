@@ -2,10 +2,20 @@
  * Booking deep links. Every partner opens its own search with the trip's route,
  * dates and party size already filled in, so booking is a couple of taps.
  *
- * Affiliate IDs are optional; set them in the environment to earn commission:
- *   NEXT_PUBLIC_BOOKING_AID          Booking.com affiliate id (aid)
- *   NEXT_PUBLIC_GYG_PARTNER_ID       GetYourGuide partner id
- *   NEXT_PUBLIC_SKYSCANNER_ASSOCIATE Skyscanner associate id
+ * Affiliate IDs are optional; set them in the environment to earn commission.
+ * Without one, the link still works, it just isn't credited:
+ *   NEXT_PUBLIC_BOOKING_AID          Booking.com affiliate id (aid)            partners.booking.com
+ *   NEXT_PUBLIC_AGODA_CID            Agoda partner site id (cid)               partners.agoda.com
+ *   NEXT_PUBLIC_TRIPCOM_ALLIANCE_ID  Trip.com Allianceid                       trip.com/partners
+ *   NEXT_PUBLIC_TRIPCOM_SID          Trip.com SID
+ *   NEXT_PUBLIC_GYG_PARTNER_ID       GetYourGuide partner id                   partner.getyourguide.com
+ *   NEXT_PUBLIC_VIATOR_PID           Viator partner id (pid)                   partnerresources.viator.com
+ *   NEXT_PUBLIC_VIATOR_MCID          Viator campaign id (mcid)
+ *   NEXT_PUBLIC_KLOOK_AID            Klook affiliate id (aid)                  affiliate.klook.com
+ *   NEXT_PUBLIC_SKYSCANNER_ASSOCIATE Skyscanner associate id                   partners.skyscanner.net
+ *
+ * Every partner link goes through /go, which checks the host, counts the click
+ * and redirects, so clicks show up in analytics per partner.
  */
 
 export type BookingKind = "flights" | "stays" | "experiences" | "transport";
@@ -33,6 +43,36 @@ export interface Partner {
 const BOOKING_AID = process.env.NEXT_PUBLIC_BOOKING_AID;
 const GYG_PARTNER = process.env.NEXT_PUBLIC_GYG_PARTNER_ID;
 const SKY_ASSOCIATE = process.env.NEXT_PUBLIC_SKYSCANNER_ASSOCIATE;
+const AGODA_CID = process.env.NEXT_PUBLIC_AGODA_CID;
+const TRIP_AID = process.env.NEXT_PUBLIC_TRIPCOM_ALLIANCE_ID;
+const TRIP_SID = process.env.NEXT_PUBLIC_TRIPCOM_SID;
+const VIATOR_PID = process.env.NEXT_PUBLIC_VIATOR_PID;
+const VIATOR_MCID = process.env.NEXT_PUBLIC_VIATOR_MCID;
+const KLOOK_AID = process.env.NEXT_PUBLIC_KLOOK_AID;
+
+/** Partner sites /go will redirect to (and nothing else). */
+export const PARTNER_HOSTS = [
+  "booking.com",
+  "agoda.com",
+  "trip.com",
+  "airbnb.com",
+  "expedia.com",
+  "hostelworld.com",
+  "skyscanner.net",
+  "kayak.com",
+  "google.com",
+  "getyourguide.com",
+  "viator.com",
+  "klook.com",
+  "rome2rio.com",
+];
+
+/** The tracked link for a partner URL: /go counts the click, then redirects. */
+export const partnerHref = (id: string, url: string) => `/go?${new URLSearchParams({ p: id, u: url }).toString()}`;
+
+/** Destinations where Agoda usually has the best inventory and prices. */
+const ASIA = /\b(india|goa|kerala|rajasthan|jaipur|udaipur|delhi|mumbai|agra|varanasi|rishikesh|manali|ladakh|leh|hampi|kashmir|sikkim|darjeeling|andaman|thailand|bangkok|phuket|bali|indonesia|vietnam|hanoi|malaysia|singapore|japan|tokyo|kyoto|korea|seoul|sri lanka|nepal|kathmandu|maldives|philippines|cambodia|laos|taiwan|hong kong|dubai|uae|oman)\b/i;
+export const isAsia = (place: string) => ASIA.test(place);
 
 const enc = encodeURIComponent;
 const qs = (params: Record<string, string | number | undefined>) =>
@@ -99,7 +139,13 @@ export function airportCode(place?: string) {
 
 const yymmdd = (iso: string) => iso.slice(2).replace(/-/g, "");
 
+/** Send every partner link through /go. */
+const tracked = (list: Partner[]) => list.map((p) => ({ ...p, href: partnerHref(p.id, p.href) }));
+
 export function flightPartners(q: BookingQuery): Partner[] {
+  return tracked(flightLinks(q));
+}
+function flightLinks(q: BookingQuery): Partner[] {
   const from = q.origin?.trim();
   const people = q.adults + (q.children ?? 0);
   const phrase = `Flights ${from ? `from ${from} ` : ""}to ${q.destination} on ${q.checkIn} through ${q.checkOut}`;
@@ -128,6 +174,13 @@ export function flightPartners(q: BookingQuery): Partner[] {
         blurb: "Compare every airline",
       },
       {
+        id: "tripcom-flights",
+        name: "Trip.com",
+        kind: "flights",
+        href: `https://www.trip.com/flights/showfarefirst?${qs({ dcity: a.toLowerCase(), acity: b.toLowerCase(), ddate: q.checkIn, rdate: q.checkOut, triptype: "rt", class: "y", quantity: people, Allianceid: TRIP_AID, SID: TRIP_SID })}`,
+        blurb: "Low fares across Asia",
+      },
+      {
         id: "kayak",
         name: "Kayak",
         kind: "flights",
@@ -148,6 +201,9 @@ export function flightPartners(q: BookingQuery): Partner[] {
 }
 
 export function stayPartners(q: BookingQuery, search = q.destination): Partner[] {
+  return tracked(stayLinks(q, search));
+}
+function stayLinks(q: BookingQuery, search: string): Partner[] {
   const booking: Partner = {
     id: "booking",
     name: "Booking.com",
@@ -184,13 +240,29 @@ export function stayPartners(q: BookingQuery, search = q.destination): Partner[]
     href: `https://www.hostelworld.com/search?${qs({ search_keywords: search, from: q.checkIn, to: q.checkOut, guests: q.adults + (q.children ?? 0) })}`,
     blurb: "Hostels & guesthouses",
   };
-  if (q.stay === "apartment") return [airbnb, booking, expedia];
-  if (q.stay === "hostel") return [hostelworld, booking, airbnb];
-  return [booking, expedia, airbnb];
+  const nights = Math.max(1, Math.round((Date.parse(q.checkOut) - Date.parse(q.checkIn)) / 864e5) || 1);
+  const agoda: Partner = {
+    id: "agoda",
+    name: "Agoda",
+    kind: "stays",
+    href: `https://www.agoda.com/search?${qs({ textToSearch: search, checkIn: q.checkIn, los: nights, rooms: 1, adults: q.adults, children: q.children || 0, cid: AGODA_CID })}`,
+    blurb: "Best rates across Asia",
+  };
+  const tripcom: Partner = {
+    id: "tripcom-hotels",
+    name: "Trip.com",
+    kind: "stays",
+    href: `https://www.trip.com/hotels/list?${qs({ keyword: search, checkin: q.checkIn.replace(/-/g, "/"), checkout: q.checkOut.replace(/-/g, "/"), adult: q.adults, children: q.children || 0, Allianceid: TRIP_AID, SID: TRIP_SID })}`,
+    blurb: "Member prices & 24/7 support",
+  };
+  const asia = isAsia(search);
+  if (q.stay === "apartment") return [airbnb, booking, asia ? agoda : expedia];
+  if (q.stay === "hostel") return [hostelworld, asia ? agoda : booking, airbnb];
+  return asia ? [agoda, booking, tripcom] : [booking, agoda, expedia];
 }
 
 export function experiencePartners(q: BookingQuery, search = cityOf(q.destination)): Partner[] {
-  return [
+  return tracked([
     {
       id: "getyourguide",
       name: "GetYourGuide",
@@ -202,20 +274,23 @@ export function experiencePartners(q: BookingQuery, search = cityOf(q.destinatio
       id: "viator",
       name: "Viator",
       kind: "experiences",
-      href: `https://www.viator.com/searchResults/all?${qs({ text: search })}`,
+      href: `https://www.viator.com/searchResults/all?${qs({ text: search, pid: VIATOR_PID, mcid: VIATOR_MCID, medium: VIATOR_PID ? "link" : undefined })}`,
       blurb: "Day trips & local guides",
     },
     {
       id: "klook",
       name: "Klook",
       kind: "experiences",
-      href: `https://www.klook.com/en-US/search/result/?${qs({ query: search })}`,
+      href: `https://www.klook.com/en-US/search/result/?${qs({ query: search, aid: KLOOK_AID })}`,
       blurb: "Passes, rail & attractions",
     },
-  ];
+  ]);
 }
 
 export function transportPartners(q: BookingQuery): Partner[] {
+  return tracked(transportLinks(q));
+}
+function transportLinks(q: BookingQuery): Partner[] {
   const from = q.origin?.trim();
   const list: Partner[] = [];
   if (from) {
@@ -239,7 +314,7 @@ export function transportPartners(q: BookingQuery): Partner[] {
 
 /** A tickets & tours search for one specific place. */
 export const ticketsFor = (place: string, destination: string) =>
-  `https://www.getyourguide.com/s/?${qs({ q: `${place} ${cityOf(destination)}`, partner_id: GYG_PARTNER })}`;
+  partnerHref("getyourguide", `https://www.getyourguide.com/s/?${qs({ q: `${place} ${cityOf(destination)}`, partner_id: GYG_PARTNER })}`);
 
 /** Google Maps directions through every stop of a day, in order. */
 export function dayRouteUrl(stops: string[], destination: string, mode: "walking" | "transit" | "driving" = "transit") {
@@ -267,9 +342,13 @@ export function transferLinks(t: { from: string; to: string; mode: string }, dat
   const to = cityOf(t.to);
   const links: { name: string; href: string }[] = [];
   if (t.mode === "flight") {
-    links.push({ name: "Google Flights", href: `https://www.google.com/travel/flights?${qs({ q: `Flights from ${from} to ${to} on ${date} for ${people}`, curr: "USD" })}` });
+    links.push({ name: "Google Flights", href: partnerHref("google-flights", `https://www.google.com/travel/flights?${qs({ q: `Flights from ${from} to ${to} on ${date} for ${people}`, curr: "USD" })}`) });
+    const a = airportCode(t.from);
+    const b = airportCode(t.to);
+    if (a && b && a !== b)
+      links.push({ name: "Trip.com", href: partnerHref("tripcom-flights", `https://www.trip.com/flights/showfarefirst?${qs({ dcity: a.toLowerCase(), acity: b.toLowerCase(), ddate: date, triptype: "ow", class: "y", quantity: people, Allianceid: TRIP_AID, SID: TRIP_SID })}`) });
   }
-  links.push({ name: t.mode === "flight" ? "Other ways" : "Trains & buses", href: `https://www.rome2rio.com/map/${enc(from)}/${enc(to)}` });
+  links.push({ name: t.mode === "flight" ? "Other ways" : "Trains & buses", href: partnerHref("rome2rio", `https://www.rome2rio.com/map/${enc(from)}/${enc(to)}`) });
   links.push({ name: "Route", href: `https://www.google.com/maps/dir/?api=1&${qs({ origin: t.from, destination: t.to, travelmode: t.mode === "car" ? "driving" : "transit" })}` });
   return links;
 }
