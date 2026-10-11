@@ -1,11 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, CloudRain, Loader2, MapPin, PenLine as Pencil, Route, Sparkles, Wand2, X } from "@/components/site/icons";
+import { Check, CloudRain, Loader2, MapPin, PenLine as Pencil, Route, Sparkles, Wand2, WhatsApp, X } from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { track } from "@/lib/analytics";
 import { updateCached } from "@/lib/cached-json";
+import { dayMessage } from "@/lib/day-message";
 import { useMoney } from "@/lib/money";
 import { CHAT_LIMIT } from "@/lib/plans";
 import { optimiseOrder } from "@/lib/route-order";
@@ -36,6 +37,8 @@ export interface PlanTools {
   optimise: (day: number) => void;
   /** Open the full editor (drag between days, add, delete, reorder). */
   edit: (day?: number) => void;
+  /** Opens WhatsApp with the day's plan and a link to the trip, to send to the group. */
+  whatsapp: (day: number) => void;
 }
 
 const Ctx = createContext<PlanTools | null>(null);
@@ -110,6 +113,20 @@ export function PlanToolsProvider({ it, enabled, children }: { it: ItineraryDeta
       });
     },
     edit: (day = 0) => setEditing({ day }),
+    whatsapp: (day) => {
+      // Open the tab now (popup blockers), then point it at wa.me once the signed link is back.
+      const tab = window.open("about:blank", "_blank");
+      const send = (link: string) => {
+        const href = `https://wa.me/?text=${encodeURIComponent(dayMessage(it.itineraryData, { index: day, destination: it.destination, startDate: it.startDate, link }).text)}`;
+        if (tab) tab.location.href = href;
+        else window.location.href = href;
+      };
+      track("whatsapp_shared", { day: day + 1 });
+      fetch(`/api/itinerary/${it.id}/share`, { method: "POST" })
+        .then((r) => r.json())
+        .then((b) => send(b?.data?.url || `${window.location.origin}/trip/${it.id}`))
+        .catch(() => send(`${window.location.origin}/trip/${it.id}`));
+    },
   };
 
   const apply = async () => {
@@ -339,6 +356,9 @@ export function DayActions({ index, day, rainy }: { index: number; day: DayItine
       )}
       <button type="button" onClick={() => tools.edit(index)} className={cn(btn, "bg-white/80 text-ink ring-1 ring-line hover:bg-ink hover:text-paper")}>
         <Pencil className="size-4" /> Edit plan
+      </button>
+      <button type="button" onClick={() => tools.whatsapp(index)} className={cn(btn, "bg-white/80 text-ink ring-1 ring-line hover:bg-[#1da851] hover:text-white hover:ring-transparent")}>
+        <WhatsApp className="size-4" /> Send to WhatsApp
       </button>
     </div>
   );

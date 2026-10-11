@@ -36,6 +36,7 @@ export const PLANS: Plan[] = [
       "Local guide: phrases with audio, food, culture & events",
       "AI concierge for every trip",
       "Live weather, money converter & offline maps",
+      "Edit any day freely, rain plans & optimised routes",
       "Swap any stop with AI, split costs in a trip wallet",
       "Bookings vault, jet-lag plan, and trips that work offline",
       "Flight, stay & adventure booking links",
@@ -51,6 +52,7 @@ export const PLANS: Plan[] = [
     features: [
       "30 AI-planned itineraries",
       "Everything in Starter",
+      "Each day's plan on WhatsApp every morning, for your whole group",
       "Adventure & sports packages for every trip",
       "Friends vote on your plan from a shared link",
       "Shareable trip links",

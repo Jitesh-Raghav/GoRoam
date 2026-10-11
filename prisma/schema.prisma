@@ -92,7 +92,12 @@ model Itinerary {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // WhatsApp morning messages: local hour to send at, and the trip's time zone (IANA).
+  whatsappHour    Int      @default(7)
+  timezone        String?
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  whatsappSubs  WhatsAppSub[]
 }
 
 // One row per credit-pack purchase. Written only by the payment webhook, so the
@@ -137,4 +142,26 @@ model GuestTrip {
   @@index([ipHash, createdAt])
   @@index([deviceId])
   @@index([claimedByUserId])
+}
+
+// Someone getting a trip's day plan on WhatsApp each morning of the trip.
+// Numbers are verified with a code first; replying STOP ends it.
+model WhatsAppSub {
+  id          String    @id @default(cuid())
+  itineraryId String
+  phone       String    // E.164 digits, no "+"
+  name        String?
+  verified    Boolean   @default(false)
+  codeHash    String?
+  codeExpires DateTime?
+  attempts    Int       @default(0)
+  optedInAt   DateTime?
+  stoppedAt   DateTime?
+  lastSentDay String?   // the local date (YYYY-MM-DD) of the last morning message
+  createdAt   DateTime  @default(now())
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@unique([itineraryId, phone])
+  @@index([phone])
 }

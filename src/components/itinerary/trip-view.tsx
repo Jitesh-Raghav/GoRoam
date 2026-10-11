@@ -48,6 +48,7 @@ import { PillLink } from "@/components/site/pill";
 import { cityOf, dayRouteUrl, isoDay, mapsSearchUrl, stayPartners, ticketsFor, type BookingQuery } from "@/lib/booking";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
+import { WhatsAppCard } from "./whatsapp-card";
 import { useMoney } from "@/lib/money";
 import { useStoredPhotos } from "@/lib/photo-store";
 import { downloadIcs } from "@/lib/ics";
@@ -1278,6 +1279,7 @@ export function TripView({
           localCurrency={localCurrency}
           onSaved={(wallet) => updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, wallet } } }))}
         />
+        <WhatsAppCard it={it} timezone={weather?.timezone} dayIndex={todayIndex ?? active} />
         </div>
       )}
 
