@@ -113,7 +113,7 @@ function Picker({ icon: Icon, label, value, open, onOpen, children }: { icon: ty
         aria-expanded={open}
         className={cn(
           "inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] ring-1 ring-inset transition-colors",
-          value ? "bg-brand-soft text-brand ring-brand/25" : "bg-white/70 text-ink/75 ring-ink/10 hover:bg-white hover:text-ink"
+          value ? "bg-brand-soft text-brand ring-brand/25" : "bg-white/45 text-ink/80 ring-white/60 hover:bg-white/80 hover:text-ink"
         )}
       >
         <Icon className="size-3.5" />
@@ -353,7 +353,7 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
         className={cn(
           "group/composer relative isolate z-20 rounded-[28px] p-2 text-left ring-1 ring-inset transition-[background-color,box-shadow] duration-500",
           dark
-            ? "bg-white/[0.86] shadow-[0_40px_90px_-36px_rgba(8,18,46,0.75),0_8px_24px_-12px_rgba(14,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(124,196,255,0.28)] ring-white/60 backdrop-blur-3xl backdrop-saturate-200 focus-within:bg-white/95"
+            ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.46))] shadow-[0_40px_90px_-36px_rgba(8,18,46,0.7),0_8px_24px_-12px_rgba(14,31,59,0.18),inset_0_1.5px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-white/55 backdrop-blur-2xl backdrop-saturate-[1.8] focus-within:bg-white/75"
             : "bg-white shadow-[0_30px_70px_-34px_rgba(14,31,59,0.45)] ring-line-strong focus-within:ring-brand/40"
         )}
       >
@@ -449,7 +449,7 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
                 title={voice.listening ? "Listening… tap to stop" : "Speak your trip"}
                 className={cn(
                   "relative grid size-11 shrink-0 place-items-center rounded-full transition-colors",
-                  voice.listening ? "bg-coral text-white" : "bg-white/80 text-ink ring-1 ring-inset ring-ink/10 hover:bg-white"
+                  voice.listening ? "bg-coral text-white" : "bg-white/45 text-ink ring-1 ring-inset ring-white/60 hover:bg-white/80"
                 )}
               >
                 {voice.listening && <span aria-hidden className="absolute inset-0 animate-ping rounded-full bg-coral/40" />}
