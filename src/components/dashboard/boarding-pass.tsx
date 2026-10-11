@@ -48,6 +48,8 @@ function Barcode({ seed }: { seed: string }) {
 export interface PassData {
   source: string;
   destination: string;
+  /** A multi-city route, "Delhi → Jaipur → Udaipur", shown under the destination's code. */
+  via?: string;
   startDate: string;
   numberOfDays: number;
   numberOfPeople: number;
@@ -119,7 +121,7 @@ export function BoardingPass({
           <div className="min-w-0 text-right">
             <p className="eyebrow text-[0.62rem] text-stone">To</p>
             <p className="display mt-1 text-4xl leading-none tracking-tight text-brand">{code(data.destination)}</p>
-            <p className="mt-1 truncate text-sm text-stone">{data.destination || "Anywhere"}</p>
+            <p className="mt-1 truncate text-sm text-stone">{data.via || data.destination || "Anywhere"}</p>
           </div>
         </div>
 

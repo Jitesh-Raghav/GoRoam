@@ -156,10 +156,10 @@ export function PlaceField({
         htmlFor={id}
         className={cn(
           "flex h-[4.5rem] cursor-text items-center gap-3 rounded-2xl bg-paper/60 px-4 ring-1 transition-shadow focus-within:bg-white focus-within:ring-2",
-          error ? "ring-destructive/60 focus-within:ring-destructive/60" : "ring-line focus-within:ring-brand/50"
+          error ? "ring-destructive/60 focus-within:ring-destructive/60" : "ring-line-strong focus-within:ring-brand/50"
         )}
       >
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line-strong">
           <Icon className="size-4" />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
@@ -197,7 +197,7 @@ export function PlaceField({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-x-0 top-[calc(100%+0.5rem)] origin-top overflow-hidden rounded-2xl bg-white/90 p-1.5 shadow-[0_28px_60px_-28px_rgba(14,31,59,0.55)] ring-1 ring-line backdrop-blur-xl"
+            className="absolute inset-x-0 top-[calc(100%+0.5rem)] origin-top overflow-hidden rounded-2xl bg-white/90 p-1.5 shadow-[0_28px_60px_-28px_rgba(14,31,59,0.55)] ring-1 ring-line-strong backdrop-blur-xl"
           >
             {hint && <li className="eyebrow px-3 pb-1 pt-2 text-[0.6rem] text-stone">{hint === "recent" ? "Recent" : "Popular right now"}</li>}
             {items.map((s, i) => (
@@ -214,7 +214,7 @@ export function PlaceField({
                 onMouseEnter={() => setActive(i)}
                 className={cn("flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-colors", i === active ? "bg-brand-soft" : "hover:bg-paper")}
               >
-                <span className={cn("grid size-8 shrink-0 place-items-center rounded-lg ring-1", i === active ? "bg-white text-brand ring-brand/20" : "bg-paper text-stone ring-line")}>
+                <span className={cn("grid size-8 shrink-0 place-items-center rounded-lg ring-1", i === active ? "bg-white text-brand ring-brand/20" : "bg-paper text-stone ring-line-strong")}>
                   <MapPin className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1">
