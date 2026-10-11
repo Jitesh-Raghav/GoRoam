@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { ArrowRight } from "@/components/site/icons";
 import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { getLenis } from "@/components/motion/smooth-scroll";
@@ -28,6 +29,9 @@ export function SiteHeader() {
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const intro = useIntro();
+  // The home page opens on the blue-hour hero: light text until the bar turns solid.
+  const pathname = usePathname();
+  const dark = pathname === "/" && !scrolled && !open;
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -63,17 +67,17 @@ export function SiteHeader() {
           )}
         >
           <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">
-            <Logo />
+            <Logo tone={dark ? "paper" : "ink"} />
 
             <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
               {LINKS.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="group relative py-2 text-[0.94rem] font-medium text-ink/70 transition-colors duration-300 hover:text-ink"
+                  className={cn("group relative py-2 text-[0.94rem] font-medium transition-colors duration-300", dark ? "text-paper/80 hover:text-paper" : "text-ink/70 hover:text-ink")}
                 >
                   {l.label}
-                  <span className="absolute inset-x-0 bottom-1 h-px origin-left scale-x-0 bg-ink transition-transform duration-500 ease-out-expo group-hover:scale-x-100" />
+                  <span className={cn("absolute inset-x-0 bottom-1 h-px origin-left scale-x-0 transition-transform duration-500 ease-out-expo group-hover:scale-x-100", dark ? "bg-paper" : "bg-ink")} />
                 </Link>
               ))}
             </nav>
@@ -81,7 +85,7 @@ export function SiteHeader() {
             <div className="flex items-center gap-2 sm:gap-3">
               {session ? (
                 <>
-                  <PillLink href="/dashboard" size="md" className="hidden sm:inline-flex">
+                  <PillLink href="/dashboard" size="md" variant={dark ? "paper" : "ink"} className="hidden sm:inline-flex">
                     Dashboard
                   </PillLink>
                   <Link href="/dashboard/settings" aria-label="Your account" className="hidden sm:block">
@@ -92,11 +96,11 @@ export function SiteHeader() {
                 <>
                   <Link
                     href="/auth"
-                    className="hidden rounded-full px-3 py-2 text-[0.94rem] font-medium text-ink/75 transition-colors duration-300 hover:text-ink sm:inline-flex"
+                    className={cn("hidden rounded-full px-3 py-2 text-[0.94rem] font-medium transition-colors duration-300 sm:inline-flex", dark ? "text-paper/85 hover:text-paper" : "text-ink/75 hover:text-ink")}
                   >
                     Sign in
                   </Link>
-                  <PillLink href="/dashboard" size="md" className="hidden sm:inline-flex">
+                  <PillLink href="/dashboard" size="md" variant={dark ? "paper" : "ink"} className="hidden sm:inline-flex">
                     Plan a trip
                   </PillLink>
                 </>
@@ -107,7 +111,7 @@ export function SiteHeader() {
                 aria-expanded={open}
                 aria-controls="mobile-menu"
                 aria-label={open ? "Close menu" : "Open menu"}
-                className="relative grid size-11 place-items-center rounded-full bg-ink text-paper lg:hidden"
+                className={cn("relative grid size-11 place-items-center rounded-full lg:hidden", dark ? "bg-white/15 text-paper ring-1 ring-white/25 backdrop-blur-md" : "bg-ink text-paper")}
               >
                 <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "rotate-45" : "-translate-y-[3px]")} />
                 <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "-rotate-45" : "translate-y-[3px]")} />

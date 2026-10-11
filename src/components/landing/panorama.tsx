@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
-import { circle, mountainRidge, mulberry32, palmTree, r1, rect, rollingRidge, umbrellaPine, cypressTree, canopyBlobs } from "@/components/scenes/geometry";
+import { circle, forestOnRidge, mountainRidge, mulberry32, palmTree, pineTree, r1, rect, rollingRidge, umbrellaPine, cypressTree, canopyBlobs } from "@/components/scenes/geometry";
 import { getMonument, type MonumentId, type Tone } from "@/components/scenes/monuments";
 import { LondonClock } from "@/components/scenes/london-clock";
-import { Clouds, Layer, Monument, Sun } from "@/components/scenes/primitives";
+import { Birds, Layer, Monument, Stars, Sun } from "@/components/scenes/primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -31,28 +31,28 @@ interface Placed {
 
 // Left to right, Paris to Rio. Scales keep heights varied, so the skyline reads as a rhythm.
 const MONUMENTS: Placed[] = [
-  { id: "eiffel", x: 190, scale: 0.8, label: "Eiffel Tower", tones: { body: "#6B5650", shade: "#45363A", light: "#B58E78" } },
-  { id: "bigben", x: 395, scale: 0.58, label: "Big Ben", tones: { body: "#CDA874", shade: "#8E6B3E", glow: "#FFF4DC", light: "#F2D7A6" } },
-  { id: "colosseum", x: 640, scale: 0, label: "Colosseum", tones: { body: "#DDA674", shade: "#A9703F", light: "#F0C99C" } },
-  { id: "pagoda", x: 905, scale: 0.62, label: "Yasaka Pagoda", tones: { body: "#C0503E", shade: "#7E2F2C", glow: "#F6E3C9", light: "#E9846C" } },
-  { id: "angkor", x: 1200, scale: 0.5, label: "Angkor Wat", tones: { body: "#C9B087", shade: "#8C7651", light: "#EAD6AE" } },
-  { id: "taj", x: 1545, scale: 0.6, label: "Taj Mahal", tones: { body: "#F7F1E7", shade: "#CDBFA6", light: "#FFFFFF" } },
-  { id: "liberty", x: 1815, scale: 0.55, label: "Statue of Liberty", tones: { body: "#7DBAA8", shade: "#4F8A79", glow: "#F4A340", light: "#B4E0D2" } },
-  { id: "burj", x: 1985, scale: 0.78, label: "Burj Khalifa", tones: { body: "#B2CBD5", shade: "#7F9EAC", glow: "#EAF3F6", light: "#E6F2F6" } },
+  { id: "eiffel", x: 190, scale: 0.8, label: "Eiffel Tower", tones: { body: "#243C86", shade: "#172A63", light: "#8FB0F5" } },
+  { id: "bigben", x: 395, scale: 0.58, label: "Big Ben", tones: { body: "#3A56AC", shade: "#22397A", glow: "#FFE08A", light: "#A3BCF5" } },
+  { id: "colosseum", x: 640, scale: 0, label: "Colosseum", tones: { body: "#5875C9", shade: "#3A55A8", light: "#AFC4F6" } },
+  { id: "pagoda", x: 905, scale: 0.62, label: "Yasaka Pagoda", tones: { body: "#E0645C", shade: "#9C3F4C", glow: "#FFE08A", light: "#FF9F8F" } },
+  { id: "angkor", x: 1200, scale: 0.5, label: "Angkor Wat", tones: { body: "#6683D4", shade: "#4562B8", light: "#B8CAF7" } },
+  { id: "taj", x: 1545, scale: 0.6, label: "Taj Mahal", tones: { body: "#E9EFFD", shade: "#A7B9EA", light: "#FFFFFF" } },
+  { id: "liberty", x: 1815, scale: 0.55, label: "Statue of Liberty", tones: { body: "#5FA2DD", shade: "#3A70B0", glow: "#FFD23F", light: "#BEE0FF" } },
+  { id: "burj", x: 1985, scale: 0.78, label: "Burj Khalifa", tones: { body: "#8DA8EA", shade: "#5A77C8", glow: "#FFF1BF", light: "#E2EAFF" } },
 ];
 
 const CHRIST_X = 2235;
 /** A four-point glint, for the Eiffel Tower's sparkle. */
 const SPARK = "M0 -3.4L0.7 -0.7L3.4 0L0.7 0.7L0 3.4L-0.7 0.7L-3.4 0L-0.7 -0.7Z";
 /** The little train: an engine and its carriages, front to back. */
-const TRAIN = ["engine", "#0B8278", "#F4A340", "#16324A"] as const;
+const TRAIN = ["engine", "#1F6FEB", "#FFD23F", "#7CC4FF"] as const;
 /** Travellers on the footpath: shirt and backpack colours, pace, start. */
 const WALKERS = [
-  { top: "#0B8278", pack: "#F4A340", dur: 120, delay: -10 },
-  { top: "#C0503E", pack: "#16324A", dur: 135, delay: -58 },
-  { top: "#F4A340", pack: "#0B8278", dur: 128, delay: -96 },
+  { top: "#FF6B5B", pack: "#FFD23F", dur: 120, delay: -10 },
+  { top: "#FFD23F", pack: "#16305A", dur: 135, delay: -58 },
+  { top: "#7CC4FF", pack: "#FF6B5B", dur: 128, delay: -96 },
 ];
-/** Where the sun sits over the landscape: monuments east of it are lit from the left. */
+/** Where the moon sits over the landscape: monuments east of it are lit from the left. */
 const SUN_X = 1720;
 
 /** Short brush strokes over a slope — the grass and rock texture of a painted hillside. */
@@ -149,16 +149,17 @@ function useLandscape(uid: string) {
     const christ = { x: CHRIST_X, y: corcovado.at(CHRIST_X) + 3 };
 
     // Trees between the wonders, standing just in front of them.
-    const greens = ["#4E9A7A", "#3F8A6C", "#5BA683"];
+    // Dusk blues, with a couple of pale blossom trees catching the moonlight.
+    const blues = ["#22397A", "#1D3170", "#2A4590"];
     const rounds = [
-      { x: 300, h: 120, c: greens[0], s: 2 },
-      { x: 520, h: 96, c: greens[1], s: 5 },
-      { x: 1000, h: 132, c: "#EFB0BF", s: 8 },
-      { x: 1080, h: 104, c: "#E3954B", s: 11 },
-      { x: 1400, h: 92, c: greens[2], s: 14 },
-      { x: 1690, h: 116, c: greens[0], s: 17 },
-      { x: 2075, h: 108, c: "#D97B3A", s: 20 },
-      { x: 2150, h: 90, c: greens[1], s: 23 },
+      { x: 300, h: 120, c: blues[0], s: 2 },
+      { x: 520, h: 96, c: blues[1], s: 5 },
+      { x: 1000, h: 132, c: "#8FA9EC", s: 8 },
+      { x: 1080, h: 104, c: blues[2], s: 11 },
+      { x: 1400, h: 92, c: blues[2], s: 14 },
+      { x: 1690, h: 116, c: blues[0], s: 17 },
+      { x: 2075, h: 108, c: "#7896E3", s: 20 },
+      { x: 2150, h: 90, c: blues[1], s: 23 },
     ].map((t) => ({ ...t, y: hill.at(t.x) + 22, ...roundTree(t.x, hill.at(t.x) + 22, t.h, t.s) }));
     const cypress = [1330, 1356, 1735, 1760].map((x, i) => cypressTree(x, hill.at(x) + 18, 120 + (i % 2) * 26)).join("");
     const pines = [470, 785].map((x, i) => umbrellaPine(x, hill.at(x) + 20, 120 + i * 18, i ? -0.06 : 0.07, 4 + i)).join("");
@@ -177,7 +178,8 @@ function useLandscape(uid: string) {
 
     // Wildflowers across the front meadow.
     const flowerRand = mulberry32(77);
-    const flowers: Record<string, string> = { "#FFF4DC": "", "#F6B6C1": "", "#FFC876": "", "#FFFFFF": "" };
+    // Moonlit wildflowers and a few fireflies.
+    const flowers: Record<string, string> = { "#FFE9A8": "", "#BFD4FF": "", "#FFD23F": "", "#FFFFFF": "" };
     const keys = Object.keys(flowers);
     for (let i = 0; i < 340; i++) {
       const x = flowerRand() * PANO_W;
@@ -259,18 +261,34 @@ function useLandscape(uid: string) {
     const bushes = [250, 610, 980, 1290, 1620, 1890].map((x, i) => {
       const y = front.at(x) + 6;
       const blobs = canopyBlobs(x, y - 12, 15 + bushRand() * 6, 5, 300 + i);
-      return { d: blobs.map((b) => circle(b.cx, b.cy, b.r)).join(""), light: blobs.slice(0, 2).map((b) => circle(b.cx - b.r * 0.2, b.cy - b.r * 0.25, b.r * 0.5)).join(""), c: i % 2 ? "#3F8A6C" : "#4E9A7A" };
+      return { d: blobs.map((b) => circle(b.cx, b.cy, b.r)).join(""), light: blobs.slice(0, 2).map((b) => circle(b.cx - b.r * 0.2, b.cy - b.r * 0.25, b.r * 0.5)).join(""), c: i % 2 ? "#14244F" : "#1B2D66" };
     });
     const stones = [700, 1130, 1760, 2010].map((x, i) => ({ x, y: r1(front.at(x) + 12), rx: 9 + (i % 2) * 5, ry: 5 + (i % 2) * 2 }));
 
     // Butterflies over the meadow.
     const butterflies = [
-      { x: 520, y: front.at(520) - 26, c: "#F4A340", d: 0 },
-      { x: 1210, y: front.at(1210) - 34, c: "#F6B6C1", d: -2.4 },
-      { x: 1990, y: front.at(1990) - 24, c: "#FFF4DC", d: -4.1 },
+      { x: 520, y: front.at(520) - 26, c: "#FFD23F", d: 0 },
+      { x: 1210, y: front.at(1210) - 34, c: "#7CC4FF", d: -2.4 },
+      { x: 1990, y: front.at(1990) - 24, c: "#FF9F8F", d: -4.1 },
     ];
 
+    // Treelines along the ridges, the way pines crown hills at dusk.
+    const farTrees = forestOnRidge(range, { seed: 61, from: -20, to: PANO_W + 20, density: 0.11, minH: 12, maxH: 30, gapChance: 0.2 });
+    const hillTrees = forestOnRidge(hill, { seed: 67, from: -20, to: PANO_W + 20, density: 0.075, minH: 16, maxH: 46, gapChance: 0.35 });
+    // Tall firs framing the corners, darkest of all.
+    const firs = [
+      { x: -34, h: 360, w: 120 },
+      { x: 28, h: 270, w: 96 },
+      { x: 66, h: 190, w: 70 },
+      { x: PANO_W - 70, h: 200, w: 74 },
+      { x: PANO_W - 26, h: 300, w: 104 },
+      { x: PANO_W + 30, h: 380, w: 126 },
+    ].map((f) => ({ ...f, d: pineTree(f.x, PANO_H + 6, f.h, f.w) }));
+
     return {
+      farTrees,
+      hillTrees,
+      firs,
       shadows,
       canal,
       canalGlints,
@@ -367,24 +385,24 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
     >
       <defs>
         <linearGradient id={`${uid}-andes`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#86BEA9" />
-          <stop offset="1" stopColor="#4C8C7A" />
+          <stop offset="0" stopColor="#6F8DE0" />
+          <stop offset="1" stopColor="#4D6BC6" />
         </linearGradient>
         <linearGradient id={`${uid}-hill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#BFDDA9" />
-          <stop offset="0.6" stopColor="#8CC294" />
+          <stop offset="0" stopColor="#4361B8" />
+          <stop offset="0.6" stopColor="#2F4A9A" />
         </linearGradient>
         <linearGradient id={`${uid}-front`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#6DAE88" />
-          <stop offset="1" stopColor="#3F8A6C" />
+          <stop offset="0" stopColor="#22397A" />
+          <stop offset="1" stopColor="#0E1A3A" />
         </linearGradient>
         <linearGradient id={`${uid}-haze`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#F4F8F9" stopOpacity="0" />
-          <stop offset="1" stopColor="#F4F8F9" stopOpacity="0.55" />
+          <stop offset="0" stopColor="#C3D2F7" stopOpacity="0" />
+          <stop offset="1" stopColor="#C3D2F7" stopOpacity="0.5" />
         </linearGradient>
         <linearGradient id={`${uid}-canal`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E6F6F4" stopOpacity="0.85" />
-          <stop offset="1" stopColor="#5BB5B0" stopOpacity="0.35" />
+          <stop offset="0" stopColor="#EEF3FF" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#7C9BE6" stopOpacity="0.35" />
         </linearGradient>
         <radialGradient id={`${uid}-flame`}>
           <stop offset="0" stopColor="#FFF4DC" />
@@ -395,72 +413,77 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
 
       {/* Distant ranges, softened by atmosphere. */}
       <Layer depth={0.08}>
-        <path d={s.far} fill="#CBE2E1" />
+        <path d={s.far} fill="#9DB4F0" />
       </Layer>
       <Layer depth={0.14}>
-        <path d={s.range} fill="#AED2CD" />
+        <path d={s.farTrees} fill="#7F9BE6" />
+        <path d={s.range} fill="#7F9BE6" />
         <rect y={420} width={PANO_W} height={PANO_H - 420} fill={`url(#${uid}-haze)`} />
       </Layer>
 
       {/* Andean peaks and Corcovado. */}
       <Layer depth={0.22}>
-        <path d={s.andes} fill="#A7D3BF" transform="translate(-10 4)" />
+        <path d={s.andes} fill="#86A2EA" transform="translate(-10 4)" />
         <path d={s.andes} fill={`url(#${uid}-andes)`} />
-        <path d={s.andesLines} fill="none" stroke="#A9D3C1" strokeOpacity={0.55} strokeWidth={2.2} strokeLinecap="round" />
+        <path d={s.andesLines} fill="none" stroke="#9AB3F0" strokeOpacity={0.5} strokeWidth={2.2} strokeLinecap="round" />
+      </Layer>
+      <Layer depth={0.26}>
+        <Birds x={1620} y={450} count={4} color="#1B2D66" scale={0.85} duration={70} delay={-20} />
       </Layer>
       <Layer depth={0.3}>
-        <path d={s.corcovado} fill="#5E9C82" />
-        <path d={s.corcovadoLines} fill="none" stroke="#86BCA2" strokeOpacity={0.6} strokeWidth={2.4} strokeLinecap="round" />
-        <Monument id="christ" x={s.christ.x} y={s.christ.y} scale={1.75} tones={{ body: "#F1EBDF", shade: "#C9BEA9", light: "#FFFFFF" }} detailed light="left" />
+        <path d={s.corcovado} fill="#4A66C0" />
+        <path d={s.corcovadoLines} fill="none" stroke="#6D8ADB" strokeOpacity={0.6} strokeWidth={2.4} strokeLinecap="round" />
+        <Monument id="christ" x={s.christ.x} y={s.christ.y} scale={1.75} tones={{ body: "#DCE5FB", shade: "#9DB0E4", light: "#FFFFFF" }} detailed light="left" />
       </Layer>
 
       {/* The wonders on their meadow. */}
       <Layer depth={0.4}>
+        <path d={s.hillTrees} fill="#4361B8" />
         <path d={s.hill} fill={`url(#${uid}-hill)`} />
-        <path d={s.hillHatch} fill="none" stroke="#E2F0C9" strokeOpacity={0.6} strokeWidth={2} strokeLinecap="round" />
+        <path d={s.hillHatch} fill="none" stroke="#5D7BD0" strokeOpacity={0.55} strokeWidth={2} strokeLinecap="round" />
         {s.houses.map((h, i) => (
           <g key={i}>
-            <path d={h.wall} fill="#F3E9D8" />
-            <path d={h.roof} fill={i % 2 ? "#C8664B" : "#B25A44"} />
+            <path d={h.wall} fill="#A9BBEE" />
+            <path d={h.roof} fill={i % 2 ? "#E0645C" : "#C4524F"} />
           </g>
         ))}
         {s.shadows.map((sh, i) => (
-          <ellipse key={i} cx={sh.cx} cy={sh.cy} rx={sh.rx} ry={sh.ry} fill="#2F6E58" opacity={0.2} />
+          <ellipse key={i} cx={sh.cx} cy={sh.cy} rx={sh.rx} ry={sh.ry} fill="#0E1A3A" opacity={0.28} />
         ))}
         {s.monuments.map((m) => (
           <Monument key={m.id} id={m.id} x={m.x} y={m.y} scale={m.scale} tones={m.tones} detailed light={m.x > SUN_X ? "left" : "right"} />
         ))}
 
         {/* The Taj's reflecting canal, catching the light. */}
-        <path d={s.canal} fill="#9FD4D6" />
+        <path d={s.canal} fill="#B9CDF7" />
         <path d={s.canal} fill={`url(#${uid}-canal)`} />
         {s.canalGlints.map((g, i) => (
           <path key={i} d={`M${r1(g.x - g.half * 0.6)} ${g.y}h${r1(g.half * 1.2)}`} stroke="#FFFFFF" strokeWidth={1.6} strokeLinecap="round" className="scene-shimmer" style={{ animationDelay: `${-i * 0.8}s` }} />
         ))}
 
         {/* Big Ben keeps London time; Liberty's torch flickers; the Eiffel Tower sparkles; the Burj glints. */}
-        <LondonClock cx={s.clock.cx} cy={s.clock.cy} r={s.clock.r} color="#3B2C1E" />
+        <LondonClock cx={s.clock.cx} cy={s.clock.cy} r={s.clock.r} color="#16224A" />
         <circle cx={s.torch.x} cy={s.torch.y} r={9} fill={`url(#${uid}-flame)`} className="pano-flicker" />
         {s.sparkles.map((p, i) => (
           <path key={i} d={SPARK} transform={`translate(${p.x} ${p.y})`} fill="#FFFFFF" className="scene-sparkle" style={{ animationDelay: `${p.d}s` }} />
         ))}
         {s.windows.map((w, i) => (
-          <rect key={i} x={w.x} y={w.y} width={2.4} height={1.6} fill="#FFF4DC" className="scene-twinkle" style={{ animationDelay: `${w.d}s` }} />
+          <rect key={i} x={w.x} y={w.y} width={2.4} height={1.6} fill="#FFE9A8" className="scene-twinkle" style={{ animationDelay: `${w.d}s` }} />
         ))}
 
         {/* A windmill turning above the hamlet. */}
         <g>
-          <path d={`M${s.mill.x - 12} ${s.mill.y}L${s.mill.x - 7} ${s.mill.y - 56}L${s.mill.x + 7} ${s.mill.y - 56}L${s.mill.x + 12} ${s.mill.y}Z`} fill="#F3E9D8" />
-          <path d={`M${s.mill.x - 9} ${s.mill.y - 54}Q${s.mill.x} ${s.mill.y - 70} ${s.mill.x + 9} ${s.mill.y - 54}Z`} fill="#B25A44" />
-          <rect x={s.mill.x - 2.5} y={s.mill.y - 10} width={5} height={10} rx={2.5} fill="#8E6B3E" />
+          <path d={`M${s.mill.x - 12} ${s.mill.y}L${s.mill.x - 7} ${s.mill.y - 56}L${s.mill.x + 7} ${s.mill.y - 56}L${s.mill.x + 12} ${s.mill.y}Z`} fill="#A9BBEE" />
+          <path d={`M${s.mill.x - 9} ${s.mill.y - 54}Q${s.mill.x} ${s.mill.y - 70} ${s.mill.x + 9} ${s.mill.y - 54}Z`} fill="#E0645C" />
+          <rect x={s.mill.x - 2.5} y={s.mill.y - 10} width={5} height={10} rx={2.5} fill="#FFE08A" />
           <g className="scene-spin" style={{ animationDuration: "16s" }}>
             {[0, 90, 180, 270].map((a) => (
               <g key={a} transform={`rotate(${a} ${s.mill.x} ${s.mill.y - 56})`}>
-                <rect x={s.mill.x - 1} y={s.mill.y - 98} width={2} height={42} fill="#6B5650" />
-                <rect x={s.mill.x + 1} y={s.mill.y - 96} width={9} height={30} fill="#FFF8EC" stroke="#CDBFA6" strokeWidth={0.8} />
+                <rect x={s.mill.x - 1} y={s.mill.y - 98} width={2} height={42} fill="#22397A" />
+                <rect x={s.mill.x + 1} y={s.mill.y - 96} width={9} height={30} fill="#E2EAFF" stroke="#8FA3DC" strokeWidth={0.8} />
               </g>
             ))}
-            <circle cx={s.mill.x} cy={s.mill.y - 56} r={3} fill="#6B5650" />
+            <circle cx={s.mill.x} cy={s.mill.y - 56} r={3} fill="#22397A" />
           </g>
         </g>
 
@@ -474,15 +497,15 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
         ))}
 
         {/* The railway, and a little train running along it. */}
-        <path d={s.rail} fill="none" stroke="#6E8F72" strokeWidth={1.6} opacity={0.7} />
-        <path d={s.sleepers} stroke="#6E8F72" strokeWidth={1.4} opacity={0.5} />
+        <path d={s.rail} fill="none" stroke="#1B2D66" strokeWidth={1.6} opacity={0.8} />
+        <path d={s.sleepers} stroke="#1B2D66" strokeWidth={1.4} opacity={0.6} />
         {TRAIN.map((car, i) => (
           <g key={i} className="pano-rider pano-train" style={{ offsetPath: `path("${s.rail}")`, animationDelay: `${-22 + i * 0.62}s` }}>
             {car === "engine" ? (
               <>
-                <rect x={-14} y={-14} width={28} height={12} rx={3} fill="#C0503E" />
-                <rect x={-13} y={-20} width={9} height={8} rx={1.5} fill="#16324A" />
-                <rect x={8} y={-22} width={4} height={8} fill="#16324A" />
+                <rect x={-14} y={-14} width={28} height={12} rx={3} fill="#FF6B5B" />
+                <rect x={-13} y={-20} width={9} height={8} rx={1.5} fill="#16224A" />
+                <rect x={8} y={-22} width={4} height={8} fill="#16224A" />
                 {[0, 1, 2].map((k) => (
                   <circle key={k} cx={10} cy={-26} r={3} fill="#FFFFFF" className="pano-steam" style={{ animationDelay: `${-k * 0.5}s` }} />
                 ))}
@@ -491,24 +514,24 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
               <>
                 <rect x={-14} y={-14} width={28} height={12} rx={3} fill={car} />
                 {[-9, -2, 5].map((wx) => (
-                  <rect key={wx} x={wx} y={-11.5} width={4.5} height={4} rx={1} fill="#FFF4DC" opacity={0.9} />
+                  <rect key={wx} x={wx} y={-11.5} width={4.5} height={4} rx={1} fill="#FFE9A8" opacity={0.95} />
                 ))}
               </>
             )}
-            <circle cx={-8} cy={-1.5} r={2.4} fill="#2B2B2B" />
-            <circle cx={8} cy={-1.5} r={2.4} fill="#2B2B2B" />
+            <circle cx={-8} cy={-1.5} r={2.4} fill="#0B1533" />
+            <circle cx={8} cy={-1.5} r={2.4} fill="#0B1533" />
           </g>
         ))}
       </Layer>
 
       {/* Trees standing between them. */}
       <Layer depth={0.5}>
-        <path d={s.pines} fill="#3D7F63" />
-        <path d={s.cypress} fill="#2F6E58" />
+        <path d={s.pines} fill="#1D3170" />
+        <path d={s.cypress} fill="#172A63" />
         {s.rounds.map((t) => (
           <g key={t.x}>
             <path d={t.body} fill={t.c} />
-            <path d={t.light} fill="#FFFFFF" opacity={0.18} />
+            <path d={t.light} fill="#BFD4FF" opacity={0.16} />
           </g>
         ))}
       </Layer>
@@ -516,36 +539,36 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
       {/* Foreground meadow, footpath and palms. */}
       <Layer depth={0.7}>
         <path d={s.front} fill={`url(#${uid}-front)`} />
-        <path d={s.frontHatch} fill="none" stroke="#9BD0AC" strokeOpacity={0.55} strokeWidth={2.4} strokeLinecap="round" />
+        <path d={s.frontHatch} fill="none" stroke="#3A55A8" strokeOpacity={0.5} strokeWidth={2.4} strokeLinecap="round" />
         {Object.entries(s.flowers).map(([c, d]) => (
-          <path key={c} d={d} fill={c} opacity={0.9} />
+          <path key={c} d={d} fill={c} opacity={0.75} />
         ))}
 
         {/* A worn footpath with a stretch of fence, and travellers walking it. */}
-        <path d={s.walk} fill="none" stroke="#D9EBC2" strokeWidth={7} strokeLinecap="round" opacity={0.55} />
-        <path d={s.fence.map((f) => `M${f.x} ${f.y}v-12`).join("")} stroke="#8E6B3E" strokeWidth={2.4} strokeLinecap="round" />
-        <path d={`M${s.fence[0].x} ${s.fence[0].y - 9}L${s.fence[s.fence.length - 1].x} ${s.fence[s.fence.length - 1].y - 9}M${s.fence[0].x} ${s.fence[0].y - 4}L${s.fence[s.fence.length - 1].x} ${s.fence[s.fence.length - 1].y - 4}`} stroke="#A9825A" strokeWidth={1.6} />
+        <path d={s.walk} fill="none" stroke="#4361B8" strokeWidth={7} strokeLinecap="round" opacity={0.45} />
+        <path d={s.fence.map((f) => `M${f.x} ${f.y}v-12`).join("")} stroke="#0B1533" strokeWidth={2.4} strokeLinecap="round" />
+        <path d={`M${s.fence[0].x} ${s.fence[0].y - 9}L${s.fence[s.fence.length - 1].x} ${s.fence[s.fence.length - 1].y - 9}M${s.fence[0].x} ${s.fence[0].y - 4}L${s.fence[s.fence.length - 1].x} ${s.fence[s.fence.length - 1].y - 4}`} stroke="#16224A" strokeWidth={1.6} />
         {WALKERS.map((w, i) => (
           <g key={i} className="pano-rider pano-walk" style={{ offsetPath: `path("${s.walk}")`, animationDuration: `${w.dur}s`, animationDelay: `${w.delay}s` }}>
             <g className="pano-bob" style={{ animationDelay: `${i * 0.2}s` }}>
               <rect x={-2.6} y={-15} width={5.2} height={9} rx={2.2} fill={w.top} />
               <rect x={-4.8} y={-14} width={3} height={6} rx={1.2} fill={w.pack} />
               <circle cx={0} cy={-18} r={2.8} fill="#E8B48F" />
-              <path d="M-1.4 -6.2l-1 6M1.4 -6.2l1 6" stroke="#2C3E50" strokeWidth={1.8} strokeLinecap="round" />
+              <path d="M-1.4 -6.2l-1 6M1.4 -6.2l1 6" stroke="#0B1533" strokeWidth={1.8} strokeLinecap="round" />
             </g>
           </g>
         ))}
 
         {s.stones.map((st, i) => (
           <g key={i}>
-            <ellipse cx={st.x} cy={st.y} rx={st.rx} ry={st.ry} fill="#A8B5AE" />
-            <ellipse cx={st.x - st.rx * 0.25} cy={st.y - st.ry * 0.35} rx={st.rx * 0.5} ry={st.ry * 0.4} fill="#D3DDD6" />
+            <ellipse cx={st.x} cy={st.y} rx={st.rx} ry={st.ry} fill="#2A4590" />
+            <ellipse cx={st.x - st.rx * 0.25} cy={st.y - st.ry * 0.35} rx={st.rx * 0.5} ry={st.ry * 0.4} fill="#5D7BD0" />
           </g>
         ))}
         {s.bushes.map((b, i) => (
           <g key={i}>
             <path d={b.d} fill={b.c} />
-            <path d={b.light} fill="#FFFFFF" opacity={0.16} />
+            <path d={b.light} fill="#7C9BE6" opacity={0.18} />
           </g>
         ))}
 
@@ -554,25 +577,30 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
           <g key={i} transform={`translate(${r1(b.x)} ${r1(b.y)})`}>
             <g className="pano-flutter" style={{ animationDelay: `${b.d}s` }}>
               <g className="pano-wing" style={{ animationDelay: `${b.d}s` }}>
-                <path d="M0 0C-7 -9 -12 -3 -7 2C-4 4 -2 2 0 0ZM0 0C7 -9 12 -3 7 2C4 4 2 2 0 0Z" fill={b.c} stroke="#5A4A3A" strokeWidth={0.6} />
+                <path d="M0 0C-7 -9 -12 -3 -7 2C-4 4 -2 2 0 0ZM0 0C7 -9 12 -3 7 2C4 4 2 2 0 0Z" fill={b.c} stroke="#0E1A3A" strokeWidth={0.6} />
               </g>
-              <path d="M0 -3v6" stroke="#3A2E22" strokeWidth={1.2} strokeLinecap="round" />
+              <path d="M0 -3v6" stroke="#0E1A3A" strokeWidth={1.2} strokeLinecap="round" />
             </g>
           </g>
         ))}
         {s.palms.map((p, i) => (
           <Sway key={p.x} delay={-i * 1.7} origin={`${p.x}px ${r1(p.y)}px`}>
-            <path d={palmTree(p.x, p.y, p.h, p.b, p.s)} fill="#2C6E5A" />
+            <path d={palmTree(p.x, p.y, p.h, p.b, p.s)} fill="#101C44" />
           </Sway>
         ))}
       </Layer>
 
-      {/* Big leaves framing the corners. */}
+      {/* Tall firs and big leaves framing the corners, in the deepest blue. */}
       <Layer depth={0.95}>
+        {s.firs.map((f, i) => (
+          <Sway key={`f${i}`} delay={-i * 1.3} origin={`${f.x}px ${PANO_H}px`}>
+            <path d={f.d} fill={i % 3 === 1 ? "#0E1A3A" : "#0B1533"} />
+          </Sway>
+        ))}
         {[...s.leavesL, ...s.leavesR].map((l, i) => (
           <Sway key={i} delay={-i * 0.9} origin={i < 4 ? `60px ${PANO_H}px` : `${PANO_W - 60}px ${PANO_H}px`}>
-            <path d={l.blade} fill={["#2E7766", "#1F5B4F", "#3E8C6E", "#25685A"][i % 4]} />
-            <path d={l.rib} fill="none" stroke="#A7D6BE" strokeOpacity={0.45} strokeWidth={2} />
+            <path d={l.blade} fill={["#0F1A3D", "#13214A", "#0B1533", "#162657"][i % 4]} />
+            <path d={l.rib} fill="none" stroke="#3A55A8" strokeOpacity={0.5} strokeWidth={2} />
           </Sway>
         ))}
       </Layer>
@@ -581,16 +609,13 @@ export function PanoramaLandscape({ intro, className }: { intro: boolean; classN
 }
 
 /**
- * The sky behind the hero copy: the low sun and two soft clouds drifting at the
- * edges, kept clear of the headline so nothing competes with it.
+ * The blue-hour sky behind the hero copy: a pale moon off to the side, stars
+ * thickening towards the top and a glow still lingering over the horizon,
+ * kept quiet around the headline (birds fly over the land, not the copy).
  */
 export function PanoramaSky({ className }: { className?: string }) {
   const uid = "sky" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const { ref, paused } = useLiveScene(true);
-  const clouds = [
-    { x: -60, y: 190, w: 440, seed: 3, speed: 120 },
-    { x: 1300, y: 260, w: 360, seed: 21, speed: 140 },
-  ];
 
   return (
     <svg
@@ -602,18 +627,25 @@ export function PanoramaSky({ className }: { className?: string }) {
       aria-hidden
       focusable="false"
     >
-      <Layer depth={0.04}>
-        {/* Long, soft rays turning slowly around the sun. */}
-        <g className="pano-rays" style={{ transformOrigin: "1150px 668px" }}>
-          {Array.from({ length: 16 }, (_, i) => (
-            <path key={i} d="M1150 668L1143 520L1157 520Z" fill="#FFE7B0" opacity={i % 2 ? 0.16 : 0.26} transform={`rotate(${i * 22.5} 1150 668)`} />
-          ))}
-        </g>
-        <Sun uid={uid} x={1150} y={668} r={54} color="#FFF3DD" glow="#FFC876" halo={6} haloOpacity={0.4} />
+      <Layer depth={0.03}>
+        <Stars seed={19} count={150} maxY={640} opacity={0.85} />
       </Layer>
-      <Layer depth={0.1}>
-        <Clouds color="#FFFFFF" opacity={0.7} items={clouds} />
+      <Layer depth={0.06}>
+        <Sun uid={uid} x={1325} y={215} r={34} color="#F4F7FF" glow="#C9D8FF" halo={5.5} haloOpacity={0.5} />
+        {/* The moon's craters, faintly. */}
+        <circle cx={1316} cy={207} r={7} fill="#DCE5FB" opacity={0.7} />
+        <circle cx={1336} cy={228} r={4.5} fill="#DCE5FB" opacity={0.6} />
+        <circle cx={1331} cy={199} r={3} fill="#DCE5FB" opacity={0.55} />
       </Layer>
+      {/* Light still lingering low over the horizon. */}
+      <defs>
+        <radialGradient id={`${uid}-dusk`} cx="0.5" cy="1" r="0.75">
+          <stop offset="0" stopColor="#D6E1FF" stopOpacity="0.55" />
+          <stop offset="0.5" stopColor="#B4C6F5" stopOpacity="0.18" />
+          <stop offset="1" stopColor="#B4C6F5" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect x="0" y="420" width="1600" height="580" fill={`url(#${uid}-dusk)`} />
     </svg>
   );
 }

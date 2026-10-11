@@ -163,7 +163,7 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
           e.preventDefault();
           submit();
         }}
-        className="group/composer relative isolate rounded-[28px] bg-white/25 p-2 text-left shadow-[0_40px_80px_-40px_rgba(11,90,90,0.55),0_8px_24px_-12px_rgba(14,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(124,196,255,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/45"
+        className="group/composer relative isolate rounded-[28px] bg-white/[0.86] p-2 text-left shadow-[0_40px_90px_-36px_rgba(8,18,46,0.75),0_8px_24px_-12px_rgba(14,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(124,196,255,0.28),inset_1px_0_0_rgba(255,255,255,0.45),inset_-1px_0_0_rgba(255,255,255,0.3)] ring-1 ring-inset ring-white/60 backdrop-blur-3xl backdrop-saturate-200 transition-[background-color,box-shadow] duration-500 focus-within:bg-white/95"
       >
         {/* Liquid glass: a specular sheen across the top, a light edge, and a slow lagoon glow on focus. */}
         <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
@@ -241,13 +241,13 @@ function TripComposer({ ready, delay }: { ready: boolean; delay: number }) {
         transition={{ duration: 1, delay: delay + 0.85 }}
         className="mt-4 flex flex-wrap items-center justify-center gap-2"
       >
-        <span className="eyebrow mr-1 text-ink/55">Try</span>
+        <span className="eyebrow mr-1 text-paper/65">Try</span>
         {SUGGESTIONS.map((s) => (
           <button
             key={s.label}
             type="button"
             onClick={() => pick(s.text)}
-            className="rounded-full bg-white/40 px-3.5 py-1.5 text-sm text-ink/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] ring-1 ring-inset ring-white/60 backdrop-blur-md transition-colors duration-300 hover:bg-ink hover:text-paper"
+            className="rounded-full bg-white/[0.12] px-3.5 py-1.5 text-sm text-paper/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] ring-1 ring-inset ring-white/25 backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-ink"
           >
             {s.label}
           </button>
@@ -274,7 +274,7 @@ export function PanoramaHero() {
       ref={ref}
       id="top"
       aria-label="Plan your next trip"
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[46.25rem] bg-[linear-gradient(180deg,#F7F6F2_0%,#EDF2F0_36%,#DCEAE6_64%,#F2E5CF_100%)]"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden lg:h-[100svh] lg:min-h-[46.25rem] bg-[linear-gradient(180deg,#34509F_0%,#4766C4_30%,#7392E6_62%,#A9BEF4_100%)]"
     >
       <motion.div style={{ y: skyY }} className="absolute inset-0 -z-20">
         <PanoramaSky className="size-full" />
@@ -286,13 +286,13 @@ export function PanoramaHero() {
           initial={{ opacity: 0, y: 14 }}
           animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1, ease, delay: delay + 0.1 }}
-          className="mb-6 inline-flex items-center gap-2.5 rounded-full bg-white/70 py-1.5 pl-3 pr-4 text-sm font-medium text-ink/80 ring-1 ring-ink/[0.06] backdrop-blur-sm"
+          className="mb-6 inline-flex items-center gap-2.5 rounded-full bg-white/[0.12] py-1.5 pl-3 pr-4 text-sm font-medium text-paper/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] ring-1 ring-white/20 backdrop-blur-md"
         >
-          <span className="size-1.5 rounded-full bg-brand" />
+          <span className="size-1.5 rounded-full bg-sun-2 shadow-[0_0_10px_rgba(255,210,63,0.9)]" />
           AI trip planner · Your first trip is free
         </motion.div>
 
-        <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.7rem,7vw,5rem)] leading-[1] tracking-[-0.035em] text-ink [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.3rem]">
+        <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.7rem,7vw,5rem)] leading-[1] tracking-[-0.035em] text-paper drop-shadow-[0_2px_24px_rgba(14,31,59,0.35)] [&_.accent]:!text-sun-2 [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.3rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
           </span>
@@ -305,7 +305,7 @@ export function PanoramaHero() {
           initial={{ opacity: 0, y: 14 }}
           animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1.1, ease, delay: delay + 0.42 }}
-          className="mx-auto mt-4 max-w-[36rem] text-base leading-relaxed text-ink/70 sm:text-lg"
+          className="mx-auto mt-4 max-w-[36rem] text-base leading-relaxed text-paper/80 sm:text-lg"
         >
           Describe the trip you&apos;re dreaming of. GoRoam turns it into a day-by-day plan: real places, honest budgets and stays ready to book.
         </motion.p>
