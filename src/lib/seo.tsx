@@ -92,7 +92,7 @@ export const softwareApp = {
   ],
   offers: [
     { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD", description: `${FREE_CREDITS} free itinerary, no card needed` },
-    ...PLANS.map((p) => ({ "@type": "Offer", name: p.name, price: p.price.toFixed(2), priceCurrency: "USD", description: `${p.credits} itineraries` })),
+    ...PLANS.map((p) => ({ "@type": "Offer", name: p.name, price: p.price.toFixed(2), priceCurrency: "USD", description: `Unlimited trips for ${p.days} days` })),
   ],
 };
 

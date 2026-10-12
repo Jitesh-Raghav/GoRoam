@@ -38,10 +38,11 @@ export default function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="3. Credits and payment">
+      <LegalSection title="3. Passes and payment">
         <p>
-          Every new account gets a small number of free credits. Beyond that, generating an itinerary costs one credit, and credit packs are
-          sold as one-time purchases. There&apos;s no subscription. Credits don&apos;t expire.
+          Every new account gets a free itinerary. Beyond that, a Week Pass or Year Pass lets you generate itineraries without limit,
+          subject to fair use, for 7 or 365 days. Passes are one-time purchases that don&apos;t renew automatically. Credits bought
+          before passes existed don&apos;t expire and are used when no pass is active.
         </p>
         <p>
           Payments are processed by <strong>Dodo Payments</strong>, who act as our payment processor and, for card and other supported

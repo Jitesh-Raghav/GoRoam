@@ -13,7 +13,7 @@ export interface PendingCheckout {
   startedAt: number;
 }
 
-/** Sends the traveller to Dodo's hosted checkout for a credit pack. */
+/** Sends the traveller to Dodo's hosted checkout for a pass. */
 export function useCheckout(creditsNow: number) {
   const [pending, setPending] = useState<PlanId | null>(null);
   const [error, setError] = useState<string | null>(null);

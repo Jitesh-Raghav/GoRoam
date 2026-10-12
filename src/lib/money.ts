@@ -215,7 +215,7 @@ const perUnit = (n: number, c: string, whole = 10) => {
 const exact = (n: number, c: string) => (c === "USD" ? `$${n.toFixed(2)}` : formatMoney(n, c, Number.isInteger(n) ? 0 : 2));
 
 /**
- * A credit pack's price for a visitor in `local` currency: their fixed local
+ * A pass's price (`each` is per day) for a visitor in `local` currency: their fixed local
  * price when we charge in it, otherwise the USD price with a "≈" conversion
  * beside it, so what's shown never differs from what's charged. `country` is
  * set only when the server told us where the visitor is, which is what
@@ -224,17 +224,17 @@ const exact = (n: number, c: string) => (c === "USD" ? `$${n.toFixed(2)}` : form
 export function packPrice(plan: Plan, local: string, country: string | null, rates: Record<string, number> | null): PackPrice {
   const fixed = local === "USD" || country ? fixedPrice(plan.id, local) : null;
   if (fixed !== null) {
-    return { approx: false, price: exact(fixed, local), each: local === "USD" ? exact(fixed / plan.credits, "USD") : perUnit(fixed / plan.credits, local), billed: null, currency: local };
+    return { approx: false, price: exact(fixed, local), each: local === "USD" ? exact(fixed / plan.days, "USD") : perUnit(fixed / plan.days, local), billed: null, currency: local };
   }
   const usd = exact(plan.price, "USD");
   const rate = rates?.[local];
-  if (!rate || local === "USD") return { approx: false, price: usd, each: exact(plan.price / plan.credits, "USD"), billed: null, currency: "USD" };
+  if (!rate || local === "USD") return { approx: false, price: usd, each: exact(plan.price / plan.days, "USD"), billed: null, currency: "USD" };
   const converted = plan.price * rate;
   return {
     approx: true,
     // Small amounts keep their cents (≈ €8.57); larger ones round (≈ ₹881).
     price: perUnit(converted, local, 100),
-    each: perUnit(converted / plan.credits, local),
+    each: perUnit(converted / plan.days, local),
     billed: usd,
     currency: "USD",
   };

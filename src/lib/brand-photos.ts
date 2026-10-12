@@ -26,7 +26,7 @@ export const BRAND_PHOTOS: {
   finalCta: BrandPhoto | null;
   /** Behind the balance on the credits page. */
   credits: BrandPhoto | null;
-  /** The header of each credit pack. */
+  /** The header of each pass. */
   packs: Record<PlanId, BrandPhoto | null>;
   /** The book travel banner, per tab, while no destination is typed. */
   book: Record<BookingKind, BrandPhoto | null>;
@@ -35,7 +35,7 @@ export const BRAND_PHOTOS: {
 } = {
   finalCta: null,
   credits: null,
-  packs: { starter: null, explorer: null, adventurer: null },
+  packs: { week: null, year: null },
   book: { flights: null, stays: null, experiences: null, transport: null },
   destinations: {},
 };
@@ -51,7 +51,7 @@ export const PHOTO_QUERIES: {
 } = {
   credits: "Santorini, Greece",
   // A getaway, the next big trip, and the far ends of the map.
-  packs: { starter: "Udaipur, India", explorer: "Kyoto, Japan", adventurer: "Patagonia, Chile" },
+  packs: { week: "Udaipur, India", year: "Kyoto, Japan" },
   book: { flights: "Maldives", stays: "Amalfi Coast, Italy", experiences: "Cappadocia, Turkey", transport: "Swiss Alps, Switzerland" },
 };
 

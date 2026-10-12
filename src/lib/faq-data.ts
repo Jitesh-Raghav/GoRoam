@@ -7,12 +7,12 @@ export const FAQS = [
     a: "Tell us where you're starting and going, your dates, who's coming, your budget, pace, where you like to stay and what you love. Our AI drafts a day-by-day plan: a morning, afternoon and evening for every day, each with a real place, timing, a local tip, an estimated cost and directions, plus where to stay, what to pack and the local essentials.",
   },
   {
-    q: "What is a credit?",
-    a: `One credit creates one complete itinerary. Every new account starts with ${freeTrips()}, and packs of ${PLANS.map((p) => p.credits).join(", ").replace(/, (\d+)$/, " or $1")} credits start at $${PLANS[0].price} (shown in your own currency where you are).`,
+    q: "How much does GoRoam cost?",
+    a: `Every new account gets ${freeTrips()}. After that, a ${PLANS.map((p) => `${p.name} ($${p.price})`).join(" or a ")} lets you plan as many trips as you like for ${PLANS.map((p) => `${p.days} days`).join(" or ")}. Prices show in your own currency where you are.`,
   },
   {
-    q: "Do credits expire?",
-    a: "Never. Buy them once and use them whenever you're ready to plan your next adventure.",
+    q: "Does a pass renew automatically?",
+    a: "No. A pass is a one-time payment: it simply ends after its 7 or 365 days, and you buy another only if you want one. Buying again adds the time on top of what's left. Credits from older packs never expire and are used when no pass is running.",
   },
   {
     q: "Can I take my itinerary offline?",
@@ -32,6 +32,6 @@ export const FAQS = [
   },
   {
     q: "Can I get a refund?",
-    a: "Yes. Every credit pack has a 30-day money-back guarantee. Email jitesh@goroam.world within 30 days of buying and we'll refund it in full.",
+    a: "Yes. Every pass has a 30-day money-back guarantee. Email jitesh@goroam.world within 30 days of buying and we'll refund it in full.",
   },
 ];

@@ -5,7 +5,7 @@ import type { Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 /**
- * A credit pack's price in the visitor's currency: "₹799 one-time", or, where
+ * A pass's price in the visitor's currency: "₹799 one-time", or, where
  * we bill in USD, "≈ ₹830" with "billed as $9.99" so nobody is surprised at checkout.
  */
 export function PackPrice({ plan, className, muted, note = "one-time" }: { plan: Plan; className?: string; muted?: string; note?: string }) {
@@ -21,7 +21,7 @@ export function PackPrice({ plan, className, muted, note = "one-time" }: { plan:
   );
 }
 
-/** "$1.00" / "₹80": what one itinerary costs in that pack. */
+/** "$0.05" / "₹2": what a pass costs per day. */
 export function PackEach({ plan }: { plan: Plan }) {
   return <>{usePackPrice()(plan).each}</>;
 }

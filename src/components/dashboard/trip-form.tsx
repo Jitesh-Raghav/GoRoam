@@ -73,7 +73,7 @@ import {
   type TripLeg,
   type TripPreferences,
 } from "@/lib/trip";
-import { PLANS, perTrip } from "@/lib/plans";
+import { cheapestPlan } from "@/lib/plans";
 import { budgetPicks, compactMoney, formatMoney, roundBudget } from "@/lib/currency";
 import { tidy, useMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
@@ -540,7 +540,7 @@ const symbolOf = (c: string) => {
 
 export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripFormProps) {
   const router = useRouter();
-  const { credits, creditsLoaded, refreshCredits } = useCredits();
+  const { credits, creditsLoaded, refreshCredits, pass: activePass } = useCredits();
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [formData, setFormData] = useState<TripFormData>({
@@ -561,7 +561,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
   const [paywall, setPaywall] = useState(false);
   // "Inspire me where to go" on the home page lands here with ?inspire=1.
   const [inspireNow, setInspireNow] = useState(false);
-  const outOfCredits = creditsLoaded && credits < 1;
+  const outOfCredits = creditsLoaded && !activePass && credits < 1;
   const today = new Date().toISOString().split("T")[0];
 
   // Pre-fill from the landing page or "Plan a similar trip", or pick up a plan
@@ -1167,10 +1167,14 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                   </>
                 ) : outOfCredits ? (
                   <>
-                    You&apos;ve used your free trip · more from <span className="text-paper">{perTrip(PLANS[PLANS.length - 1])}</span> a trip.{" "}
+                    You&apos;ve used your free trip · unlimited trips from <span className="text-paper">${cheapestPlan().price}</span>.{" "}
                     <Link href="/dashboard/credits" className="text-brand-2 underline underline-offset-4">
-                      See packs
+                      See passes
                     </Link>
+                  </>
+                ) : activePass ? (
+                  <>
+                    Included in your <span className="text-paper">{activePass.plan === "week" ? "Week" : "Year"} Pass</span>
                   </>
                 ) : (
                   <>

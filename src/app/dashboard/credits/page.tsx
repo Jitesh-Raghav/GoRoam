@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, Star, X, Zap } from "@/components/site/icons";
+import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, X, Zap } from "@/components/site/icons";
 import Link from "next/link";
 import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/dashboard/use-checkout";
@@ -22,11 +22,11 @@ export default function CreditsPage() {
   return <CreditsPageContent />;
 }
 
-const ICONS: Record<PlanId, typeof Zap> = { starter: Zap, explorer: Star, adventurer: Crown };
+const ICONS: Record<PlanId, typeof Zap> = { week: Zap, year: Crown };
 /** Drawn under each pack's photo, and shown if none loads. */
-const PACK_SCENES: Record<PlanId, SceneId> = { starter: "lake", explorer: "fuji", adventurer: "peaks" };
+const PACK_SCENES: Record<PlanId, SceneId> = { week: "lake", year: "fuji" };
 /** Each pack's colour, in the mesh that wakes up on hover. */
-const PACK_TONES: Record<PlanId, MeshTone> = { starter: "azure", explorer: "night", adventurer: "coral" };
+const PACK_TONES: Record<PlanId, MeshTone> = { week: "azure", year: "night" };
 
 /** A pack's header: a photo of the kind of trip it buys, with its size on top. */
 function PackPhoto({ plan }: { plan: Plan }) {
@@ -39,7 +39,7 @@ function PackPhoto({ plan }: { plan: Plan }) {
       </span>
       <div className="absolute bottom-4 left-5 text-paper">
         <p className="eyebrow text-paper/75">{plan.name}</p>
-        <p className="display mt-1.5 text-[2rem] leading-none">{plan.credits} trips</p>
+        <p className="display mt-1.5 text-[2rem] leading-none">Unlimited trips</p>
       </div>
     </PhotoPanel>
   );
@@ -79,16 +79,16 @@ async function fetchPayments(): Promise<PaymentRow[]> {
 
 const faqs = [
   {
-    q: "How do credits work?",
-    a: `Each credit plans one complete itinerary, with bookings, checklists and a shareable link. New accounts start with ${freeTrips()}.`,
+    q: "How does a pass work?",
+    a: `While a pass runs you can plan as many trips as you like (fair use: up to ${PLANS.map((p) => `${p.fairUse} on the ${p.name}`).join(", ")}). New accounts start with ${freeTrips()}.`,
   },
   {
     q: "Can I get a refund?",
-    a: "Yes, there's a 30-day money-back guarantee. Email jitesh@goroam.world and we'll refund the pack; its unused credits are removed.",
+    a: "Yes, there's a 30-day money-back guarantee. Email jitesh@goroam.world and we'll refund your pass; its time is removed.",
   },
   {
-    q: "Do credits expire?",
-    a: "No! Your credits never expire. Use them whenever you're ready to plan your next adventure.",
+    q: "Does it renew automatically?",
+    a: "Never. A pass is a one-time payment that simply ends. Buy again any time and the new days add on to what's left.",
   },
   {
     q: "How do I pay?",
@@ -97,10 +97,10 @@ const faqs = [
 ];
 
 function CreditsPageContent() {
-  const { credits, refreshCredits } = useCredits();
+  const { credits, refreshCredits, pass } = useCredits();
   const checkout = useCheckout(credits);
   const [returned, setReturned] = useState<ReturnState>("idle");
-  const [added, setAdded] = useState(0);
+  const [added, setAdded] = useState("");
   const [payments, setPayments] = useState<PaymentRow[]>([]);
   // Held in a ref: its identity changes once the session loads, which must not restart the poll below.
   const refresh = useRef(refreshCredits);
@@ -162,8 +162,8 @@ function CreditsPageContent() {
       const fresh = rows.find((r) => r.status === "succeeded" && new Date(r.createdAt).getTime() >= since);
       if (fresh) {
         setPayments(rows);
-        setAdded(fresh.credits);
-        track("purchase_completed", { credits: fresh.credits, amount: fresh.amount });
+        setAdded(fresh.planId);
+        track("purchase_completed", { plan: fresh.planId, amount: fresh.amount });
         setReturned("confirmed");
         await refresh.current();
         try {
@@ -185,7 +185,7 @@ function CreditsPageContent() {
   return (
     <div className="mx-auto max-w-[80rem]">
       <header>
-        <p className="eyebrow text-stone">Credits</p>
+        <p className="eyebrow text-stone">Your plan</p>
         <h1 className="display mt-4 text-[clamp(2.38rem,5.1vw,4.25rem)] leading-[1] text-ink">
           <SplitText text="More trips," trigger="mount" className="block" />
           <SplitText segments={[{ text: "fewer " }, { text: "spreadsheets.", className: "accent" }]} trigger="mount" delay={0.12} className="block" />
@@ -221,7 +221,7 @@ function CreditsPageContent() {
               <div>
                 <p className="font-medium">
                   {returned === "confirming" && "Confirming your payment…"}
-                  {returned === "confirmed" && `Payment received, ${added} credits added.`}
+                  {returned === "confirmed" && `Payment received, your ${PLANS.find((p) => p.id === added)?.name ?? "pass"} is active.`}
                   {returned === "delayed" && "Your payment is still being confirmed."}
                   {returned === "cancelled" && "Checkout cancelled. You haven't been charged."}
                   {returned === "failed" && "That payment didn't go through."}
@@ -229,8 +229,8 @@ function CreditsPageContent() {
                 <p className={cn("mt-0.5 text-sm", returned === "confirmed" ? "text-paper/65" : "text-stone")}>
                   {returned === "confirming" && "This usually takes a few seconds."}
                   {returned === "confirmed" && "A receipt is on its way to your inbox."}
-                  {returned === "delayed" && "Credits appear automatically as soon as it clears, you can keep browsing. Check your inbox for the receipt."}
-                  {returned === "cancelled" && "Pick a pack whenever you're ready."}
+                  {returned === "delayed" && "Your pass switches on automatically as soon as it clears, you can keep browsing. Check your inbox for the receipt."}
+                  {returned === "cancelled" && "Pick a pass whenever you're ready."}
                   {returned === "failed" && "You haven't been charged. Try again, or use another card or UPI."}
                 </p>
               </div>
@@ -249,11 +249,25 @@ function CreditsPageContent() {
         <PhotoPanel photo={balancePhoto} scene="santorini" intro lazy={false} shade="left" creditClassName="bottom-auto top-4" className="rounded-panel text-paper">
           <div className="relative flex min-h-[19rem] flex-col justify-end gap-8 p-8 sm:min-h-[22rem] sm:p-12 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="eyebrow text-paper/70">Current balance</p>
-              <p className="display mt-4 text-[clamp(4.25rem,10.2vw,7.65rem)] leading-[0.8]">{credits}</p>
-              <p className="mt-4 max-w-sm text-paper/80">
-                {credits === 1 ? "credit" : "credits"} left · each credit plans one complete itinerary, and they never expire.
-              </p>
+              {pass ? (
+                <>
+                  <p className="eyebrow text-paper/70">{pass.plan === "week" ? "Week Pass" : "Year Pass"} · active</p>
+                  <p className="display mt-4 text-[clamp(3.4rem,8.5vw,6.4rem)] leading-[0.85]">Unlimited</p>
+                  <p className="mt-4 max-w-sm text-paper/80">
+                    Plan as many trips as you like until{" "}
+                    {new Date(pass.until).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.
+                    {credits > 0 ? ` Your ${credits} saved ${credits === 1 ? "trip" : "trips"} stay for after.` : ""}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="eyebrow text-paper/70">Trips left</p>
+                  <p className="display mt-4 text-[clamp(4.25rem,10.2vw,7.65rem)] leading-[0.8]">{credits}</p>
+                  <p className="mt-4 max-w-sm text-paper/80">
+                    {credits === 1 ? "trip" : "trips"} left · get a pass below for unlimited trips.
+                  </p>
+                </>
+              )}
             </div>
             <PillLink href="/dashboard" variant="paper" icon={<Plus className="size-4" />} className="self-start md:self-auto">
               Plan a trip
@@ -265,8 +279,8 @@ function CreditsPageContent() {
       {/* Plans */}
       <section className="mt-16">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-          <h2 className="display text-3xl text-ink">Choose a credit pack</h2>
-          <p className="text-sm text-stone">One-time payments · no subscription</p>
+          <h2 className="display text-3xl text-ink">{pass ? "Extend your pass" : "Choose your pass"}</h2>
+          <p className="text-sm text-stone">One-time payment · no auto-renew · extra time adds on</p>
         </div>
 
         <AnimatePresence>
@@ -293,7 +307,7 @@ function CreditsPageContent() {
           )}
         </AnimatePresence>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-2">
           {PLANS.map((plan, i) => (
             <motion.div
               key={plan.id}
@@ -315,11 +329,11 @@ function CreditsPageContent() {
               <div className="relative isolate flex flex-1 flex-col overflow-hidden p-7 sm:p-8">
                 <Mesh tone={PACK_TONES[plan.id]} />
                 <div className="relative">
-                  <PackPrice plan={plan} className="text-5xl" muted={plan.popular ? "text-paper/60" : "text-stone"} />
+                  <PackPrice plan={plan} className="text-5xl" muted={plan.popular ? "text-paper/60" : "text-stone"} note={`one-time · ${plan.period === "week" ? "7 days" : "1 year"}`} />
                 </div>
                 <p className={cn("relative mt-3 font-medium", plan.popular ? "text-brand-2" : "text-brand")}>
-                  {plan.credits} credits
-                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={plan} /> per trip</span>
+                  Unlimited trips for {plan.days} days
+                  <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={plan} /> a day</span>
                 </p>
                 <p className={cn("relative mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
 
@@ -359,7 +373,8 @@ function CreditsPageContent() {
               <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4 text-sm">
                 <Receipt className="size-4 shrink-0 text-brand" />
                 <span className="min-w-0 flex-1 text-ink">
-                  {PLANS.find((x) => x.id === p.planId)?.name ?? p.planId} pack · {p.credits} credits
+                  {PLANS.find((x) => x.id === p.planId)?.name ?? `${p.planId} pack`}
+                  {p.credits > 0 ? ` · ${p.credits} credits` : ""}
                 </span>
                 <span className="text-stone">
                   {new Date(p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
