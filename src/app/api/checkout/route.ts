@@ -52,14 +52,25 @@ export async function POST(request: NextRequest) {
     const local = currencyFor(country);
     const billingCurrency = local && local !== 'USD' && fixedPrice(plan.id, local) !== null ? local : null;
 
-    const checkout = await dodo().checkoutSessions.create({
-      product_cart: [{ product_id: productIdFor(plan.id as PlanId)!, quantity: 1 }],
-      ...(billingCurrency ? { billing_currency: billingCurrency as 'INR' | 'EUR' | 'GBP' } : {}),
-      customer: { email: user.email, name: user.name ?? undefined },
-      metadata: { user_id: user.id, plan_id: plan.id },
-      return_url: success.toString(),
-      cancel_url: cancel.toString(),
-    });
+    const productId = productIdFor(plan.id as PlanId)!;
+    const create = (currency: string | null) =>
+      dodo().checkoutSessions.create({
+        product_cart: [{ product_id: productId, quantity: 1 }],
+        ...(currency ? { billing_currency: currency as 'INR' | 'EUR' | 'GBP' } : {}),
+        customer: { email: user.email, name: user.name ?? undefined },
+        metadata: { user_id: user.id, plan_id: plan.id },
+        return_url: success.toString(),
+        cancel_url: cancel.toString(),
+      });
+    let checkout;
+    try {
+      checkout = await create(billingCurrency);
+    } catch (error) {
+      // A local price missing in Dodo shouldn't block the sale: fall back to USD.
+      if (!billingCurrency) throw error;
+      console.warn(`Checkout in ${billingCurrency} failed for ${plan.id}, retrying in USD:`, dodoError(error));
+      checkout = await create(null);
+    }
 
     if (!checkout.checkout_url) {
       throw new Error('Dodo Payments returned no checkout URL');
@@ -67,10 +78,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: { url: checkout.checkout_url } });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    const detail = dodoError(error);
+    console.error('Error creating checkout session:', detail, `(mode: ${process.env.DODO_PAYMENTS_ENVIRONMENT || 'test_mode'})`);
     return NextResponse.json(
-      { success: false, error: "We couldn't start checkout. Please try again." },
+      // Dodo's own reason (a wrong product id, test vs live key) helps fix setup; it holds no secrets.
+      { success: false, error: "We couldn't start checkout. Please try again.", detail },
       { status: 500 }
     );
   }
+}
+
+/** Dodo's error as a short line: "404 Product not found". */
+function dodoError(error: unknown) {
+  const e = error as { status?: number; message?: string; error?: { message?: string } };
+  return [e?.status, e?.error?.message ?? e?.message].filter(Boolean).join(' ').slice(0, 300) || 'Unknown error';
 }
