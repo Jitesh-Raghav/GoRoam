@@ -331,6 +331,76 @@ export interface StaySuggestion {
   pricePerNight?: number;
   /** Multi-city trips: which city it's in. */
   city?: string;
+  lat?: number;
+  lng?: number;
+  rating?: number;
+  /** Google Maps link once the stay is checked against Places. */
+  mapsUrl?: string;
+}
+
+/** One way of getting from home to the destination. */
+export interface TravelOption {
+  mode: "flight" | "train" | "bus" | "drive" | "ferry";
+  /** "IndiGo or Air India, nonstop" / "Netravati Express 16345". */
+  title: string;
+  /** Where it leaves from: "Pune Airport (PNQ)", "Pune Junction". */
+  from: string;
+  to: string;
+  duration: string;
+  /** Typical fare, per person, one way, USD. */
+  priceUsd: number;
+  /** In the local currency: "₹4,500–6,500 one way". */
+  priceNote?: string;
+  frequency?: string;
+  /** Why pick it, in one line. */
+  pros: string;
+  best?: "cheapest" | "fastest" | "best value";
+  /** Set when the fare came from a live price feed. */
+  live?: boolean;
+  /** IATA codes for flights, so live fares and deep links can be built. */
+  fromCode?: string;
+  toCode?: string;
+}
+
+export interface GetThere {
+  options: TravelOption[];
+  /** Index of the option the budget counts. */
+  pick: number;
+}
+
+export type RentalKind = "scooter" | "bike" | "car" | "cycle";
+
+export interface RentalPick {
+  kind: RentalKind;
+  name: string;
+  area: string;
+  lat?: number;
+  lng?: number;
+  /** Typical rate per day, USD, for one vehicle. */
+  pricePerDayUsd: number;
+  priceNote?: string;
+  deposit?: string;
+  needs?: string;
+  tip?: string;
+  rating?: number;
+  mapsUrl?: string;
+}
+
+export interface GetAround {
+  picks: RentalPick[];
+  /** Fuel, helmets, parking, licences: the local rules of the road. */
+  notes: string[];
+  /** Whether the rental counts toward the budget, and which one. */
+  inBudget?: boolean;
+  chosen?: number;
+}
+
+/** What one day will hold, written up front so the days written later don't repeat each other. */
+export interface DayOutline {
+  day: number;
+  theme: string;
+  area: string;
+  anchors: string[];
 }
 
 export interface Essentials {
@@ -535,6 +605,31 @@ export interface ItineraryData {
   trip?: { source?: string; preferences?: TripPreferences; legs?: TripLeg[] };
   /** Trip intelligence: crowds, places to eat, packing, getting around, money manners and carbon. */
   insights?: TripInsights;
+  /** How to get there from home, with typical fares. */
+  getThere?: GetThere;
+  /** Scooter, bike and car rentals at the destination. */
+  getAround?: GetAround;
+  /** The plan for every day, written first; days still being written are listed in `pending`. */
+  outline?: DayOutline[];
+  /** Day numbers (1-based) still being written in the background. */
+  pending?: number[];
+}
+
+/** Round-trip cost of the chosen way there, for the whole group, USD. */
+export function getThereCost(data: Pick<ItineraryData, "getThere">, people: number): number {
+  const g = data.getThere;
+  const o = g?.options[g.pick] ?? g?.options[0];
+  if (!o) return 0;
+  // Driving is per vehicle (fuel and tolls), everything else per person; both ways.
+  return Math.round((o.mode === "drive" ? o.priceUsd : o.priceUsd * Math.max(1, people)) * 2);
+}
+
+/** The rental for the whole trip, when the traveller counts it. */
+export function getAroundCost(data: Pick<ItineraryData, "getAround">, days: number): number {
+  const g = data.getAround;
+  if (!g?.inBudget || !g.picks.length) return 0;
+  const p = g.picks[g.chosen ?? 0] ?? g.picks[0];
+  return Math.round(p.pricePerDayUsd * Math.max(1, days));
 }
 
 /** What a stop is like to visit, keyed in TripInsights.stops by the place name in lower case. */
@@ -577,6 +672,8 @@ export interface ItineraryDetails {
   createdAt: string;
   /** Concierge questions already asked (owner views only). */
   chatCount?: number;
+  /** "generating" while later days are still being written, "partial" if some failed. */
+  status?: string;
 }
 
 /* -------------------------------------------------------------------------- */

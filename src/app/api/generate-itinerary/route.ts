@@ -4,7 +4,10 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { normalizeLegs, normalizePreferences, titleCase, type ItineraryData } from '@/lib/trip';
 import { type ItineraryRequest } from '@/lib/itinerary-ai';
-import { generateItineraryData } from '@/lib/generate';
+import { enrichTrip, finishTrip, generateFirstLook } from '@/lib/generate';
+
+// The remaining days are written after the response; give them room.
+export const maxDuration = 60;
 import { FREE_CREDITS } from '@/lib/plans';
 import { photosForItinerary } from '@/lib/place-photos';
 
@@ -141,7 +144,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
     chargedUserId = user.id;
 
-    const itineraryData = await generateItineraryData(data, prefs);
+    // The first look (day 1, the outline, stays and how to get there) comes back fast;
+    // the other days are written after the response, and the trip page fills them in.
+    const itineraryData = await generateFirstLook(data, prefs);
 
     // Save itinerary to database
     const savedItinerary = await prisma.itinerary.create({
@@ -156,7 +161,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
         tripType: data.tripType,
         interests: JSON.stringify(data.interests),
         itineraryData: JSON.stringify(itineraryData),
-        status: 'completed'
+        status: itineraryData.pending?.length ? 'generating' : 'completed'
       }
     });
 
@@ -165,7 +170,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     // Find the stops' photos while the traveller is being redirected, so the
     // trip usually opens with them ready (and saved for every later view).
     after(() =>
-      photosForItinerary(savedItinerary).catch((error) => console.error('Pre-loading trip photos failed:', error))
+      Promise.all([
+        photosForItinerary(savedItinerary).catch((error) => console.error('Pre-loading trip photos failed:', error)),
+        finishTrip(savedItinerary.id, data, prefs).catch((error) => console.error('Writing the remaining days failed:', error)),
+        enrichTrip(savedItinerary.id, data.destination).catch((error) => console.error('Checking places failed:', error)),
+      ])
     );
 
     return NextResponse.json({

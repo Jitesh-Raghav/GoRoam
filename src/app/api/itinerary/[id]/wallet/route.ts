@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { mutateTrip } from '@/lib/trip-store';
 import { ownedItinerary } from '@/lib/owned-trip';
-import { EXPENSE_CATEGORIES, type ExpenseCategory, type ItineraryData, type Wallet } from '@/lib/trip';
+import { EXPENSE_CATEGORIES, type ExpenseCategory, type Wallet } from '@/lib/trip';
 
 /** Saves the trip wallet (owner only). The whole wallet is sent each time; it's small. */
 
@@ -49,11 +49,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const wallet = cleanWallet(body?.wallet);
   if (!wallet) return NextResponse.json({ success: false, error: 'That wallet could not be saved.' }, { status: 400 });
 
-  // Re-read the freshest copy so a concurrent change (photos, a swap) isn't lost.
-  const fresh = await prisma.itinerary.findUnique({ where: { id: tripId }, select: { itineraryData: true } });
-  if (!fresh) return NextResponse.json({ success: false, error: 'Itinerary not found' }, { status: 404 });
-  const data = JSON.parse(fresh.itineraryData) as ItineraryData;
-  data.wallet = wallet;
-  await prisma.itinerary.update({ where: { id: tripId }, data: { itineraryData: JSON.stringify(data) } });
+  // Under a row lock, so a concurrent change (photos, a swap, days being written) isn't lost.
+  const saved = await mutateTrip(tripId, (data) => {
+    data.wallet = wallet;
+  });
+  if (!saved) return NextResponse.json({ success: false, error: 'Itinerary not found' }, { status: 404 });
   return NextResponse.json({ success: true, wallet });
 }

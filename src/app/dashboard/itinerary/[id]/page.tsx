@@ -1,11 +1,12 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ArrowLeft } from '@/components/site/icons';
 import { TripView } from '@/components/itinerary/trip-view';
 import { Scene } from '@/components/scenes/scene';
 import { PillLink } from '@/components/site/pill';
-import { useCachedJson } from '@/lib/cached-json';
+import { refetchJson, useCachedJson } from '@/lib/cached-json';
 import type { ItineraryDetails } from '@/lib/trip';
 
 function Loading() {
@@ -49,6 +50,13 @@ function ItineraryContent() {
   // Usually already cached: prefetched when the postcard was hovered.
   const { data, error, loading } = useCachedJson<{ data: ItineraryDetails }>(id ? `/api/itinerary/${id}` : null);
   const itinerary = data?.data ?? null;
+  // While the later days are still being written, check back every few seconds.
+  const writing = itinerary?.status === 'generating';
+  useEffect(() => {
+    if (!writing || !id) return;
+    const t = setInterval(() => refetchJson(`/api/itinerary/${id}`), 2500);
+    return () => clearInterval(t);
+  }, [writing, id]);
 
   if (loading) return <Loading />;
   if (error || !itinerary) return <NotFound message={error || 'The requested itinerary could not be found.'} />;

@@ -501,7 +501,6 @@ export async function resolveTripPhotos(data: ItineraryData, destination: string
  * so the next view (by anyone) needs no lookups at all.
  */
 export async function photosForItinerary(record: { id: string; destination: string; itineraryData: string }) {
-  const { prisma } = await import('@/lib/prisma');
   let data: ItineraryData;
   try {
     data = JSON.parse(record.itineraryData);
@@ -511,17 +510,11 @@ export async function photosForItinerary(record: { id: string; destination: stri
   const destination = data.summary?.destination || record.destination;
   const { photos, fallback, save } = await resolveTripPhotos(data, destination);
   if (save) {
-    // Re-read before writing, so a concurrent edit to the trip isn't lost.
-    const latest = await prisma.itinerary.findUnique({ where: { id: record.id }, select: { itineraryData: true } });
-    if (latest) {
-      try {
-        const current: ItineraryData = JSON.parse(latest.itineraryData);
-        current.photos = { ...current.photos, ...save };
-        await prisma.itinerary.update({ where: { id: record.id }, data: { itineraryData: JSON.stringify(current) } });
-      } catch (error) {
-        console.error('Saving trip photos failed:', error);
-      }
-    }
+    // Under a row lock, so a concurrent edit to the trip isn't lost.
+    const { mutateTrip } = await import('@/lib/trip-store');
+    await mutateTrip(record.id, (current) => {
+      current.photos = { ...current.photos, ...save };
+    }).catch((error) => console.error('Saving trip photos failed:', error));
   }
   return { photos, fallback };
 }

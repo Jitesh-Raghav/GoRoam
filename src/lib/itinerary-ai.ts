@@ -13,6 +13,8 @@ import {
   TRANSPORT,
   VIBES,
   type ActivitySlot,
+  type DayItinerary,
+  type DayOutline,
   type ItineraryData,
   type Option,
   type TripLeg,
@@ -40,8 +42,21 @@ export const SYSTEM_PROMPT =
 
 const phrase = (options: Option[], id: string) => options.find((o) => o.id === id)?.prompt ?? id;
 
+/**
+ * What to write: the whole trip at once, the first look (day 1 in full plus an
+ * outline of every day, so it can be shown straight away), or one later day
+ * written against that outline.
+ */
+export type PromptMode = { kind: 'full' } | { kind: 'first' } | { kind: 'day'; day: number; outline?: DayOutline; avoid: string[] };
+
+const dateOf = (start: string, offset: number) => {
+  const d = new Date(`${start}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + offset);
+  return d.toISOString().slice(0, 10);
+};
+
 // Function to construct GPT prompt
-export function constructPrompt(data: ItineraryRequest, prefs: TripPreferences): string {
+export function constructPrompt(data: ItineraryRequest, prefs: TripPreferences, mode: PromptMode = { kind: 'full' }): string {
   const budgetPerDay = Math.round(data.budget / data.numberOfDays);
   const year = data.startDate.slice(0, 4);
   const nights = Math.max(data.numberOfDays - 1, 1);
@@ -74,6 +89,16 @@ ${legLines}
 - totalDayCost excludes the transfer; add transfer costs to the overall budget.`
     : '';
 
+  const one = mode.kind === 'day';
+  const scope =
+    mode.kind === 'first'
+      ? `Write ONLY day 1 in full ("itinerary" holds exactly one day). Also plan the whole trip in "outline": one entry for EVERY day 1 to ${data.numberOfDays}, each with a short "theme", the "area" it centres on, and "anchors": the 3 real, specific places that day will visit (day 1's anchors are its three stops). No place may appear on two days. `
+      : mode.kind === 'day'
+        ? `Write ONLY day ${mode.day} (${dateOf(data.startDate, mode.day - 1)}); "itinerary" holds exactly that one day.${mode.outline ? ` It was planned as "${mode.outline.theme}", around ${mode.outline.area}, visiting ${mode.outline.anchors.join(', ')}: use those places unless one is closed that day.` : ''}${mode.avoid.length ? ` Other days already cover these, so never use them: ${mode.avoid.slice(0, 60).join('; ')}.` : ''} `
+        : `Exactly ${data.numberOfDays} days. `;
+  const dayNo1 = mode.kind === 'day' ? mode.day : 1;
+  const stayLine = `"stays": 4 real, well-reviewed places that are EXACTLY the kind of stay asked for (${phrase(STAYS, prefs.stay)}: if they asked for hostels list only hostels, for resorts only resorts, for apartments only apartments), within the budget, in different good areas, each with "lat"/"lng" (real, 4 decimals), "rating" (its typical guest rating out of 5) and a realistic nightly price in USD for the group.`;
+
   return `Plan a ${data.numberOfDays}-day ${legs ? `multi-city trip through ${legs.map((l) => l.city).join(', ')}` : `trip to ${data.destination}`} for ${who}, travelling from ${data.source || 'their home city'}.
 
 TRIP
@@ -88,7 +113,7 @@ TRIP
 ${multi}
 
 RULES
-1. Exactly ${data.numberOfDays} days. Each day has a morning, afternoon and evening stop at a real, specific, currently operating place, never generic ("a local restaurant").
+1. ${scope}Each day has a morning, afternoon and evening stop at a real, specific, currently operating place, never generic ("a local restaurant").
 2. Group stops that are near each other so each day flows geographically. Day 1 should suit an arrival day.
 3. Account for real opening days/hours for the date and the season.
 4. PRICES MUST BE ACCURATE for ${year}. estimatedCost = the USD cost for the WHOLE group (${prefs.adults} adult${prefs.adults === 1 ? '' : 's'}${prefs.children ? `, ${prefs.children} child${prefs.children === 1 ? '' : 'ren'}` : ''}) at that stop: tickets, food, local transport to it.
@@ -107,7 +132,26 @@ RULES
    - "wear": a dress code or footwear that matters ("Shoulders and knees covered", "Remove shoes inside").
    - "access": steps, terrain or step-free access worth knowing ("Steep stone steps, no lift").
 8. "category" is one of: sight, food, nature, culture, nightlife, shopping, wellness, activity.
-9. "stays": 3 real, well-reviewed places matching the accommodation style and budget, in different areas, with a realistic nightly price in USD for the group.
+${one ? `9. "dayTip" is one practical trick for that specific day.
+
+Respond with JSON only, matching this shape exactly:
+{
+  "itinerary": [
+    {
+      "day": ${dayNo1},
+      "date": "${dateOf(data.startDate, dayNo1 - 1)}",
+      "theme": "Short evocative title",
+      "summary": "One sentence on how the day flows",
+      "morning": { "time": "9:00 AM - 12:00 PM", "place": { "name": "Exact place name", "description": "Two vivid sentences", "area": "Neighbourhood", "lat": 0.0, "lng": 0.0 }, "duration": "3 hours", "estimatedCost": 25, "priceNote": "", "category": "sight", "tip": "", "hours": "", "bookAhead": "", "bestTime": "", "wear": "", "access": "" },
+      "afternoon": { ...same shape },
+      "evening": { ...same shape },
+      "totalDayCost": 100,
+      "dayTip": "One practical trick for the day"${legs ? `,
+      "city": "the city this day is in",
+      "transfer": null` : ''}
+    }
+  ]
+}` : `9. ${stayLine}
 10. "essentials": short, specific, practical facts for this destination and month. "water": is tap water safe to drink. "apps": the ride-hailing, transit and payment apps that work there. "sim": how visitors get mobile data (eSIM or where to buy a SIM, rough cost). "emergency": the main emergency number(s).
 11. "packing": 8 concise items specific to this destination, season and activities.
 12. summary.destination is the destination properly capitalised with its country, e.g. "Berlin, Germany".
@@ -146,7 +190,7 @@ Respond with JSON only, matching this shape exactly:
     }
   ],
   "stays": [
-    { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140${legs ? `, "city": "${legs[0].city}"` : ''} }
+    { "name": "Hotel name", "area": "Neighbourhood", "type": "Boutique hotel", "why": "One sentence on why it suits them", "pricePerNight": 140, "rating": 4.5, "lat": 0.0, "lng": 0.0${legs ? `, "city": "${legs[0].city}"` : ''} }
   ],
   "essentials": {
     "currency": "Euro (EUR), cards widely accepted",
@@ -170,10 +214,12 @@ Respond with JSON only, matching this shape exactly:
     "overview": "Two sentences selling the trip, written to the traveller",
     "landscape": "hills",
     "highlights": ["4 standout moments from this plan"]
-  }
-}`;
+  }${mode.kind === 'first' ? `,
+  "outline": [{ "day": 1, "theme": "", "area": "", "anchors": ["", "", ""] }]` : ''}
+}`}`;
 }
 
+const coord = (v: unknown, lim: number) => (Number.isFinite(Number(v)) && Number(v) !== 0 && Math.abs(Number(v)) <= lim ? Math.round(Number(v) * 10000) / 10000 : undefined);
 const text = (v: unknown, max = 90) => (typeof v === 'string' && v.trim() ? v.replace(/\s+/g, ' ').trim().slice(0, max) : undefined);
 
 /**
@@ -202,6 +248,45 @@ export function checkStop(stop: ActivitySlot, people: number): ActivitySlot {
   else delete out.priceCheck;
   for (const k of ['priceNote', 'hours', 'bookAhead', 'bestTime', 'wear', 'access'] as const) if (!out[k]) delete out[k];
   return out;
+}
+
+/** One day written on its own: numbered, dated, its stops checked and its total recomputed. */
+export function tidyDay(model: unknown, n: number, data: ItineraryRequest): DayItinerary {
+  const raw = undash(model) as DayItinerary;
+  const people = Math.max(1, data.numberOfPeople || 1);
+  const num = (v: unknown) => (Number.isFinite(Number(v)) ? Math.max(0, Math.round(Number(v))) : 0);
+  const day: DayItinerary = { ...raw, day: n, date: dateOf(data.startDate, n - 1), theme: typeof raw.theme === 'string' ? raw.theme : `Day ${n}` };
+  delete day.stops;
+  for (const k of ['morning', 'afternoon', 'evening'] as const) if (day[k]) day[k] = checkStop(day[k]!, people);
+  day.totalDayCost = num(day.morning?.estimatedCost) + num(day.afternoon?.estimatedCost) + num(day.evening?.estimatedCost);
+  // The city comes from the route, never the model; a transfer only on a leg's first day.
+  let i = 0;
+  delete day.city;
+  for (const leg of data.legs ?? []) {
+    if (n - 1 < i + leg.days) {
+      day.city = leg.city;
+      if (n - 1 !== i || i === 0) delete day.transfer;
+      break;
+    }
+    i += leg.days;
+  }
+  if (!data.legs?.length) delete day.transfer;
+  if (day.transfer && (typeof day.transfer.from !== 'string' || typeof day.transfer.to !== 'string')) delete day.transfer;
+  return day;
+}
+
+/** The model's outline, one entry per day, falling back to plain "Day n" for any it skipped. */
+export function tidyOutline(model: unknown, days: number): DayOutline[] {
+  const list = Array.isArray(model) ? model : [];
+  return Array.from({ length: days }, (_, i) => {
+    const o = (list.find((x) => Number(x?.day) === i + 1) ?? list[i] ?? {}) as Partial<DayOutline>;
+    return {
+      day: i + 1,
+      theme: text(o.theme, 60) ?? `Day ${i + 1}`,
+      area: text(o.area, 60) ?? '',
+      anchors: Array.isArray(o.anchors) ? o.anchors.map((a) => text(a, 70)).filter((a): a is string => !!a).slice(0, 4) : [],
+    };
+  });
 }
 
 /** Coerce the model's JSON into the shape the app renders, filling safe defaults. */
@@ -244,7 +329,7 @@ export function tidy(model: ItineraryData, data: ItineraryRequest): ItineraryDat
     ...raw,
     itinerary,
     stays: Array.isArray(raw.stays)
-      ? raw.stays.slice(0, data.legs?.length ? data.legs.length * 2 : 3).map((s) => ({ ...s, pricePerNight: num(s.pricePerNight) || undefined, city: typeof s.city === 'string' ? s.city.slice(0, 80) : undefined }))
+      ? raw.stays.slice(0, data.legs?.length ? data.legs.length * 2 : 4).map((s) => ({ ...s, pricePerNight: num(s.pricePerNight) || undefined, city: typeof s.city === 'string' ? s.city.slice(0, 80) : undefined, lat: coord(s.lat, 90), lng: coord(s.lng, 180), rating: Number(s.rating) > 0 && Number(s.rating) <= 5 ? Math.round(Number(s.rating) * 10) / 10 : undefined }))
       : [],
     packing: Array.isArray(raw.packing) ? raw.packing.filter((p) => typeof p === 'string').slice(0, 12) : [],
     summary: {

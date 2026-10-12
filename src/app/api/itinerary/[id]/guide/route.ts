@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { mutateTrip } from '@/lib/trip-store';
 import OpenAI from 'openai';
-import { prisma } from '@/lib/prisma';
 import { generateGuide } from '@/lib/guide';
 import { ownedItinerary } from '@/lib/owned-trip';
 import type { ItineraryData, TripGuide } from '@/lib/trip';
@@ -33,13 +33,10 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       interests: JSON.parse(it.interests),
       preferences: data.trip?.preferences,
     }).then(async (guide) => {
-      // Re-read so nothing written meanwhile is lost.
-      const fresh = await prisma.itinerary.findUnique({ where: { id }, select: { itineraryData: true } });
-      if (fresh) {
-        const next = JSON.parse(fresh.itineraryData) as ItineraryData;
+      // Under a row lock, so nothing written meanwhile is lost.
+      await mutateTrip(id, (next) => {
         next.guide = guide;
-        await prisma.itinerary.update({ where: { id }, data: { itineraryData: JSON.stringify(next) } });
-      }
+      });
       return guide;
     });
     inFlight.set(id, job);
