@@ -131,15 +131,15 @@ function CreditsPageContent() {
 
   // Back from Dodo's checkout: wait for the webhook to record the purchase.
   // The query is read once and kept, so a re-run effect can restart the poll.
-  const arrival = useRef<{ result: string | null; status: string | null } | null>(null);
+  const arrival = useRef<{ result: string | null; status: string | null; paymentId: string | null } | null>(null);
   useEffect(() => {
     if (!arrival.current) {
       const url = new URL(window.location.href);
-      arrival.current = { result: url.searchParams.get("checkout"), status: url.searchParams.get("status") };
+      arrival.current = { result: url.searchParams.get("checkout"), status: url.searchParams.get("status"), paymentId: url.searchParams.get("payment_id") };
       ["checkout", "status", "payment_id", "subscription_id"].forEach((k) => url.searchParams.delete(k));
       window.history.replaceState(null, "", url.toString());
     }
-    const { result, status: dodoStatus } = arrival.current;
+    const { result, status: dodoStatus, paymentId } = arrival.current;
     if (!result) return;
 
     if (result === "cancelled") return setReturned("cancelled");
@@ -176,7 +176,13 @@ function CreditsPageContent() {
       if (++tries >= 20) return setReturned("delayed");
       window.setTimeout(poll, 2000);
     };
-    poll();
+    // Confirm with Dodo straight away, so the pass switches on without waiting for the webhook.
+    const confirm = paymentId
+      ? fetch("/api/checkout/confirm", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ paymentId }) }).catch(() => null)
+      : Promise.resolve(null);
+    confirm.then(() => {
+      if (!cancelled) poll();
+    });
     return () => {
       cancelled = true;
     };
