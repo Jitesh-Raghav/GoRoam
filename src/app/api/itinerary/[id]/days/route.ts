@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
+import { finishTrip, requestFromTrip } from '@/lib/generate';
 import { prisma } from '@/lib/prisma';
 import { ownedItinerary } from '@/lib/owned-trip';
 import { cleanStop, partyOf } from '@/lib/stops';
@@ -57,4 +58,22 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   await prisma.itinerary.update({ where: { id }, data: { itineraryData: JSON.stringify(data) } });
   return NextResponse.json({ success: true, itineraryData: undash(data) });
+}
+
+/**
+ * Finish writing a trip whose background days didn't all land (owner only):
+ *   POST → { success, status }   The days are written in the background; the page polls.
+ */
+export const maxDuration = 60;
+
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const owned = await ownedItinerary(id);
+  if (!owned.ok) return owned.response;
+  const trip = JSON.parse(owned.itinerary.itineraryData) as ItineraryData;
+  if (!trip.pending?.length) return NextResponse.json({ success: true, status: 'completed' });
+  await prisma.itinerary.update({ where: { id }, data: { status: 'generating' } });
+  const { data, prefs } = requestFromTrip(owned.itinerary, trip);
+  after(() => finishTrip(id, data, prefs).catch((error) => console.error('Finishing the trip failed:', error)));
+  return NextResponse.json({ success: true, status: 'generating' });
 }

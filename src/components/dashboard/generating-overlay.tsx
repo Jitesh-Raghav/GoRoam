@@ -7,13 +7,14 @@ import { cn } from "@/lib/utils";
 import { useDestinationScene } from "@/lib/use-destination-scene";
 import { Scene } from "@/components/scenes/scene";
 
+// The first look is what's waited for: the route there, the stays and day 1.
+// The other days are written while the trip is already open.
 const STEPS = [
-  "Reading your travel style",
-  "Balancing the budget day by day",
-  "Scouting icons and hidden gems",
-  "Timing mornings, afternoons and evenings",
-  "Pinning every stop to the map",
-  "Adding the finishing touches",
+  "Comparing flights, trains and buses",
+  "Finding stays that match your style",
+  "Sketching every day of the trip",
+  "Writing day 1 in full",
+  "Opening your trip",
 ];
 
 /** Full-screen, cinematic wait while the itinerary is generated. */
@@ -22,7 +23,7 @@ export function GeneratingOverlay({ destination, days }: { destination: string; 
   const { scene } = useDestinationScene(destination);
 
   useEffect(() => {
-    const t = window.setInterval(() => setDone((d) => Math.min(d + 1, STEPS.length - 1)), 2600);
+    const t = window.setInterval(() => setDone((d) => Math.min(d + 1, STEPS.length - 1)), 2400);
     return () => window.clearInterval(t);
   }, []);
 
@@ -89,7 +90,7 @@ export function GeneratingOverlay({ destination, days }: { destination: string; 
             </motion.li>
           ))}
         </ul>
-        <p className="mt-10 text-sm text-paper/50">Good plans take a moment. Please keep this tab open.</p>
+        <p className="mt-10 text-sm text-paper/50">{days > 1 ? "Day 1 opens first; the rest of the days fill in while you look around." : "Good plans take a moment. Please keep this tab open."}</p>
       </div>
     </motion.div>
   );

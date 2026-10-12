@@ -54,6 +54,11 @@ export function updateCached<T>(url: string, fn: (data: T) => T) {
   notify(url);
 }
 
+/** Fetch a response again now, keeping the current copy on screen until the new one lands. */
+export function refetchJson(url: string) {
+  if (!entries.get(url)?.promise) void load(url);
+}
+
 /** Forget a response so the next reader fetches it fresh. */
 export function invalidate(url: string) {
   entries.delete(url);

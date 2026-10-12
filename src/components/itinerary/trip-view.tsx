@@ -2,7 +2,9 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  AlertCircle,
   ArrowLeft,
+  Loader2,
   ArrowRight,
   ArrowUpRight,
   Banknote,
@@ -60,12 +62,15 @@ import {
   VIBES,
   dayActivities,
   dayStops,
+  getAroundCost,
+  getThereCost,
   labelFor,
   periodOf,
   titleCase,
   type ActivitySlot,
   type DayPeriod,
   type DayItinerary,
+  type DayOutline,
   type Essentials,
   type TripGuide,
   type ItineraryDetails,
@@ -104,12 +109,15 @@ import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
+import { GetAroundSection } from "./get-around";
+import { GettingThere, useLogistics } from "./getting-there";
+import { PlacesMap } from "./places-map";
 import { DayEats, InsightsProvider, KnowBeforeYouGo, SpendChart, StopInsightRow } from "./insights";
 import { DayForecast, WeatherChip, useLocalTime, useRouteWeather } from "./weather";
 import type { DayWeather } from "@/app/api/weather/route";
 import { currencyFor, formatMoney } from "@/lib/currency";
 import { downloadKml, hasMappableStops } from "@/lib/kml";
-import { updateCached, useCachedJson } from "@/lib/cached-json";
+import { refetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
@@ -565,6 +573,56 @@ function DayPanel({
   );
 }
 
+/** A day still being written in the background: its outline, a shimmer, and a retry if it stalled. */
+function PendingDay({ day, outline, status, tripId, canRetry }: { day: DayItinerary; outline?: DayOutline; status?: string; tripId: string; canRetry: boolean }) {
+  const [busy, setBusy] = useState(false);
+  const stalled = status === "partial";
+  const retry = async () => {
+    setBusy(true);
+    await fetch(`/api/itinerary/${tripId}/days`, { method: "POST" }).catch(() => {});
+    refetchJson(`/api/itinerary/${tripId}`);
+  };
+  return (
+    <div className="rounded-[28px] bg-white p-6 ring-1 ring-line sm:p-8">
+      <p className="eyebrow flex items-center gap-2 text-[0.6rem] text-brand">
+        {stalled ? <AlertCircle className="size-3.5 text-coral" /> : <Loader2 className="size-3.5 animate-spin" />}
+        Day {day.day} · {stalled ? "not finished" : "being written"}
+      </p>
+      <h3 className="display mt-3 text-3xl leading-tight text-ink">{day.theme}</h3>
+      {outline?.area && <p className="mt-1 text-stone">Around {outline.area}</p>}
+      {!!outline?.anchors.length && (
+        <ul className="mt-5 flex flex-wrap gap-2">
+          {outline.anchors.map((a) => (
+            <li key={a} className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5 text-sm text-ink/85">
+              <MapPin className="size-3.5 text-brand" /> {a}
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="mt-6 space-y-3">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex gap-4">
+            <span className="skeleton size-12 shrink-0 rounded-2xl" />
+            <span className="flex-1 space-y-2 pt-1">
+              <span className="skeleton block h-3 w-2/3 rounded-full" />
+              <span className="skeleton block h-3 w-1/2 rounded-full" />
+            </span>
+          </div>
+        ))}
+      </div>
+      {stalled ? (
+        canRetry && (
+          <button type="button" onClick={retry} disabled={busy} className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm text-paper hover:bg-brand disabled:opacity-60">
+            {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />} Finish writing the trip
+          </button>
+        )
+      ) : (
+        <p className="mt-6 text-sm text-stone">Day 1 is ready to explore while this one is written. It appears here in a few seconds.</p>
+      )}
+    </div>
+  );
+}
+
 function BudgetCard({
   budget,
   activities,
@@ -576,7 +634,13 @@ function BudgetCard({
   active,
   onPick,
   typed,
+  travel = null,
+  rental = null,
 }: {
+  /** Getting there and back, for everyone. */
+  travel?: number | null;
+  /** The rental, when the traveller counts it. */
+  rental?: number | null;
   budget: number;
   /** The budget exactly as the traveller typed it, when that wasn't in USD. */
   typed?: { amount: number; currency: string };
@@ -592,13 +656,16 @@ function BudgetCard({
   const { fmt: money, currency } = useMoney();
   // Show the budget as typed ("₹1,00,000") rather than a round trip through USD.
   const budgetText = typed && typed.currency === currency ? formatMoney(typed.amount, currency, 0) : money(budget);
-  const planned = activities + (stay ?? 0);
+  const ground = activities + (stay ?? 0) + (rental ?? 0);
+  const planned = ground + (travel ?? 0);
   const left = budget - planned;
   const over = left < 0;
   const denom = Math.max(budget, planned, 1);
   const segs = [
-    { label: "Activities & food", value: activities, color: "var(--ink)" },
+    ...(travel ? [{ label: "Getting there & back", value: travel, color: "var(--sun)" }] : []),
     ...(stay !== null ? [{ label: `Stay · ${nights} ${nights === 1 ? "night" : "nights"}`, value: stay, color: "var(--brand)" }] : []),
+    { label: "Activities & food", value: activities, color: "var(--ink)" },
+    ...(rental ? [{ label: "Rental", value: rental, color: "#7CC4FF" }] : []),
   ];
   const R = 52;
   const C = 2 * Math.PI * R;
@@ -658,12 +725,12 @@ function BudgetCard({
           ))}
           <li className="flex items-center gap-2">
             <span className="size-2.5 shrink-0 rounded-full bg-paper-3" />
-            <span className="min-w-0 flex-1 truncate text-stone">{over ? "Over budget" : "Left for flights & extras"}</span>
+            <span className="min-w-0 flex-1 truncate text-stone">{over ? "Over budget" : travel ? "Left for extras" : "Left for flights & extras"}</span>
             <span className={cn("font-mono text-xs", over ? "text-destructive" : "text-ink")}>{money(Math.abs(left))}</span>
           </li>
         </ul>
       <p className="mt-4 rounded-2xl bg-white/60 px-4 py-3 ring-1 ring-inset ring-white text-xs leading-relaxed text-stone">
-        ≈ <span className="text-ink">{money(planned / Math.max(people, 1) / Math.max(days, 1))}</span> per person per day on the ground
+        ≈ <span className="text-ink">{money(ground / Math.max(people, 1) / Math.max(days, 1))}</span> per person per day on the ground
         {stay === null ? ", before accommodation." : ", stay included."}
       </p>
 
@@ -826,6 +893,15 @@ export function TripView({
   const priced = (data?.stays ?? []).map((s) => s.pricePerNight ?? 0).filter((n) => n > 0);
   const stayTotal = priced.length ? Math.round((priced.reduce((a, b) => a + b, 0) / priced.length) * nights) : null;
   const who = prefs ? labelFor(COMPANIONS, prefs.companions) : it.tripType ? labelFor([], it.tripType) : "";
+  const logistics = useLogistics(it, !shared && !isPackage);
+  const travelTotal = getThereCost({ getThere: logistics.getThere }, people) || null;
+  const rentalTotal = getAroundCost({ getAround: logistics.getAround }, it.numberOfDays) || null;
+  const pendingDays = useMemo(() => new Set(data?.pending ?? []), [data]);
+  const [stayPin, setStayPin] = useState<string | null>(null);
+  const stayPoints = useMemo(
+    () => (data?.stays ?? []).flatMap((s, i) => (s.lat && s.lng ? [{ id: String(i), lat: s.lat, lng: s.lng, label: s.name, tag: s.pricePerNight ? `${money(s.pricePerNight)}` : s.name }] : [])),
+    [data, money],
+  );
 
   const query: BookingQuery = {
     origin: data?.trip?.source,
@@ -914,9 +990,13 @@ export function TripView({
 
   // Chapters for the sticky bar: only the ones this trip actually has.
   const hasDo = !!guide && (guide.experiences.length > 0 || guide.events.length > 0 || (guide.videos?.length ?? 0) > 0 || guide.videoQueries.length > 0);
+  const hasThere = !!logistics.getThere || logistics.state === "loading";
+  const hasAround = !!logistics.getAround?.picks.length;
   const chapters: Chapter[] = [
-    { id: "chapter-plan", label: "Plan" },
+    ...(hasThere ? [{ id: "chapter-there", label: "Get there" }] : []),
     { id: "chapter-stay", label: "Stay" },
+    ...(hasAround ? [{ id: "chapter-around", label: "Get around" }] : []),
+    { id: "chapter-plan", label: "Plan" },
     ...(hasDo ? [{ id: "chapter-do", label: "Do & see" }] : []),
     ...(guide ? [{ id: "chapter-local", label: "Local guide" }] : []),
     { id: "chapter-before", label: "Before you go" },
@@ -956,7 +1036,7 @@ export function TripView({
 
   return (
     <TripPhotosProvider value={tripPhotos}>
-    <InsightsProvider tripId={it.id} stored={data?.insights} canWrite={owner}>
+    <InsightsProvider tripId={it.id} stored={data?.insights} canWrite={owner && !data?.pending?.length}>
     <SwapProvider it={it} enabled={owner}>
     <PlanToolsProvider it={it} enabled={owner}>
     <ReactionsProvider tripId={it.id} token={shareToken} mode={shared ? "shared" : owner ? "owner" : "off"} initial={data?.reactions}>
@@ -1076,7 +1156,75 @@ export function TripView({
 
       <ChapterNav chapters={chapters} title={`${cityOf(title)} · ${it.numberOfDays} ${it.numberOfDays === 1 ? "day" : "days"}`} className={cn(moments.length ? "mt-14" : "mt-6", shared ? "top-3" : "top-[calc(4.75rem+env(safe-area-inset-top))] lg:top-4")} />
 
-      <div id="chapter-plan" className="mt-10 grid scroll-mt-28 gap-10 lg:grid-cols-12 lg:gap-8">
+      {/* Getting there: how to reach the destination from home, and what it costs */}
+      {hasThere && (
+        <Band id="chapter-there">
+          <SectionTitle eyebrow="Getting there" title={<>From your door to <span className="accent">{cityOf(title)}.</span></>}>
+            <p className="max-w-sm text-sm text-stone">The best ways from {data?.trip?.source ? titleCase(cityOf(data.trip.source)) : "home"}, with typical fares for your dates. The one you pick counts in your budget.</p>
+          </SectionTitle>
+          <GettingThere it={it} logistics={logistics} />
+        </Band>
+      )}
+
+      {/* Stays */}
+      <Band id="chapter-stay">
+        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
+          <p className="max-w-sm text-sm text-stone">
+            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
+            <ArrowRight className="inline size-3.5 -translate-y-px" /> {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
+          </p>
+        </SectionTitle>
+        {data?.stays?.length ? (
+          <div className="mt-8 grid gap-4 lg:grid-cols-12">
+            {stayPoints.length > 1 && (
+              <div className="no-print lg:order-2 lg:col-span-4">
+                <PlacesMap points={stayPoints} active={stayPin} onPick={setStayPin} className="h-56 sm:h-72 lg:sticky lg:top-24 lg:h-[34rem]" searchUrl={mapsSearchUrl(prefs ? `${labelFor(STAYS, prefs.stay)} stays` : "stays", title)} />
+              </div>
+            )}
+            <div className={cn("no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3", stayPoints.length > 1 ? "lg:order-1 lg:col-span-8" : "lg:col-span-12 lg:grid-cols-3")}>
+              {data.stays.map((s, i) => (
+                <div key={`${s.name}-${i}`} onMouseEnter={() => setStayPin(String(i))} className="contents md:block">
+                  <StayCard stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="no-print mt-8 grid gap-3 md:grid-cols-3">
+            {stayPartners(query).map((p, i) => (
+              <a
+                key={p.id}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer sponsored nofollow"
+                className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
+                  <BedDouble className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="display block text-xl leading-none">{p.name}</span>
+                  <span className="mt-1 block text-sm text-stone group-hover:text-paper/60">{i === 0 ? `Stays in ${cityOf(title)}` : p.blurb}</span>
+                </span>
+                <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
+              </a>
+            ))}
+          </div>
+        )}
+      </Band>
+
+
+      {/* Getting around: rent your own wheels */}
+      {hasAround && (
+        <Band id="chapter-around">
+          <SectionTitle eyebrow="Getting around" title={<>Rent your own <span className="accent">wheels.</span></>}>
+            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops, with typical day rates. Switch it on to add it to your budget.</p>
+          </SectionTitle>
+          <GetAroundSection it={it} logistics={logistics} />
+        </Band>
+      )}
+
+      <div id="chapter-plan" className="mt-24 grid scroll-mt-28 gap-10 lg:grid-cols-12 lg:gap-8">
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
           <section ref={planRef} className="scroll-mt-6">
@@ -1116,7 +1264,11 @@ export function TripView({
                     >
                       {on && <motion.span layoutId="day-card" className="absolute inset-0 bg-ink" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
                       <span className="relative block h-24 overflow-hidden sm:h-28">
-                        <PlacePhoto activity={dayActivities(d)[0]} destination={d.city ?? it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        {pendingDays.has(d.day) ? (
+                          <span className="skeleton absolute inset-0" />
+                        ) : (
+                          <PlacePhoto activity={dayActivities(d)[0]} destination={d.city ?? it.destination} credit={false} imgClassName="group-hover:scale-[1.06]" />
+                        )}
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
                         {d.city && (
@@ -1126,7 +1278,7 @@ export function TripView({
                           </span>
                         )}
                         <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
-                        <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{money(d.totalDayCost)}</span>
+                        <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{pendingDays.has(d.day) ? "writing…" : money(d.totalDayCost)}</span>
                       </span>
                       <span className="relative block p-3.5 pt-3">
                         <span className={cn("block text-xs", on ? "text-sun-2" : "text-brand")}>{dayLabel(it.startDate, i)}</span>
@@ -1142,7 +1294,9 @@ export function TripView({
               {/* On screen: one day at a time. In print: every day. */}
               <AnimatePresence mode="wait">
                 <motion.div key={active} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease }} className="print:hidden">
-                  {days[active] && (
+                  {days[active] && pendingDays.has(days[active].day) ? (
+                    <PendingDay day={days[active]} outline={data?.outline?.find((o) => o.day === days[active].day)} status={it.status} tripId={it.id} canRetry={owner} />
+                  ) : days[active] && (
                     <DayPanel
                       day={days[active]}
                       index={active}
@@ -1158,7 +1312,7 @@ export function TripView({
                 </motion.div>
               </AnimatePresence>
               <div className="hidden space-y-14 print:block">
-                {days.map((d, i) => (
+                {days.map((d, i) => pendingDays.has(d.day) ? null : (
                   <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} holidays={holidays.get(isoDay(it.startDate, i))} arrival={guide?.arrival} />
                 ))}
               </div>
@@ -1181,6 +1335,8 @@ export function TripView({
               dayCosts={dayCosts}
               active={active}
               onPick={jump}
+              travel={travelTotal}
+              rental={rentalTotal}
             />
             <div className="no-print">
               <BookingPanel query={query} className="glass-dark" />
@@ -1188,45 +1344,6 @@ export function TripView({
           </div>
         </aside>
       </div>
-
-      {/* Stays */}
-      <Band id="chapter-stay">
-        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
-          <p className="max-w-sm text-sm text-stone">
-            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
-            <ArrowRight className="inline size-3.5 -translate-y-px" /> {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
-          </p>
-        </SectionTitle>
-        {data?.stays?.length ? (
-          <div className="no-scrollbar -mx-3 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3">
-            {data.stays.map((s, i) => (
-              <StayCard key={`${s.name}-${i}`} stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
-            ))}
-          </div>
-        ) : (
-          <div className="no-print mt-8 grid gap-3 md:grid-cols-3">
-            {stayPartners(query).map((p, i) => (
-              <a
-                key={p.id}
-                href={p.href}
-                target="_blank"
-                rel="noopener noreferrer sponsored nofollow"
-                className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
-              >
-                <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
-                  <BedDouble className="size-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="display block text-xl leading-none">{p.name}</span>
-                  <span className="mt-1 block text-sm text-stone group-hover:text-paper/60">{i === 0 ? `Stays in ${cityOf(title)}` : p.blurb}</span>
-                </span>
-                <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
-              </a>
-            ))}
-          </div>
-        )}
-      </Band>
-
 
       {/* The local guide */}
       {guide ? (

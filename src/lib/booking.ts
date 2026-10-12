@@ -73,6 +73,16 @@ export const PARTNER_HOSTS = [
   "safetywing.com",
   "acko.com",
   "joinsherpa.com",
+  "aviasales.com",
+  "redbus.in",
+  "irctc.co.in",
+  "confirmtkt.com",
+  "12go.asia",
+  "thetrainline.com",
+  "flixbus.com",
+  "royalbrothers.com",
+  "zoomcar.com",
+  "discovercars.com",
 ];
 
 /** The tracked link for a partner URL: /go counts the click, then redirects. */
@@ -376,3 +386,63 @@ export const insuranceLinks = (fromIndia: boolean) => {
   const acko = { id: "acko", name: "Acko", blurb: "Instant policy, Indian passport", href: partnerHref("acko", "https://www.acko.com/travel-insurance/") };
   return fromIndia ? [acko, safetywing] : [safetywing];
 };
+
+/* ------------------------------ Getting there ------------------------------ */
+
+const INDIA = /\b(india|goa|kerala|rajasthan|jaipur|udaipur|delhi|mumbai|pune|bangalore|bengaluru|chennai|hyderabad|kolkata|agra|varanasi|rishikesh|manali|shimla|ladakh|leh|hampi|kashmir|sikkim|darjeeling|kochi|cochin|munnar|alleppey|mysore|ooty|coorg|pondicherry|amritsar|jodhpur|jaisalmer|alwar|ahmedabad|gujarat|odisha|assam|meghalaya|andaman)\b/i;
+export const isIndia = (place: string) => INDIA.test(place);
+const EUROPE = /\b(france|paris|germany|berlin|munich|italy|rome|milan|florence|venice|spain|madrid|barcelona|portugal|lisbon|porto|netherlands|amsterdam|belgium|brussels|switzerland|zurich|austria|vienna|uk|united kingdom|london|edinburgh|czech|prague|hungary|budapest|poland|krakow|denmark|copenhagen|sweden|norway)\b/i;
+const slug = (place: string) => cityOf(place).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** Where to book one way of getting there: the best partner for the mode and region, then a fallback. */
+export function travelOptionLinks(
+  o: { mode: string; from: string; to: string; fromCode?: string; toCode?: string },
+  trip: { origin: string; destination: string; depart: string; back: string; people: number },
+): { name: string; href: string }[] {
+  const links: { name: string; href: string }[] = [];
+  const origin = trip.origin;
+  const dest = trip.destination;
+  const india = isIndia(origin) && isIndia(dest);
+  if (o.mode === "flight") {
+    const a = (o.fromCode || airportCode(origin) || "").toUpperCase();
+    const b = (o.toCode || airportCode(dest) || "").toUpperCase();
+    const marker = process.env.NEXT_PUBLIC_TP_MARKER;
+    if (/^[A-Z]{3}$/.test(a) && /^[A-Z]{3}$/.test(b) && a !== b) {
+      links.push({ name: "Skyscanner", href: partnerHref("skyscanner", `https://www.skyscanner.net/transport/flights/${a.toLowerCase()}/${b.toLowerCase()}/${yymmdd(trip.depart)}/${yymmdd(trip.back)}/?${qs({ adultsv2: trip.people, associateid: SKY_ASSOCIATE })}`) });
+      if (marker) {
+        const d = (iso: string) => iso.slice(8, 10) + iso.slice(5, 7);
+        links.push({ name: "Aviasales", href: partnerHref("aviasales", `https://www.aviasales.com/search/${a}${d(trip.depart)}${b}${d(trip.back)}${trip.people}?${qs({ marker })}`) });
+      } else {
+        links.push({ name: "Trip.com", href: partnerHref("tripcom-flights", `https://www.trip.com/flights/showfarefirst?${qs({ dcity: a.toLowerCase(), acity: b.toLowerCase(), ddate: trip.depart, rdate: trip.back, triptype: "rt", class: "y", quantity: trip.people, Allianceid: TRIP_AID, SID: TRIP_SID })}`) });
+      }
+    } else {
+      links.push({ name: "Google Flights", href: partnerHref("google-flights", `https://www.google.com/travel/flights?${qs({ q: `Flights from ${cityOf(origin)} to ${cityOf(dest)} on ${trip.depart} through ${trip.back}`, curr: "USD" })}`) });
+    }
+  } else if (o.mode === "train") {
+    if (india) links.push({ name: "IRCTC", href: partnerHref("irctc", "https://www.irctc.co.in/nget/train-search") }, { name: "ConfirmTkt", href: partnerHref("confirmtkt", `https://www.confirmtkt.com/rbooking-d/trains/from/${enc(cityOf(o.from || origin))}/to/${enc(cityOf(o.to || dest))}/${trip.depart.split("-").reverse().join("-")}`) });
+    else if (EUROPE.test(dest)) links.push({ name: "Trainline", href: partnerHref("trainline", "https://www.thetrainline.com/") });
+    else links.push({ name: "12Go", href: partnerHref("12go", `https://12go.asia/en/travel/${slug(origin)}/${slug(dest)}?${qs({ date: trip.depart, people: trip.people })}`) });
+  } else if (o.mode === "bus") {
+    if (india) links.push({ name: "redBus", href: partnerHref("redbus", `https://www.redbus.in/bus-tickets/${slug(origin)}-to-${slug(dest)}`) });
+    else if (EUROPE.test(dest)) links.push({ name: "FlixBus", href: partnerHref("flixbus", "https://global.flixbus.com/") });
+    else links.push({ name: "12Go", href: partnerHref("12go", `https://12go.asia/en/travel/${slug(origin)}/${slug(dest)}?${qs({ date: trip.depart, people: trip.people })}`) });
+  }
+  if (o.mode === "drive") {
+    links.push({ name: "Route", href: `https://www.google.com/maps/dir/?${qs({ api: 1, origin, destination: dest, travelmode: "driving" })}` });
+  } else {
+    links.push({ name: "Compare all", href: partnerHref("rome2rio", `https://www.rome2rio.com/map/${enc(cityOf(origin))}/${enc(cityOf(dest))}`) });
+  }
+  return links;
+}
+
+/** Where to rent a scooter, bike or car at the destination. */
+export function rentalLinks(kind: string, destination: string, from: string, to: string): { name: string; href: string }[] {
+  const city = cityOf(destination);
+  if (isIndia(destination)) {
+    return kind === "car"
+      ? [{ name: "Zoomcar", href: partnerHref("zoomcar", `https://www.zoomcar.com/in/${slug(destination)}`) }]
+      : [{ name: "Royal Brothers", href: partnerHref("royalbrothers", `https://www.royalbrothers.com/${slug(destination)}/bike-rentals`) }];
+  }
+  if (kind === "car") return [{ name: "DiscoverCars", href: partnerHref("discovercars", `https://www.discovercars.com/?${qs({ location: city, pickup_date: from, dropoff_date: to })}`) }];
+  return [{ name: "Find nearby", href: `https://www.google.com/maps/search/?${qs({ api: 1, query: `${kind} rental ${city}` })}` }];
+}

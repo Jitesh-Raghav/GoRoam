@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { mutateTrip } from '@/lib/trip-store';
 import { ownedItinerary } from '@/lib/owned-trip';
-import { BOOKING_KINDS, type BookingKind, type ItineraryData, type TripBooking } from '@/lib/trip';
+import { BOOKING_KINDS, type BookingKind, type TripBooking } from '@/lib/trip';
 
 /** Saves the trip's bookings and documents (owner only). The whole list is sent each time. */
 
@@ -41,11 +41,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const bookings = clean(body?.bookings);
   if (!bookings) return NextResponse.json({ success: false, error: 'Those bookings could not be saved.' }, { status: 400 });
 
-  // Re-read the freshest copy, so a concurrent change (photos, wallet) isn't lost.
-  const fresh = await prisma.itinerary.findUnique({ where: { id }, select: { itineraryData: true } });
-  if (!fresh) return NextResponse.json({ success: false, error: 'Itinerary not found' }, { status: 404 });
-  const data = JSON.parse(fresh.itineraryData) as ItineraryData;
-  data.bookings = bookings;
-  await prisma.itinerary.update({ where: { id }, data: { itineraryData: JSON.stringify(data) } });
+  // Under a row lock, so a concurrent change (photos, wallet, days being written) isn't lost.
+  const saved = await mutateTrip(id, (data) => {
+    data.bookings = bookings;
+  });
+  if (!saved) return NextResponse.json({ success: false, error: 'Itinerary not found' }, { status: 404 });
   return NextResponse.json({ success: true, bookings });
 }
