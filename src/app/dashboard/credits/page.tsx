@@ -285,7 +285,7 @@ function CreditsPageContent() {
       {/* Plans */}
       <section className="mt-16">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-          <h2 className="display text-3xl text-ink">{pass ? "Extend your pass" : "Choose your pass"}</h2>
+          <h2 className="display text-3xl text-ink">{pass ? "Your pass" : "Choose your pass"}</h2>
           <p className="text-sm text-stone">One-time payment · no auto-renew · extra time adds on</p>
         </div>
 
@@ -314,7 +314,11 @@ function CreditsPageContent() {
         </AnimatePresence>
 
         <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-2">
-          {PLANS.map((plan, i) => (
+          {PLANS.map((plan, i) => {
+            const mine = !!pass && pass.plan === plan.id;
+            const daysLeft = pass ? Math.max(1, Math.ceil((new Date(pass.until).getTime() - Date.now()) / 86_400_000)) : 0;
+            const action = mine ? (plan.id === "week" ? "Add 7 more days" : "Add another year") : pass && plan.id === "year" ? "Upgrade to Year Pass" : `Buy ${plan.name}`;
+            return (
             <motion.div
               key={plan.id}
               initial={{ opacity: 0, y: 24 }}
@@ -323,14 +327,20 @@ function CreditsPageContent() {
               className={cn(
                 "mesh-host relative flex flex-col overflow-hidden rounded-panel transition-transform duration-500 ease-out-expo hover:-translate-y-1",
                 plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(26,95,214,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
-                picked === plan.id && "ring-2 ring-brand"
+                (mine || picked === plan.id) && "ring-2 ring-brand"
               )}
             >
               <PackPhoto plan={plan} />
-              {plan.popular && (
-                <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm">
-                  <Sparkles className="size-3.5" /> Most popular
+              {mine ? (
+                <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm">
+                  <CheckCircle2 className="size-3.5" /> Your plan
                 </span>
+              ) : (
+                plan.popular && (
+                  <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm">
+                    <Sparkles className="size-3.5" /> Most popular
+                  </span>
+                )
               )}
               <div className="relative isolate flex flex-1 flex-col overflow-hidden p-7 sm:p-8">
                 <Mesh tone={PACK_TONES[plan.id]} />
@@ -342,17 +352,26 @@ function CreditsPageContent() {
                   <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={plan} /> a day</span>
                 </p>
                 <p className={cn("relative mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
+                {mine && pass && (
+                  <p className={cn("relative mt-4 inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-sm", plan.popular ? "bg-paper/10 text-paper" : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20")}>
+                    <span className="size-2 rounded-full bg-emerald-500" /> Active · ends{" "}
+                    {new Date(pass.until).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} · {daysLeft} {daysLeft === 1 ? "day" : "days"} left
+                  </p>
+                )}
+                {!mine && pass && plan.id === "year" && (
+                  <p className={cn("relative mt-4 text-sm", plan.popular ? "text-paper/70" : "text-stone")}>A full year on top of the days you have left.</p>
+                )}
 
                 <PillButton
                   type="button"
-                  variant={plan.popular ? "brand" : "ink"}
+                  variant={mine ? (plan.popular ? "glass" : "outline") : plan.popular ? "brand" : "ink"}
                   size="lg"
                   className="relative mt-8 w-full justify-between"
                   disabled={checkout.pending !== null}
                   icon={checkout.pending === plan.id ? <Loader2 className="size-4 animate-spin" /> : undefined}
                   onClick={() => checkout.start(plan.id, savedTrip ? "planner" : undefined)}
                 >
-                  {checkout.pending === plan.id ? "Opening checkout…" : `Buy ${plan.name}`}
+                  {checkout.pending === plan.id ? "Opening checkout…" : action}
                 </PillButton>
 
                 <ul className="relative mt-8 space-y-3">
@@ -367,7 +386,8 @@ function CreditsPageContent() {
                 </ul>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
