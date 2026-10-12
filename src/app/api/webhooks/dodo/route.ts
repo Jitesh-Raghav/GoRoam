@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 import type DodoPayments from 'dodopayments';
 import { logIfSchemaOutOfSync, prisma } from '@/lib/prisma';
-import { dodo, planForProduct } from '@/lib/dodo';
+import { dodo } from '@/lib/dodo';
+import { DAY, grantPass } from '@/lib/grant-pass';
 import { PLANS } from '@/lib/plans';
-
-type PaymentData = DodoPayments.Payment;
 
 /**
  * Dodo Payments webhook. This is the only place a pass is granted for a
@@ -30,6 +28,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch {
+    console.error('Dodo webhook signature mismatch: check DODO_PAYMENTS_WEBHOOK_KEY is the signing secret of this endpoint (test and live endpoints differ).');
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
 
@@ -54,55 +53,6 @@ export async function POST(request: NextRequest) {
     logIfSchemaOutOfSync(error, `POST /api/webhooks/dodo (${event.type})`);
     // A 5xx makes Dodo retry the delivery later.
     return NextResponse.json({ error: 'Webhook handling failed' }, { status: 500 });
-  }
-}
-
-const DAY = 24 * 60 * 60 * 1000;
-
-async function grantPass(payment: PaymentData) {
-  const item = payment.product_cart?.[0];
-  // The product that was actually paid for decides the pack; metadata is a fallback.
-  const plan = planForProduct(item?.product_id) ?? PLANS.find((p) => p.id === payment.metadata?.plan_id);
-  if (!plan) {
-    console.warn(`Payment ${payment.payment_id} is not for a pass; ignoring`);
-    return;
-  }
-
-  const metaUserId = typeof payment.metadata?.user_id === 'string' ? payment.metadata.user_id : null;
-  const select = { id: true, passUntil: true, passPlan: true } as const;
-  const user =
-    (metaUserId && (await prisma.user.findUnique({ where: { id: metaUserId }, select }))) ||
-    (payment.customer?.email && (await prisma.user.findUnique({ where: { email: payment.customer.email }, select })));
-  if (!user) {
-    console.error(`Payment ${payment.payment_id}: no GoRoam account for ${payment.customer?.email ?? 'unknown customer'}; credit manually`);
-    return;
-  }
-
-  // A new pass starts now; buying again adds its days on top of what's left.
-  const days = plan.days * Math.max(item?.quantity ?? 1, 1);
-  const from = Math.max(Date.now(), user.passUntil?.getTime() ?? 0);
-  const passUntil = new Date(from + days * DAY);
-  // The longer plan's fair-use allowance wins while both overlap.
-  const passPlan = user.passPlan === 'year' && user.passUntil && user.passUntil.getTime() > Date.now() ? 'year' : plan.id;
-  try {
-    await prisma.$transaction([
-      prisma.payment.create({
-        data: {
-          providerPaymentId: payment.payment_id,
-          checkoutSessionId: payment.checkout_session_id ?? null,
-          userId: user.id,
-          planId: plan.id,
-          credits: 0,
-          amount: payment.total_amount,
-          currency: payment.currency,
-        },
-      }),
-      prisma.user.update({ where: { id: user.id }, data: { passUntil, passPlan } }),
-    ]);
-  } catch (error) {
-    // Already recorded: this is a retried delivery, and the pass was granted the first time.
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') return;
-    throw error;
   }
 }
 
