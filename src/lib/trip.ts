@@ -354,6 +354,8 @@ export interface TravelOption {
   frequency?: string;
   /** Why pick it, in one line. */
   pros: string;
+  /** Multi-city trips: getting home from the last city the same way. */
+  returnNote?: string;
   best?: "cheapest" | "fastest" | "best value";
   /** Set when the fare came from a live price feed. */
   live?: boolean;

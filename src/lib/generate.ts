@@ -2,7 +2,7 @@
 import OpenAI from 'openai';
 import { generateGuide } from '@/lib/guide';
 import { SYSTEM_PROMPT, constructPrompt, tidy, tidyDay, tidyOutline, type ItineraryRequest, type PromptMode } from '@/lib/itinerary-ai';
-import { enrichPlaces, fakeLogistics, generateLogistics, withLiveFares, type LogisticsContext } from '@/lib/logistics';
+import { enrichPlaces, fakeLogistics, generateLogistics, tripEnds, withLiveFares, type LogisticsContext } from '@/lib/logistics';
 import { mutateTrip } from '@/lib/trip-store';
 import { dayStops, normalizePreferences, type DayItinerary, type ItineraryData, type TripPreferences } from '@/lib/trip';
 
@@ -90,6 +90,7 @@ const logisticsContext = (data: ItineraryRequest, prefs: TripPreferences): Logis
   numberOfDays: data.numberOfDays,
   people: data.numberOfPeople,
   prefs,
+  ...tripEnds(data.destination, data.legs),
 });
 
 /** A day still being written: its outline, shown as a placeholder until the real day lands. */

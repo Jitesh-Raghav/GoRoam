@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowUpRight, Bus, Car, Check, Clock3, Loader2, Plane, Repeat, Sailboat, TrainFront, Zap, type LucideIcon } from "@/components/site/icons";
+import { ArrowUpRight, Bus, Car, Clock3, Loader2, Plane, Route, Sailboat, TrainFront, Zap, type LucideIcon } from "@/components/site/icons";
 import { cityOf, isoDay, travelOptionLinks } from "@/lib/booking";
 import { updateCached } from "@/lib/cached-json";
 import { useMoney } from "@/lib/money";
-import { getThereCost, type GetAround, type GetThere, type ItineraryData, type ItineraryDetails, type TravelOption } from "@/lib/trip";
+import { type GetAround, type GetThere, type ItineraryData, type ItineraryDetails, type TravelOption } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 import { PlacePhoto, asStop } from "./place-photo";
 
@@ -70,7 +70,23 @@ export function useLogistics(it: ItineraryDetails, canWrite: boolean) {
     setGetAround(next);
     save({ rental: { inBudget: next.inBudget, chosen: next.chosen ?? 0 } }, { getAround: next });
   };
-  return { getThere, getAround, state, pick, setRental, canWrite };
+  /** Ask again: fresh options and fares for this trip's route. */
+  const refresh = () => {
+    if (!canWrite) return;
+    setState("loading");
+    setGetThere(undefined);
+    fetch(`/api/itinerary/${it.id}/logistics?refresh=1`, { method: "POST" })
+      .then((r) => r.json())
+      .then((b) => {
+        if (!b?.success) return setState("failed");
+        setGetThere(b.getThere);
+        setGetAround(b.getAround);
+        setState("ready");
+        updateCached<{ data: ItineraryDetails }>(`/api/itinerary/${it.id}`, (d) => ({ ...d, data: { ...d.data, itineraryData: { ...d.data.itineraryData, getThere: b.getThere, getAround: b.getAround } } }));
+      })
+      .catch(() => setState("failed"));
+  };
+  return { getThere, getAround, state, pick, setRental, refresh, canWrite };
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -93,6 +109,14 @@ const BEST_STYLE: Record<NonNullable<TravelOption["best"]>, string> = {
   fastest: "bg-brand text-white",
 };
 
+/** "2h 10m", "24h overnight", "45 min" → minutes, for finding the fastest. */
+const minutes = (d: string) => {
+  const h = /(\d+(?:\.\d+)?)\s*h/i.exec(d);
+  const m = /(\d+)\s*m(?!o)/i.exec(d);
+  const v = (h ? Number(h[1]) * 60 : 0) + (m ? Number(m[1]) : 0);
+  return v || Number.POSITIVE_INFINITY;
+};
+
 /** The route as a hairline arc, origin to destination, with the chosen mode riding it. */
 function RouteArc({ icon: Icon }: { icon: LucideIcon }) {
   return (
@@ -111,10 +135,13 @@ function RouteArc({ icon: Icon }: { icon: LucideIcon }) {
 
 export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistics: ReturnType<typeof useLogistics> }) {
   const { fmt: money } = useMoney();
-  const { getThere, state, pick, canWrite } = logistics;
+  const { getThere, state, refresh, canWrite } = logistics;
   const source = it.itineraryData.trip?.source;
   const people = it.numberOfPeople;
-  const dest = it.itineraryData.summary?.destination || it.destination;
+  const legs = it.itineraryData.trip?.legs;
+  // Multi-city: you fly into the first city and home from the last.
+  const dest = legs?.length ? legs[0].city : it.itineraryData.summary?.destination || it.destination;
+  const homeFrom = legs && legs.length > 1 ? legs[legs.length - 1].city : null;
   if (!source) return null;
   if (!getThere) {
     return state === "loading" ? (
@@ -123,9 +150,10 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
       </div>
     ) : null;
   }
-  const chosen = getThere.options[getThere.pick] ?? getThere.options[0];
-  const ChosenIcon = MODE[chosen.mode].icon;
-  const roundTrip = getThereCost({ getThere }, people);
+  const opts = getThere.options;
+  const cheapest = opts.reduce((a, o) => (o.priceUsd < a.priceUsd ? o : a), opts[0]);
+  const fastest = opts.reduce((a, o) => (minutes(o.duration) < minutes(a.duration) ? o : a), opts[0]);
+  const FastIcon = MODE[fastest.mode].icon;
   const trip = { origin: source, destination: dest, depart: isoDay(it.startDate, 0), back: isoDay(it.startDate, it.numberOfDays - 1), people };
 
   return (
@@ -144,21 +172,28 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
                 <p className="text-xs text-paper/60">From</p>
                 <p className="display truncate text-[clamp(1.8rem,4.5vw,3.4rem)] leading-none">{cityOf(source)}</p>
               </div>
-              <RouteArc icon={ChosenIcon} />
+              <RouteArc icon={FastIcon} />
               <div className="min-w-0 text-right">
                 <p className="text-xs text-paper/60">To</p>
                 <p className="display truncate text-[clamp(1.8rem,4.5vw,3.4rem)] leading-none text-sun-2">{cityOf(dest)}</p>
               </div>
             </div>
+            {homeFrom && <p className="mt-4 text-sm text-paper/65">Heading home from {cityOf(homeFrom)} at the end.</p>}
           </div>
-          <div className="rounded-[24px] bg-paper/10 p-5 ring-1 ring-paper/15 backdrop-blur-md">
-            <p className="flex items-center gap-2 text-xs text-paper/70">
-              <Repeat className="size-3.5" /> In your budget · return for {people}
-            </p>
-            <p className="display mt-1 text-4xl tabular-nums">{money(roundTrip)}</p>
-            <p className="mt-1 text-sm text-paper/75">
-              {MODE[chosen.mode].label} · {chosen.title} · {chosen.duration}
-            </p>
+          <div className="grid grid-cols-3 divide-x divide-paper/10 rounded-[24px] bg-paper/10 ring-1 ring-paper/15 backdrop-blur-md">
+            {[
+              { label: "Cheapest", value: money(cheapest.priceUsd), sub: MODE[cheapest.mode].label, icon: MODE[cheapest.mode].icon },
+              { label: "Fastest", value: /\d+\s*h(?:\s*\d+\s*m)?|\d+\s*min/i.exec(fastest.duration)?.[0] ?? fastest.duration, sub: MODE[fastest.mode].label, icon: FastIcon },
+              { label: "Ways to go", value: String(opts.length), sub: [...new Set(opts.map((o) => MODE[o.mode].label.toLowerCase()))].join(", "), icon: Route },
+            ].map((x) => (
+              <div key={x.label} className="min-w-0 p-4 sm:p-5">
+                <p className="flex items-center gap-1.5 text-[11px] text-paper/60">
+                  <x.icon className="size-3.5 text-sun-2" /> {x.label}
+                </p>
+                <p className="display mt-1.5 truncate text-[clamp(1.25rem,2.4vw,1.9rem)] leading-none tabular-nums">{x.value}</p>
+                <p className="mt-1 truncate text-xs capitalize text-paper/65">{x.sub}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -166,7 +201,6 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
       {/* Every sensible way there */}
       <div className={cn("no-scrollbar mt-3 flex snap-x gap-3 overflow-x-auto pb-2 md:grid md:overflow-visible md:pb-0", getThere.options.length >= 4 ? "md:grid-cols-2 xl:grid-cols-4" : getThere.options.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
         {getThere.options.map((o, i) => {
-          const on = i === getThere.pick;
           const Icon = MODE[o.mode].icon;
           const links = travelOptionLinks(o, trip);
           return (
@@ -176,7 +210,7 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease, delay: i * 0.06 }}
-              className={cn("group relative flex min-w-[82%] snap-start flex-col overflow-hidden rounded-[26px] bg-white ring-1 transition-shadow sm:min-w-[55%] md:min-w-0", on ? "ring-2 ring-brand shadow-[0_30px_60px_-36px_rgba(26,95,214,0.8)]" : "ring-line hover:shadow-[0_24px_48px_-32px_rgba(14,31,59,0.6)]")}
+              className={cn("group relative flex min-w-[82%] snap-start flex-col overflow-hidden rounded-[26px] bg-white ring-1 transition-shadow sm:min-w-[55%] md:min-w-0", "ring-line hover:shadow-[0_24px_48px_-32px_rgba(14,31,59,0.6)]")}
             >
               <div className="relative h-32 overflow-hidden [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
                 <PlacePhoto activity={asStop(o.from || cityOf(source))} destination={source} credit={false} icon={Icon} imgClassName="group-hover:scale-[1.05]" />
@@ -197,6 +231,7 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
                   {o.frequency && <span>{o.frequency}</span>}
                 </p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-stone">{o.pros}</p>
+                {o.returnNote && <p className="mt-2 text-xs leading-snug text-ink/70">↩ {o.returnNote}</p>}
                 <div className="mt-4 flex items-end justify-between gap-3 border-t border-line pt-4">
                   <div>
                     <p className="display text-2xl leading-none text-ink">
@@ -216,16 +251,6 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
                   </div>
                 </div>
                 <div className="no-print mt-4 flex flex-wrap gap-2">
-                  {canWrite && (
-                    <button
-                      type="button"
-                      onClick={() => pick(i)}
-                      aria-pressed={on}
-                      className={cn("inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-colors", on ? "bg-brand text-white" : "bg-paper-2 text-ink hover:bg-ink hover:text-paper")}
-                    >
-                      {on ? <Check className="size-4" /> : null} {on ? "In budget" : "Use this"}
-                    </button>
-                  )}
                   {links.slice(0, 2).map((l) => (
                     <a key={l.name} href={l.href} target="_blank" rel="noopener noreferrer sponsored nofollow" className="inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-sm text-paper transition-colors hover:bg-brand">
                       {l.name} <ArrowUpRight className="size-3.5" />
@@ -237,7 +262,13 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
           );
         })}
       </div>
-      <p className="mt-3 text-[11px] text-stone">Fares are typical {new Date(it.startDate).getUTCFullYear()} prices for your dates unless marked live; check the partner for today&apos;s price.</p>
+      <p className="mt-3 text-[11px] text-stone">
+        {canWrite && (
+          <button type="button" onClick={refresh} className="no-print mr-2 rounded-full bg-paper-2 px-2.5 py-1 text-ink hover:bg-ink hover:text-paper">
+            Refresh options
+          </button>
+        )}
+        Fares are per person, one way. They&apos;re typical {new Date(it.startDate).getUTCFullYear()} prices for your dates unless marked live, and aren&apos;t counted in your budget; check the partner for today&apos;s price.</p>
     </div>
   );
 }

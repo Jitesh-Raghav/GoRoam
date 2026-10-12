@@ -12,7 +12,16 @@ export interface LogisticsContext {
   numberOfDays: number;
   people: number;
   prefs?: TripPreferences;
+  /** Multi-city trips: where the trip starts and where it ends. */
+  firstCity?: string;
+  lastCity?: string;
 }
+
+/** The first and last city of a trip, from its legs when it has them. */
+export const tripEnds = (destination: string, legs?: { city: string }[]) => ({
+  firstCity: legs?.length ? legs[0].city : destination,
+  lastCity: legs?.length ? legs[legs.length - 1].city : destination,
+});
 
 const MODES = ['flight', 'train', 'bus', 'drive', 'ferry'] as const;
 const KINDS: RentalKind[] = ['scooter', 'bike', 'car', 'cycle'];
@@ -26,10 +35,12 @@ export function logisticsPrompt(ctx: LogisticsContext) {
   const year = ctx.startDate.slice(0, 4);
   const back = new Date(ctx.startDate);
   back.setUTCDate(back.getUTCDate() + ctx.numberOfDays - 1);
-  return `A group of ${ctx.people} is travelling from ${ctx.source || 'their home city'} to ${ctx.destination}, leaving ${ctx.startDate} and coming back ${back.toISOString().slice(0, 10)}.${ctx.prefs ? ` Spending style: ${ctx.prefs.spend}. Getting around by: ${ctx.prefs.transport}.` : ''}
+  const to = ctx.firstCity || ctx.destination;
+  const homeFrom = ctx.lastCity && ctx.lastCity !== to ? ctx.lastCity : null;
+  return `A group of ${ctx.people} is travelling from ${ctx.source || 'their home city'} to ${to}${homeFrom ? `, ending the trip in ${homeFrom} and going home from there` : ''}, leaving ${ctx.startDate} and coming back ${back.toISOString().slice(0, 10)}.${ctx.prefs ? ` Spending style: ${ctx.prefs.spend}. Getting around by: ${ctx.prefs.transport}.` : ''}
 
-1. "getThere": the real ways to get from ${ctx.source || 'home'} to ${ctx.destination}, best first. 2 to 4 options, only modes that genuinely make sense (a direct or one-stop flight, a named train, an overnight sleeper bus, driving when it's under ~10 hours, a ferry).
-   - "title": the actual service ("IndiGo or Air India, nonstop", "Netravati Express 16345", "KSRTC Airavat sleeper").
+1. "getThere": the real ways to get from ${ctx.source || 'home'} to ${to} (the city itself, its own airport or station, never a different city's), best first. 2 to 4 options, only modes that genuinely make sense (a direct or one-stop flight, a named train, an overnight sleeper bus, driving when it's under ~10 hours, a ferry).
+   - "title": the actual service that runs on THIS route: the airlines that fly it, the named train with its number, the bus operator. Never invent one or reuse a name from another route.
    - "from" and "to": the real airport (with IATA code) or station or bus stand used at each end.
    - "fromCode"/"toCode": IATA codes for flights, "" otherwise.
    - "duration": door-to-door-ish journey time ("2h 10m", "24h overnight").
@@ -37,13 +48,14 @@ export function logisticsPrompt(ctx: LogisticsContext) {
    - "priceNote": the same fare in the local currency as a range ("₹4,500–6,500 one way").
    - "frequency": how often it runs ("8 flights a day", "Daily, 11:40 AM").
    - "pros": one line on why you'd pick it.
-   - "best": tag one option "best value", the cheapest "cheapest", the fastest "fastest" (an option can be untagged).
-2. "getAround": renting your own wheels at ${ctx.destination}.
+${homeFrom ? `   - "returnNote": how to get home from ${homeFrom} by the same kind of transport, with its typical one-way fare per person in the local currency (under 90 characters).
+` : ''}   - "best": tag one option "best value", the cheapest "cheapest", the fastest "fastest" (an option can be untagged).
+2. "getAround": renting your own wheels at ${to}${homeFrom ? ` and ${homeFrom}` : ''}.
    - "picks": 3 or 4 real, well-reviewed rental shops or services there, covering the kinds that make sense locally ("scooter", "bike" for motorbikes, "car", "cycle"), each with "kind", "name", "area", "lat", "lng" (real, 4 decimals), "pricePerDayUsd" (typical ${year} rate per day for one vehicle), "priceNote" (local currency, "₹400–600 a day"), "deposit", "needs" (licence or permit needed, e.g. "Two-wheeler licence; IDP for foreigners"), "tip".
    - "notes": 3 short local rules of the road (fuel, helmets, parking, hill roads, tolls).
 
 Never use em dashes. Respond with JSON only:
-{"getThere":{"options":[{"mode":"flight","title":"","from":"","to":"","fromCode":"","toCode":"","duration":"","priceUsd":0,"priceNote":"","frequency":"","pros":"","best":"best value"}]},"getAround":{"picks":[{"kind":"scooter","name":"","area":"","lat":0,"lng":0,"pricePerDayUsd":0,"priceNote":"","deposit":"","needs":"","tip":""}],"notes":[""]}}`;
+{"getThere":{"options":[{"mode":"flight","title":"","from":"","to":"","fromCode":"","toCode":"","duration":"","priceUsd":0,"priceNote":"","frequency":"","pros":""${homeFrom ? ',"returnNote":""' : ''},"best":"best value"}]},"getAround":{"picks":[{"kind":"scooter","name":"","area":"","lat":0,"lng":0,"pricePerDayUsd":0,"priceNote":"","deposit":"","needs":"","tip":""}],"notes":[""]}}`;
 }
 
 export function tidyGetThere(raw: unknown): GetThere | undefined {
@@ -65,6 +77,7 @@ export function tidyGetThere(raw: unknown): GetThere | undefined {
         priceNote: text(x.priceNote, 50),
         frequency: text(x.frequency, 50),
         pros: text(x.pros, 140) ?? '',
+        returnNote: text(x.returnNote, 110),
         best: BEST.find((b) => b === x.best),
         fromCode: mode === 'flight' ? code(x.fromCode) : undefined,
         toCode: mode === 'flight' ? code(x.toCode) : undefined,
@@ -129,12 +142,13 @@ export async function generateLogistics(openai: OpenAI, ctx: LogisticsContext): 
 /** Plausible canned logistics for local testing. */
 export function fakeLogistics(ctx: LogisticsContext): { getThere?: GetThere; getAround?: GetAround } {
   const from = cityOf(ctx.source || 'Pune');
-  const to = cityOf(ctx.destination);
+  const to = cityOf(ctx.firstCity || ctx.destination);
+  const home = ctx.lastCity && ctx.lastCity !== ctx.firstCity ? cityOf(ctx.lastCity) : null;
   return {
     getThere: {
       pick: 0,
       options: [
-        { mode: 'flight', title: 'IndiGo or Air India, nonstop', from: `${from} Airport (PNQ)`, to: `${to} Airport (COK)`, fromCode: 'PNQ', toCode: 'COK', duration: '1h 55m', priceUsd: 62, priceNote: '₹4,500–6,500 one way', frequency: '6 flights a day', pros: 'Fastest by far; book 3 weeks ahead for the best fares.', best: 'best value' },
+        { mode: 'flight', title: 'IndiGo or Air India, nonstop', from: `${from} Airport (PNQ)`, to: `${to} Airport (COK)`, fromCode: 'PNQ', toCode: 'COK', duration: '1h 55m', priceUsd: 62, priceNote: '₹4,500–6,500 one way', frequency: '6 flights a day', pros: 'Fastest by far; book 3 weeks ahead for the best fares.', ...(home ? { returnNote: `Home from ${home}: flights from about ₹7,000` } : {}), best: 'best value' },
         { mode: 'train', title: 'Netravati Express 16345', from: `${from} Junction`, to: 'Ernakulam Junction', duration: '24h overnight', priceUsd: 18, priceNote: '₹1,450 in 3AC', frequency: 'Daily, 11:40 AM', pros: 'Coastal views through the Konkan; a berth to sleep in.', best: 'cheapest' },
         { mode: 'bus', title: 'Volvo multi-axle sleeper', from: `${from} Swargate`, to: `${to} Vyttila Hub`, duration: '20h', priceUsd: 24, priceNote: '₹1,900–2,400', frequency: 'Several evenings a week', pros: 'Leaves in the evening, arrives the next afternoon.' },
       ],
@@ -247,7 +261,7 @@ export async function withLiveFares(g: GetThere | undefined, ctx: LogisticsConte
   if (!g || !process.env.TRAVELPAYOUTS_TOKEN) return g;
   const options = await Promise.all(
     g.options.map(async (o) => {
-      const live = await liveFlightFare(o, ctx.source ?? '', ctx.destination, ctx.startDate);
+      const live = await liveFlightFare(o, ctx.source ?? '', ctx.firstCity || ctx.destination, ctx.startDate);
       return live ? { ...o, priceUsd: live, live: true } : o;
     }),
   );

@@ -25,6 +25,7 @@ import {
   Palette,
   Plug,
   Printer,
+  Receipt,
   Repeat,
   Route,
   ShoppingBag,
@@ -63,7 +64,6 @@ import {
   dayActivities,
   dayStops,
   getAroundCost,
-  getThereCost,
   labelFor,
   periodOf,
   titleCase,
@@ -109,6 +109,7 @@ import { ReactionsProvider, StopReactions, useReactions } from "./reactions";
 import { SwapProvider, useSwap } from "./swap-dialog";
 import { DayActions, PlanToolsProvider } from "./plan-tools";
 import { TripWallet } from "./wallet";
+import { BudgetBreakdown } from "./budget-breakdown";
 import { GetAroundSection } from "./get-around";
 import { GettingThere, useLogistics } from "./getting-there";
 import { PlacesMap } from "./places-map";
@@ -634,11 +635,11 @@ function BudgetCard({
   active,
   onPick,
   typed,
-  travel = null,
   rental = null,
+  onBreakdown,
 }: {
-  /** Getting there and back, for everyone. */
-  travel?: number | null;
+  /** Opens the line-by-line breakdown. */
+  onBreakdown?: () => void;
   /** The rental, when the traveller counts it. */
   rental?: number | null;
   budget: number;
@@ -657,12 +658,12 @@ function BudgetCard({
   // Show the budget as typed ("₹1,00,000") rather than a round trip through USD.
   const budgetText = typed && typed.currency === currency ? formatMoney(typed.amount, currency, 0) : money(budget);
   const ground = activities + (stay ?? 0) + (rental ?? 0);
-  const planned = ground + (travel ?? 0);
+  // Getting there is shown on its own, never counted here.
+  const planned = ground;
   const left = budget - planned;
   const over = left < 0;
   const denom = Math.max(budget, planned, 1);
   const segs = [
-    ...(travel ? [{ label: "Getting there & back", value: travel, color: "var(--sun)" }] : []),
     ...(stay !== null ? [{ label: `Stay · ${nights} ${nights === 1 ? "night" : "nights"}`, value: stay, color: "var(--brand)" }] : []),
     { label: "Activities & food", value: activities, color: "var(--ink)" },
     ...(rental ? [{ label: "Rental", value: rental, color: "#7CC4FF" }] : []),
@@ -725,7 +726,7 @@ function BudgetCard({
           ))}
           <li className="flex items-center gap-2">
             <span className="size-2.5 shrink-0 rounded-full bg-paper-3" />
-            <span className="min-w-0 flex-1 truncate text-stone">{over ? "Over budget" : travel ? "Left for extras" : "Left for flights & extras"}</span>
+            <span className="min-w-0 flex-1 truncate text-stone">{over ? "Over budget" : "Left for flights & extras"}</span>
             <span className={cn("font-mono text-xs", over ? "text-destructive" : "text-ink")}>{money(Math.abs(left))}</span>
           </li>
         </ul>
@@ -733,6 +734,11 @@ function BudgetCard({
         ≈ <span className="text-ink">{money(ground / Math.max(people, 1) / Math.max(days, 1))}</span> per person per day on the ground
         {stay === null ? ", before accommodation." : ", stay included."}
       </p>
+      {onBreakdown && (
+        <button type="button" onClick={onBreakdown} className="no-print mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm text-paper transition-colors hover:bg-brand">
+          <Receipt className="size-4" /> View breakdown
+        </button>
+      )}
 
       {dayCosts.length > 1 && (
         <div className="mt-5">
@@ -894,10 +900,10 @@ export function TripView({
   const stayTotal = priced.length ? Math.round((priced.reduce((a, b) => a + b, 0) / priced.length) * nights) : null;
   const who = prefs ? labelFor(COMPANIONS, prefs.companions) : it.tripType ? labelFor([], it.tripType) : "";
   const logistics = useLogistics(it, !shared && !isPackage);
-  const travelTotal = getThereCost({ getThere: logistics.getThere }, people) || null;
   const rentalTotal = getAroundCost({ getAround: logistics.getAround }, it.numberOfDays) || null;
   const pendingDays = useMemo(() => new Set(data?.pending ?? []), [data]);
   const [stayPin, setStayPin] = useState<string | null>(null);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
   const stayPoints = useMemo(
     () => (data?.stays ?? []).flatMap((s, i) => (s.lat && s.lng ? [{ id: String(i), lat: s.lat, lng: s.lng, label: s.name, tag: s.pricePerNight ? `${money(s.pricePerNight)}` : s.name }] : [])),
     [data, money],
@@ -992,6 +998,11 @@ export function TripView({
   const hasDo = !!guide && (guide.experiences.length > 0 || guide.events.length > 0 || (guide.videos?.length ?? 0) > 0 || guide.videoQueries.length > 0);
   const hasThere = !!logistics.getThere || logistics.state === "loading";
   const hasAround = !!logistics.getAround?.picks.length;
+  // Where the rentals are: the city, or every city on a multi-city trip.
+  const wheelsCity = (() => {
+    const names = (data?.trip?.legs ?? []).map((l) => cityOf(l.city));
+    return names.length > 1 ? `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}` : names[0] ?? cityOf(title);
+  })();
   const chapters: Chapter[] = [
     ...(hasThere ? [{ id: "chapter-there", label: "Get there" }] : []),
     { id: "chapter-stay", label: "Stay" },
@@ -1160,7 +1171,7 @@ export function TripView({
       {hasThere && (
         <Band id="chapter-there">
           <SectionTitle eyebrow="Getting there" title={<>From your door to <span className="accent">{cityOf(title)}.</span></>}>
-            <p className="max-w-sm text-sm text-stone">The best ways from {data?.trip?.source ? titleCase(cityOf(data.trip.source)) : "home"}, with typical fares for your dates. The one you pick counts in your budget.</p>
+            <p className="max-w-sm text-sm text-stone">The best ways from {data?.trip?.source ? titleCase(cityOf(data.trip.source)) : "home"}, with typical fares per person for your dates. Booked separately, so not counted in your budget.</p>
           </SectionTitle>
           <GettingThere it={it} logistics={logistics} />
         </Band>
@@ -1217,8 +1228,8 @@ export function TripView({
       {/* Getting around: rent your own wheels */}
       {hasAround && (
         <Band id="chapter-around">
-          <SectionTitle eyebrow="Getting around" title={<>Rent your own <span className="accent">wheels.</span></>}>
-            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops, with typical day rates. Switch it on to add it to your budget.</p>
+          <SectionTitle eyebrow="Getting around" title={<>Rent your own wheels in <span className="accent">{wheelsCity}.</span></>}>
+            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops in {wheelsCity}, with typical day rates. Switch it on to add it to your budget.</p>
           </SectionTitle>
           <GetAroundSection it={it} logistics={logistics} />
         </Band>
@@ -1335,9 +1346,24 @@ export function TripView({
               dayCosts={dayCosts}
               active={active}
               onPick={jump}
-              travel={travelTotal}
               rental={rentalTotal}
+              onBreakdown={() => setBreakdownOpen(true)}
             />
+            {data && (
+              <BudgetBreakdown
+                open={breakdownOpen}
+                onClose={() => setBreakdownOpen(false)}
+                data={data}
+                budget={it.budget}
+                typed={prefs?.budgetCurrency && prefs.budgetLocal ? { amount: prefs.budgetLocal, currency: prefs.budgetCurrency } : undefined}
+                nights={nights}
+                people={people}
+                days={it.numberOfDays}
+                stay={stayTotal}
+                rental={rentalTotal}
+                onPickDay={jump}
+              />
+            )}
             <div className="no-print">
               <BookingPanel query={query} className="glass-dark" />
             </div>

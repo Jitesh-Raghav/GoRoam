@@ -25,7 +25,9 @@ export function GetAroundSection({ it, logistics }: { it: ItineraryDetails; logi
   const { fmt: money } = useMoney();
   const { getAround, state, setRental, canWrite } = logistics;
   const kinds = useMemo(() => [...new Set(getAround?.picks.map((p) => p.kind) ?? [])], [getAround]);
-  const [kind, setKind] = useState<RentalKind | "all">("all");
+  // Opens on scooters (what most people rent), or the first kind there is.
+  const [picked, setKind] = useState<RentalKind | "all" | null>(null);
+  const kind: RentalKind | "all" = picked ?? (kinds.includes("scooter") ? "scooter" : kinds[0] ?? "all");
   const [active, setActive] = useState<string | null>(null);
   if (!getAround?.picks.length) {
     return state === "loading" ? (
@@ -126,7 +128,7 @@ export function GetAroundSection({ it, logistics }: { it: ItineraryDetails; logi
                       </div>
                       <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone">
                         <span className="inline-flex items-center gap-1">
-                          <MapPin className="size-3 text-brand" /> {p.area}
+                          <MapPin className="size-3 text-brand" /> {p.area && !p.area.toLowerCase().includes(cityOf(dest).toLowerCase()) ? `${p.area}, ${cityOf(dest)}` : p.area || cityOf(dest)}
                         </span>
                         {p.rating && (
                           <span className="inline-flex items-center gap-1 text-ink/80">
