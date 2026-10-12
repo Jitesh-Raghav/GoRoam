@@ -180,18 +180,23 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
             </div>
             {homeFrom && <p className="mt-4 text-sm text-paper/65">Heading home from {cityOf(homeFrom)} at the end.</p>}
           </div>
-          <div className="grid grid-cols-3 divide-x divide-paper/10 rounded-[24px] bg-paper/10 ring-1 ring-paper/15 backdrop-blur-md">
+          <div className="grid divide-y divide-paper/10 rounded-[24px] sm:grid-cols-3 sm:divide-x sm:divide-y-0 bg-paper/10 ring-1 ring-paper/15 backdrop-blur-md">
             {[
               { label: "Cheapest", value: money(cheapest.priceUsd), sub: MODE[cheapest.mode].label, icon: MODE[cheapest.mode].icon },
               { label: "Fastest", value: /\d+\s*h(?:\s*\d+\s*m)?|\d+\s*min/i.exec(fastest.duration)?.[0] ?? fastest.duration, sub: MODE[fastest.mode].label, icon: FastIcon },
-              { label: "Ways to go", value: String(opts.length), sub: [...new Set(opts.map((o) => MODE[o.mode].label.toLowerCase()))].join(", "), icon: Route },
+              { label: "Ways to go", value: String(opts.length), sub: [...new Set(opts.map((o) => MODE[o.mode].label))].join(" · "), icon: Route },
             ].map((x) => (
-              <div key={x.label} className="min-w-0 p-4 sm:p-5">
-                <p className="flex items-center gap-1.5 text-[11px] text-paper/60">
-                  <x.icon className="size-3.5 text-sun-2" /> {x.label}
-                </p>
-                <p className="display mt-1.5 truncate text-[clamp(1.25rem,2.4vw,1.9rem)] leading-none tabular-nums">{x.value}</p>
-                <p className="mt-1 truncate text-xs capitalize text-paper/65">{x.sub}</p>
+              <div key={x.label} className="flex min-w-0 items-center justify-between gap-4 px-4 py-3 sm:block sm:p-5">
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1.5 text-[11px] text-paper/60">
+                    <x.icon className="size-3.5 shrink-0 text-sun-2" /> {x.label}
+                  </p>
+                  <p className="mt-0.5 text-xs text-paper/65 sm:hidden">{x.sub}</p>
+                </div>
+                <div className="shrink-0 text-right sm:text-left">
+                  <p className="display whitespace-nowrap text-xl leading-none tabular-nums sm:mt-1.5 sm:text-[clamp(1.25rem,2.4vw,1.9rem)]">{x.value}</p>
+                  <p className="mt-1 hidden text-xs text-paper/65 sm:block">{x.sub}</p>
+                </div>
               </div>
             ))}
           </div>
