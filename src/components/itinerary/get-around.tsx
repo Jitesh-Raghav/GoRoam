@@ -128,7 +128,7 @@ export function GetAroundSection({ it, logistics }: { it: ItineraryDetails; logi
                       </div>
                       <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone">
                         <span className="inline-flex items-center gap-1">
-                          <MapPin className="size-3 text-brand" /> {p.area}
+                          <MapPin className="size-3 text-brand" /> {p.area && !p.area.toLowerCase().includes(cityOf(dest).toLowerCase()) ? `${p.area}, ${cityOf(dest)}` : p.area || cityOf(dest)}
                         </span>
                         {p.rating && (
                           <span className="inline-flex items-center gap-1 text-ink/80">

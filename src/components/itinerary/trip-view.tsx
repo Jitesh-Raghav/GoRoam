@@ -998,6 +998,11 @@ export function TripView({
   const hasDo = !!guide && (guide.experiences.length > 0 || guide.events.length > 0 || (guide.videos?.length ?? 0) > 0 || guide.videoQueries.length > 0);
   const hasThere = !!logistics.getThere || logistics.state === "loading";
   const hasAround = !!logistics.getAround?.picks.length;
+  // Where the rentals are: the city, or every city on a multi-city trip.
+  const wheelsCity = (() => {
+    const names = (data?.trip?.legs ?? []).map((l) => cityOf(l.city));
+    return names.length > 1 ? `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}` : names[0] ?? cityOf(title);
+  })();
   const chapters: Chapter[] = [
     ...(hasThere ? [{ id: "chapter-there", label: "Get there" }] : []),
     { id: "chapter-stay", label: "Stay" },
@@ -1223,8 +1228,8 @@ export function TripView({
       {/* Getting around: rent your own wheels */}
       {hasAround && (
         <Band id="chapter-around">
-          <SectionTitle eyebrow="Getting around" title={<>Rent your own <span className="accent">wheels.</span></>}>
-            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops, with typical day rates. Switch it on to add it to your budget.</p>
+          <SectionTitle eyebrow="Getting around" title={<>Rent your own wheels in <span className="accent">{wheelsCity}.</span></>}>
+            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops in {wheelsCity}, with typical day rates. Switch it on to add it to your budget.</p>
           </SectionTitle>
           <GetAroundSection it={it} logistics={logistics} />
         </Band>
