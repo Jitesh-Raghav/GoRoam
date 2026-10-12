@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { PlacePhoto, asDish, asThing } from "../place-photo";
 import { Band } from "../band";
 import { SectionTitle } from "./section-title";
+import { LanguageLines } from "../hairlines";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -90,53 +91,78 @@ export function useSpeech(lang?: string) {
   return { canSpeak: !!voice, say, speaking };
 }
 
+const L = { fill: "none", stroke: "currentColor", strokeWidth: 1, vectorEffect: "non-scaling-stroke" as const, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+const TINTS = ["#1A5FD6", "#F5B400", "#FF6B5B", "#2BB58A"];
+
 function Phrases({ guide }: { guide: TripGuide }) {
   const { canSpeak, say, speaking } = useSpeech(guide.languageCode);
   return (
     <div>
       {guide.language && (
-        <p className="mb-4 text-sm text-stone">
-          Five phrases in <span className="text-ink">{guide.language}</span> that open doors{canSpeak ? ". Tap the speaker to hear them." : "."}
+        <p className="mb-5 flex items-center gap-3 text-sm text-stone">
+          <svg aria-hidden viewBox="0 0 24 24" className="size-6 text-brand">
+            <circle {...L} cx="12" cy="12" r="9" />
+            <path {...L} d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" />
+          </svg>
+          <span>
+            Phrases in <span className="text-ink">{guide.language}</span> that open doors{canSpeak ? ". Tap the speaker to hear them." : "."}
+          </span>
         </p>
       )}
-      <ol className="divide-y divide-line overflow-hidden rounded-[24px] bg-white ring-1 ring-line">
-        {guide.phrases.map((p, i) => (
-          <li key={i} className="print-avoid grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:grid-cols-[2.5rem_minmax(0,0.8fr)_minmax(0,1.2fr)_auto] sm:gap-5 sm:px-6">
-            <span className="font-mono text-xs text-brand">{String(i + 1).padStart(2, "0")}</span>
-            <span className="min-w-0 text-ink sm:text-[1.05rem]">
-              {p.english}
-              <span className="mt-0.5 block truncate text-sm text-stone sm:hidden">
+      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {guide.phrases.map((p, i) => {
+          const hero = i === 0;
+          const tint = TINTS[i % TINTS.length];
+          return (
+            <motion.li
+              key={i}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
+              className={cn("print-avoid relative isolate flex min-h-[11rem] flex-col overflow-hidden rounded-[26px] p-5 sm:p-6", hero ? "bg-ink text-paper sm:col-span-2" : "bg-white ring-1 ring-line")}
+            >
+              {hero ? (
+                <LanguageLines speaking={speaking === 0} className="-z-10 opacity-90" />
+              ) : (
+                <>
+                  <span aria-hidden className="absolute -right-10 -top-10 -z-10 size-36 rounded-full opacity-[0.14] blur-2xl" style={{ background: tint }} />
+                  <svg aria-hidden viewBox="0 0 120 90" className="pointer-events-none absolute -right-2 bottom-2 -z-10 w-32 print:hidden" style={{ color: tint, opacity: 0.25 }}>
+                    <path {...L} d="M20 10h80a12 12 0 0 1 12 12v32a12 12 0 0 1-12 12H58l-14 14 2-14H20A12 12 0 0 1 8 54V22a12 12 0 0 1 12-12z" />
+                    <path {...L} d="M28 30h56M28 42h36" strokeDasharray="1 5" />
+                  </svg>
+                </>
+              )}
+              <span aria-hidden className={cn("display pointer-events-none absolute right-5 top-1 -z-10 select-none text-[6rem] leading-none", hero ? "text-paper/[0.07]" : "text-ink/[0.05]")}>“</span>
+              <p className={cn("eyebrow flex items-center gap-2 text-[0.6rem]", hero ? "text-paper/60" : "text-stone")}>
+                <span className="font-mono" style={{ color: hero ? undefined : tint }}>{String(i + 1).padStart(2, "0")}</span> {p.english}
+              </p>
+              <p className={cn("display mt-auto pt-6 leading-tight", hero ? "text-[clamp(2rem,4vw,3rem)]" : "text-[1.7rem]")} lang={guide.languageCode}>
                 {p.local}
-                {p.romanized && ` · ${p.romanized}`}
-              </span>
-            </span>
-            <span className="hidden min-w-0 sm:block">
-              <span className="display block truncate text-[1.44rem] leading-tight text-ink" lang={guide.languageCode}>
-                {p.local}
-              </span>
-              <span className="block truncate text-sm text-stone">
-                {p.romanized}
-                {p.romanized && p.pronunciation && " · "}
-                {p.pronunciation && <span className="italic">“{p.pronunciation}”</span>}
-              </span>
-            </span>
-            {canSpeak ? (
-              <button
-                type="button"
-                onClick={() => say(p.local, i)}
-                aria-label={`Hear “${p.english}” in ${guide.language ?? "the local language"}`}
-                className={cn(
-                  "no-print grid size-10 place-items-center rounded-full transition-colors",
-                  speaking === i ? "bg-brand text-white" : "bg-brand-soft text-brand hover:bg-brand hover:text-white"
+              </p>
+              <div className="mt-2 flex items-end justify-between gap-3">
+                <p className={cn("min-w-0 text-sm", hero ? "text-paper/75" : "text-stone")}>
+                  {p.romanized && <span className={hero ? "text-brand-2" : "text-brand"}>{p.romanized}</span>}
+                  {p.pronunciation && <span className="block italic">“{p.pronunciation}”</span>}
+                </p>
+                {canSpeak && (
+                  <button
+                    type="button"
+                    onClick={() => say(p.local, i)}
+                    aria-label={`Hear “${p.english}” in ${guide.language ?? "the local language"}`}
+                    className={cn(
+                      "no-print relative grid size-11 shrink-0 place-items-center rounded-full transition-colors",
+                      speaking === i ? "bg-brand text-white" : hero ? "bg-paper/10 text-paper hover:bg-paper/20" : "bg-brand-soft text-brand hover:bg-brand hover:text-white"
+                    )}
+                  >
+                    {speaking === i && <span className="absolute inset-0 animate-ping rounded-full bg-brand/40" />}
+                    <Volume2 className="relative size-5" />
+                  </button>
                 )}
-              >
-                <Volume2 className={cn("size-4", speaking === i && "animate-pulse")} />
-              </button>
-            ) : (
-              <span />
-            )}
-          </li>
-        ))}
+              </div>
+            </motion.li>
+          );
+        })}
       </ol>
     </div>
   );
@@ -346,21 +372,102 @@ function Safety({ guide }: { guide: TripGuide }) {
   );
 }
 
+/** A small hairline drawing for each kind of tip. */
+function TipArt({ category }: { category: TipCategory }) {
+  const art: Record<TipCategory, React.ReactNode> = {
+    money: (
+      <>
+        <ellipse {...L} cx="60" cy="52" rx="22" ry="7" />
+        <path {...L} d="M38 52v-8c0 4 10 7 22 7s22-3 22-7v8M38 44v-8c0 4 10 7 22 7s22-3 22-7v8M38 36c0-4 10-7 22-7s22 3 22 7-10 7-22 7-22-3-22-7z" />
+        <path {...L} d="M100 20h40M100 30h28M100 40h34" strokeDasharray="1 4" />
+      </>
+    ),
+    transport: (
+      <>
+        <path {...L} d="M10 56C40 56 40 20 70 20s40 36 80 36" strokeDasharray="2 5" />
+        <circle {...L} cx="10" cy="56" r="4" />
+        <path {...L} d="M150 56c0-6 5-10 5-14a5 5 0 0 0-10 0c0 4 5 8 5 14z" />
+        <rect {...L} x="58" y="10" width="26" height="18" rx="5" />
+        <path {...L} d="M62 28l-3 5M80 28l3 5M58 19h26" />
+      </>
+    ),
+    safety: (
+      <>
+        <path {...L} d="M80 8l26 9v16c0 15-11 24-26 29-15-5-26-14-26-29V17z" />
+        <path {...L} d="M68 34l8 8 16-16" />
+        <circle {...L} cx="80" cy="35" r="40" strokeDasharray="1 6" />
+      </>
+    ),
+    timing: (
+      <>
+        <circle {...L} cx="80" cy="34" r="24" />
+        <path {...L} d="M80 18v16l11 7" />
+        <path {...L} d="M80 6v4M80 58v4M52 34h4M104 34h4" />
+        <path {...L} d="M20 50h24M116 50h24" strokeDasharray="1 4" />
+      </>
+    ),
+    connectivity: (
+      <>
+        <path {...L} d="M50 30a42 42 0 0 1 60 0M60 40a28 28 0 0 1 40 0M70 50a14 14 0 0 1 20 0" />
+        <circle {...L} cx="80" cy="58" r="2.5" />
+        <path {...L} d="M10 58h40M110 58h40" strokeDasharray="1 4" />
+      </>
+    ),
+    etiquette: (
+      <>
+        <path {...L} d="M64 60V40c0-6 4-10 10-10h12c6 0 10 4 10 10v20" />
+        <path {...L} d="M80 22a8 8 0 1 0 0-.1" />
+        <path {...L} d="M40 60h80" />
+        <path {...L} d="M100 30c8-4 14-2 18 4M60 30c-8-4-14-2-18 4" strokeDasharray="1 4" />
+      </>
+    ),
+  };
+  return (
+    <svg aria-hidden viewBox="0 0 160 66" preserveAspectRatio="xMaxYMid meet" className="pointer-events-none absolute inset-y-2 right-3 h-[calc(100%-1rem)] w-auto print:hidden">
+      {art[category] ?? (
+        <>
+          <circle {...L} cx="80" cy="33" r="24" />
+          <path {...L} d="M80 9l6 24-6 24-6-24z" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+const TIP_TONE = [
+  { band: "from-brand-soft to-white", art: "text-brand/45", chip: "bg-white text-brand" },
+  { band: "from-sun-soft to-white", art: "text-sun/70", chip: "bg-white text-ink" },
+  { band: "from-coral-soft to-white", art: "text-coral/55", chip: "bg-white text-coral" },
+  { band: "from-emerald-50 to-white", art: "text-emerald-500/50", chip: "bg-white text-emerald-700" },
+];
+
 function Tips({ guide }: { guide: TripGuide }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {guide.tips.map((t, i) => {
-        const c = TIP[t.category];
+        const c = TIP[t.category] ?? TIP.money;
+        const hero = i === 0;
+        const tone = TIP_TONE[i % TIP_TONE.length];
         return (
-          <li key={i} className="print-avoid rounded-[24px] bg-white p-6 ring-1 ring-line">
-            <p className="eyebrow flex items-center gap-2 text-[0.6rem] text-stone">
-              <span className="grid size-8 place-items-center rounded-xl bg-brand-soft text-brand">
-                <c.icon className="size-4" />
+          <motion.li
+            key={i}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
+            className={cn("print-avoid group relative overflow-hidden rounded-[26px] transition-transform duration-500 hover:-translate-y-1", hero ? cn("bg-ink text-paper", (guide.tips.length + 1) % 3 === 0 && "lg:col-span-2") : "bg-white ring-1 ring-line")}
+          >
+            <div className={cn("relative h-[4.5rem]", hero ? "bg-gradient-to-r from-brand/40 to-transparent text-brand-2/60" : cn("bg-gradient-to-b", tone.band, tone.art))}>
+              <TipArt category={t.category} />
+              <span className={cn("absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs shadow-sm", hero ? "bg-paper/10 text-paper ring-1 ring-paper/20" : tone.chip)}>
+                <c.icon className="size-4" /> {c.label}
               </span>
-              {c.label}
-            </p>
-            <p className="mt-4 leading-relaxed text-ink">{t.tip}</p>
-          </li>
+            </div>
+            <span aria-hidden className={cn("display pointer-events-none absolute bottom-0 right-4 select-none text-[5rem] leading-none", hero ? "text-paper/[0.06]" : "text-ink/[0.04]")}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className={cn("relative px-6 pb-6 pt-3 leading-relaxed", hero ? "text-[1.1rem] text-paper/90" : "text-ink")}>{t.tip}</p>
+          </motion.li>
         );
       })}
     </ul>
