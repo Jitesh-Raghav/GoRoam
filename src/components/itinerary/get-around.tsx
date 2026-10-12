@@ -25,7 +25,9 @@ export function GetAroundSection({ it, logistics }: { it: ItineraryDetails; logi
   const { fmt: money } = useMoney();
   const { getAround, state, setRental, canWrite } = logistics;
   const kinds = useMemo(() => [...new Set(getAround?.picks.map((p) => p.kind) ?? [])], [getAround]);
-  const [kind, setKind] = useState<RentalKind | "all">("all");
+  // Opens on scooters (what most people rent), or the first kind there is.
+  const [picked, setKind] = useState<RentalKind | "all" | null>(null);
+  const kind: RentalKind | "all" = picked ?? (kinds.includes("scooter") ? "scooter" : kinds[0] ?? "all");
   const [active, setActive] = useState<string | null>(null);
   if (!getAround?.picks.length) {
     return state === "loading" ? (

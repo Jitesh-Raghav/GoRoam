@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { enrichPlaces, fakeLogistics, generateLogistics, withLiveFares, type LogisticsContext } from '@/lib/logistics';
+import { enrichPlaces, fakeLogistics, generateLogistics, tripEnds, withLiveFares, type LogisticsContext } from '@/lib/logistics';
 import { ownedItinerary } from '@/lib/owned-trip';
 import { mutateTrip } from '@/lib/trip-store';
 import type { GetAround, GetThere, ItineraryData } from '@/lib/trip';
@@ -14,13 +14,15 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPE
 const fake = process.env.NODE_ENV !== 'production' && process.env.GOROAM_FAKE_AI === '1';
 const inFlight = new Map<string, Promise<{ getThere?: GetThere; getAround?: GetAround }>>();
 
-export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const owned = await ownedItinerary(id);
   if (!owned.ok) return owned.response;
 
   const data = JSON.parse(owned.itinerary.itineraryData) as ItineraryData;
-  if (data.getThere || data.getAround) return NextResponse.json({ success: true, getThere: data.getThere, getAround: data.getAround });
+  // ?refresh=1 asks again (say, after a trip planned before routes followed its cities).
+  const refresh = request.nextUrl.searchParams.get('refresh') === '1';
+  if (!refresh && (data.getThere || data.getAround)) return NextResponse.json({ success: true, getThere: data.getThere, getAround: data.getAround });
   if (!openai && !fake) return NextResponse.json({ success: false, error: 'Not configured.' }, { status: 503 });
 
   let job = inFlight.get(id);
@@ -33,6 +35,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       numberOfDays: it.numberOfDays,
       people: it.numberOfPeople,
       prefs: data.trip?.preferences,
+      ...tripEnds(data.summary?.destination || it.destination, data.trip?.legs),
     };
     job = (async () => {
       const made = fake || !openai ? fakeLogistics(ctx) : await generateLogistics(openai, ctx);
@@ -41,7 +44,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       const getAround = real?.getAround ?? made.getAround;
       await mutateTrip(id, (next) => {
         next.getThere = getThere;
-        next.getAround = getAround;
+        next.getAround = getAround && { ...getAround, inBudget: next.getAround?.inBudget ?? getAround.inBudget };
         if (real?.stays) next.stays = real.stays;
       });
       return { getThere, getAround };
