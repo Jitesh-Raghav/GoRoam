@@ -81,10 +81,10 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
 
         <div className="p-5 sm:p-8">
           <p className="text-stone">
-            You&apos;ve used your free itinerary. Pick a pack to keep planning. Your answers are saved, so you&apos;ll come straight back to this trip.
+            You&apos;ve used your free itinerary. Get a pass for unlimited trips. Your answers are saved, so you&apos;ll come straight back to this trip.
           </p>
 
-          <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
+          <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
             {PLANS.map((p) => (
               <button
                 key={p.id}
@@ -106,7 +106,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
                   {price(p).price}
                 </span>
                 <span className="mt-1.5 text-sm">
-                  {p.credits} trips <span className="opacity-60">· {price(p).approx ? "≈ " : ""}{price(p).each} each</span>
+                  Unlimited trips for {p.days} days <span className="opacity-60">· {price(p).approx ? "≈ " : ""}{price(p).each} a day</span>
                 </span>
                 {price(p).billed && <span className="mt-0.5 text-[11px] opacity-60">billed as {price(p).billed}</span>}
                 {checkout.pending === p.id ? (
@@ -125,7 +125,7 @@ export function OutOfCredits({ destination, days, onClose }: { destination: stri
           )}
 
           <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-stone">
-            {["Cards, UPI & more", "Credits never expire", "30-day money-back guarantee"].map((t) => (
+            {["Cards, UPI & more", "One-time, no auto-renew", "30-day money-back guarantee"].map((t) => (
               <li key={t} className="inline-flex items-center gap-1.5">
                 <Check className="size-3.5 text-brand" /> {t}
               </li>

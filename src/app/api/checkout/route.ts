@@ -6,7 +6,7 @@ import { dodo, paymentsConfigured, productIdFor } from '@/lib/dodo';
 import { currencyFor } from '@/lib/currency';
 import { PLANS, fixedPrice, type PlanId } from '@/lib/plans';
 
-// Starts a Dodo Payments checkout for one credit pack and returns its URL.
+// Starts a Dodo Payments checkout for one pass and returns its URL.
 // Credits are added later by the webhook, never by this route or the redirect.
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const plan = PLANS.find((p) => p.id === body?.planId);
     if (!plan) {
-      return NextResponse.json({ success: false, error: 'Unknown credit pack' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Unknown pass' }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({

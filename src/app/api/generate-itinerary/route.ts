@@ -8,7 +8,7 @@ import { enrichTrip, finishTrip, generateFirstLook } from '@/lib/generate';
 
 // The remaining days are written after the response; give them room.
 export const maxDuration = 60;
-import { FREE_CREDITS } from '@/lib/plans';
+import { FAIR_USE_PER_DAY, FREE_CREDITS, PLANS, passActive } from '@/lib/plans';
 import { photosForItinerary } from '@/lib/place-photos';
 
 // Rate limiting store (in production, use Redis)
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     // Check if user exists and has enough credits
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { id: true, credits: true }
+      select: { id: true, credits: true, passUntil: true, passPlan: true }
     });
 
     if (!user) {
@@ -123,26 +123,46 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
     }
 
     const userCredits = user.credits ?? FREE_CREDITS; // Only when null/undefined, not when 0
-    if (userCredits < 1) {
+    // A running Week or Year Pass: no credit is spent, within fair use.
+    const onPass = passActive(user);
+    if (onPass) {
+      const plan = PLANS.find((p) => p.id === user.passPlan) ?? PLANS[PLANS.length - 1];
+      const since = (days: number) => new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+      const [inPass, today] = await Promise.all([
+        prisma.itinerary.count({ where: { userId: user.id, createdAt: { gte: since(plan.days) } } }),
+        prisma.itinerary.count({ where: { userId: user.id, createdAt: { gte: since(1) } } }),
+      ]);
+      if (inPass >= plan.fairUse || today >= FAIR_USE_PER_DAY) {
+        return NextResponse.json({
+          success: false,
+          error: today >= FAIR_USE_PER_DAY
+            ? `That's ${FAIR_USE_PER_DAY} trips today, the daily fair-use limit. Plan more tomorrow.`
+            : `You've planned ${inPass} trips on your ${plan.name}, its fair-use limit. Write to us if you need more.`,
+        }, { status: 429 });
+      }
+    }
+    if (!onPass && userCredits < 1) {
       return NextResponse.json({
         success: false,
         error: 'Insufficient credits. Please purchase more credits to generate an itinerary.'
       }, { status: 402 });
     }
 
-    // Take the credit up front (atomically, so parallel requests can't overspend);
-    // it's handed back below if generation fails.
-    const charged = await prisma.user.updateMany({
-      where: { id: user.id, credits: { gte: 1 } },
-      data: { credits: { decrement: 1 } }
-    });
-    if (charged.count === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'Insufficient credits. Please purchase more credits to generate an itinerary.'
-      }, { status: 402 });
+    if (!onPass) {
+      // Take the credit up front (atomically, so parallel requests can't overspend);
+      // it's handed back below if generation fails.
+      const charged = await prisma.user.updateMany({
+        where: { id: user.id, credits: { gte: 1 } },
+        data: { credits: { decrement: 1 } }
+      });
+      if (charged.count === 0) {
+        return NextResponse.json({
+          success: false,
+          error: 'Insufficient credits. Please purchase more credits to generate an itinerary.'
+        }, { status: 402 });
+      }
+      chargedUserId = user.id;
     }
-    chargedUserId = user.id;
 
     // The first look (day 1, the outline, stays and how to get there) comes back fast;
     // the other days are written after the response, and the trip page fills them in.
@@ -183,7 +203,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<Itinerary
         itineraryId: savedItinerary.id,
         itinerary: itineraryData.itinerary,
         summary: itineraryData.summary,
-        creditsRemaining: Math.max(userCredits - 1, 0)
+        creditsRemaining: onPass ? userCredits : Math.max(userCredits - 1, 0),
+        pass: onPass
       }
     });
 

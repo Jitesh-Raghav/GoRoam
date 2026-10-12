@@ -3,7 +3,7 @@ import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 
 export const metadata: Metadata = {
   title: "Refund Policy",
-  description: "GoRoam's 30-day money-back guarantee on credit packs.",
+  description: "GoRoam's 30-day money-back guarantee on every pass.",
 };
 
 const UPDATED = "9 October 2026";
@@ -13,7 +13,7 @@ export default function RefundsPage() {
     <LegalLayout eyebrow="Legal" title="Refund policy." updated={UPDATED}>
       <LegalSection title="The short version">
         <p>
-          Every credit pack is covered by a <strong>30-day money-back guarantee</strong>. If a pack isn&apos;t working out for you, email us
+          Every Week and Year Pass is covered by a <strong>30-day money-back guarantee</strong>. If it isn&apos;t working out for you, email us
           within 30 days of buying it and we&apos;ll refund it in full.
         </p>
       </LegalSection>

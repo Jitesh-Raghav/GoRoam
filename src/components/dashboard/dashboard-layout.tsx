@@ -26,7 +26,17 @@ interface CreditContextType {
   /** False until the balance has been fetched, so 0 isn't mistaken for "out of credits". */
   creditsLoaded: boolean;
   refreshCredits: () => Promise<void>;
+  /** A running Week or Year Pass (trips don't use credits while it lasts). */
+  pass: ActivePass | null;
 }
+
+export interface ActivePass {
+  plan: string | null;
+  /** ISO date it ends. */
+  until: string;
+}
+
+const passEnds = (p: ActivePass) => new Date(p.until).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 const CreditContext = createContext<CreditContextType | null>(null);
 
@@ -49,11 +59,11 @@ const NAV = [
   { icon: MapIcon, label: "My itineraries", href: "/dashboard/itineraries" },
   { icon: Luggage, label: "Trip gallery", href: "/dashboard/gallery" },
   { icon: Plane, label: "Book travel", href: "/dashboard/book" },
-  { icon: CreditCard, label: "Credits", href: "/dashboard/credits" },
+  { icon: CreditCard, label: "Plan & billing", href: "/dashboard/credits" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
-function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onNavigate?: () => void; onClose?: () => void }) {
+function SidebarContent({ credits, pass, onNavigate, onClose }: { credits: number; pass: ActivePass | null; onNavigate?: () => void; onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const warm = (href: string) => {
@@ -136,11 +146,21 @@ function SidebarContent({ credits, onNavigate, onClose }: { credits: number; onN
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
           <div className="relative">
-            <p className="eyebrow text-[0.62rem] text-paper/60">Credits left</p>
-            <p className="display mt-2 text-4xl leading-none">{credits}</p>
-            <p className="mt-2 text-xs text-paper/60">1 credit = 1 itinerary</p>
+            {pass ? (
+              <>
+                <p className="eyebrow text-[0.62rem] text-paper/60">{pass.plan === "week" ? "Week Pass" : "Year Pass"}</p>
+                <p className="display mt-2 text-3xl leading-none">Unlimited</p>
+                <p className="mt-2 text-xs text-paper/60">Trips until {passEnds(pass)}</p>
+              </>
+            ) : (
+              <>
+                <p className="eyebrow text-[0.62rem] text-paper/60">Trips left</p>
+                <p className="display mt-2 text-4xl leading-none">{credits}</p>
+                <p className="mt-2 text-xs text-paper/60">Go unlimited with a pass</p>
+              </>
+            )}
             <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs ring-1 ring-inset ring-paper/15 backdrop-blur transition-colors group-hover:bg-paper group-hover:text-ink">
-              <Plus className="size-3.5" /> Top up
+              <Plus className="size-3.5" /> {pass ? "Extend" : "Get a pass"}
             </span>
           </div>
         </Link>
@@ -189,6 +209,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [credits, setCredits] = useState(0); // Start with 0, will be fetched from API
   const [creditsLoaded, setCreditsLoaded] = useState(false);
+  const [pass, setPass] = useState<ActivePass | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -201,6 +222,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         const data = await response.json();
         if (data.success) {
           setCredits(data.credits);
+          setPass(data.pass ?? null);
           setCreditsLoaded(true);
         }
       } catch (error) {
@@ -256,12 +278,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <CreditContext.Provider value={{ credits, creditsLoaded, refreshCredits: fetchCredits }}>
+    <CreditContext.Provider value={{ credits, creditsLoaded, refreshCredits: fetchCredits, pass }}>
       <NamePrompt />
       <div className="min-h-svh bg-paper lg:flex">
         {/* Desktop sidebar */}
         <aside className="no-print sticky top-0 hidden h-svh w-72 shrink-0 border-r border-line bg-paper-2/50 lg:block">
-          <SidebarContent credits={credits} />
+          <SidebarContent credits={credits} pass={pass} />
         </aside>
 
         {/* Mobile top bar */}
@@ -269,9 +291,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex h-16 items-center justify-between gap-3 px-3 min-[400px]:px-4">
             <Logo />
             <div className="flex shrink-0 items-center gap-2">
-              <Link href="/dashboard/credits" aria-label={`${credits} credits`} className="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.06] px-3 py-1.5 text-sm text-ink">
+              <Link href="/dashboard/credits" aria-label={pass ? "Pass active" : `${credits} trips left`} className="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.06] px-3 py-1.5 text-sm text-ink">
                 <CreditCard className="size-3.5 text-brand" />
-                {credits}
+                {pass ? "Pass" : credits}
               </Link>
               <button
                 type="button"
@@ -307,7 +329,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 aria-label="Menu"
                 className="fixed left-0 top-0 z-50 h-[100dvh] w-full bg-paper pt-[env(safe-area-inset-top)] shadow-2xl min-[400px]:w-[86vw] min-[400px]:max-w-sm lg:hidden"
               >
-                <SidebarContent credits={credits} onNavigate={() => setSidebarOpen(false)} onClose={() => setSidebarOpen(false)} />
+                <SidebarContent credits={credits} pass={pass} onNavigate={() => setSidebarOpen(false)} onClose={() => setSidebarOpen(false)} />
               </motion.aside>
             </>
           )}

@@ -1,19 +1,28 @@
 /**
- * Credit packs. The landing page, the dashboard and the FAQ all read from here,
- * so credits and prices can never drift apart again.
+ * The Week and Year Passes. The landing page, the dashboard and the FAQ all read
+ * from here, so prices never drift apart. Credits remain only for the free first
+ * trip and for packs bought before passes existed.
  */
-export type PlanId = "starter" | "explorer" | "adventurer";
+export type PlanId = "week" | "year";
 
 export interface Plan {
   id: PlanId;
   name: string;
-  credits: number;
-  /** One-time price in USD. */
+  /** How long the pass lasts once bought. */
+  days: number;
+  /** One-time price in USD (no auto-renew). */
   price: number;
+  /** "week" / "year", for "$3.99 / week". */
+  period: string;
   tagline: string;
   features: string[];
+  /** Fair use: trips a pass covers over its whole length (stops abuse, never a real traveller). */
+  fairUse: number;
   popular?: boolean;
 }
+
+/** Trips any pass may start in one day. */
+export const FAIR_USE_PER_DAY = 10;
 
 /**
  * Credits every new account starts with (matches the `User.credits` default in Prisma).
@@ -24,56 +33,40 @@ export const FREE_CREDITS = 1;
 /** "1 free itinerary" / "3 free itineraries". */
 export const freeTrips = (n = FREE_CREDITS) => `${n === 1 ? "1 free itinerary" : `${n} free itineraries`}`;
 
+const EVERYTHING = [
+  "Unlimited AI-planned trips (fair use)",
+  "Getting there: flights, trains & buses compared",
+  "Stays matched to your style, with a map",
+  "Scooter, bike & car rentals with day rates",
+  "Local guide: phrases with audio, food, culture & events",
+  "AI concierge, swaps, rain plans & optimised routes",
+  "Live weather, money converter & offline maps",
+  "Each day's plan on WhatsApp for your whole group",
+  "Budget breakdown, trip wallet & bookings vault",
+  "PDF booklet, email, calendar & shareable links",
+];
+
 export const PLANS: Plan[] = [
   {
-    id: "starter",
-    name: "Starter",
-    credits: 10,
-    price: 9.99,
-    tagline: "For the next getaway or two",
-    features: [
-      "10 AI-planned itineraries",
-      "Local guide: phrases with audio, food, culture & events",
-      "AI concierge for every trip",
-      "Live weather, money converter & offline maps",
-      "Edit any day freely, rain plans & optimised routes",
-      "Swap any stop with AI, split costs in a trip wallet",
-      "Bookings vault, jet-lag plan, and trips that work offline",
-      "Flight, stay & adventure booking links",
-      "PDF, email & calendar export",
-    ],
+    id: "week",
+    name: "Week Pass",
+    days: 7,
+    price: 3.99,
+    period: "week",
+    tagline: "Plan this trip, and the one after it",
+    features: EVERYTHING,
+    fairUse: 10,
   },
   {
-    id: "explorer",
-    name: "Explorer",
-    credits: 30,
-    price: 24.99,
-    tagline: "For people who are always planning the next one",
-    features: [
-      "30 AI-planned itineraries",
-      "Everything in Starter",
-      "Each day's plan on WhatsApp every morning, for your whole group",
-      "Adventure & sports packages for every trip",
-      "Friends vote on your plan from a shared link",
-      "Shareable trip links",
-      "Packing lists & pre-trip checklists",
-      "Priority support",
-    ],
+    id: "year",
+    name: "Year Pass",
+    days: 365,
+    price: 19.99,
+    period: "year",
+    tagline: "Every trip you take this year",
+    features: ["Everything in the Week Pass, for 365 days", ...EVERYTHING.slice(1), "Priority support"],
+    fairUse: 40,
     popular: true,
-  },
-  {
-    id: "adventurer",
-    name: "Adventurer",
-    credits: 90,
-    price: 69.99,
-    tagline: "For globetrotters, groups and travel pros",
-    features: [
-      "90 AI-planned itineraries",
-      "Everything in Explorer",
-      "Best price per itinerary",
-      "Plan for friends, family & clients",
-      "24/7 priority support",
-    ],
   },
 ];
 
@@ -81,7 +74,13 @@ export const PLANS: Plan[] = [
 export const CHAT_LIMIT = 30;
 
 export const usd = (n: number) => `$${n.toFixed(2)}`;
-export const perTrip = (p: Plan) => usd(p.price / p.credits);
+/** "$0.05 a day". */
+export const perDay = (p: Plan) => usd(p.price / p.days);
+/** The cheapest pass, for "from $3.99". */
+export const cheapestPlan = () => PLANS.reduce((a, p) => (p.price < a.price ? p : a), PLANS[0]);
+
+/** Whether a pass is running now. */
+export const passActive = (u: { passUntil?: Date | string | null }) => !!u.passUntil && new Date(u.passUntil).getTime() > Date.now();
 
 /** Currencies a pack has its own fixed price in, besides USD. */
 export type PackCurrency = "INR" | "EUR" | "GBP";
@@ -94,9 +93,8 @@ export type PackCurrency = "INR" | "EUR" | "GBP";
  * "≈" figure next to the USD price they'll actually pay.
  */
 export const PRICES: Record<PlanId, Record<PackCurrency, number>> = {
-  starter: { INR: 799, EUR: 9.49, GBP: 7.99 },
-  explorer: { INR: 1999, EUR: 23.99, GBP: 19.99 },
-  adventurer: { INR: 5499, EUR: 64.99, GBP: 54.99 },
+  week: { INR: 149, EUR: 3.49, GBP: 2.99 },
+  year: { INR: 699, EUR: 17.99, GBP: 15.99 },
 };
 
 export const LOCAL_PRICES = process.env.NEXT_PUBLIC_LOCAL_PRICES === "1";

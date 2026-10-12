@@ -57,6 +57,9 @@ model User {
   // When they finished the first-sign-in "What should we call you?" step (null: not yet).
   onboardedAt   DateTime?
   subscription  String?   @default("free")
+  // A Week or Year Pass: unlimited trips (fair use) until this moment.
+  passUntil     DateTime?
+  passPlan      String?   // "week" or "year"
   
   accounts Account[]
   sessions Session[]

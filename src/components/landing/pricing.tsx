@@ -9,20 +9,13 @@ import { SectionHeading } from "./section-heading";
 
 /** Each pack's look: its card, its liquid colours (which flow on hover) and its accents. */
 const LOOK: Record<string, { tone: MeshTone; card: string; badge?: string; check: string; credits: string }> = {
-  starter: { tone: "azure", card: "bg-white text-ink shadow-card ring-1 ring-line hover:shadow-[0_50px_100px_-50px_rgba(31,111,235,0.45)]", check: "bg-brand-soft text-brand", credits: "text-brand" },
-  explorer: {
+  week: { tone: "azure", card: "bg-white text-ink shadow-card ring-1 ring-line hover:shadow-[0_50px_100px_-50px_rgba(31,111,235,0.45)]", check: "bg-brand-soft text-brand", credits: "text-brand" },
+  year: {
     tone: "night",
     card: "bg-ink text-paper shadow-float hover:shadow-[0_60px_120px_-50px_rgba(31,111,235,0.7)]",
     badge: "bg-sun-2 text-ink",
     check: "bg-paper/10 text-brand-2",
     credits: "text-brand-2",
-  },
-  adventurer: {
-    tone: "coral",
-    card: "bg-[linear-gradient(160deg,#ffffff_40%,#fff3f1)] text-ink shadow-card ring-1 ring-coral/20 hover:shadow-[0_50px_100px_-50px_rgba(255,107,91,0.5)]",
-    badge: "bg-coral text-white",
-    check: "bg-coral-soft text-[#d9483a]",
-    credits: "text-[#d9483a]",
   },
 };
 
@@ -33,8 +26,8 @@ export function Pricing() {
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
             label="Pricing"
-            title={[[{ text: "Simple pricing." }], [{ text: "Pay once, travel for " }, { text: "ages.", className: "accent" }]]}
-            description="No subscriptions and no hidden fees. Buy credits once and use them whenever you're ready. They never expire."
+            title={[[{ text: "One price." }], [{ text: "Unlimited " }, { text: "trips.", className: "accent" }]]}
+            description="Plan as many trips as you like for a week or a whole year. One-time payment, no subscription, no auto-renew."
           />
           <Reveal delay={0.2} className="lg:mb-2">
             <p className="flex items-center gap-2 text-sm text-stone">
@@ -43,16 +36,16 @@ export function Pricing() {
           </Reveal>
         </div>
 
-        <div className="relative mt-12 grid gap-4 lg:grid-cols-3 lg:items-stretch">
+        <div className="relative mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-2 md:items-stretch">
           {PLANS.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.08} className="h-full">
               <div
                 className={cn(
                   "mesh-host relative isolate flex h-full flex-col overflow-hidden rounded-panel p-8 transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1.5 sm:p-10",
-                  (LOOK[p.id] ?? LOOK.starter).card
+                  (LOOK[p.id] ?? LOOK.week).card
                 )}
               >
-                <Mesh tone={(LOOK[p.id] ?? LOOK.starter).tone} seed={i * 7} className="[mask-image:linear-gradient(to_bottom,#000_25%,transparent_70%)]" />
+                <Mesh tone={(LOOK[p.id] ?? LOOK.week).tone} seed={i * 7} className="[mask-image:linear-gradient(to_bottom,#000_25%,transparent_70%)]" />
                 {LOOK[p.id]?.badge && (
                   <span className={cn("absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium shadow-sm", LOOK[p.id].badge)}>
                     {p.popular ? (
@@ -66,10 +59,10 @@ export function Pricing() {
                 )}
                 <p className={cn("eyebrow", p.popular ? "text-paper/60" : "text-stone")}>{p.name}</p>
                 <div className="mt-6">
-                  <PackPrice plan={p} className="text-[3.25rem]" muted={p.popular ? "text-paper/60" : "text-stone"} />
+                  <PackPrice plan={p} className="text-[3.25rem]" muted={p.popular ? "text-paper/60" : "text-stone"} note={`one-time · ${p.period === "week" ? "7 days" : "1 year"}`} />
                 </div>
-                <p className={cn("mt-4 font-medium", (LOOK[p.id] ?? LOOK.starter).credits)}>
-                  {p.credits} credits<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={p} /> per itinerary</span>
+                <p className={cn("mt-4 font-medium", (LOOK[p.id] ?? LOOK.week).credits)}>
+                  Unlimited trips for {p.days} days<span className={cn("ml-2 font-normal", p.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={p} /> a day</span>
                 </p>
                 <p className={cn("mt-2", p.popular ? "text-paper/70" : "text-stone")}>{p.tagline}</p>
 
@@ -86,7 +79,7 @@ export function Pricing() {
                 <ul className="space-y-3.5">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-3">
-                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", (LOOK[p.id] ?? LOOK.starter).check)}>
+                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", (LOOK[p.id] ?? LOOK.week).check)}>
                         <Check className="size-3.5" />
                       </span>
                       <span className={p.popular ? "text-paper/85" : "text-ink/80"}>{f}</span>
