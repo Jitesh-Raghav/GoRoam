@@ -47,8 +47,11 @@ export default function TripsPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PillLink href="/dashboard">Plan my own trip free</PillLink>
-            <PillLink href="/itineraries" variant="outline">
-              Full itineraries
+            <PillLink href="/places-to-visit" variant="outline">
+              By month
+            </PillLink>
+            <PillLink href="/weekend-getaways" variant="outline">
+              From your city
             </PillLink>
           </div>
         </header>
