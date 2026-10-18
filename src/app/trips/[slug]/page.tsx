@@ -13,6 +13,7 @@ import { PACKAGES } from "@/lib/packages";
 import { plannerHref } from "@/lib/prompt-parse";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { TRIP_IDEAS, inr, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
+import { daysFor } from "@/lib/trip-days";
 import { extraFor } from "@/lib/trip-ideas-extra";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +76,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
   if (!t) notFound();
   const plan = plannerHref({ destination: t.destination, days: t.days, interests: [], diet: [], notes: "" });
   const extra = extraFor(t.slug);
+  const days = daysFor(t.slug);
   const faqs = [
     ...tripFaqs(t),
     ...(extra
@@ -106,7 +108,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     itinerary: {
       "@type": "ItemList",
       numberOfItems: t.plan.length,
-      itemListElement: t.plan.map((d, i) => ({ "@type": "ListItem", position: i + 1, name: `Day ${i + 1}`, description: d })),
+      itemListElement: t.plan.map((d, i) => ({ "@type": "ListItem", position: i + 1, name: days?.[i] ? `Day ${i + 1}: ${days[i][0]}` : `Day ${i + 1}`, description: days?.[i] ? days[i].slice(1, 4).join(" ") : d })),
     },
     subjectOf: t.highlights.map(([name, note]) => ({ "@type": "TouristAttraction", name, description: note })),
   };
@@ -190,14 +192,46 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             </Section>
 
             <Section id="plan" eyebrow="Day by day" heading={`${t.name} itinerary for ${t.days} days`}>
-              <ol className="relative space-y-3 before:absolute before:bottom-6 before:left-[1.35rem] before:top-6 before:w-px before:bg-line">
-                {t.plan.map((d, i) => (
-                  <li key={d} className="relative flex gap-4 rounded-card bg-white p-4 ring-1 ring-line sm:p-5">
-                    <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-ink font-mono text-xs text-paper">D{i + 1}</span>
-                    <p className="self-center leading-relaxed text-ink/80">{d}</p>
-                  </li>
-                ))}
-              </ol>
+              {days ? (
+                <ol className="space-y-4">
+                  {days.map(([title, morning, afternoon, evening, tip], i) => (
+                    <li key={title} className="overflow-hidden rounded-card bg-white ring-1 ring-line">
+                      <div className="flex items-center gap-4 border-b border-line bg-paper-2/40 px-5 py-4 sm:px-6">
+                        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-ink font-mono text-xs text-paper">D{i + 1}</span>
+                        <h3 className="display text-[1.2rem] leading-tight text-ink">
+                          Day {i + 1}: {title}
+                        </h3>
+                      </div>
+                      <dl className="divide-y divide-line">
+                        {[
+                          ["Morning", morning],
+                          ["Afternoon", afternoon],
+                          ["Evening", evening],
+                        ].map(([k, v]) => (
+                          <div key={k} className="grid gap-1 px-5 py-3.5 sm:grid-cols-[7rem_1fr] sm:gap-4 sm:px-6">
+                            <dt className="eyebrow pt-0.5 text-[0.6rem] text-brand">{k}</dt>
+                            <dd className="leading-relaxed text-ink/80">{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      {tip && (
+                        <p className="flex gap-2.5 bg-sun-soft/50 px-5 py-3 text-sm leading-relaxed text-ink/85 sm:px-6">
+                          <Lightbulb className="mt-0.5 size-4 shrink-0 text-sun" /> {tip}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <ol className="space-y-3">
+                  {t.plan.map((d, i) => (
+                    <li key={d} className="flex gap-4 rounded-card bg-white p-4 ring-1 ring-line sm:p-5">
+                      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-ink font-mono text-xs text-paper">D{i + 1}</span>
+                      <p className="self-center leading-relaxed text-ink/80">{d}</p>
+                    </li>
+                  ))}
+                </ol>
+              )}
               <Link
                 href={plan}
                 className="group mt-4 flex items-center justify-between gap-4 rounded-card bg-brand-soft/60 p-5 text-ink ring-1 ring-brand/15 transition-colors hover:bg-brand-soft"
