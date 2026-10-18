@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { PACKAGES } from "@/lib/packages";
 import { SITE_URL } from "@/lib/seo";
+import { TRIP_IDEAS } from "@/lib/trip-ideas";
 import { USE_CASES } from "@/lib/use-cases";
 
 // Content last changed on this date; bump it when guides or itineraries are edited.
-const UPDATED = new Date("2026-10-11");
+const UPDATED = new Date("2026-10-18");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const page = (path: string, priority: number, changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] = "monthly") => ({
@@ -18,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/", 1, "weekly"),
     page("/plan", 0.9, "weekly"),
     ...USE_CASES.map((u) => page(`/plan/${u.slug}`, 0.9)),
+    page("/trips", 0.9, "weekly"),
+    ...TRIP_IDEAS.map((t) => page(`/trips/${t.slug}`, 0.8)),
     page("/itineraries", 0.9, "weekly"),
     page("/destinations", 0.9, "weekly"),
     ...DESTINATION_GUIDES.map((d) => page(`/destinations/${d.slug}`, 0.8)),

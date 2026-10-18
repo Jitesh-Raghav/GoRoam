@@ -22,6 +22,7 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "Plan a trip", href: "/dashboard" },
+      { label: "Trending trips", href: "/trips" },
       { label: "Trip gallery", href: "/itineraries" },
       { label: "How it works", href: "/#how" },
       { label: "Pricing", href: "/#pricing" },
@@ -45,9 +46,10 @@ const COLUMNS = [
     links: [
       { label: "Goa", href: "/destinations/goa" },
       { label: "Jaipur", href: "/destinations/jaipur" },
-      { label: "Udaipur", href: "/destinations/udaipur" },
       { label: "Kerala", href: "/destinations/kerala" },
-      { label: "Ladakh", href: "/destinations/ladakh" },
+      { label: "Andaman", href: "/trips/andaman" },
+      { label: "Jaisalmer", href: "/trips/jaisalmer" },
+      { label: "Sri Lanka", href: "/trips/sri-lanka" },
       { label: "All guides", href: "/destinations" },
     ],
   },

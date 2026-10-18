@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChapterNav } from "@/components/itinerary/chapter-nav";
 import { GuideChip, GuideCover, GuidePhoto, SightsMap } from "@/components/seo/guide-media";
+import { CreateYoursBar } from "@/components/seo/create-yours";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { ArrowRight, ArrowUpRight, Bus, Car, Check, Lightbulb, MapPin, Navigation, Plane, TrainFront, type LucideIcon } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
@@ -338,6 +339,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
           </aside>
         </div>
       </article>
+      <CreateYoursBar href={plan} place={g.name} source="guide" />
     </PublicShell>
   );
 }

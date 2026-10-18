@@ -11,12 +11,16 @@ import { PanoramaHero } from "@/components/landing/panorama-hero";
 import { ProductFilm } from "@/components/landing/product-film";
 import { Wonders } from "@/components/landing/wonders";
 import { TripGallery } from "@/components/landing/trip-gallery";
+import { TrendingTrips } from "@/components/landing/trending-trips";
 import { GuideRails, SectionRule } from "@/components/landing/guides";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { FAQS } from "@/lib/faq-data";
 import { JsonLd, faqPage, organization, siteNavigation, softwareApp, website } from "@/lib/seo";
+
+// The trending row follows the month, so rebuild the page daily.
+export const revalidate = 86400;
 
 export default async function Home() {
   return (
@@ -38,6 +42,8 @@ export default async function Home() {
           <TripTypes />
           <GlobeSection />
           <TripGallery />
+          <SectionRule />
+          <TrendingTrips />
           <SectionRule />
           <Features />
           <BookingSection />

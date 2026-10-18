@@ -8,6 +8,7 @@
     "vercel-build": "prisma generate && prisma db push && next build",
     "start": "next start",
     "lint": "next lint",
+    "indexnow": "node scripts/indexnow.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

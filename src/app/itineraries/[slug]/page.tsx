@@ -3,6 +3,7 @@ import { Price } from "@/components/site/price";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TripView } from "@/components/itinerary/trip-view";
+import { CreateYoursBar } from "@/components/seo/create-yours";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { ArrowRight } from "@/components/site/icons";
 import { guideBySlug } from "@/lib/destination-guides";
@@ -189,6 +190,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
           </aside>
         </div>
       </section>
+      <CreateYoursBar href={plan} place={pkg.name} days={pkg.days} source="itinerary" />
     </PublicShell>
   );
 }

@@ -16,9 +16,9 @@ import { useIntro } from "./use-intro";
 
 const LINKS = [
   { href: "/plan", label: "Plan" },
+  { href: "/trips", label: "Trending" },
   { href: "/itineraries", label: "Trips" },
   { href: "/destinations", label: "Guides" },
-  { href: "/#how", label: "How it works" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/about", label: "About" },
 ];
