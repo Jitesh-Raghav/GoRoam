@@ -4,6 +4,7 @@ import { GuideCover } from "@/components/seo/guide-media";
 import { PublicShell } from "@/components/seo/public-shell";
 import { ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
+import { TRIP_IDEAS } from "@/lib/trip-ideas";
 import { cn } from "@/lib/utils";
 import { JsonLd, absolute, breadcrumbs } from "@/lib/seo";
 
@@ -40,6 +41,9 @@ export default function DestinationsPage() {
           <p className="mt-6 text-lg leading-relaxed text-stone">
             Honest, practical guides to India&apos;s favourite trips: the months that work, how to get there, which area to stay in, the sights worth your time and what a day really costs.
           </p>
+          <Link href="/trips" className="mt-5 inline-flex items-center gap-1.5 text-ink underline decoration-line underline-offset-4 hover:text-brand">
+            Not sure where to go? See {TRIP_IDEAS.length} trips trending this season <ArrowUpRight className="size-4" />
+          </Link>
         </header>
         {/* Photo cards; the first guide leads, twice as wide. */}
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
