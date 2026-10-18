@@ -5,7 +5,7 @@ import { CreateYoursBar } from "@/components/seo/create-yours";
 import { GuideCover, GuidePhoto } from "@/components/seo/guide-media";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { TripCard } from "@/components/seo/trip-card";
-import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, Navigation, Stamp } from "@/components/site/icons";
+import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, MapPin, Navigation, Stamp } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
 import { stayPartners } from "@/lib/booking";
 import { guideBySlug } from "@/lib/destination-guides";
@@ -13,7 +13,25 @@ import { PACKAGES } from "@/lib/packages";
 import { plannerHref } from "@/lib/prompt-parse";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { TRIP_IDEAS, inr, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
+import { extraFor } from "@/lib/trip-ideas-extra";
 import { cn } from "@/lib/utils";
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** What to pack, from the kind of trip it is. */
+function packing(t: TripIdea) {
+  const list = new Set<string>(["Power bank and charging cables", t.country === "India" ? "ID (Aadhaar or licence)" : "Passport and visa printouts"]);
+  const add = (...x: string[]) => x.forEach((i) => list.add(i));
+  if (t.tags.includes("snow")) add("Thermals, gloves and a woollen cap", "Waterproof boots");
+  if (t.tags.includes("hills")) add("Warm layers for the evenings", "Comfortable walking shoes");
+  if (t.tags.includes("beach")) add("Sunscreen and sunglasses", "Swimwear and flip-flops");
+  if (t.tags.includes("desert")) add("A scarf for sun and sand", "A warm layer for desert nights");
+  if (t.tags.includes("wildlife")) add("Binoculars", "Muted, earth-coloured clothes");
+  if (t.tags.includes("heritage") || t.tags.includes("festival")) add("Clothes that cover shoulders and knees for temples");
+  if (t.tags.includes("adventure")) add("A small first-aid kit", "A reusable water bottle");
+  if (t.tags.includes("abroad")) add("A forex card or some local cash", "Travel insurance");
+  return [...list].slice(0, 8);
+}
 
 export const dynamicParams = false;
 export const generateStaticParams = () => TRIP_IDEAS.map((t) => ({ slug: t.slug }));
@@ -56,7 +74,17 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
   const t = tripBySlug((await params).slug);
   if (!t) notFound();
   const plan = plannerHref({ destination: t.destination, days: t.days, interests: [], diet: [], notes: "" });
-  const faqs = tripFaqs(t);
+  const extra = extraFor(t.slug);
+  const faqs = [
+    ...tripFaqs(t),
+    ...(extra
+      ? [
+          { q: `What is the weather like in ${t.name}?`, a: extra.weather },
+          { q: `What food should I try in ${t.name}?`, a: extra.food.map(([d, n]) => `${d}: ${n}`).join(" ") },
+          { q: `How do I get around ${t.name}?`, a: extra.around },
+        ]
+      : []),
+  ];
   const related = relatedTrips(t, 3);
   const guide = guideBySlug(t.slug);
   const packages = PACKAGES.filter((p) => p.destination.toLowerCase().includes(t.name.toLowerCase().split(" ")[0])).slice(0, 2);
@@ -121,6 +149,19 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             <div className="max-w-3xl">
               <p className="eyebrow text-brand">Why go now</p>
               <p className="display mt-4 text-[clamp(1.35rem,2.4vw,1.75rem)] leading-snug text-ink">{t.why}</p>
+              {extra && <p className="mt-5 text-[1.0625rem] leading-relaxed text-stone">{extra.about}</p>}
+              <ol aria-label="Best months" className="mt-6 grid grid-cols-6 gap-1.5 sm:grid-cols-12">
+                {MONTHS.map((m, i) => {
+                  const best = t.months.includes(i + 1);
+                  return (
+                    <li key={m} className={cn("rounded-lg py-2 text-center font-mono text-xs", best ? "bg-brand text-white" : "bg-paper-2/70 text-stone-2")}>
+                      {m}
+                      <span className="sr-only">{best ? ": a good time to go" : ""}</span>
+                    </li>
+                  );
+                })}
+              </ol>
+              {extra && <p className="mt-3 text-sm text-stone">{extra.weather}</p>}
               <div className="mt-8 flex flex-wrap gap-3">
                 <PillLink href={plan}>Create my {city} trip</PillLink>
                 {guide && (
@@ -230,6 +271,24 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               </ul>
             </Section>
 
+            {extra && (
+              <Section id="food" eyebrow="What to eat" heading={`Food to try in ${t.name}`}>
+                <ul className="grid gap-4 sm:grid-cols-3">
+                  {extra.food.map(([dish, note]) => (
+                    <li key={dish} className="group overflow-hidden rounded-card bg-white ring-1 ring-line">
+                      <div className="relative h-32 overflow-hidden">
+                        <GuidePhoto name={dish} city={t.destination} kind="dish" />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="display text-[1.1rem] leading-tight text-ink">{dish}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-ink/70">{note}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
+
             <Section id="reach" eyebrow="Getting there" heading={`How to reach ${t.name}`}>
               <dl className="divide-y divide-line overflow-hidden rounded-card bg-white ring-1 ring-line">
                 <div className="flex gap-4 p-5 sm:p-6">
@@ -241,6 +300,17 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                     <dd className="mt-1 leading-relaxed text-ink/70">{t.reach}</dd>
                   </div>
                 </div>
+                {extra && (
+                  <div className="flex gap-4 p-5 sm:p-6">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand">
+                      <MapPin className="size-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <dt className="font-medium text-ink">Getting around</dt>
+                      <dd className="mt-1 leading-relaxed text-ink/70">{extra.around}</dd>
+                    </div>
+                  </div>
+                )}
                 {t.visa && (
                   <div className="flex gap-4 p-5 sm:p-6">
                     <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand">
@@ -257,6 +327,19 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                 {t.tips.map((tip) => (
                   <li key={tip} className="flex gap-3 rounded-card bg-sun-soft/60 p-4 leading-relaxed text-ink/85">
                     <Lightbulb className="mt-0.5 size-4 shrink-0 text-sun" /> {tip}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+
+            <Section id="pack" eyebrow="Before you go" heading={`What to pack for ${t.name}`}>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {packing(t).map((x) => (
+                  <li key={x} className="flex items-center gap-3 rounded-card bg-white p-4 text-ink/80 ring-1 ring-line">
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand-soft text-brand">
+                      <Check className="size-3.5" />
+                    </span>
+                    {x}
                   </li>
                 ))}
               </ul>
