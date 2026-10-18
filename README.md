@@ -102,7 +102,7 @@ npm run dev
 
 ### Environment
 
-Besides `DATABASE_URL`, `NEXTAUTH_SECRET` (also signs share links), `NEXTAUTH_URL`, the Google OAuth keys and `OPENAI_API_KEY`, these optional affiliate IDs are appended to booking links when set:
+Besides `DATABASE_URL` and `DIRECT_URL` (see **Database schema**), `NEXTAUTH_SECRET` (also signs share links), `NEXTAUTH_URL`, the Google OAuth keys and `OPENAI_API_KEY`, these optional affiliate IDs are appended to booking links when set:
 
 - `NEXT_PUBLIC_BOOKING_AID` - Booking.com affiliate id
 - `NEXT_PUBLIC_GYG_PARTNER_ID` - GetYourGuide partner id
@@ -148,7 +148,14 @@ Until the API key and all three product ids are set, the buy buttons show "Onlin
 
 There's no migrations folder: the build script itself runs `prisma db push` (`"vercel-build"` in `package.json`), so every deploy syncs the live database to whatever is in `schema.prisma`. Editing that file is enough — you don't need to run anything by hand.
 
-The one exception is a change that would **drop or truncate a column with data in it** (e.g. deleting a field, changing its type). `db push` refuses those instead of applying them silently, so the build fails loudly with a "data loss" error rather than deploying and quietly deleting something. If that happens, resolve it locally (`DATABASE_URL="<prod-url>" npx prisma db push`, which shows the same warning and lets you decide) before pushing again.
+The one exception is a change that would **drop or truncate a column with data in it** (e.g. deleting a field, changing its type). `db push` refuses those instead of applying them silently, so the build fails loudly with a "data loss" error rather than deploying and quietly deleting something. If that happens, resolve it locally (`DIRECT_URL="<prod-session-url>" npx prisma db push`, which shows the same warning and lets you decide) before pushing again.
+
+**Two database URLs.** Vercel runs every function as its own short-lived instance, so the app connects through Supabase's pooler in **transaction mode**; session mode caps out at 15 clients and fails with `EMAXCONNSESSION` under load. Set both in Vercel (and in `.env` / `.env.local` locally):
+
+- `DATABASE_URL` - the **Transaction pooler** string (port **6543**) with `?pgbouncer=true&connection_limit=1`. Used by the app at runtime.
+- `DIRECT_URL` - the **Session pooler** string (port **5432**). Used only by `prisma db push` during the build, which can't run through the transaction pooler.
+
+Both are under Supabase → Project Settings → Database → Connection string. If `DIRECT_URL` is missing, the build fails at `prisma db push`.
 
 ## 🔎 SEO, Search Console, email and guest trips
 
