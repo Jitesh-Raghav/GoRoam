@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GuideCover } from "@/components/seo/guide-media";
 import { ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
-import { inr, monthsLabel, type TripIdea } from "@/lib/trip-ideas";
+import { price, monthsLabel, type TripIdea } from "@/lib/trip-ideas";
 import { cn } from "@/lib/utils";
 
 /** A trip idea as a photo card: place over the photo, best months and price below. */
@@ -26,7 +26,7 @@ export function TripCard({ t, big = false, className }: { t: TripIdea; big?: boo
             <CalendarDays className="size-3.5 text-brand" /> {monthsLabel(t.months)}
           </span>
           <span>
-            {t.days} days · from <span className="text-ink">{inr(t.budget[0])}</span>/day
+            {t.days} days · from <span className="text-ink">{price(t, t.budget[0])}</span>/day
           </span>
         </div>
       </div>

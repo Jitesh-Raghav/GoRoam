@@ -1,3 +1,5 @@
+import { WORLD_EXTRA } from "@/lib/trip-world";
+
 /**
  * The longer half of each /trips page: an overview, what to eat, how to get
  * around and the weather in season. Kept apart from trip-ideas.ts so the cards
@@ -377,4 +379,4 @@ export const TRIP_EXTRA: Record<string, TripExtra> = {
   },
 };
 
-export const extraFor = (slug: string) => TRIP_EXTRA[slug];
+export const extraFor = (slug: string): TripExtra | undefined => TRIP_EXTRA[slug] ?? WORLD_EXTRA[slug];

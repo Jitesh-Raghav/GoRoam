@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GuidePhoto } from "@/components/seo/guide-media";
 import { ArrowRight, CalendarDays, Navigation } from "@/components/site/icons";
-import { inr, monthsLabel, type TripIdea } from "@/lib/trip-ideas";
+import { price, monthsLabel, type TripIdea } from "@/lib/trip-ideas";
 
 /** A numbered list of trips, each with a photo, why it fits and a line on how to get there. */
 export function HubList({ items }: { items: { trip: TripIdea; how?: string }[] }) {
@@ -29,7 +29,7 @@ export function HubList({ items }: { items: { trip: TripIdea; how?: string }[] }
                   <CalendarDays className="size-4 text-brand" /> {monthsLabel(t.months)}
                 </span>
                 <span>
-                  {t.days} days · from {inr(t.budget[0])}/day
+                  {t.days} days · from {price(t, t.budget[0])}/day
                 </span>
               </div>
               <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand">

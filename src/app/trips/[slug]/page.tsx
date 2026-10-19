@@ -12,7 +12,7 @@ import { guideBySlug } from "@/lib/destination-guides";
 import { PACKAGES } from "@/lib/packages";
 import { plannerHref } from "@/lib/prompt-parse";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
-import { TRIP_IDEAS, inr, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
+import { TRIP_IDEAS, price, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
 import { daysFor } from "@/lib/trip-days";
 import { extraFor } from "@/lib/trip-ideas-extra";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ export const generateStaticParams = () => TRIP_IDEAS.map((t) => ({ slug: t.slug 
 const YEAR = 2026;
 const title = (t: TripIdea) => `${t.name} Trip Plan ${YEAR}: ${t.days} Days, Budget & Best Hotels`;
 const blurb = (t: TripIdea) =>
-  `Plan ${t.days} days in ${t.name}: a day-by-day route, what it costs (from ${inr(t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
+  `Plan ${t.days} days in ${t.name}: a day-by-day route, what it costs (from ${price(t, t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const t = tripBySlug((await params).slug);
@@ -104,7 +104,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     description: t.tagline,
     url: absolute(`/trips/${t.slug}`),
     touristType: t.tags.includes("honeymoon") ? ["Couples", "Friends", "Families"] : ["Friends", "Families", "Solo travellers"],
-    offers: { "@type": "AggregateOffer", priceCurrency: "INR", lowPrice: t.budget[0] * t.days, highPrice: t.budget[2] * t.days, description: "Per person, excluding travel to the destination" },
+    offers: { "@type": "AggregateOffer", priceCurrency: t.currency ?? "INR", lowPrice: t.budget[0] * t.days, highPrice: t.budget[2] * t.days, description: "Per person, excluding travel to the destination" },
     itinerary: {
       "@type": "ItemList",
       numberOfItems: t.plan.length,
@@ -135,8 +135,8 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
           {[
             { k: "Best time", v: monthsLabel(t.months) },
             { k: "Ideal length", v: `${t.days} days` },
-            { k: "A day, mid-range", v: `${inr(t.budget[1])} per person` },
-            { k: "Trip for two", v: `about ${inr(tripTotal(t, 1))}` },
+            { k: "A day, mid-range", v: `${price(t, t.budget[1])} per person` },
+            { k: "Trip for two", v: `about ${price(t, tripTotal(t, 1))}` },
           ].map((f) => (
             <div key={f.k} className="min-w-0 bg-white px-5 py-4 sm:px-6">
               <dt className="eyebrow text-[0.6rem] text-stone">{f.k}</dt>
@@ -262,8 +262,8 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                         <td className="px-4 py-4 sm:px-6">
                           <span className={cn("rounded-full px-2.5 py-1 text-xs", TIER[l])}>{l}</span>
                         </td>
-                        <td className="px-4 py-4 text-ink sm:px-6">{inr(t.budget[i])}{i === 2 ? "+" : ""}</td>
-                        <td className="display px-4 py-4 text-right text-lg text-ink sm:px-6">{inr(tripTotal(t, i as 0 | 1 | 2))}</td>
+                        <td className="px-4 py-4 text-ink sm:px-6">{price(t, t.budget[i])}{i === 2 ? "+" : ""}</td>
+                        <td className="display px-4 py-4 text-right text-lg text-ink sm:px-6">{price(t, tripTotal(t, i as 0 | 1 | 2))}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -289,7 +289,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                         <p className="mt-2 flex-1 text-sm leading-relaxed text-ink/75">{x.note}</p>
                         <div className="mt-4 flex items-center justify-between gap-3">
                           <p className="text-sm text-ink">
-                            from <span className="display text-lg">{inr(x.from)}</span>
+                            from <span className="display text-lg">{price(t, x.from)}</span>
                             <span className="text-xs text-stone"> /night</span>
                           </p>
                           {book && (
@@ -426,7 +426,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               <p className="eyebrow flex items-center gap-2 text-stone">
                 <BedDouble className="size-4 text-brand" /> Stays from
               </p>
-              <p className="display mt-2 text-3xl text-ink">{inr(Math.min(...t.stays.map((x) => x.from)))}</p>
+              <p className="display mt-2 text-3xl text-ink">{price(t, Math.min(...t.stays.map((x) => x.from)))}</p>
               <p className="text-sm text-stone">a night for two</p>
             </div>
           </aside>

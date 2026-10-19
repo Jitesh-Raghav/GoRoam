@@ -7,7 +7,7 @@ import { TRIP_IDEAS } from "@/lib/trip-ideas";
 import { USE_CASES } from "@/lib/use-cases";
 
 // Content last changed on this date; bump it when guides or itineraries are edited.
-const UPDATED = new Date("2026-10-25");
+const UPDATED = new Date("2026-10-19");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const page = (path: string, priority: number, changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] = "monthly") => ({

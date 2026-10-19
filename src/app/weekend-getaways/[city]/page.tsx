@@ -7,7 +7,7 @@ import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { PillLink } from "@/components/site/pill";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { CITY_HUBS, cityHub, cityTrips } from "@/lib/trip-hubs";
-import { inr } from "@/lib/trip-ideas";
+import { price } from "@/lib/trip-ideas";
 
 export const dynamicParams = false;
 export const generateStaticParams = () => CITY_HUBS.map((c) => ({ city: c.slug }));
@@ -29,7 +29,7 @@ export default async function CityHubPage({ params }: { params: Promise<{ city: 
   const others = CITY_HUBS.filter((o) => o.slug !== c.slug);
   const faqs = [
     { q: `What are the best weekend getaways from ${c.city}?`, a: `${items.slice(0, 5).map((x) => x.trip.name).join(", ")} are the most popular short trips from ${c.city} right now.` },
-    { q: `What is the cheapest trip from ${c.city}?`, a: cheapest ? `${cheapest.trip.name}, from about ${inr(cheapest.trip.budget[0])} a day per person on a budget, plus travel (${cheapest.how}).` : "" },
+    { q: `What is the cheapest trip from ${c.city}?`, a: cheapest ? `${cheapest.trip.name}, from about ${price(cheapest.trip, cheapest.trip.budget[0])} a day per person on a budget, plus travel (${cheapest.how}).` : "" },
     { q: `How do I plan a trip from ${c.city}?`, a: `Pick a place below, then tell GoRoam your dates, budget and who's going; it plans every day with timings, costs, stays and how to get there from ${c.city}.` },
   ];
   const crumbs = [
