@@ -161,3 +161,7 @@ export const monthTrips = (month: number) => {
 };
 
 export const monthName = (m: number) => MONTH_NAMES[m - 1];
+
+/** The big cities a trip is a short hop from, with how to get there: the "X trip from Delhi" searches. */
+export const fromCities = (slug: string) =>
+  CITY_HUBS.flatMap((c) => c.picks.filter(([s]) => s === slug).map(([, how]) => ({ city: c.city, hub: c.slug, how })));
