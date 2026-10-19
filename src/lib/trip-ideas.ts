@@ -1,4 +1,5 @@
 import type { DestinationGuide } from "@/lib/destination-guides";
+import { WORLD_IDEAS } from "@/lib/trip-world";
 
 /**
  * Seasonal trip ideas for /trips: lighter than a full itinerary (a line per day,
@@ -43,12 +44,14 @@ export interface TripIdea {
   visa?: string;
   tips: string[];
   tags: TripTag[];
+  /** Prices are INR unless this says USD. */
+  currency?: "USD";
 }
 
 const s = (tier: TripStay["tier"], name: string, area: string, from: number, note: string): TripStay => ({ tier, name, area, from, note });
 const WINTER = [10, 11, 12, 1, 2, 3];
 
-export const TRIP_IDEAS: TripIdea[] = [
+const NEAR: TripIdea[] = [
   /* ------------------------------ Rajasthan & Gujarat ------------------------------ */
   {
     slug: "jaisalmer",
@@ -2038,6 +2041,9 @@ export const TRIP_IDEAS: TripIdea[] = [
   },
 ];
 
+/** India and nearby (priced in INR), then the rest of the world (USD). */
+export const TRIP_IDEAS: TripIdea[] = [...NEAR, ...WORLD_IDEAS];
+
 export const tripBySlug = (slug: string) => TRIP_IDEAS.find((t) => t.slug === slug);
 
 export const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -2073,6 +2079,9 @@ export function monthsLabel(months: number[]) {
 
 export const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
+/** A trip's money in its own currency: ₹ for India and nearby, $ for the rest of the world. */
+export const price = (t: TripIdea, n: number) => (t.currency === "USD" ? `$${Math.round(n).toLocaleString("en-US")}` : inr(n));
+
 /** The trip for two at a budget level: per-person day cost × days × 2. */
 export const tripTotal = (t: TripIdea, level: 0 | 1 | 2) => t.budget[level] * t.days * 2;
 
@@ -2093,11 +2102,11 @@ export function tripFaqs(t: TripIdea) {
   const [lo, mid, hi] = t.budget;
   const faqs = [
     { q: `How many days are enough for ${t.name}?`, a: `${t.days} ${t.days === 1 ? "day is" : "days are"} enough to see the highlights: ${t.highlights.slice(0, 3).map((h) => h[0]).join(", ")}. Add a day or two if you like a slower pace.` },
-    { q: `How much does a ${t.days}-day ${t.name} trip cost?`, a: `Roughly ${inr(lo)} a day per person on a budget, ${inr(mid)} mid-range and ${inr(hi)}+ for luxury, not counting travel to get there. For two people mid-range, that's about ${inr(tripTotal(t, 1))} for ${t.days} days.` },
+    { q: `How much does a ${t.days}-day ${t.name} trip cost?`, a: `Roughly ${price(t, lo)} a day per person on a budget, ${price(t, mid)} mid-range and ${price(t, hi)}+ for luxury, not counting travel to get there. For two people mid-range, that's about ${price(t, tripTotal(t, 1))} for ${t.days} days.` },
     { q: `What is the best time to visit ${t.name}?`, a: `${monthsLabel(t.months)}. ${t.why}` },
-    { q: `Where should I stay in ${t.name}?`, a: t.stays.map((x) => `${x.tier}: ${x.name} (${x.area}), from about ${inr(x.from)} a night.`).join(" ") },
+    { q: `Where should I stay in ${t.name}?`, a: t.stays.map((x) => `${x.tier}: ${x.name} (${x.area}), from about ${price(t, x.from)} a night.`).join(" ") },
     { q: `How do I reach ${t.name}?`, a: t.reach },
   ];
-  if (t.visa) faqs.push({ q: `Do Indians need a visa or permit for ${t.name}?`, a: t.visa });
+  if (t.visa) faqs.push({ q: `Do I need a visa or permit for ${t.name}?`, a: t.visa });
   return faqs;
 }

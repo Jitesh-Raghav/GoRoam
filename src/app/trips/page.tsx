@@ -10,8 +10,8 @@ import { MONTH_NAMES, TRIP_IDEAS, inSeason } from "@/lib/trip-ideas";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Trending Trips This Winter (2026): Where to Go, Budgets & Hotels",
-  description: `${TRIP_IDEAS.length} trips that are at their best right now, in India and abroad: Jaisalmer, Andaman, Meghalaya, Auli, Sri Lanka, Bhutan, Baku and more, each with a day plan, budget and places to stay.`,
+  title: "Trending Trips This Winter (2026): Where to Go in India & Around the World",
+  description: `${TRIP_IDEAS.length} trips that are at their best right now, in India and around the world: Jaisalmer, Andaman, Lapland, Lisbon, Cape Town, Maui, Sydney and more, each with a day plan, budget and places to stay.`,
   alternates: { canonical: "/trips" },
   openGraph: { title: "Trending trips this winter", description: "Where to go now, with day plans, budgets and hotels.", url: "/trips" },
 };
@@ -43,7 +43,7 @@ export default function TripsPage() {
             Where to go <span className="accent">right now.</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-stone">
-            {TRIP_IDEAS.length} trips at their best this season, in India and a short flight away. Each comes with a day-by-day plan, what it really costs and three places to stay. Like one? Make it yours in 30 seconds.
+            {TRIP_IDEAS.length} trips at their best this season, in India and around the world. Each comes with a day-by-day plan, what it really costs and three places to stay. Like one? Make it yours in 30 seconds.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PillLink href="/dashboard">Plan my own trip free</PillLink>

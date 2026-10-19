@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ month: st
   const { india, abroad } = monthTrips(m.month);
   const name = monthName(m.month);
   const title = `Best Places to Visit in ${name} 2026: ${india.length} in India + ${abroad.length} Abroad`;
-  const description = `Where to travel in ${name}: ${india.slice(0, 4).map((t) => t.name).join(", ")} and more in India, plus ${abroad.slice(0, 2).map((t) => t.name).join(" and ")} abroad, with weather, budgets and day plans.`;
+  const description = `Where to travel in ${name}: ${india.slice(0, 4).map((t) => t.name).join(", ")} and more in India, plus ${abroad.slice(0, 3).map((t) => t.name).join(", ")} and more around the world, with weather, budgets and day plans.`;
   return { title, description, alternates: { canonical: `/places-to-visit/${m.slug}` }, openGraph: { title, description, url: `/places-to-visit/${m.slug}` } };
 }
 
@@ -28,7 +28,7 @@ export default async function MonthHubPage({ params }: { params: Promise<{ month
   const { india, abroad } = monthTrips(m.month);
   const faqs = [
     { q: `Which is the best place to visit in India in ${name}?`, a: `Top picks for ${name} are ${india.slice(0, 5).map((t) => t.name).join(", ")}.` },
-    ...(abroad.length ? [{ q: `Where can I travel abroad from India in ${name}?`, a: `${abroad.slice(0, 5).map((t) => t.name).join(", ")} are all in season in ${name}.` }] : []),
+    ...(abroad.length ? [{ q: `Where can I travel abroad in ${name}?`, a: `${abroad.slice(0, 5).map((t) => t.name).join(", ")} are all in season in ${name}.` }] : []),
     { q: `Where can I see snow in ${name}?`, a: india.filter((t) => t.tags.includes("snow")).map((t) => t.name).join(", ") || `Snow is unlikely in most of India in ${name}.` },
   ];
   const crumbs = [
@@ -63,7 +63,7 @@ export default async function MonthHubPage({ params }: { params: Promise<{ month
         </section>
         {abroad.length > 0 && (
           <section className="mt-16 max-w-4xl">
-            <h2 className="display mb-6 text-[clamp(1.6rem,3vw,2.2rem)] text-ink">Abroad, easy from India ({abroad.length})</h2>
+            <h2 className="display mb-6 text-[clamp(1.6rem,3vw,2.2rem)] text-ink">Around the world ({abroad.length})</h2>
             <HubList items={abroad.map((trip) => ({ trip }))} />
           </section>
         )}

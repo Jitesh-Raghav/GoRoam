@@ -1,0 +1,35 @@
+import type { TripDay } from "@/lib/trip-days";
+
+/** Full day plans: Alsace, Bavaria, the Arctic and the Alps. */
+export const WORLD_DAYS_2: Record<string, TripDay[]> = {
+  strasbourg: [
+    ["Cathedral and the Christmas markets", "Start at Strasbourg Cathedral, a pink sandstone Gothic masterpiece whose spire was the tallest building in the world for over 200 years; climb the 332 steps to its viewing platform.", "Wander the Christkindelsmärik, France's oldest Christmas market (since 1570), spread across Place Broglie, Place de la Cathédrale and a dozen other squares.", "Dinner of choucroute garnie or flammekueche in a wood-panelled winstub, then a cup of white vin chaud under the lights.", "The cathedral's astronomical clock performs its parade of figures daily at 12:30."],
+    ["Petite France and the canals", "Walk Petite France at opening time, when the half-timbered tanners' houses and covered bridges are reflected in quiet canals.", "Take a 70-minute boat tour around the Grande Île, passing the European Parliament, then visit the Musée Alsacien for local traditions.", "Evening market wander on Place Kléber, where the giant Christmas tree stands, and a stop for bredele biscuits.", "Boats have covered decks, so they run even in rain or snow."],
+    ["Colmar day trip", "Take the 30-minute train to Colmar, a storybook town of colourful timbered houses that inspired Disney's Beauty and the Beast.", "Wander Little Venice's canals and the five small Christmas markets, then lunch on baeckeoffe stew.", "Return to Strasbourg and head home.", "Colmar's markets are smaller and cosier than Strasbourg's; weekdays are calmest."],
+  ],
+  munich: [
+    ["Old town", "See the Glockenspiel's dancing figures at Marienplatz at 11 AM, then climb St Peter's tower for the best view of the onion-domed Frauenkirche and, on clear days, the Alps.", "Graze the Viktualienmarkt for weisswurst, pretzels and Bavarian cheeses.", "Christmas market at Marienplatz, then a litre of beer and roast pork at the Hofbräuhaus.", "Weisswurst is traditionally eaten before noon."],
+    ["Neuschwanstein", "Early train and bus to Füssen for Neuschwanstein, the fairy-tale castle of 'mad' King Ludwig II.", "Tour Hohenschwangau castle below it and walk to the Marienbrücke bridge for the classic view (if open in winter).", "Back to Munich for dinner in Schwabing.", "Book timed castle tickets online; walk-ups often sell out."],
+    ["Palaces and parks", "Explore the Residenz, the Wittelsbach royal palace with its spectacular Antiquarium hall.", "Walk through the English Garden, stopping to watch surfers ride the standing wave on the Eisbach river.", "Dinner at the Augustiner Bräustuben, a beer hall attached to the brewery.", "The Eisbach surfers are out all year, even in snow."],
+    ["Nymphenburg and home", "Visit Nymphenburg Palace, the royal summer residence, and its Gallery of Beauties.", "Lunch of schnitzel and apple strudel.", "S-Bahn to the airport and fly home.", "Allow 45 minutes to the airport."],
+  ],
+  tromso: [
+    ["City and cable car", "Arrive and walk the harbour, then visit Polaria, the Arctic aquarium with its bearded seals.", "Cross the bridge to the Arctic Cathedral, then ride the Fjellheisen cable car at dusk for views over the city, islands and fjords.", "Join a guided northern lights chase that drives towards clear skies, sometimes into Finland.", "Dress warmer than you think: thermal base layers, wool and insulated boots."],
+    ["Whale safari", "Board a boat at dawn for a whale safari in the fjords, where orcas and humpbacks feed on herring from November to January.", "Lunch on board as you sail past snowy mountains in the soft blue polar light.", "Rest and warm up, then dinner of Arctic char or king crab.", "Seasickness tablets help on open-water days."],
+    ["Huskies and Sámi culture", "Drive your own husky team through the snowy Lyngen Alps foothills.", "Visit a Sámi reindeer camp to feed reindeer and hear joik songs in a lavvu tent.", "Night at an aurora camp around a fire, waiting for the lights to dance.", "Combined dog-sled and Sámi tours save travel time."],
+    ["Home", "Breakfast and the Polar Museum, about Arctic explorers and trappers.", "Pick up Norwegian wool and souvenirs.", "Fly home via Oslo.", "Flights can be delayed by snow; leave a buffer."],
+  ],
+  reykjavik: [
+    ["Reykjavik", "Climb Hallgrímskirkja's tower for views over the city's coloured roofs, then walk down Skólavörðustígur to the old harbour.", "Visit Harpa concert hall's glass facade and the Sun Voyager sculpture on the seafront.", "Join a northern lights tour after dinner; most operators re-run free if you see nothing.", "Grab a hot dog at Bæjarins Beztu, Iceland's most famous snack stand."],
+    ["Golden Circle", "Drive to Þingvellir National Park to walk between the North American and Eurasian tectonic plates.", "Watch Strokkur geyser erupt every few minutes at Geysir, then see Gullfoss waterfall thunder into its canyon.", "Soak in the Secret Lagoon, Iceland's oldest natural pool.", "December has only about 4–5 hours of daylight; start early."],
+    ["South Coast", "Walk behind Seljalandsfoss waterfall and stand beneath the 60-metre curtain of Skógafoss.", "Visit Reynisfjara's black-sand beach and basalt columns, then the Dyrhólaey arch.", "Overnight in Vík, watching for the aurora.", "Stay well back from the water at Reynisfjara; sneaker waves are deadly."],
+    ["Ice cave and glacier lagoon", "Join a guided tour into a blue ice cave inside Vatnajökull glacier.", "See icebergs float in Jökulsárlón lagoon and glitter on Diamond Beach.", "Drive back west.", "Ice-cave tours only run from about November to March."],
+    ["Blue Lagoon and home", "Relax in the milky-blue water of the Blue Lagoon on the way to the airport.", "Lunch at the lagoon.", "Fly home from Keflavík.", "Book Blue Lagoon slots in advance."],
+  ],
+  zermatt: [
+    ["Arrive in Zermatt", "Take the train to Zermatt via Visp; the village is car-free, so electric taxis meet you at the station.", "Pick up ski gear and walk the main street to the Hinterdorf, with its 16th-century larch-wood barns on stone stilts.", "Cheese fondue dinner with the Matterhorn lit up above the village.", "Hotels often collect guests from the station."],
+    ["Gornergrat", "Ride the Gornergrat cog railway to 3,089 m for a famous view of the Matterhorn and 29 peaks over 4,000 m.", "Ski the Gornergrat and Rothorn slopes, with lunch at a mountain hut.", "Après-ski at a slope-side bar, then dinner in the village.", "Sit on the right going up for the best Matterhorn view."],
+    ["Ski to Italy", "Take the lifts to Matterhorn Glacier Paradise, Europe's highest cable car station at 3,883 m.", "Ski across the border to Cervinia in Italy for a pasta lunch.", "Return in time for the last lifts back to Switzerland.", "Carry your passport or ID when skiing to Italy."],
+    ["Home", "One more morning run, or a sleigh ride through the snow.", "Lunch of raclette and rösti.", "Train out of Zermatt.", "The Glacier Express to St Moritz is a scenic onward option."],
+  ],
+};
