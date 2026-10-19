@@ -15,6 +15,7 @@ import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { TRIP_IDEAS, price, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
 import { daysFor } from "@/lib/trip-days";
 import { extraFor } from "@/lib/trip-ideas-extra";
+import { fromCities } from "@/lib/trip-hubs";
 import { cn } from "@/lib/utils";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -38,9 +39,9 @@ export const dynamicParams = false;
 export const generateStaticParams = () => TRIP_IDEAS.map((t) => ({ slug: t.slug }));
 
 const YEAR = 2026;
-const title = (t: TripIdea) => `${t.name} Trip Plan ${YEAR}: ${t.days} Days, Budget & Best Hotels`;
+const title = (t: TripIdea) => `${t.name} Trip: ${t.days} Days Itinerary, Budget & Hotels (${YEAR})`;
 const blurb = (t: TripIdea) =>
-  `Plan ${t.days} days in ${t.name}: a day-by-day route, what it costs (from ${price(t, t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
+  `Planning a ${t.days}-day trip to ${t.name}? A day-by-day itinerary, what it costs (from ${price(t, t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const t = tripBySlug((await params).slug);
@@ -77,8 +78,17 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
   const plan = plannerHref({ destination: t.destination, days: t.days, interests: [], diet: [], notes: "" });
   const extra = extraFor(t.slug);
   const days = daysFor(t.slug);
+  const from = fromCities(t.slug);
+  const shorter = Math.max(1, t.days - 1);
+  const longer = t.days + 2;
+  const nearby = relatedTrips(t, 6).filter((o) => o.region === t.region || o.country === t.country)[0];
   const faqs = [
     ...tripFaqs(t),
+    {
+      q: `Is ${shorter} ${shorter === 1 ? "day" : "days"} enough for ${t.name}?`,
+      a: `Yes, if you focus: follow days 1 to ${shorter} of the itinerary above${days?.[t.days - 1] ? ` and skip "${days[t.days - 1][0]}"` : ""}. ${t.days} days is the comfortable length.`,
+    },
+    ...from.slice(0, 2).map((f) => ({ q: `How do I plan a trip to ${t.name} from ${f.city}?`, a: `${f.how}. Then follow the ${t.days}-day itinerary above; budget from about ${price(t, t.budget[0])} a day per person plus travel.` })),
     ...(extra
       ? [
           { q: `What is the weather like in ${t.name}?`, a: extra.weather },
@@ -149,6 +159,9 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
           <div className="min-w-0 space-y-20">
             {/* Why now */}
             <div className="max-w-3xl">
+              <p className="mb-6 text-lg leading-relaxed text-ink/80">
+                Planning a {t.days}-day trip to {t.name}? Here&apos;s a day-by-day {t.name} itinerary with what it costs, where to stay and how to get there, ready to follow or make your own.
+              </p>
               <p className="eyebrow text-brand">Why go now</p>
               <p className="display mt-4 text-[clamp(1.35rem,2.4vw,1.75rem)] leading-snug text-ink">{t.why}</p>
               {extra && <p className="mt-5 text-[1.0625rem] leading-relaxed text-stone">{extra.about}</p>}
@@ -242,6 +255,43 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                 </span>
                 <ArrowRight className="size-5 shrink-0 text-brand transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
+            </Section>
+
+            <Section id="length" eyebrow="Shorter or longer" heading={`${t.name} in ${shorter}, ${t.days} or ${longer} days`}>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-card bg-white p-5 ring-1 ring-line">
+                  <h3 className="display text-[1.15rem] text-ink">
+                    {shorter} {shorter === 1 ? "day" : "days"} in {t.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink/75">
+                    Follow days 1 to {shorter} above{days?.[t.days - 1] ? <> and leave out &ldquo;{days[t.days - 1][0]}&rdquo;</> : null}. Start early each day and book the main sights ahead.
+                  </p>
+                </div>
+                <div className="rounded-card bg-white p-5 ring-1 ring-line">
+                  <h3 className="display text-[1.15rem] text-ink">
+                    {longer} days in {t.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink/75">
+                    Slow down with a free day for a spa, a cooking class or simply wandering
+                    {nearby ? <>, then add {longer - t.days - 1} {longer - t.days - 1 === 1 ? "day" : "days"} in <Link href={`/trips/${nearby.slug}`} className="text-brand underline underline-offset-2">{nearby.name}</Link></> : null}.
+                  </p>
+                </div>
+              </div>
+              {from.length > 0 && (
+                <div className="mt-4 rounded-card bg-white p-5 ring-1 ring-line">
+                  <h3 className="display text-[1.15rem] text-ink">{t.name} trip from your city</h3>
+                  <ul className="mt-3 space-y-2 text-sm">
+                    {from.map((f) => (
+                      <li key={f.city} className="flex flex-wrap gap-x-2 leading-relaxed text-ink/75">
+                        <Link href={`/weekend-getaways/${f.hub}`} className="font-medium text-ink hover:text-brand">
+                          From {f.city}:
+                        </Link>
+                        {f.how}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </Section>
 
             <Section id="budget" eyebrow="What it costs" heading={`${t.name} trip budget`}>
