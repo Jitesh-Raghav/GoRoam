@@ -34,7 +34,7 @@ export function PanoramaHero() {
       </motion.div>
 
       {/* Copy and composer. */}
-      <motion.div style={{ y: copyY, opacity: copyOpacity }} className="container-x relative z-10 pb-[36svh] pt-28 text-center sm:pt-32 lg:pb-0 lg:pt-[clamp(6.5rem,13vh,8.5rem)]">
+      <motion.div style={{ y: copyY, opacity: copyOpacity }} className="container-x relative z-10 pb-[36svh] pt-32 text-center sm:pt-40 lg:pb-0 lg:pt-[clamp(9rem,19vh,12rem)]">
         <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.7rem,7vw,5rem)] leading-[1] tracking-[-0.035em] text-paper drop-shadow-[0_2px_24px_rgba(14,31,59,0.35)] [&_.accent]:!text-sun-2 [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.3rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
@@ -55,19 +55,6 @@ export function PanoramaHero() {
 
         <div className="mt-7">
           <TripComposer ready={intro.ready} delay={delay} />
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={intro.ready ? { opacity: 1 } : undefined}
-            transition={{ duration: 1, delay: delay + 1 }}
-            className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-medium text-ink/65"
-          >
-            {["First trip free", "No card needed", "Any city, any country", "Works offline"].map((t, i) => (
-              <span key={t} className="inline-flex items-center gap-3">
-                {i > 0 && <span aria-hidden className="size-1 rounded-full bg-ink/30" />}
-                {t}
-              </span>
-            ))}
-          </motion.p>
         </div>
 
       </motion.div>
