@@ -35,16 +35,6 @@ export function PanoramaHero() {
 
       {/* Copy and composer. */}
       <motion.div style={{ y: copyY, opacity: copyOpacity }} className="container-x relative z-10 pb-[36svh] pt-28 text-center sm:pt-32 lg:pb-0 lg:pt-[clamp(6.5rem,13vh,8.5rem)]">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={intro.ready ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 1, ease, delay: delay + 0.1 }}
-          className="mb-6 inline-flex items-center gap-2.5 rounded-full bg-white/[0.12] py-1.5 pl-3 pr-4 text-sm font-medium text-paper/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] ring-1 ring-white/20 backdrop-blur-md"
-        >
-          <span className="size-1.5 rounded-full bg-sun-2 shadow-[0_0_10px_rgba(255,210,63,0.9)]" />
-          AI trip planner · Your first trip is free
-        </motion.div>
-
         <h1 className="display mx-auto max-w-[13ch] text-[clamp(2.7rem,7vw,5rem)] leading-[1] tracking-[-0.035em] text-paper drop-shadow-[0_2px_24px_rgba(14,31,59,0.35)] [&_.accent]:!text-sun-2 [@media(min-width:1024px)_and_(max-height:860px)]:text-[4.3rem]">
           <span className="block">
             <SplitText text="Where will you" trigger="mount" ready={intro.ready} delay={delay + 0.15} />
