@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PackageCard } from "@/components/packages/package-card";
+import { FriendsSections, GROUP_HOWTO } from "@/components/plan/friends-sections";
+import { GroupHero } from "@/components/plan/group-hero";
+import { CreateYoursBar } from "@/components/seo/create-yours";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { ArrowRight, Check } from "@/components/site/icons";
 import { TripComposer } from "@/components/site/trip-composer";
 import { packageCards } from "@/lib/packages-data";
+import { parseTripPrompt, plannerHref } from "@/lib/prompt-parse";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { USE_CASES, tripTypeBySlug } from "@/lib/use-cases";
 import { FALLBACK_ICON, USE_CASE_ICON } from "@/lib/use-case-icons";
@@ -38,6 +42,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
   const all = await packageCards();
   const samples = u.samples.map((slug) => all.find((c) => c.slug === slug)).filter((c): c is NonNullable<typeof c> => !!c).slice(0, 3);
   const others = USE_CASES.filter((o) => o.slug !== u.slug);
+  const friends = u.slug === "friends";
   const crumbs = [
     { name: "Home", href: "/" },
     { name: "Plan a trip", href: "/plan" },
@@ -59,9 +64,23 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
           },
           breadcrumbs(crumbs.map((c) => ({ name: c.name, path: c.href }))),
           faqPage(u.faqs),
+          ...(friends
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "HowTo",
+                  name: "How to plan a trip with friends",
+                  step: GROUP_HOWTO.map((x, i) => ({ "@type": "HowToStep", position: i + 1, name: x.name, text: x.text })),
+                },
+              ]
+            : []),
         ]}
       />
       <div className="container-x pb-24 pt-8">
+        {friends ? (
+          <GroupHero lede={u.lede} prompt={u.prompt} />
+        ) : (
+          <>
         {/* Hero: the phrase people search, and the composer to start right away. */}
         <header className="relative overflow-hidden rounded-panel bg-[linear-gradient(160deg,#22397A_0%,#4766C4_55%,#86A3EC_100%)] px-5 pb-10 pt-12 text-center text-paper sm:px-10 sm:pb-14 sm:pt-16">
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]" />
@@ -79,7 +98,13 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
         </header>
+          </>
+        )}
 
+        {friends ? (
+          <FriendsSections body={u.body} />
+        ) : (
+          <>
         {/* What GoRoam does for this kind of trip. */}
         <section className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16" aria-labelledby="how-h">
           <div>
@@ -107,6 +132,8 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
             ))}
           </ul>
         </section>
+          </>
+        )}
 
         {/* Steps */}
         <section className="mt-16 rounded-panel bg-ink p-6 text-paper sm:p-10" aria-labelledby="steps-h">
@@ -177,6 +204,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
           </ul>
         </nav>
       </div>
+      <CreateYoursBar href={plannerHref(parseTripPrompt(u.prompt))} place={friends ? "group" : u.label.toLowerCase()} source="use-case" />
     </PublicShell>
   );
 }
