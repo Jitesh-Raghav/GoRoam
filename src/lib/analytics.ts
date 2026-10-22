@@ -77,7 +77,11 @@ export type AnalyticsEvent =
   | "place_added"
   | "whatsapp_subscribed"
   | "whatsapp_shared"
-  | "create_yours_clicked";
+  | "create_yours_clicked"
+  | "squad_created"
+  | "squad_joined"
+  | "squad_shared"
+  | "squad_planned";
 
 export function track(event: AnalyticsEvent, properties?: Record<string, string | number | boolean | null | undefined>) {
   withClient((ph) => ph.capture(event, properties));

@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     page("/", 1, "weekly"),
     page("/plan", 0.9, "weekly"),
+    page("/squad", 0.9, "weekly"),
     ...USE_CASES.map((u) => page(`/plan/${u.slug}`, 0.9)),
     page("/trips", 0.9, "weekly"),
     page("/weekend-getaways", 0.8),

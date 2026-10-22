@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { TripCard } from "@/components/seo/trip-card";
 import { ArrowRight } from "@/components/site/icons";
+import { RevealPreview } from "@/components/squad/reveal-preview";
+import { SquadStart } from "@/components/squad/squad-start";
 import { TRIP_IDEAS } from "@/lib/trip-ideas";
 import { CrewBudget, type BudgetTrip } from "./crew-budget";
 import { CrewSplit } from "./crew-split";
@@ -40,6 +42,25 @@ export function FriendsSections({ body }: { body: string[] }) {
 
   return (
     <>
+      <section aria-labelledby="squad-h" className="mt-10 grid items-center gap-8 overflow-hidden rounded-panel bg-ink p-6 text-paper sm:p-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div>
+          <p className="eyebrow text-sun-2">New · Squad Match</p>
+          <h2 id="squad-h" className="display mt-3 text-[clamp(1.8rem,3.6vw,2.8rem)] leading-[1.04]">
+            Can&apos;t agree where to go? Let the group swipe.
+          </h2>
+          <p className="mt-4 max-w-xl text-paper/75">
+            Drop one link in the group chat. Everyone swipes on trips, sets a budget nobody else sees and taps their free weekends. GoRoam reveals the trip that fits the whole squad, and who&apos;s the Foodie, the Night Owl and the Picky One.
+          </p>
+          <div className="mt-6 max-w-xl">
+            <SquadStart source="friends-page" />
+          </div>
+          <Link href="/squad" className="mt-4 inline-flex items-center gap-1.5 text-sm text-sun-2 hover:text-paper">
+            How Squad Match works <ArrowRight className="size-4" />
+          </Link>
+        </div>
+        <RevealPreview className="hidden max-w-[21rem] sm:block" />
+      </section>
+
       <section className="mt-16" aria-labelledby="group-h">
         <Heading eyebrow="Built for groups" title="One plan the whole group actually agrees on" id="group-h" />
         <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
