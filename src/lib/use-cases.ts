@@ -86,9 +86,9 @@ export const USE_CASES: UseCase[] = [
     slug: "friends",
     label: "Friends",
     h1: "Group trip planner for friends",
-    title: "Group Trip Planner for Friends: Plan, Vote & Split Costs",
+    title: "Group Trip Planner for Friends: Ideas, Budget & Cost Splitter",
     description:
-      "Plan a group trip with friends in seconds. GoRoam builds a day-by-day itinerary everyone can vote on, with a shared wallet to split costs and the plan on WhatsApp each morning.",
+      "Plan a trip with friends in seconds: a day-by-day itinerary everyone votes on, a group budget calculator, a free cost splitter and the plan on WhatsApp each morning.",
     lede: "One plan for the whole group: vote on stops, split the costs and get each day on WhatsApp.",
     body: [
       "Group chats are where trips go to die. Describe the trip once and GoRoam plans every day: the sights, the food, the nights out and the hostel or villa that fits the group's budget.",
@@ -107,6 +107,12 @@ export const USE_CASES: UseCase[] = [
       { q: "How do we split costs?", a: "Each trip has a wallet. Log who paid for what and GoRoam works out the fairest way to settle up." },
       { q: "Does the plan go to our WhatsApp group?", a: "On Explorer and Adventurer, the day's plan is sent to everyone's WhatsApp each morning. Anyone can send a day to WhatsApp by hand for free." },
       { q: "Can it plan for a big group on a budget?", a: "Yes. Set the group size and a per-trip budget and GoRoam picks hostels, street food and free sights to fit." },
+      { q: "How much does a trip with friends cost in India?", a: "A budget trip runs about ₹1,500–2,500 per person a day with hostels and street food, and ₹4,000–6,000 a day with a shared villa and restaurant meals, not counting travel. Use the budget calculator above to see what your group's money buys." },
+      { q: "What are the best places in India for a trip with friends?", a: "Goa for beaches and nightlife, Manali and Kasol for the mountains, Rishikesh for rafting and camping, Gokarna for quieter beaches, and Jaisalmer for a desert camp night. All are covered in GoRoam's ready-made trips." },
+      { q: "How do you split trip costs fairly between friends?", a: "Have one person pay for each shared thing, note who paid what, then work out each person's fair share and settle with the fewest transfers. The free cost splitter on this page does exactly that, and every GoRoam trip has a wallet that does it as you go." },
+      { q: "How do we pick dates that work for everyone?", a: "Agree on a month first, share two or three date options in the group and pick the one with the most yes votes. Long weekends sell out early, so book stays as soon as dates are fixed." },
+      { q: "Is a villa cheaper than hotel rooms for a group?", a: "For five or more people it often is: a villa splits into a lower cost per head than separate rooms, and you get a kitchen, a pool and space to hang out together." },
+      { q: "Can GoRoam plan a bachelor or bachelorette trip?", a: "Yes. Mention it in the prompt and GoRoam leans into nightlife, group activities, a big dinner and a villa or party-friendly stay, all within your budget." },
     ],
   },
   {
