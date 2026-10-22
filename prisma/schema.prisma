@@ -170,3 +170,36 @@ model WhatsAppSub {
   @@unique([itineraryId, phone])
   @@index([phone])
 }
+
+// Squad Match: one link a group shares to decide where, when and for how much.
+// Nobody signs in; each friend's browser keeps a token to change their answers.
+model Squad {
+  id        String        @id @default(cuid())
+  code      String        @unique
+  name      String
+  ipHash    String
+  createdAt DateTime      @default(now())
+  members   SquadMember[]
+
+  @@index([ipHash, createdAt])
+}
+
+model SquadMember {
+  id        String   @id @default(cuid())
+  squadId   String
+  token     String   @unique
+  name      String
+  homeCity  String
+  // Each friend's private ceiling per person for the whole trip, in INR. Never sent to anyone.
+  maxBudget Float
+  dates     String   // JSON: the Fridays (YYYY-MM-DD) they're free
+  likes     String   // JSON: trip slugs swiped right
+  passes    String   // JSON: trip slugs swiped left
+  vibes     String   // JSON: the vibes they picked
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  squad Squad @relation(fields: [squadId], references: [id], onDelete: Cascade)
+
+  @@index([squadId])
+}

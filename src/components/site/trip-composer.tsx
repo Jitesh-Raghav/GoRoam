@@ -161,6 +161,7 @@ export interface QuickAction {
 const QUICK: QuickAction[] = [
   { label: "Create a new trip", icon: Plus, text: "A trip to …" },
   { label: "Inspire me where to go", icon: Compass, href: "/dashboard?inspire=1" },
+  { label: "Decide with friends", icon: Users, href: "/squad" },
   { label: "Plan a road trip", icon: Route, text: "A 5-day road trip from … through the hills, with scenic stops and good food on the way." },
   { label: "Plan a last-minute escape", icon: Zap, text: "A weekend getaway this Friday from … with nature and good food, on a small budget." },
   { label: "Multi-city trip", icon: MapPin, text: "8 days across Delhi, Jaipur and Udaipur: forts, bazaars and a lake sunset." },
