@@ -23,6 +23,7 @@ const COLUMNS = [
     links: [
       { label: "Plan a trip", href: "/dashboard" },
       { label: "Trending trips", href: "/trips" },
+      { label: "Squad Match", href: "/squad" },
       { label: "Weekend getaways", href: "/weekend-getaways" },
       { label: "Where to go by month", href: "/places-to-visit" },
       { label: "Trip gallery", href: "/itineraries" },

@@ -26,7 +26,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...CITY_HUBS.map((c) => page(`/weekend-getaways/${c.slug}`, 0.8)),
     page("/places-to-visit", 0.8),
     ...MONTH_HUBS.map((m) => page(`/places-to-visit/${m.slug}`, 0.8)),
-    ...TRIP_IDEAS.map((t) => page(`/trips/${t.slug}`, 0.8)),
+    // Each trip's photo too, for Google Images.
+    ...TRIP_IDEAS.map((t) => ({ ...page(`/trips/${t.slug}`, 0.8), images: [`${SITE_URL}/trips/${t.slug}/photo`] })),
     page("/itineraries", 0.9, "weekly"),
     page("/destinations", 0.9, "weekly"),
     ...DESTINATION_GUIDES.map((d) => page(`/destinations/${d.slug}`, 0.8)),
