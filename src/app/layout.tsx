@@ -64,7 +64,6 @@ export const metadata: Metadata = {
   category: "travel",
   authors: [{ name: "Jitesh Raghav", url: "https://jiteshraghav.xyz" }],
   creator: "Jitesh Raghav",
-  alternates: { canonical: "/" },
   // Google Search Console: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION to the "HTML tag" content value.
   verification: googleVerification ? { google: googleVerification } : undefined,
   icons: {
