@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export function TripCard({ t, big = false, className }: { t: TripIdea; big?: boolean; className?: string }) {
   return (
     <Link href={`/trips/${t.slug}`} className={cn("group flex h-full flex-col overflow-hidden rounded-panel bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-float", className)}>
-      <GuideCover destination={t.destination} landscape={t.landscape} width={big ? 1200 : 700} credit={false} className={cn("shrink-0", big ? "h-72 sm:h-80" : "h-52")}>
+      <GuideCover destination={t.destination} landscape={t.landscape} width={big ? 1200 : 700} credit={false} src={`/trips/${t.slug}/photo?w=${big ? 1200 : 700}`} alt={`${t.name}, ${t.region === t.country ? t.country : t.region}`} className={cn("shrink-0", big ? "h-72 sm:h-80" : "h-52")}>
         <span className="absolute right-4 top-4 grid size-9 place-items-center rounded-full bg-white/95 text-ink opacity-0 shadow-card transition-opacity duration-500 group-hover:opacity-100">
           <ArrowUpRight className="size-4" />
         </span>

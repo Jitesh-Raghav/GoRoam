@@ -47,11 +47,22 @@ export function GuideCover({
   width = 1600,
   shade = "bottom",
   credit = true,
+  src,
+  alt,
+  priority = false,
   className,
   children,
 }: {
   destination: string;
   landscape: DestinationGuide["landscape"];
+  /**
+   * A photo address the server already knows (/trips/jaisalmer/photo), so the image is in
+   * the page's HTML for search engines. The browser's lookup then only adds the credit.
+   */
+  src?: string;
+  alt?: string;
+  /** The page's main image: loads first instead of lazily. */
+  priority?: boolean;
   /** About how wide it's shown, so Unsplash can send a smaller file. */
   width?: number;
   shade?: "bottom" | "left" | "soft" | "none";
@@ -59,9 +70,11 @@ export function GuideCover({
   className?: string;
   children?: ReactNode;
 }) {
-  const photo = sizedPhoto(usePlacePhoto(destination), width);
+  // With a known photo the lookup is only for its credit, so cards that hide the credit skip it.
+  const looked = usePlacePhoto(destination, !src || credit);
+  const photo = src ? { ...looked, url: src, title: alt ?? looked?.title ?? destination } : sizedPhoto(looked, width);
   return (
-    <PhotoPanel photo={photo} scene={SCENE[landscape]} shade={shade} credit={credit} creditClassName="bottom-auto top-3" className={className}>
+    <PhotoPanel photo={photo} scene={SCENE[landscape]} lazy={!priority} shade={shade} credit={credit} creditClassName="bottom-auto top-3" className={className}>
       {children}
     </PhotoPanel>
   );

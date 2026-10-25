@@ -43,6 +43,8 @@ const title = (t: TripIdea) => `${t.name} Trip: ${t.days} Days Itinerary, Budget
 const blurb = (t: TripIdea) =>
   `Planning a ${t.days}-day trip to ${t.name}? A day-by-day itinerary, what it costs (from ${price(t, t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
 
+const photoAlt = (t: TripIdea) => `${t.name}, ${t.region === t.country ? t.country : `${t.region}, ${t.country}`}`;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const t = tripBySlug((await params).slug);
   if (!t) return {};
@@ -50,8 +52,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: title(t),
     description: blurb(t),
     alternates: { canonical: `/trips/${t.slug}` },
-    openGraph: { title: title(t), description: blurb(t), type: "article", url: `/trips/${t.slug}` },
-    twitter: { card: "summary_large_image", title: title(t), description: blurb(t) },
+    openGraph: { title: title(t), description: blurb(t), type: "article", url: `/trips/${t.slug}`, images: [{ url: `/trips/${t.slug}/photo?w=1200&h=630`, width: 1200, height: 630, alt: photoAlt(t) }] },
+    twitter: { card: "summary_large_image", title: title(t), description: blurb(t), images: [`/trips/${t.slug}/photo?w=1200&h=630`] },
   };
 }
 
@@ -113,6 +115,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     name: `${t.days} days in ${t.name}`,
     description: t.tagline,
     url: absolute(`/trips/${t.slug}`),
+    image: absolute(`/trips/${t.slug}/photo`),
     touristType: t.tags.includes("honeymoon") ? ["Couples", "Friends", "Families"] : ["Friends", "Families", "Solo travellers"],
     offers: { "@type": "AggregateOffer", priceCurrency: t.currency ?? "INR", lowPrice: t.budget[0] * t.days, highPrice: t.budget[2] * t.days, description: "Per person, excluding travel to the destination" },
     itinerary: {
@@ -127,7 +130,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     <PublicShell crumbs={crumbs.map((c) => ({ name: c.name, href: c.path }))}>
       <JsonLd data={[trip, faqPage(faqs), breadcrumbs(crumbs)]} />
       <article className="container-x pb-24 pt-6">
-        <GuideCover destination={t.destination} landscape={t.landscape} width={2000} className="min-h-[24rem] rounded-panel sm:min-h-[30rem]">
+        <GuideCover destination={t.destination} landscape={t.landscape} width={2000} src={`/trips/${t.slug}/photo?w=2000`} alt={photoAlt(t)} priority className="min-h-[24rem] rounded-panel sm:min-h-[30rem]">
           <header className="absolute inset-x-0 bottom-0 p-6 text-paper sm:p-10">
             <p className="eyebrow text-paper/75">
               {t.region}
@@ -435,7 +438,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-            <GuideCover destination={t.destination} landscape={t.landscape} width={700} shade="soft" credit={false} className="rounded-panel text-paper">
+            <GuideCover destination={t.destination} landscape={t.landscape} width={700} src={`/trips/${t.slug}/photo?w=700`} alt={photoAlt(t)} shade="soft" credit={false} className="rounded-panel text-paper">
               <div className="relative p-6">
                 <p className="eyebrow text-paper/70">Make it yours</p>
                 <p className="mt-3 text-lg leading-snug">Your dates, budget and crew: a full {t.days}-day {city} plan with maps, costs and bookings in under a minute.</p>

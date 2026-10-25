@@ -42,11 +42,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: "GoRoam",
   title: {
-    default: "GoRoam: AI Trip Planner 2026 | Free Day-by-Day Itineraries",
+    default: "Free AI Trip Planner: Full Itinerary in 60 Seconds | GoRoam",
     template: "%s · GoRoam",
   },
   description:
-    "Plan any trip in seconds with GoRoam, the free AI trip planner. Day-by-day itineraries with real places, honest budgets, stays and a local guide, for couples, families and friends.",
+    "Tell GoRoam where you're going and get a day-by-day plan in a minute: real places with times, honest costs, hotels and a map. First trip free, no card needed.",
   keywords: [
     "AI trip planner",
     "AI travel planner",
@@ -77,9 +77,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "GoRoam: AI Trip Planner 2026 | Free Day-by-Day Itineraries",
+    title: "Free AI Trip Planner: Full Itinerary in 60 Seconds | GoRoam",
     url: "/",
-    description: "One sentence in, a whole trip out: real places, honest budgets and a guide for the road. First trip free.",
+    description: "Tell GoRoam where you're going and get a day-by-day plan in a minute: real places, honest costs, hotels and a map. First trip free.",
     type: "website",
     siteName: "GoRoam",
     locale: "en_US",
