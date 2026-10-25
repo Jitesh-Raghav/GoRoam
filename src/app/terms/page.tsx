@@ -4,6 +4,7 @@ import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "The terms that apply to using GoRoam and buying credits.",
+  alternates: { canonical: "/terms" },
 };
 
 const UPDATED = "9 October 2026";

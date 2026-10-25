@@ -4,6 +4,7 @@ import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 export const metadata: Metadata = {
   title: "Refund Policy",
   description: "GoRoam's 30-day money-back guarantee on every pass.",
+  alternates: { canonical: "/refunds" },
 };
 
 const UPDATED = "9 October 2026";

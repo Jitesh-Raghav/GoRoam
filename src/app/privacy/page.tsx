@@ -4,6 +4,7 @@ import { LegalLayout, LegalSection } from "@/components/site/legal-layout";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "What GoRoam collects, why, and who it's shared with.",
+  alternates: { canonical: "/privacy" },
 };
 
 const UPDATED = "9 October 2026";

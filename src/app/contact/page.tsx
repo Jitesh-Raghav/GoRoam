@@ -5,6 +5,7 @@ import { LegalLayout } from "@/components/site/legal-layout";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with GoRoam.",
+  alternates: { canonical: "/contact" },
 };
 
 const ROUTES = [

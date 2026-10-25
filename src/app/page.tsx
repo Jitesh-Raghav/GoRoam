@@ -17,7 +17,11 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { FAQS } from "@/lib/faq-data";
+import type { Metadata } from "next";
 import { JsonLd, faqPage, organization, siteNavigation, softwareApp, website } from "@/lib/seo";
+
+// Set here, not in the root layout, so no other page inherits the home page as its canonical.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // The trending row follows the month, so rebuild the page daily.
 export const revalidate = 86400;
