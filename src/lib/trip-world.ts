@@ -35,6 +35,7 @@ import { WORLD_DAYS_11 } from "@/lib/trip-world-days-11";
 import { WORLD_DAYS_12 } from "@/lib/trip-world-days-12";
 import { WORLD_DAYS_13 } from "@/lib/trip-world-days-13";
 import { WORLD_DAYS_14 } from "@/lib/trip-world-days-14";
+import { WORLD_DAYS_15 } from "@/lib/trip-world-days-15";
 import type { WorldTrip } from "@/lib/trip-world-util";
 
 /**
@@ -43,7 +44,7 @@ import type { WorldTrip } from "@/lib/trip-world-util";
  * the one-line plan is the day titles.
  */
 // The fuller day plans, written separately, take the place of each trip's short ones.
-const DETAILED: Record<string, TripDay[]> = { ...WORLD_DAYS_1, ...WORLD_DAYS_2, ...WORLD_DAYS_3, ...WORLD_DAYS_4, ...WORLD_DAYS_5, ...WORLD_DAYS_6, ...WORLD_DAYS_7, ...WORLD_DAYS_8, ...WORLD_DAYS_9, ...WORLD_DAYS_10, ...WORLD_DAYS_11, ...WORLD_DAYS_12, ...WORLD_DAYS_13, ...WORLD_DAYS_14 };
+const DETAILED: Record<string, TripDay[]> = { ...WORLD_DAYS_1, ...WORLD_DAYS_2, ...WORLD_DAYS_3, ...WORLD_DAYS_4, ...WORLD_DAYS_5, ...WORLD_DAYS_6, ...WORLD_DAYS_7, ...WORLD_DAYS_8, ...WORLD_DAYS_9, ...WORLD_DAYS_10, ...WORLD_DAYS_11, ...WORLD_DAYS_12, ...WORLD_DAYS_13, ...WORLD_DAYS_14, ...WORLD_DAYS_15 };
 
 export const WORLD: WorldTrip[] = [...WORLD_1, ...WORLD_2, ...WORLD_3, ...WORLD_4, ...WORLD_5, ...WORLD_6, ...WORLD_7, ...WORLD_8, ...WORLD_9, ...WORLD_10, ...WORLD_11, ...WORLD_12, ...WORLD_13, ...WORLD_14, ...WORLD_15, ...WORLD_16, ...WORLD_17, ...WORLD_18, ...WORLD_19, ...WORLD_20].map((t) => ({ ...t, dayPlan: DETAILED[t.slug] ?? t.dayPlan }));
 

@@ -2080,6 +2080,10 @@ export function monthsLabel(months: number[]) {
 export const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 /** A trip's money in its own currency: ₹ for India and nearby, $ for the rest of the world. */
+/** "Rajasthan, India", "Lapland, Finland", "Portugal": the trip's place, never naming the country twice. */
+export const placeLabel = (t: Pick<TripIdea, "region" | "country">) =>
+  t.region === t.country || t.region.includes(", ") ? t.region : `${t.region}, ${t.country}`;
+
 export const price = (t: TripIdea, n: number) => (t.currency === "USD" ? `$${Math.round(n).toLocaleString("en-US")}` : inr(n));
 
 /** The trip for two at a budget level: per-person day cost × days × 2. */
