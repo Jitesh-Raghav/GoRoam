@@ -1,35 +1,18 @@
 import { TripCard } from "@/components/seo/trip-card";
 import { PillLink } from "@/components/site/pill";
-import Link from "next/link";
 import { CITY_HUBS, MONTH_HUBS } from "@/lib/trip-hubs";
 import { MONTH_NAMES, TRIP_IDEAS, inSeason, tripBySlug } from "@/lib/trip-ideas";
+import { ExploreTrips, type ExploreLink } from "./explore-trips";
 import { SectionHeading } from "./section-heading";
 
-// The trips people search for most, linked as plain text so the home page passes them its weight.
+// The trips people search for most, linked from the home page so it passes them its weight.
 const POPULAR_INDIA = ["andaman", "gokarna", "jaisalmer", "varkala", "pondicherry", "coorg", "meghalaya", "darjeeling", "rann-of-kutch", "jim-corbett", "auli", "mcleodganj"];
 const POPULAR_ABROAD = ["sri-lanka", "phuket", "bhutan", "nepal", "singapore", "maldives", "baku", "tbilisi", "rovaniemi", "london", "new-york", "sydney"];
 
-function LinkColumn({ heading, links }: { heading: string; links: { href: string; label: string }[] }) {
-  return (
-    <div>
-      <h3 className="text-sm font-medium text-ink">{heading}</h3>
-      <ul className="mt-3 space-y-2 text-sm">
-        {links.map((l) => (
-          <li key={l.href}>
-            <Link href={l.href} className="text-stone transition-colors hover:text-brand">
-              {l.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-const tripLinks = (slugs: string[]) =>
+const tripLinks = (slugs: string[]): ExploreLink[] =>
   slugs.flatMap((slug) => {
     const t = tripBySlug(slug);
-    return t ? [{ href: `/trips/${t.slug}`, label: `${t.name} in ${t.days} days` }] : [];
+    return t ? [{ href: `/trips/${t.slug}`, label: `${t.name} · ${t.days} days`, photo: `/trips/${t.slug}/photo?w=120` }] : [];
   });
 
 /** Trips that are at their best this month, as a swipeable row of photo cards linking into /trips. */
@@ -61,11 +44,16 @@ export function TrendingTrips() {
         ))}
       </ul>
 
-      <nav aria-label="Popular trip plans" className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-line pt-10 lg:grid-cols-4">
-        <LinkColumn heading="Popular in India" links={tripLinks(POPULAR_INDIA)} />
-        <LinkColumn heading="Popular abroad" links={tripLinks(POPULAR_ABROAD)} />
-        <LinkColumn heading="Weekend getaways from" links={CITY_HUBS.map((c) => ({ href: `/weekend-getaways/${c.slug}`, label: `Getaways from ${c.city}` }))} />
-        <LinkColumn heading="Where to go by month" links={MONTH_HUBS.map((m) => ({ href: `/places-to-visit/${m.slug}`, label: `Places to visit in ${MONTH_NAMES[m.month - 1]}` }))} />
+      <nav aria-label="Popular trip plans" className="mt-12">
+        <ExploreTrips
+          total={TRIP_IDEAS.length}
+          groups={[
+            { id: "india", label: "Popular in India", links: tripLinks(POPULAR_INDIA) },
+            { id: "abroad", label: "Popular abroad", links: tripLinks(POPULAR_ABROAD) },
+            { id: "cities", label: "From your city", links: CITY_HUBS.map((c) => ({ href: `/weekend-getaways/${c.slug}`, label: `Getaways from ${c.city}`, icon: "city" as const })) },
+            { id: "months", label: "By month", links: MONTH_HUBS.map((m) => ({ href: `/places-to-visit/${m.slug}`, label: `Where to go in ${MONTH_NAMES[m.month - 1]}`, icon: "month" as const })) },
+          ]}
+        />
       </nav>
     </section>
   );
