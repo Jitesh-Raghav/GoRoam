@@ -40,11 +40,4 @@ export const WORLD_DAYS_14: Record<string, TripDay[]> = {
     ["Beach day", "Hike to a lookout.", "Snorkelling.", "Lovo feast cooked in an earth oven.", "Bring reef-safe sunscreen."],
     ["Home", "Ferry back to Nadi.", "Lunch.", "Fly home.", "Allow buffer for ferries."],
   ],
-  "bora-bora": [
-    ["Arrive", "Boat transfer from the airport motu to your resort.", "Swim from your bungalow deck.", "Sunset dinner facing Mount Otemanu.", "Transfers are by boat."],
-    ["Lagoon tour", "Snorkel with blacktip reef sharks and stingrays.", "Coral gardens and a picnic on a motu.", "Dinner at the resort.", "Book a tour that includes lunch."],
-    ["Matira and the island", "Morning at Matira Beach, the island's best public beach.", "4x4 tour of the island's WWII cannons and viewpoints.", "Polynesian dance show.", "Rent a bike on the main island."],
-    ["Relax", "Spa morning.", "Paddleboard on the lagoon.", "Sunset drinks.", "Calm mornings are best for paddling."],
-    ["Home", "Morning swim.", "Boat transfer to the airport.", "Fly home via Tahiti.", "Allow time for connections in Papeete."],
-  ],
 };
