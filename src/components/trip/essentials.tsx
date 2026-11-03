@@ -1,78 +1,87 @@
-import { Banknote, Car, Clock3, Droplets, HandCoins, Languages, Plug, Siren, Wifi } from "@/components/site/icons";
+import type { ReactNode } from "react";
+import { Banknote, Car, Clock3, Droplets, HandCoins, Plug, Siren, Wifi } from "@/components/site/icons";
 import { utcOffset, type CountryFacts } from "@/lib/country-facts";
-import { cn } from "@/lib/utils";
 import { LocalTime } from "./local-time";
 
-function Tile({ icon: Icon, label, children, className }: { icon: typeof Plug; label: string; children: React.ReactNode; className?: string }) {
+/** The numbers in "191 police, 1669 ambulance" set large in mono, so they can be found at a glance. */
+function Numbers({ text }: { text: string }) {
   return (
-    <div className={cn("flex min-w-0 flex-col rounded-card bg-white p-5 ring-1 ring-line", className)}>
-      <dt className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-stone">
-        <span className="grid size-7 place-items-center rounded-lg bg-brand-soft text-brand">
-          <Icon className="size-4" />
-        </span>
-        {label}
-      </dt>
-      <dd className="mt-3 leading-snug text-ink">{children}</dd>
-    </div>
+    <>
+      {text.split(/(\d{2,5})/).map((part, i) =>
+        /^\d{2,5}$/.test(part) ? (
+          <span key={i} className="font-mono text-[1.2rem] tracking-tight text-ink">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
   );
 }
 
-/** Know before you go: money, words, plugs, the time, who to call, the roads, tipping, water and data. */
+/**
+ * Know before you go: the local words on one side, and the practical facts on the
+ * other as a ruled sheet, like the data page of a passport.
+ */
 export function Essentials({ facts, place }: { facts: CountryFacts; place: string }) {
+  const rows: { icon: typeof Plug; k: string; v: ReactNode }[] = [
+    { icon: Banknote, k: "Money", v: facts.currency },
+    {
+      icon: Clock3,
+      k: "Time",
+      v: (
+        <>
+          <span className="font-mono text-[1.05rem] text-ink">{utcOffset(facts.zone)}</span>
+          <LocalTime zone={facts.zone} place={place} />
+        </>
+      ),
+    },
+    { icon: Plug, k: "Plugs", v: <span className="font-mono text-[0.95rem] text-ink">{facts.plugs}</span> },
+    { icon: Siren, k: "Emergency", v: <Numbers text={facts.emergency} /> },
+    { icon: Car, k: "Driving", v: `On the ${facts.drive}` },
+    { icon: HandCoins, k: "Tipping", v: facts.tipping },
+    { icon: Droplets, k: "Tap water", v: facts.water },
+    { icon: Wifi, k: "Getting online", v: facts.sim },
+  ];
+
   return (
-    <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {facts.phrases && (
-        <div className="relative overflow-hidden rounded-card bg-[linear-gradient(150deg,var(--ink),var(--ink-2))] p-5 text-paper sm:col-span-2 lg:col-span-1 lg:row-span-2">
-          <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-brand/40 blur-3xl" />
-          <dt className="relative flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-paper/60">
-            <span className="grid size-7 place-items-center rounded-lg bg-white/10 text-sun-2">
-              <Languages className="size-4" />
-            </span>
-            Say it like a local
-          </dt>
-          <dd className="relative mt-5 space-y-5">
-            <p>
-              <span className="block text-xs text-paper/55">Hello</span>
-              <span className="display mt-1 block text-[1.6rem] leading-tight">{facts.phrases[0]}</span>
-            </p>
-            <p>
-              <span className="block text-xs text-paper/55">Thank you</span>
-              <span className="display mt-1 block text-[1.6rem] leading-tight">{facts.phrases[1]}</span>
-            </p>
-            <p className="border-t border-white/10 pt-4 text-sm text-paper/70">Spoken here: {facts.language}</p>
-          </dd>
-        </div>
-      )}
-      <Tile icon={Banknote} label="Money">
-        {facts.currency}
-      </Tile>
-      <Tile icon={Clock3} label="Time zone">
-        {utcOffset(facts.zone)}
-        <LocalTime zone={facts.zone} place={place} />
-      </Tile>
-      <Tile icon={Plug} label="Plugs">
-        {facts.plugs}
-      </Tile>
-      <Tile icon={Siren} label="Emergency">
-        {facts.emergency}
-      </Tile>
-      {!facts.phrases && (
-        <Tile icon={Languages} label="Language">
-          {facts.language}
-        </Tile>
-      )}
-      <Tile icon={Car} label="Driving">
-        Drive on the {facts.drive}
-      </Tile>
-      <Tile icon={HandCoins} label="Tipping">
-        <span className="text-[0.95rem] text-ink/85">{facts.tipping}</span>
-      </Tile>
-      <Tile icon={Droplets} label="Tap water">
-        <span className="text-[0.95rem] text-ink/85">{facts.water}</span>
-      </Tile>
-      <Tile icon={Wifi} label="Getting online" className={facts.phrases ? "sm:col-span-2 lg:col-span-3" : "sm:col-span-2 lg:col-span-1"}>
-        <span className="text-[0.95rem] text-ink/85">{facts.sim}</span>
-      </Tile>
-    </dl>
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+      <div className="flex flex-col rounded-panel bg-ink p-7 text-paper sm:p-8 lg:self-start">
+        {facts.phrases ? (
+          <>
+            <p className="text-sm text-paper/60">Say it like a local</p>
+            <div className="mt-8 space-y-7">
+              {(["Hello", "Thank you"] as const).map((label, i) => (
+                <div key={label}>
+                  <p className="text-xs text-paper/50">{label}</p>
+                  <p className="display mt-1.5 text-[clamp(1.9rem,3.6vw,2.5rem)] leading-[1.05] tracking-[-0.015em]">{facts.phrases![i]}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-paper/60">The language</p>
+            <p className="display mt-8 text-[clamp(1.9rem,3.6vw,2.5rem)] leading-[1.05] tracking-[-0.015em]">{facts.language}</p>
+          </>
+        )}
+        <p className="mt-10 border-t border-white/15 pt-4 text-sm leading-relaxed text-paper/70">
+          {facts.phrases ? `Spoken here: ${facts.language}` : `Signs and menus in ${place} are in ${facts.language.split(/,| and | \(/)[0]}.`}
+        </p>
+      </div>
+
+      <dl className="divide-y divide-line border-y border-line">
+        {rows.map((r) => (
+          <div key={r.k} className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-4 py-4 sm:grid-cols-[9rem_minmax(0,1fr)]">
+            <dt className="flex items-start gap-2 pt-0.5 text-sm text-stone">
+              <r.icon className="mt-0.5 size-4 shrink-0 text-stone-2" />
+              {r.k}
+            </dt>
+            <dd className="leading-relaxed text-ink/85">{r.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
