@@ -1,6 +1,7 @@
 import { GuideCover, GuidePhoto } from "@/components/seo/guide-media";
 import { CalendarDays, Clock3, Coins, Heart, MapPin, Navigation } from "@/components/site/icons";
 import { MONTH_NAMES, monthsLabel, placeLabel, price, type TripIdea, type TripTag } from "@/lib/trip-ideas";
+import { GalleryOpen, TripGallery, type GallerySlide } from "./gallery";
 
 /** Who a trip suits, from its tags, in the order people search for them. */
 const FOR: [TripTag, string][] = [
@@ -29,7 +30,7 @@ const firstClause = (s: string) => s.split(/[;.]| from /)[0].trim();
  * The top of a trip page: a full-bleed photo with the title, two of the highlights
  * alongside on wide screens, and a floating card of the facts people look for first.
  */
-export function TripHero({ t, alt, inSeason }: { t: TripIdea; alt: string; inSeason: boolean }) {
+export function TripHero({ t, alt, inSeason, slides }: { t: TripIdea; alt: string; inSeason: boolean; slides: GallerySlide[] }) {
   const where = placeLabel(t);
   const side = t.highlights.slice(0, 2);
   const facts = [
@@ -53,6 +54,9 @@ export function TripHero({ t, alt, inSeason }: { t: TripIdea; alt: string; inSea
           className="min-h-[34rem] rounded-panel sm:min-h-[36rem] lg:h-full lg:min-h-0"
         >
           <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/45 to-transparent" />
+          <div className="absolute left-5 top-5 z-[2] sm:left-8 sm:top-8">
+            <TripGallery slides={slides} city={t.destination} title={t.name} />
+          </div>
           <header className="absolute inset-x-0 bottom-0 p-6 pb-20 text-paper sm:p-10 sm:pb-24">
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs text-paper ring-1 ring-white/25 backdrop-blur-md">
@@ -81,7 +85,8 @@ export function TripHero({ t, alt, inSeason }: { t: TripIdea; alt: string; inSea
             <figure key={name} className="group relative overflow-hidden rounded-panel bg-paper-2">
               <GuidePhoto name={name} city={t.destination} />
               <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
-              <figcaption className="absolute inset-x-0 bottom-0 p-5 text-paper">
+              <GalleryOpen index={i + 1} label={`Open the photo of ${name}`} />
+              <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 p-5 text-paper">
                 <span className="font-mono text-[11px] text-paper/60">{String(i + 1).padStart(2, "0")}</span>
                 <span className="display mt-1 block text-xl leading-tight">{name}</span>
                 <span className="mt-1 line-clamp-2 block text-sm text-paper/75">{note}</span>

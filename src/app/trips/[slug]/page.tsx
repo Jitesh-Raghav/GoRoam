@@ -9,12 +9,15 @@ import { TripCard } from "@/components/seo/trip-card";
 import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, MapPin, Moon, Navigation, Sparkles, Stamp, Sun, Sunrise } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
 import { BudgetPlanner } from "@/components/trip/budget-planner";
+import { CompareTrips, type CompareRow } from "@/components/trip/compare-trips";
 import { Insider, Nearby, RealPrices, StayAreas } from "@/components/trip/deep-sections";
 import { Essentials } from "@/components/trip/essentials";
+import { GalleryOpen, type GallerySlide } from "@/components/trip/gallery";
 import { PackList } from "@/components/trip/pack-list";
 import { SeasonBar } from "@/components/trip/season-bar";
 import { ShareTrip } from "@/components/trip/share-trip";
-import { TripHero } from "@/components/trip/trip-hero";
+import { TripHero, idealFor } from "@/components/trip/trip-hero";
+import { VibeScores } from "@/components/trip/vibe-scores";
 import { mapsSearchUrl, stayPartners } from "@/lib/booking";
 import { COMPANY } from "@/lib/company";
 import { factsFor, type CountryFacts } from "@/lib/country-facts";
@@ -27,6 +30,7 @@ import { daysFor } from "@/lib/trip-days";
 import { fromCities } from "@/lib/trip-hubs";
 import { TRIP_IDEAS, placeLabel, price, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
 import { extraFor } from "@/lib/trip-ideas-extra";
+import { VIBES, vibeVerdict, vibesFor } from "@/lib/trip-vibes";
 import { cn } from "@/lib/utils";
 
 /** What to pack, from the kind of trip it is and where it is. */
@@ -82,6 +86,17 @@ const PARTS = [
   { k: "Evening", icon: Moon, tone: "bg-ink text-sun-2" },
 ] as const;
 
+/** Highlights on a 6-column grid: the first full width, the rest in thirds, with any odd ones out spread to fill the row. */
+function highlightSpan(i: number, n: number) {
+  if (i === 0) return "sm:col-span-6";
+  const rest = n - 1;
+  const left = rest % 3;
+  const fromEnd = n - 1 - i;
+  if (left === 1 && fromEnd === 0) return "sm:col-span-6";
+  if (left === 2 && fromEnd < 2) return "sm:col-span-3";
+  return "sm:col-span-2";
+}
+
 function Section({ id, n, eyebrow, heading, intro, children }: { id: string; n: number; eyebrow: string; heading: string; intro?: string; children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-28" aria-labelledby={`${id}-h`}>
@@ -121,10 +136,47 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
   ];
   const [h1, h2, h3] = t.highlights.map((h) => h[0]);
 
+  // Every photo on the page, in the order it appears, for the full-screen gallery.
+  const slides: GallerySlide[] = [
+    { kind: "trip", name: t.name, caption: `${t.name}, ${placeLabel(t)}`, src: `/trips/${t.slug}/photo?w=2000` },
+    ...t.highlights.map(([name]) => ({ kind: "place" as const, name, caption: name })),
+    ...(extra?.food ?? []).map(([dish]) => ({ kind: "dish" as const, name: dish, caption: dish })),
+    ...t.stays.map((x) => ({ kind: "place" as const, name: GENERIC.test(x.name) ? x.area : x.name, caption: `${x.name} · ${x.area}` })),
+  ];
+  const foodStart = 1 + t.highlights.length;
+
+  const vibeScores = vibesFor(t, deep?.vibes);
+  const vibeRows = VIBES.map((v) => ({ label: v.label, score: vibeScores[v.id] }));
+
+  // "Plan it for {month}": the 10th of that month next time it comes round, or two weeks out for this month.
+  const today = new Date();
+  const monthHrefs = Array.from({ length: 12 }, (_, i) => {
+    const start = i === today.getMonth() ? new Date(today.getTime() + 14 * 86400000) : new Date(Date.UTC(today.getFullYear() + (i < today.getMonth() ? 1 : 0), i, 10));
+    return plannerHref({ destination: t.destination, days: t.days, startDate: start.toISOString().slice(0, 10), interests: [], diet: [], notes: "" });
+  });
+
+  // The comparison: the trips people weigh this one against, then similar trips priced the same way.
+  const rivals = (deep?.rivals ?? []).map(tripBySlug).filter((o): o is TripIdea => !!o);
+  const similar = relatedTrips(t, 12).filter((o) => (o.currency ?? "INR") === (t.currency ?? "INR") && !rivals.includes(o));
+  const compareRows: CompareRow[] = [t, ...[...rivals, ...similar].slice(0, 3)].map((o) => ({
+    slug: o.slug,
+    name: o.name,
+    place: placeLabel(o),
+    days: `${o.days} days`,
+    from: price(o, o.budget[0]),
+    mid: price(o, o.budget[1]),
+    best: monthsLabel(o.months),
+    idealFor: idealFor(o),
+    current: o.slug === t.slug,
+  }));
+
   const quick = `A ${t.days}-day ${t.name} trip costs about ${price(t, t.budget[0] * t.days)}–${price(t, t.budget[1] * t.days)} per person (${price(t, t.budget[0])}–${price(t, t.budget[1])} a day), not counting travel to get there. The best time to go is ${monthsLabel(t.months)}. Stay in ${(stayOf("Mid-range") ?? t.stays[0]).area} for comfort or ${(stayOf("Budget") ?? t.stays[0]).area} on a budget, and don't miss ${[h1, h2, h3].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1")}.`;
 
+  const own = deep?.faqs ?? [];
   const faqs = [
-    ...tripFaqs(t),
+    // The questions written for this place first; skip the generic "how many days" if one of them covers it.
+    ...own,
+    ...tripFaqs(t).filter((f) => !(f.q.startsWith("How many days") && own.some((o) => o.q.startsWith("How many days")))),
     {
       q: `Is ${shorter} ${shorter === 1 ? "day" : "days"} enough for ${t.name}?`,
       a: `Yes, if you focus: follow days 1 to ${shorter} of the itinerary above${days?.[t.days - 1] ? ` and skip "${days[t.days - 1][0]}"` : ""}. ${t.days} days is the comfortable length.`,
@@ -171,6 +223,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     ...(deep ? [{ id: "insider", label: "Insider" }, { id: "nearby", label: "Day trips" }] : []),
     { id: "reach", label: "Getting there" },
     { id: "essentials", label: facts ? "Essentials" : "Packing" },
+    { id: "compare", label: "Compare" },
     { id: "faq", label: "FAQ" },
   ];
   const n = (id: string) => chapters.findIndex((c) => c.id === id) + 1;
@@ -209,7 +262,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     <PublicShell crumbs={crumbs.map((c) => ({ name: c.name, href: c.path }))}>
       <JsonLd data={[trip, webPage, faqPage(faqs), breadcrumbs(crumbs)]} />
       <article className="container-x pb-24 pt-6">
-        <TripHero t={t} alt={photoAlt(t)} inSeason={inSeason} />
+        <TripHero t={t} alt={photoAlt(t)} inSeason={inSeason} slides={slides} />
 
         {/* Byline */}
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-6">
@@ -244,6 +297,9 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                 </p>
                 <p className="mt-3 text-[1.08rem] leading-relaxed text-ink/85">{quick}</p>
               </div>
+              <div className="mt-4">
+                <VibeScores name={t.name} verdict={vibeVerdict(vibeScores)} scores={vibeRows} />
+              </div>
 
               <p className="mt-12 flex items-center gap-3 text-brand">
                 <span className="font-mono text-xs text-stone-2">01</span>
@@ -255,7 +311,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                 {extra?.about ?? `Planning a ${t.days}-day trip to ${t.name}? Here's a day-by-day itinerary with what it costs, where to stay and how to get there.`}
               </p>
               <div className="mt-8">
-                <SeasonBar months={t.months} weather={extra?.weather} />
+                <SeasonBar months={t.months} weather={extra?.weather} name={city} hrefs={monthHrefs} />
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
                 <PillLink href={plan}>Create my {city} trip</PillLink>
@@ -268,15 +324,16 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             </section>
 
             <Section id="highlights" n={n("highlights")} eyebrow="Don't miss" heading={`Best things to do in ${t.name}`}>
-              <ul className="grid gap-4 sm:grid-cols-3">
+              <ul className="grid gap-4 sm:grid-cols-6">
                 {t.highlights.map(([name, note], i) => (
-                  <li key={name} className={cn("group relative overflow-hidden rounded-card bg-white ring-1 ring-line", i === 0 && "sm:col-span-3")}>
-                    <div className={cn("relative overflow-hidden", i === 0 ? "h-64 sm:h-80" : "h-44")}>
+                  <li key={name} className={cn("group relative overflow-hidden rounded-card bg-white ring-1 ring-line", highlightSpan(i, t.highlights.length))}>
+                    <div className={cn("relative overflow-hidden", i === 0 ? "h-64 sm:h-[22rem]" : "h-44")}>
                       <GuidePhoto name={name} city={t.destination} />
-                      {i === 0 && <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent" />}
-                      <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
+                      {i === 0 && <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent" />}
+                      <GalleryOpen index={1 + i} label={`Open the photo of ${name}`} />
+                      <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
                       {i === 0 && (
-                        <div className="absolute inset-x-0 bottom-0 p-6 text-paper">
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] p-6 text-paper">
                           <h3 className="display text-[clamp(1.6rem,3vw,2.2rem)] leading-tight">{name}</h3>
                           <p className="mt-1.5 max-w-xl text-paper/85">{note}</p>
                         </div>
@@ -294,7 +351,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                       rel="noopener noreferrer"
                       aria-label={`${name} on Google Maps`}
                       className={cn(
-                        "absolute right-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] shadow-sm transition-colors",
+                        "absolute right-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] shadow-sm transition-colors",
                         "bg-white/95 text-ink hover:bg-ink hover:text-paper"
                       )}
                     >
@@ -458,7 +515,8 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                     <li key={dish} className="group overflow-hidden rounded-card bg-white ring-1 ring-line">
                       <div className="relative h-36 overflow-hidden">
                         <GuidePhoto name={dish} city={t.destination} kind="dish" />
-                        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
+                        <GalleryOpen index={foodStart + i} label={`Open the photo of ${dish}`} />
+                        <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
                       </div>
                       <div className="p-5">
                         <h3 className="display text-[1.15rem] leading-tight text-ink">{dish}</h3>
@@ -529,6 +587,16 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               {facts && <Essentials facts={facts} place={city} />}
               {facts && <h3 className="display mb-4 mt-12 text-[1.4rem] text-ink">What to pack for {t.name}</h3>}
               <PackList slug={t.slug} items={packing(t, facts)} />
+            </Section>
+
+            <Section
+              id="compare"
+              n={n("compare")}
+              eyebrow="Weighing it up"
+              heading={rivals.length ? `${t.name} vs ${rivals.slice(0, 2).map((o) => o.name).join(" vs ")}` : `${t.name} compared with similar trips`}
+              intro={`How ${t.name} stacks up on length, cost and the best time to go. Prices are per person a day, not counting travel${new Set([t, ...rivals].map((o) => o.currency ?? "INR")).size > 1 ? ", in each trip's own currency" : ""}.`}
+            >
+              <CompareTrips rows={compareRows} />
             </Section>
 
             <Section id="faq" n={n("faq")} eyebrow="Good questions" heading={`${t.name} trip FAQs`}>

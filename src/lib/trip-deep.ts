@@ -18,7 +18,15 @@ export interface TripDeep {
   dayTrips: [place: string, distance: string, why: string][];
   /** [event, when, what happens]. */
   events: [name: string, when: string, note: string][];
+  /** Scores out of 5 for "Is it for you?", where the tag-based guess isn't right. */
+  vibes?: Partial<Record<Vibe, number>>;
+  /** Questions people search about this place in particular. */
+  faqs?: { q: string; a: string }[];
+  /** The trips people weigh this one against, listed first in the comparison. */
+  rivals?: string[];
 }
+
+export type Vibe = "romance" | "beaches" | "adventure" | "culture" | "food" | "value";
 
 export const TRIP_DEEP: Record<string, TripDeep> = {
   jaisalmer: {
@@ -540,6 +548,212 @@ export const TRIP_DEEP: Record<string, TripDeep> = {
       ["Phuket Vegetarian Festival", "The ninth lunar month, usually October", "Processions, firecrackers and an island-wide vegan food fair."],
       ["Loy Krathong", "The November full moon", "Candle-lit floats set adrift on the sea and ponds."],
       ["Songkran", "13–15 April", "Thai New Year's island-wide water fight."],
+    ],
+  },
+
+  "bora-bora": {
+    prices: [
+      ["Air Tahiti, Papeete to Bora Bora return", "about $350–550"],
+      ["Small-group lagoon tour with lunch", "$120–200 per person"],
+      ["Private boat, half day", "$600–1,000 per boat"],
+      ["Jet-ski island tour (2–3 hours)", "$250–400 per jet ski"],
+      ["4x4 island tour", "$80–110 per person"],
+      ["Bike or e-bike rental", "$20–60 a day"],
+      ["Roulotte dinner in Vaitape", "$20–30"],
+      ["Cocktail at a resort bar", "$20–30"],
+      ["Overwater bungalow", "$800–2,500+ a night"],
+    ],
+    areas: [
+      ["East motus (Motu Tehotu, Motu Piti Aau)", "The classic view: bungalows face Mount Otemanu across the lagoon. The Four Seasons, St. Regis and InterContinental Thalasso are on this side."],
+      ["West motus (Motu Toopua)", "Ocean sunsets and calm water, with Otemanu in profile; home to the Conrad."],
+      ["Matira Point", "On the main island: the best beach, restaurants you can walk to and the cheapest overwater bungalows."],
+      ["Vaitape", "The village: family pensions, shops, the boat dock and the roulottes. The cheapest base, if the least romantic."],
+    ],
+    secrets: [
+      "Sit on the left side of the plane from Papeete for your first look at the lagoon and Mount Otemanu.",
+      "Air Tahiti's shuttle boat from the airport to Vaitape is free with your flight; resort transfers are charged per person.",
+      "Eat at the roulottes in Vaitape and the snack bars around Matira to halve your food bill.",
+      "Ask for a bungalow facing Mount Otemanu when you book: rooms in the same resort can have very different views.",
+    ],
+    mistakes: [
+      "Eating every meal at your resort: two people can easily spend $300 a day on food alone.",
+      "Booking a motu resort without realising every trip off the island means a boat.",
+      "Coming from December to March expecting calm, dry days: it's the wet season, with heavy showers and more wind.",
+    ],
+    photoSpots: [
+      ["Your bungalow deck, facing Otemanu", "Sunrise, when the lagoon is glassy"],
+      ["Matira Point", "Sunset"],
+      ["Mount Otemanu from a boat in the lagoon", "Late morning, when the water is most turquoise"],
+    ],
+    dayTrips: [
+      ["Taha'a", "About 1 hour by boat", "The vanilla island: plantations, pearl farms and a famous coral-garden drift snorkel."],
+      ["Maupiti", "20 minutes by plane", "A tiny, quiet island often called Bora Bora as it was 50 years ago."],
+      ["Moorea", "45 minutes by plane, via Papeete", "Jagged green peaks, cheaper stays and whale watching; the easiest pairing with Bora Bora."],
+    ],
+    events: [
+      ["Heiva i Bora Bora", "July", "Dance, singing, canoe races and traditional sports in Vaitape."],
+      ["Humpback whale season", "July to October", "Whales come to the islands to calve; sightings are best around Moorea and Tahiti."],
+      ["Hawaiki Nui Va'a", "Late October or early November", "Polynesia's great outrigger canoe race, finishing at Matira Beach."],
+    ],
+    vibes: { romance: 5, beaches: 5, adventure: 3, culture: 2, food: 3, value: 1 },
+    rivals: ["maldives", "fiji", "maui"],
+    faqs: [
+      { q: "Is Bora Bora worth it?", a: "Yes, if you want the classic lagoon and an overwater bungalow: few places come close. Five nights is the sweet spot, and adding Moorea or Taha'a gives you more for less." },
+      { q: "Bora Bora or the Maldives?", a: "Bora Bora has the mountain, Mount Otemanu, rising over the lagoon, and Polynesian culture on the main island. The Maldives has more resorts and better diving, and is much closer and cheaper from India, the Middle East and Europe. From the US, Bora Bora is the easier trip." },
+      { q: "Can you do Bora Bora on a budget?", a: "Yes: stay in a family pension on the main island, eat at the roulottes in Vaitape, rent a bike and book one lagoon tour. Budget around $300 a day per person, plus flights." },
+      { q: "What is the cheapest time to go to Bora Bora?", a: "November to April, the wet season, has the lowest prices. October and early May are the best-value shoulder months, with mostly dry weather." },
+      { q: "How many days do you need in Bora Bora?", a: "Four to five nights covers a lagoon tour, an island tour, a beach day and time to enjoy your bungalow. Add Moorea for a 7–10 day French Polynesia trip." },
+    ],
+  },
+
+  maldives: {
+    prices: [
+      ["Shared speedboat from Malé to a local island", "about $25–50 per person each way"],
+      ["Public ferry from Malé", "a few dollars, on set days"],
+      ["Snorkel trip from a local island", "$30–60 per person"],
+      ["Sandbank picnic", "$40–80 per person"],
+      ["Resort day pass from Maafushi", "$100–200 per person, usually with lunch"],
+      ["Seaplane transfer to a far resort", "$500–900 per person return"],
+      ["Guesthouse on a local island", "₹5,000–9,000 a night"],
+      ["Overwater villa at a resort", "₹50,000–2,00,000+ a night"],
+    ],
+    areas: [
+      ["Local islands (Maafushi, Thulusdhoo, Dhigurah)", "Guesthouses, day trips and bikini beaches; no alcohol on the island itself."],
+      ["North and South Malé Atolls", "Resorts a speedboat ride from the airport, so no seaplane to pay for."],
+      ["Baa and Ari Atolls", "Seaplane resorts, manta rays and whale sharks: the dream, at a price."],
+    ],
+    secrets: [
+      "Thulusdhoo has a surf break and a calmer feel than busy Maafushi.",
+      "Dhigurah in South Ari is the base for whale shark trips, which run all year.",
+      "Buy a resort day pass from your local island for a day of overwater bars and pools without the room rate.",
+      "Carry US dollars in small notes; smaller guesthouses don't always take cards.",
+    ],
+    mistakes: [
+      "Booking a faraway resort without pricing the seaplane: transfers can cost as much as a night's stay.",
+      "Wearing a bikini on a local island outside the marked bikini beach.",
+      "Expecting a drink on a local island: alcohol is only served at resorts and on liveaboard boats.",
+    ],
+    photoSpots: [
+      ["Your overwater villa deck", "Sunset"],
+      ["A sandbank from the boat", "Midday, when the water is brightest"],
+      ["The seaplane window", "On the flight in"],
+    ],
+    dayTrips: [
+      ["Sandbank picnic", "15–30 minutes by boat", "A strip of white sand alone in the open sea."],
+      ["Resort day pass", "A short boat ride from most local islands", "Pools, overwater bars and the house reef for a day."],
+      ["Whale shark trip", "From Dhigurah or Maamigili, South Ari", "Snorkel with whale sharks year round."],
+    ],
+    events: [
+      ["Dry season", "November to April", "Calm seas, sunshine and the best visibility for snorkelling."],
+      ["Manta season at Hanifaru Bay", "May to November", "Hundreds of mantas feed in Baa Atoll's protected bay."],
+      ["Independence Day", "26 July", "Parades and fireworks in Malé."],
+    ],
+    vibes: { romance: 5, beaches: 5, adventure: 3, culture: 1, food: 2, value: 3 },
+    rivals: ["bora-bora", "sri-lanka", "phuket"],
+    faqs: [
+      { q: "Maldives or Bora Bora?", a: "From India the Maldives wins on cost and time: a 2–4 hour flight and local-island guesthouses from about ₹5,000 a night. Bora Bora has the mountain and Polynesian culture, but it's a 20-hour-plus journey and costs much more." },
+      { q: "Can you visit the Maldives on a budget?", a: "Yes: stay on a local island like Maafushi or Thulusdhoo, take shared speedboats and join group snorkel trips. Around ₹5,000–8,000 a day per person is realistic." },
+      { q: "Which atoll is best for a first trip to the Maldives?", a: "North or South Malé Atoll, for short transfers and plenty of choice. Pick Ari or Baa for manta rays and whale sharks." },
+    ],
+  },
+
+  fiji: {
+    prices: [
+      ["Ferry from Port Denarau to the Mamanucas", "about $80–200 return, by island"],
+      ["Yasawa island-hopping ferry pass", "a few hundred dollars, by number of days"],
+      ["Cloud 9 floating-bar trip", "$100–180 per person"],
+      ["Manta ray snorkel in the Yasawas", "$50–80 per person"],
+      ["Sabeto Mud Pools", "about $15"],
+      ["Village visit with a kava ceremony", "$30–80"],
+      ["Lovo feast", "$30–60"],
+    ],
+    areas: [
+      ["Denarau and Nadi", "Big resorts by the airport; a handy first and last night."],
+      ["Mamanuca Islands", "Postcard islands 30–90 minutes from Nadi by ferry; the best pick for a first trip."],
+      ["Yasawa Islands", "Further out: simpler resorts, manta rays and empty beaches."],
+      ["Coral Coast", "On the main island, with village life and Pacific Harbour's shark dive."],
+    ],
+    secrets: [
+      "Say 'Bula!' back to everyone; you'll hear it a hundred times a day.",
+      "Bring a gift of kava root (sevusevu) when you visit a village; your host will guide you through the ceremony.",
+      "'Fiji time' is real: leave slack in ferry and flight connections.",
+      "Island resorts often charge for a meal plan; check what's included before you book.",
+    ],
+    mistakes: [
+      "Wearing a hat or sunglasses in a village: take them off, and cover shoulders and knees.",
+      "Booking tight same-day ferry and flight connections.",
+      "Skipping reef-safe sunscreen.",
+    ],
+    photoSpots: [
+      ["Cloud 9 floating platform", "Late morning"],
+      ["Mamanuca sandbars from the ferry", "Midday"],
+      ["Your island's west-facing beach", "Sunset"],
+    ],
+    dayTrips: [
+      ["Cloud 9", "By boat from Port Denarau", "A two-storey floating bar out on the reef."],
+      ["Garden of the Sleeping Giant", "20 minutes from Nadi", "Orchid gardens at the foot of the Sabeto hills."],
+      ["Navala village", "About 2.5 hours inland", "Fiji's most traditional village of thatched bure houses."],
+    ],
+    events: [
+      ["Dry season", "May to November", "Sunny days and the best diving visibility."],
+      ["Manta season in the Yasawas", "May to October", "Mantas feed in the channel by Drawaqa island."],
+      ["Fiji Day", "10 October", "Independence celebrations across the islands."],
+    ],
+    vibes: { romance: 4, beaches: 5, adventure: 3, culture: 4, food: 3, value: 3 },
+    rivals: ["bora-bora", "maui"],
+    faqs: [
+      { q: "Fiji or Bora Bora?", a: "Fiji is cheaper, much easier from Australia and New Zealand, and has more island-hopping and village culture. Bora Bora has the more dramatic lagoon and the iconic overwater bungalows, at a higher price." },
+      { q: "How many days do you need in Fiji?", a: "Six to ten days: a night near Nadi, then three to five on one or two islands." },
+    ],
+  },
+
+  maui: {
+    prices: [
+      ["Haleakalā sunrise", "$1 reservation plus $30 park entry per car"],
+      ["Molokini snorkel cruise", "$120–200 per person"],
+      ["Whale-watching cruise (2 hours)", "$60–120 per person"],
+      ["Rental car", "$60–120 a day"],
+      ["Waiʻānapanapa State Park", "$5 per person plus $10 parking, booked ahead"],
+      ["Luau", "$150–250 per person"],
+      ["Poke bowl", "$15–22"],
+      ["Shave ice", "$7–10"],
+    ],
+    areas: [
+      ["Kāʻanapali", "Resort beaches, whale views and easy dining on the west side."],
+      ["Wailea", "Upscale resorts on sunny south-coast beaches."],
+      ["Kīhei", "Condos and value, with good beaches and grocery stores."],
+      ["Pāʻia and Upcountry", "A surf town and cool green hills; a base for Hana and Haleakalā."],
+    ],
+    secrets: [
+      "Sunset at Haleakalā's summit needs no reservation and is almost as good as sunrise.",
+      "At Hoʻokipa Beach Park, green sea turtles haul out on the sand in the late afternoon.",
+      "Aunty Sandy's in Keʻanae makes the banana bread the Road to Hana is famous for.",
+      "Maluaka Beach is a shore snorkel where you'll often swim with green turtles.",
+    ],
+    mistakes: [
+      "Driving the Road to Hana without a Waiʻānapanapa reservation.",
+      "Getting close to turtles or monk seals: stay at least 3 m (10 ft) away; it's the law.",
+      "Visiting Lahaina as a sightseer while much of the town is still rebuilding after the 2023 fire.",
+    ],
+    photoSpots: [
+      ["Haleakalā summit", "Sunrise above the clouds"],
+      ["Waiʻānapanapa black-sand beach", "Morning"],
+      ["Black Rock, Kāʻanapali", "Sunset, with the cliff dive at dusk"],
+    ],
+    dayTrips: [
+      ["Road to Hana", "A full day", "Waterfalls, black-sand beaches and banana-bread stands."],
+      ["Molokini and Turtle Town", "A half day by boat from Māʻalaea", "Snorkel the rim of a sunken crater."],
+      ["Lānaʻi", "About 1 hour by ferry from Māʻalaea", "Quiet beaches, Hulopoʻe Bay's dolphins and red-dirt 4x4 trails."],
+    ],
+    events: [
+      ["Humpback whale season", "December to April, peaking January to March", "Thousands of whales off the west and south coasts."],
+      ["Maui Whale Festival", "February", "Whale-themed events, including the Great Whale Count."],
+    ],
+    vibes: { romance: 4, beaches: 4, adventure: 5, culture: 3, food: 4, value: 2 },
+    rivals: ["bora-bora", "fiji"],
+    faqs: [
+      { q: "Maui or Bora Bora?", a: "Maui has more to do: a volcano sunrise, the Road to Hana, whales and great food, all without a boat. Bora Bora is the better pure lagoon-and-overwater-bungalow escape." },
+      { q: "Do I need a car on Maui?", a: "Yes. Buses are limited and the best sights are spread across the island." },
     ],
   },
 };
