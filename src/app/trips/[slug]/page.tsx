@@ -6,14 +6,14 @@ import { CreateYoursBar } from "@/components/seo/create-yours";
 import { GuideCover, GuidePhoto } from "@/components/seo/guide-media";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { TripCard } from "@/components/seo/trip-card";
-import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, MapPin, Moon, Navigation, Sparkles, Stamp, Sun, Sunrise } from "@/components/site/icons";
+import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, MapPin, Navigation, Sparkles, Stamp } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
 import { BudgetPlanner } from "@/components/trip/budget-planner";
 import { CompareTrips, type CompareRow } from "@/components/trip/compare-trips";
 import { Insider, Nearby, RealPrices, StayAreas } from "@/components/trip/deep-sections";
 import { Essentials } from "@/components/trip/essentials";
 import { GalleryOpen, type GallerySlide } from "@/components/trip/gallery";
-import { PackList } from "@/components/trip/pack-list";
+import { PackList, type PackGroup } from "@/components/trip/pack-list";
 import { SeasonBar } from "@/components/trip/season-bar";
 import { ShareTrip } from "@/components/trip/share-trip";
 import { TripHero, idealFor } from "@/components/trip/trip-hero";
@@ -33,21 +33,29 @@ import { extraFor } from "@/lib/trip-ideas-extra";
 import { VIBES, vibeVerdict, vibesFor } from "@/lib/trip-vibes";
 import { cn } from "@/lib/utils";
 
-/** What to pack, from the kind of trip it is and where it is. */
-function packing(t: TripIdea, facts: CountryFacts | null) {
-  const list = new Set<string>([t.country === "India" ? "ID (Aadhaar or licence)" : "Passport, plus a visa if you need one", "Power bank and charging cables"]);
-  const add = (...x: string[]) => x.forEach((i) => list.add(i));
-  if (facts && t.country !== "India") add(`A plug adapter if yours aren't type ${facts.plugs.split(" · ")[0]}`);
-  if (t.tags.includes("snow")) add("Thermals, gloves and a woollen cap", "Waterproof boots");
-  if (t.tags.includes("hills")) add("Warm layers for the evenings", "Comfortable walking shoes");
-  if (t.tags.includes("beach")) add("Reef-safe sunscreen and sunglasses", "Swimwear and flip-flops");
-  if (t.tags.includes("desert")) add("A scarf for sun and sand", "A warm layer for desert nights");
-  if (t.tags.includes("wildlife")) add("Binoculars", "Muted, earth-coloured clothes");
-  if (t.tags.includes("heritage") || t.tags.includes("festival")) add("Clothes that cover shoulders and knees for temples");
-  if (t.tags.includes("adventure")) add("A small first-aid kit");
-  if (t.tags.includes("abroad")) add("A forex card or some local cash", "Travel insurance documents");
-  add("A reusable water bottle", "Offline maps downloaded", "Comfortable walking shoes");
-  return [...list].slice(0, 10);
+/** What to pack, from the kind of trip it is and where it is, in the groups people pack by. */
+function packing(t: TripIdea, facts: CountryFacts | null): PackGroup[] {
+  const has = (x: TripIdea["tags"][number]) => t.tags.includes(x);
+  const docs = [t.country === "India" ? "ID (Aadhaar or licence)" : "Passport, plus a visa if you need one"];
+  if (has("abroad")) docs.push("A forex card or some local cash", "Travel insurance documents");
+  const tech = ["Power bank and charging cables", ...(facts && t.country !== "India" ? [`A plug adapter if yours aren't type ${facts.plugs.split(" · ")[0]}`] : []), "Offline maps downloaded"];
+  const clothes: string[] = [];
+  if (has("snow")) clothes.push("Thermals, gloves and a woollen cap", "Waterproof boots");
+  if (has("hills")) clothes.push("Warm layers for the evenings");
+  if (has("beach")) clothes.push("Swimwear and flip-flops");
+  if (has("desert")) clothes.push("A warm layer for desert nights");
+  if (has("heritage") || has("festival")) clothes.push("Clothes that cover shoulders and knees for temples");
+  if (has("wildlife")) clothes.push("Muted, earth-coloured clothes");
+  clothes.push("Comfortable walking shoes");
+  const health = [...(has("beach") ? ["Reef-safe sunscreen and sunglasses"] : []), ...(has("adventure") ? ["A small first-aid kit"] : []), "A reusable water bottle"];
+  const extra = [...(has("desert") ? ["A scarf for sun and sand"] : []), ...(has("wildlife") ? ["Binoculars"] : [])];
+  return [
+    { name: "Documents & money", items: docs },
+    { name: "Tech", items: tech },
+    { name: "Clothes", items: clothes },
+    { name: "Sun & health", items: health },
+    { name: `For ${t.name}`, items: extra },
+  ].filter((g) => g.items.length);
 }
 
 export const dynamicParams = false;
@@ -76,15 +84,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+// Words in highlight names too common to tie a day to one of them.
+const COMMON = new Set(["beach", "beaches", "island", "islands", "temple", "temples", "market", "river", "falls", "valley", "national", "village", "sunset", "sunrise", "tour", "lagoon", "gardens", "garden", "palace", "museum", "old", "town", "city", "park", "lake"]);
+
 // A stay written as a kind of place ("Guesthouses near the lake") is searched by its area instead.
 const GENERIC = /\b(guesthouses|hostels|homestays|huts|cottages|stays|lodges|camps|resorts|villas|hotels|ships|houses)\b/i;
 const TIER = { Budget: "bg-emerald-50 text-emerald-700", "Mid-range": "bg-brand-soft text-brand", Luxury: "bg-sun-soft text-ink" } as const;
 const TIER_BAR = { Budget: "bg-emerald-500", "Mid-range": "bg-brand", Luxury: "bg-sun" } as const;
-const PARTS = [
-  { k: "Morning", icon: Sunrise, tone: "bg-sun-soft text-sun" },
-  { k: "Afternoon", icon: Sun, tone: "bg-brand-soft text-brand" },
-  { k: "Evening", icon: Moon, tone: "bg-ink text-sun-2" },
-] as const;
 
 /** Highlights on a 6-column grid: the first full width, the rest in thirds, with any odd ones out spread to fill the row. */
 function highlightSpan(i: number, n: number) {
@@ -144,6 +150,23 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     ...t.stays.map((x) => ({ kind: "place" as const, name: GENERIC.test(x.name) ? x.area : x.name, caption: `${x.name} · ${x.area}` })),
   ];
   const foodStart = 1 + t.highlights.length;
+
+  // Each day's photo: the highlight its plan mentions, then any not yet used, then the trip's own photo (-1).
+  const fold = (x: string) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const keys = t.highlights.map(([name]) => {
+    const full = fold(name).replace(/^the /, "");
+    return [full, ...full.split(/[^a-z0-9]+/).filter((w) => w.length >= 5 && !COMMON.has(w))];
+  });
+  const used = new Set<number>();
+  const dayPhotos = (days ?? []).map((d) => {
+    const text = fold(d.slice(0, 4).join(" "));
+    const free = (j: number) => !used.has(j);
+    let hit = keys.findIndex((k, j) => free(j) && text.includes(k[0]));
+    if (hit < 0) hit = keys.findIndex((k, j) => free(j) && k.slice(1).some((w) => text.includes(w)));
+    if (hit < 0) hit = keys.findIndex((_, j) => free(j));
+    if (hit >= 0) used.add(hit);
+    return hit;
+  });
 
   const vibeScores = vibesFor(t, deep?.vibes);
   const vibeRows = VIBES.map((v) => ({ label: v.label, score: vibeScores[v.id] }));
@@ -291,7 +314,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             {/* Overview */}
             <section id="overview" className="scroll-mt-28" aria-label="Overview">
               <div className="relative overflow-hidden rounded-panel bg-white p-6 ring-1 ring-line sm:p-7">
-                <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-[linear-gradient(to_bottom,var(--brand),var(--brand-2))]" />
+                <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-brand" />
                 <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.16em] text-brand">
                   <Sparkles className="size-4" /> The short answer
                 </p>
@@ -364,93 +387,118 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
 
             <Section id="itinerary" n={n("itinerary")} eyebrow="Day by day" heading={`${t.name} itinerary for ${t.days} days`}>
               {days ? (
-                <ol>
-                  {days.map(([dayTitle, morning, afternoon, evening, tip], i) => (
-                    <li key={dayTitle} className="relative grid gap-3 pb-5 last:pb-0 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-5 sm:pb-6">
-                      <div className="relative hidden justify-center sm:flex">
-                        {i < days.length - 1 && <span aria-hidden className="absolute bottom-0 top-14 w-px bg-[linear-gradient(to_bottom,var(--brand),var(--line))] opacity-40" />}
-                        <span className="relative grid size-14 place-items-center rounded-2xl bg-ink text-paper shadow-[0_10px_24px_-12px_rgba(14,31,59,0.7)]">
-                          <span className="text-center leading-none">
-                            <span className="block text-[9px] uppercase tracking-[0.18em] text-paper/55">Day</span>
-                            <span className="display mt-0.5 block text-xl">{i + 1}</span>
-                          </span>
-                        </span>
-                      </div>
-                      <div className="overflow-hidden rounded-card bg-white shadow-card ring-1 ring-line">
-                        <div className="px-5 pt-5 sm:px-6">
-                          <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-stone">
-                            <span className="grid size-7 place-items-center rounded-lg bg-ink font-mono text-[11px] text-paper sm:hidden">{i + 1}</span>
-                            Day {i + 1} of {days.length}
+                <>
+                  {/* The trip at a glance: one line, a dot a day. */}
+                  <nav aria-label={`${t.name}, day by day`} className="no-scrollbar -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+                    <ol className="relative grid min-w-max gap-0 sm:min-w-0" style={{ gridTemplateColumns: `repeat(${days.length}, minmax(9.5rem, 1fr))` }}>
+                      <span aria-hidden className="absolute inset-x-0 top-[5px] h-px bg-line-strong" />
+                      {days.map(([dayTitle], i) => (
+                        <li key={dayTitle} className="relative pr-5">
+                          <a href={`#day-${i + 1}`} className="group block">
+                            <span className="relative block size-[11px] rounded-full border-2 border-ink bg-paper transition-colors duration-300 group-hover:bg-ink" />
+                            <span className="mt-3 block font-mono text-[11px] text-stone">Day {i + 1}</span>
+                            <span className="mt-0.5 block text-sm leading-snug text-ink transition-colors group-hover:text-brand">{dayTitle}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
+                  </nav>
+
+                  <ol className="mt-14 space-y-16 sm:space-y-20">
+                    {days.map(([dayTitle, morning, afternoon, evening, tip], i) => {
+                      const h = dayPhotos[i];
+                      const place = h >= 0 ? t.highlights[h][0] : t.name;
+                      return (
+                        <li key={dayTitle} id={`day-${i + 1}`} className="scroll-mt-28">
+                          <p className="flex items-center gap-4 font-mono text-xs text-stone">
+                            <span className="text-ink">Day {String(i + 1).padStart(2, "0")}</span>
+                            <span aria-hidden className="h-px flex-1 bg-line-strong" />
+                            <span>of {String(days.length).padStart(2, "0")}</span>
                           </p>
-                          <h3 className="display mt-1 text-[1.35rem] leading-tight text-ink">
-                            Day {i + 1}: {dayTitle}
-                          </h3>
-                        </div>
-                        <dl className="mt-3 divide-y divide-line">
-                          {[morning, afternoon, evening].map((v, k) => {
-                            const p = PARTS[k];
-                            return (
-                              <div key={p.k} className="flex gap-3.5 px-5 py-3.5 sm:px-6">
-                                <span className={cn("mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl", p.tone)}>
-                                  <p.icon className="size-4" />
-                                </span>
-                                <div className="min-w-0">
-                                  <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-stone">{p.k}</dt>
-                                  <dd className="mt-0.5 leading-relaxed text-ink/85">{v}</dd>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </dl>
-                        {tip && (
-                          <p className="flex gap-2.5 border-t border-sun/25 bg-sun-soft/50 px-5 py-3.5 text-sm leading-relaxed text-ink/85 sm:px-6">
-                            <Lightbulb className="mt-0.5 size-4 shrink-0 text-sun" />
-                            <span>
-                              <span className="font-medium text-ink">Tip: </span>
-                              {tip}
-                            </span>
-                          </p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
+                          <div className="mt-6 grid gap-6 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] sm:gap-10">
+                            <figure className={cn("group relative aspect-[16/10] overflow-hidden rounded-[18px] bg-paper-2 sm:aspect-auto sm:min-h-[21rem]", i % 2 === 1 && "sm:order-2")}>
+                              {h >= 0 ? (
+                                <>
+                                  <GuidePhoto name={place} city={t.destination} />
+                                  <GalleryOpen index={1 + h} label={`Open the photo of ${place}`} />
+                                </>
+                              ) : (
+                                <GuideCover destination={t.destination} landscape={t.landscape} width={900} src={`/trips/${t.slug}/photo?w=900`} alt={photoAlt(t)} shade="none" credit={false} className="absolute inset-0" />
+                              )}
+                              <figcaption className="pointer-events-none absolute bottom-3 left-3 z-[2] inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs text-ink">
+                                <MapPin className="size-3 text-brand" /> {place}
+                              </figcaption>
+                            </figure>
+                            <div className="min-w-0">
+                              <h3 className="display text-[clamp(1.55rem,2.6vw,2rem)] leading-[1.1] tracking-[-0.015em] text-ink">
+                                <span className="sr-only">Day {i + 1}: </span>
+                                {dayTitle}
+                              </h3>
+                              <dl className="mt-6">
+                                {[
+                                  ["Morning", morning],
+                                  ["Afternoon", afternoon],
+                                  ["Evening", evening],
+                                ].map(([k, v]) => (
+                                  <div key={k} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
+                                    <dt className="text-sm text-stone">{k}</dt>
+                                    <dd className="text-[1.0625rem] leading-relaxed text-ink/85">{v}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                              {tip && (
+                                <p className="mt-3 border-l-2 border-sun pl-4 text-[0.95rem] leading-relaxed text-ink/75">
+                                  <span className="font-medium text-ink">Local tip. </span>
+                                  {tip}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </>
               ) : (
-                <ol className="space-y-3">
+                <ol className="divide-y divide-line border-y border-line">
                   {t.plan.map((d, i) => (
-                    <li key={d} className="flex gap-4 rounded-card bg-white p-4 ring-1 ring-line sm:p-5">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-ink font-mono text-xs text-paper">D{i + 1}</span>
-                      <p className="self-center leading-relaxed text-ink/80">{d}</p>
+                    <li key={d} className="grid gap-1 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
+                      <span className="font-mono text-xs text-stone sm:pt-1">Day {String(i + 1).padStart(2, "0")}</span>
+                      <p className="text-[1.0625rem] leading-relaxed text-ink/85">{d}</p>
                     </li>
                   ))}
                 </ol>
               )}
-              <Link
-                href={plan}
-                className="group mt-6 flex items-center justify-between gap-4 rounded-card bg-brand-soft/60 p-5 text-ink ring-1 ring-brand/15 transition-colors hover:bg-brand-soft"
-              >
+
+              <Link href={plan} className="group mt-16 flex items-center justify-between gap-6 border-t border-ink pt-5 text-ink">
                 <span>
-                  <span className="block font-medium">Want it hour by hour?</span>
-                  <span className="mt-0.5 block text-sm text-ink/70">GoRoam plans every stop with times, maps, costs and bookings for your dates.</span>
+                  <span className="display block text-[1.2rem]">Want it hour by hour?</span>
+                  <span className="mt-1 block text-sm text-stone">GoRoam plans every stop with times, maps, costs and bookings for your dates.</span>
                 </span>
-                <ArrowRight className="size-5 shrink-0 text-brand transition-transform duration-500 group-hover:translate-x-1" />
+                <span className="inline-flex shrink-0 items-center gap-2 text-sm font-medium">
+                  Plan it <ArrowRight className="size-4 transition-transform duration-500 group-hover:translate-x-1" />
+                </span>
               </Link>
 
-              <h3 className="display mt-12 text-[1.4rem] text-ink">
+              <h3 className="display mt-14 text-[1.4rem] text-ink">
                 {t.name} in {shorter}, {t.days} or {longer} days
               </h3>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <div className="rounded-card bg-white p-5 ring-1 ring-line">
-                  <p className="inline-flex rounded-full bg-paper-2 px-2.5 py-1 font-mono text-[11px] text-ink">
-                    {shorter} {shorter === 1 ? "day" : "days"}
+              <div className="mt-5 grid gap-8 border-t border-line pt-6 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
+                <div className="sm:pr-8">
+                  <p className="display text-[2.6rem] leading-none text-ink">
+                    {shorter}
+                    <span className="ml-2 font-sans text-base text-stone">{shorter === 1 ? "day" : "days"}</span>
                   </p>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/75">
+                  <p className="mt-3 leading-relaxed text-ink/75">
                     Follow days 1 to {shorter} above{days?.[t.days - 1] ? <> and leave out &ldquo;{days[t.days - 1][0]}&rdquo;</> : null}. Start early each day and book the main sights ahead.
                   </p>
                 </div>
-                <div className="rounded-card bg-white p-5 ring-1 ring-line">
-                  <p className="inline-flex rounded-full bg-paper-2 px-2.5 py-1 font-mono text-[11px] text-ink">{longer} days</p>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/75">
+                <div className="sm:pl-8">
+                  <p className="display text-[2.6rem] leading-none text-ink">
+                    {longer}
+                    <span className="ml-2 font-sans text-base text-stone">days</span>
+                  </p>
+                  <p className="mt-3 leading-relaxed text-ink/75">
                     Slow down with a free day for a spa, a cooking class or simply wandering
                     {nearby ? (
                       <>
@@ -586,7 +634,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             <Section id="essentials" n={n("essentials")} eyebrow="Before you go" heading={facts ? `Know before you go: ${t.name}` : `What to pack for ${t.name}`}>
               {facts && <Essentials facts={facts} place={city} />}
               {facts && <h3 className="display mb-4 mt-12 text-[1.4rem] text-ink">What to pack for {t.name}</h3>}
-              <PackList slug={t.slug} items={packing(t, facts)} />
+              <PackList slug={t.slug} title={`${t.name} packing list`} groups={packing(t, facts)} />
             </Section>
 
             <Section

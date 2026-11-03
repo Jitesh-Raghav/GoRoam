@@ -45,8 +45,7 @@ export function Insider({ deep }: { deep: TripDeep }) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="relative overflow-hidden rounded-panel bg-[linear-gradient(150deg,var(--ink),var(--ink-2))] p-6 text-paper">
-          <div aria-hidden className="pointer-events-none absolute -left-12 -top-12 size-48 rounded-full bg-brand/35 blur-3xl" />
+        <div className="relative overflow-hidden rounded-panel bg-ink p-6 text-paper">
           <h3 className="relative flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-sun-2">
             <Sparkles className="size-4" /> Locals know
           </h3>

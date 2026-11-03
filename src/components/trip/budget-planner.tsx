@@ -92,8 +92,7 @@ export function BudgetPlanner({
         <p className="px-1 text-xs leading-relaxed text-stone">Per person: stay, food, local transport and entry fees. Getting to {name} is extra.</p>
       </div>
 
-      <div className="relative flex flex-col bg-[linear-gradient(160deg,var(--ink),var(--ink-2))] p-5 text-paper sm:p-6">
-        <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-brand/30 blur-3xl" />
+      <div className="relative flex flex-col bg-ink p-5 text-paper sm:p-6">
         <div className="relative grid grid-cols-2 gap-4">
           <div>
             <p className="text-xs text-paper/60">
