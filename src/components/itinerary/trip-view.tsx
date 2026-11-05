@@ -253,9 +253,8 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live, 
       >
         <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/35 px-3 py-1.5 text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/60 px-3 py-1.5 text-paper shadow-[0_6px_16px_-8px_rgba(14,31,59,0.6)] ring-1 ring-inset ring-paper/20 backdrop-blur-md">
               <Icon className="size-3.5 shrink-0 text-sun-2" />
               <span className="eyebrow text-[0.6rem]">{slot.label}</span>
               {activity.time && <span className="hidden truncate text-xs text-paper/80 sm:inline">· {activity.time}</span>}
