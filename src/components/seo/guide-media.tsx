@@ -3,13 +3,13 @@
 /* eslint-disable @next/next/no-img-element -- small looked-up thumbnails, already sized by the photo API */
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { PlacePhoto, asDish, asStop } from "@/components/itinerary/place-photo";
 import type { RouteStop } from "@/components/itinerary/route-map";
 import type { SceneId } from "@/components/scenes/scenes";
 import { MapPin, UtensilsCrossed } from "@/components/site/icons";
 import { PhotoPanel } from "@/components/site/photo-panel";
+import { QuietLink } from "@/components/site/quiet-link";
 import { sizedPhoto, usePlacePhoto } from "@/lib/brand-photos";
 import type { DestinationGuide } from "@/lib/destination-guides";
 import { hasMapsKey } from "@/lib/maps";
@@ -103,7 +103,7 @@ export function GuideChip({ slug, name, destination, className }: { slug: string
   const [broken, setBroken] = useState<string | null>(null);
   const url = photo?.url && photo.url !== broken ? photo.url : null;
   return (
-    <Link
+    <QuietLink
       ref={ref}
       href={`/destinations/${slug}`}
       className={cn("group inline-flex items-center gap-2 rounded-full bg-white py-1 pl-1 pr-3.5 text-sm text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper", className)}
@@ -112,7 +112,7 @@ export function GuideChip({ slug, name, destination, className }: { slug: string
         {url ? <img src={url} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setBroken(url)} className="size-full object-cover" /> : <MapPin className="size-3.5" />}
       </span>
       {name}
-    </Link>
+    </QuietLink>
   );
 }
 

@@ -1,9 +1,17 @@
-// The photo cards' shared look (trips, ready-made trips, trip types), so all three stay one family.
+// The photo cards' shared look (trips, ready-made trips, trip types, your own trips): a
+// rounded photo with the words beneath it. No box, frame, chips or arrows.
 
-/** The small frosted label that sits on a card's photo. */
-export const PHOTO_CHIP = "inline-flex items-center gap-1.5 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-medium text-ink shadow-[0_6px_16px_-8px_rgb(14_31_59/0.55)] ring-1 ring-white/60 backdrop-blur-md";
-/** The arrow that slides in at a photo's corner when its card is hovered. */
-export const PHOTO_ARROW = "grid size-9 place-items-center rounded-full bg-white/90 text-ink shadow-[0_6px_16px_-8px_rgb(14_31_59/0.55)] ring-1 ring-white/60 backdrop-blur-md transition-[opacity,transform] duration-500 ease-out-expo sm:translate-y-1 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100";
-/** A photo card's white frame: the photo sits inset in it, like a print on card. */
-export const CARD_FRAME =
-  "group flex h-full flex-col rounded-[1.75rem] bg-white p-2 shadow-card ring-1 ring-line transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+/** The whole card is one link; keyboard focus shows as a ring around the photo. */
+export const CARD_LINK = "group block outline-none";
+/** The photo's frame: rounded, quiet paper while the picture loads (or if there is none). */
+export const CARD_PHOTO =
+  "relative isolate overflow-hidden rounded-[1.25rem] bg-paper-2 ring-offset-2 ring-offset-paper transition-shadow group-focus-visible:ring-2 group-focus-visible:ring-brand";
+/** The picture itself: fills the frame and eases in a touch on hover. */
+export const CARD_IMG = "absolute inset-0 size-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]";
+/** The name under the photo. */
+export const CARD_TITLE = "display text-[1.3rem] leading-[1.12] tracking-[-0.015em] text-ink";
+/** The one-line facts under the name. */
+export const CARD_META = "text-[0.9rem] leading-snug text-stone";
+
+/** The small label that sits on a photo (the pass cards on the credits page). */
+export const PHOTO_CHIP = "inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink shadow-[0_6px_16px_-8px_rgb(14_31_59/0.55)] ring-1 ring-white/60";

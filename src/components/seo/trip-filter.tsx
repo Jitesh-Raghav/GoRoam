@@ -1,46 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { TripCard } from "@/components/seo/trip-card";
-import { TAG_LABEL, type TripIdea, type TripTag } from "@/lib/trip-ideas";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Filter = "all" | "india" | TripTag;
+export type TripFilterOption = { id: string; label: string; count: number };
 
-const FILTERS: Filter[] = ["all", "india", "abroad", "beach", "hills", "snow", "desert", "wildlife", "heritage", "festival", "honeymoon", "weekend", "family", "adventure"];
-const label = (f: Filter) => (f === "all" ? "All trips" : f === "india" ? "India" : TAG_LABEL[f]);
-const matches = (t: TripIdea, f: Filter) => f === "all" || (f === "india" ? t.country === "India" : t.tags.includes(f));
-
-/** Every trip, with chips to narrow them down. All cards stay in the HTML; the filter only hides them. */
-export function TripFilter({ trips }: { trips: TripIdea[] }) {
-  const [filter, setFilter] = useState<Filter>("all");
-  const count = trips.filter((t) => matches(t, filter)).length;
+/**
+ * Chips that narrow a server-rendered grid of trips. Every card stays in the HTML; picking a
+ * chip only adds one style rule that hides the cards whose `data-tags` don't carry it, so the
+ * grid itself never re-renders.
+ */
+export function TripFilter({ options, children }: { options: TripFilterOption[]; children: ReactNode }) {
+  const [filter, setFilter] = useState(options[0]?.id ?? "all");
+  const count = options.find((o) => o.id === filter)?.count ?? 0;
   return (
     <div>
-      <div role="tablist" aria-label="Filter trips" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-        {FILTERS.map((f) => (
+      <div role="tablist" aria-label="Filter trips" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+        {options.map((o) => (
           <button
-            key={f}
+            key={o.id}
             type="button"
             role="tab"
-            aria-selected={filter === f}
-            onClick={() => setFilter(f)}
-            className={cn("shrink-0 rounded-full px-4 py-2 text-sm ring-1 transition-colors", filter === f ? "bg-ink text-paper ring-ink" : "bg-white text-ink ring-line hover:bg-paper-2")}
+            aria-selected={filter === o.id}
+            onClick={() => setFilter(o.id)}
+            className={cn("shrink-0 rounded-full px-4 py-2 text-sm transition-colors", filter === o.id ? "bg-ink text-paper" : "bg-paper-2 text-ink hover:bg-paper-3")}
           >
-            {label(f)}
+            {o.label}
           </button>
         ))}
       </div>
-      <p className="mt-4 text-sm text-stone">
+      <p className="mt-5 text-sm text-stone" aria-live="polite">
         {count} {count === 1 ? "trip" : "trips"}
       </p>
-      <ul className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {trips.map((t) => (
-          <li key={t.slug} className={cn(!matches(t, filter) && "hidden")}>
-            <TripCard t={t} />
-          </li>
-        ))}
-      </ul>
+      {filter !== "all" && <style>{`[data-trip-grid] > li:not([data-tags~="${filter.replace(/[^a-z-]/g, "")}"]) { display: none; }`}</style>}
+      {children}
     </div>
   );
 }

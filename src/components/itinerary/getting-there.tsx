@@ -180,7 +180,7 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
             </div>
             {homeFrom && <p className="mt-4 text-sm text-paper/65">Heading home from {cityOf(homeFrom)} at the end.</p>}
           </div>
-          <div className="grid divide-y divide-paper/10 rounded-[24px] sm:grid-cols-3 sm:divide-x sm:divide-y-0 bg-paper/10 ring-1 ring-paper/15 backdrop-blur-md">
+          <div className="grid divide-y divide-paper/10 rounded-[24px] sm:grid-cols-3 sm:divide-x sm:divide-y-0 bg-paper/30 ring-1 ring-paper/15">
             {[
               { label: "Cheapest", value: money(cheapest.priceUsd), sub: MODE[cheapest.mode].label, icon: MODE[cheapest.mode].icon },
               { label: "Fastest", value: /\d+\s*h(?:\s*\d+\s*m)?|\d+\s*min/i.exec(fastest.duration)?.[0] ?? fastest.duration, sub: MODE[fastest.mode].label, icon: FastIcon },
@@ -220,7 +220,7 @@ export function GettingThere({ it, logistics }: { it: ItineraryDetails; logistic
               <div className="relative h-32 overflow-hidden [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
                 <PlacePhoto activity={asStop(o.from || cityOf(source))} destination={source} credit={false} icon={Icon} imgClassName="group-hover:scale-[1.05]" />
               </div>
-              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-xs text-ink backdrop-blur-md">
+              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-xs text-ink">
                 <Icon className="size-3.5 text-brand" /> {MODE[o.mode].label}
               </span>
               {o.best && <span className={cn("absolute right-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-medium", BEST_STYLE[o.best])}>{BEST_LABEL[o.best]}</span>}

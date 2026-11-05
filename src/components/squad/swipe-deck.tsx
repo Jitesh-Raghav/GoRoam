@@ -44,7 +44,7 @@ function Card({ card, onSwipe }: { card: DeckCard; onSwipe: (like: boolean) => v
           </p>
           <p className="display mt-1 text-[2.4rem] leading-none">{card.name}</p>
           <p className="mt-2 line-clamp-2 text-sm leading-snug text-paper/85">{card.tagline}</p>
-          <p className="mt-3 inline-flex rounded-full bg-white/15 px-3 py-1 text-xs ring-1 ring-white/25 backdrop-blur">
+          <p className="mt-3 inline-flex rounded-full bg-white/35 px-3 py-1 text-xs ring-1 ring-white/25">
             {card.days} days · from {money(card)}/day each
           </p>
         </div>

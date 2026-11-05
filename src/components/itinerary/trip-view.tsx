@@ -42,7 +42,7 @@ import {
 } from "@/components/site/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
@@ -232,7 +232,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live, 
     <motion.li
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease, delay: 0.1 + index * 0.08 }}
+      transition={{ duration: 0.45, ease, delay: 0.04 + index * 0.05 }}
       className="print-avoid relative grid grid-cols-[2.25rem_minmax(0,1fr)] gap-2.5 pb-5 last:pb-0 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-5"
     >
       <div className="relative flex justify-center">
@@ -254,7 +254,7 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live, 
         <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/60 px-3 py-1.5 text-paper shadow-[0_6px_16px_-8px_rgba(14,31,59,0.6)] ring-1 ring-inset ring-paper/20 backdrop-blur-md">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/80 px-3 py-1.5 text-paper shadow-[0_6px_16px_-8px_rgba(14,31,59,0.6)] ring-1 ring-inset ring-paper/20">
               <Icon className="size-3.5 shrink-0 text-sun-2" />
               <span className="eyebrow text-[0.6rem]">{slot.label}</span>
               {activity.time && <span className="hidden truncate text-xs text-paper/80 sm:inline">· {activity.time}</span>}
@@ -398,7 +398,7 @@ function DayGlance({ stops, day, destination }: { stops: RouteStop[]; day: numbe
             onClick={() => go(s.key)}
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease, delay: k * 0.08 }}
+            transition={{ duration: 0.45, ease, delay: k * 0.05 }}
             className={cn(
               "group relative h-52 w-[72%] shrink-0 snap-start overflow-hidden rounded-[26px] bg-ink text-left sm:h-auto sm:w-auto",
               stops.length >= 3 && k === 0 && "sm:row-span-2"
@@ -535,7 +535,7 @@ function DayPanel({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.35 }}
+          transition={{ duration: 0.45, ease, delay: 0.15 }}
           className="print-avoid mt-6 flex gap-4 rounded-[24px] bg-sun-soft/70 p-5 ring-1 ring-sun/25 sm:ml-[4.25rem]"
         >
           <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-sun text-ink">
@@ -694,7 +694,7 @@ function BudgetCard({
                   strokeDasharray={`${len} ${C}`}
                   initial={{ strokeDashoffset: -offset + len }}
                   animate={{ strokeDashoffset: -offset }}
-                  transition={{ duration: 1.2, ease, delay: 0.3 }}
+                  transition={{ duration: 0.6, ease, delay: 0.1 }}
                 />
               );
               offset += len;
@@ -752,7 +752,7 @@ function BudgetCard({
                     <motion.span
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.max((c / maxDay) * 100, 3)}%` }}
-                      transition={{ duration: 1, ease, delay: 0.2 + i * 0.05 }}
+                      transition={{ duration: 0.5, ease, delay: 0.05 + i * 0.04 }}
                       className={cn("absolute inset-y-0 left-0 rounded-full transition-colors", active === i ? "bg-brand" : "bg-ink/75 group-hover:bg-ink")}
                     />
                   </span>
@@ -776,13 +776,13 @@ function StayCard({ stay, index, query }: { stay: StaySuggestion; index: number;
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.8, ease, delay: index * 0.08 }}
+      transition={{ duration: 0.45, ease, delay: index * 0.05 }}
       className="glass print-avoid group flex h-full w-[84%] shrink-0 snap-start flex-col overflow-hidden rounded-[26px] sm:w-[60%] md:w-auto"
     >
       <div className="relative h-48 overflow-hidden print:h-32">
         <PlacePhoto activity={asStop(stay.name, stay.area)} destination={query.destination} icon={BedDouble} rating imgClassName="group-hover:scale-[1.05]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink/50 to-transparent" />
-        <span className="absolute left-3 top-3 rounded-full bg-ink/40 px-2.5 py-1 font-mono text-xs text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">{pad(index + 1)}</span>
+        <span className="absolute left-3 top-3 rounded-full bg-ink/60 px-2.5 py-1 font-mono text-xs text-paper ring-1 ring-inset ring-paper/20">{pad(index + 1)}</span>
         {stay.pricePerNight ? (
           <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-right text-ink shadow-sm">
             <span className="display text-lg leading-none">{money(stay.pricePerNight)}</span>
@@ -854,6 +854,8 @@ export function TripView({
   const data = it.itineraryData;
   // Guest previews behave like packages (no owner tools), with their own wording and an unlock button.
   const isGuest = variant === "guest";
+  const [heroCovered, setHeroCovered] = useState(false);
+  const onHeroShown = useCallback(() => setHeroCovered(true), []);
   const isPackage = variant === "package" || isGuest;
   const unlock = () => {
     track("guest_unlock_clicked", { destination: it.destination, where: "trip" });
@@ -1059,9 +1061,10 @@ export function TripView({
       {/* Hero — doubles as the PDF cover */}
       <section className="relative h-[min(74vh,660px)] min-h-[26rem] sm:min-h-[31.25rem] overflow-hidden rounded-panel bg-ink print:h-[320px] print:min-h-0">
         <div className="absolute inset-0">
-          {!scenePending && <Scene key={scene} id={scene} intro interactive title={title} />}
+          {/* The illustration until the photo covers it; then it unmounts with its animations. */}
+          {!scenePending && !heroCovered && <Scene key={scene} id={scene} intro title={title} />}
         </div>
-        <HeroPhoto photo={heroPhoto} />
+        <HeroPhoto photo={heroPhoto} onShown={onHeroShown} />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/35" />
         <div className="no-print absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4 sm:p-6">
           {isGuest ? (
@@ -1089,7 +1092,7 @@ export function TripView({
         </div>
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-6 text-paper sm:p-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 max-w-3xl">
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.3 }} className="eyebrow text-paper/75">
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease, delay: 0.05 }} className="eyebrow text-paper/75">
               {it.numberOfDays} {it.numberOfDays === 1 ? "day" : "days"} ·{" "}
               {isGuest ? "Planned for you by GoRoam" : isPackage ? "GoRoam travel package" : `${fmt(it.startDate, { month: "short", day: "numeric" })} – ${fmt(it.endDate, { month: "short", day: "numeric", year: "numeric" })}`}
               {who && ` · ${who}`}
@@ -1097,19 +1100,19 @@ export function TripView({
             <HeroHeading
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease, delay: 0.4 }}
+              transition={{ duration: 0.6, ease, delay: 0.08 }}
               className={cn("display mt-3 text-[clamp(2.89rem,7.65vw,7.22rem)] leading-[0.96]", !dark && "drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)]")}
             >
               {flag && <Flag code={flag} className="mr-[0.2em] h-[0.4em] -translate-y-[0.12em] align-middle" />}
               {title}
             </HeroHeading>
             {data?.summary?.overview && (
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }} className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-paper/85">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }} className="mt-4 max-w-xl text-[1.05rem] leading-relaxed text-paper/85">
                 {data.summary.overview}
               </motion.p>
             )}
           </div>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease, delay: 0.8 }} className="no-print shrink-0 self-start lg:self-auto">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease, delay: 0.2 }} className="no-print shrink-0 self-start lg:self-auto">
             {isGuest ? (
               <button type="button" onClick={unlock} className={cn(btn, "h-14 bg-brand px-6 text-base text-white hover:bg-brand/90")}>
                 <Sparkles className="size-4" /> Unlock the full trip, free
@@ -1287,12 +1290,12 @@ export function TripView({
                         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
                         <span className="absolute bottom-2 left-3 font-mono text-[11px] text-paper">{todayIndex === i ? "TODAY" : `DAY ${pad(i + 1)}`}</span>
                         {d.city && (
-                          <span className="absolute left-2 top-2 max-w-[70%] truncate rounded-full bg-ink/45 px-2 py-0.5 text-[10px] text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-sm">
+                          <span className="absolute left-2 top-2 max-w-[70%] truncate rounded-full bg-ink/65 px-2 py-0.5 text-[10px] text-paper ring-1 ring-inset ring-paper/20">
                             {d.transfer ? "→ " : ""}
                             {d.city.split(",")[0]}
                           </span>
                         )}
-                        <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/35 px-2 py-0.5 backdrop-blur-sm" />
+                        <WeatherChip day={byDate.get(isoDay(it.startDate, i))} tone="dark" className="absolute right-3 top-2 rounded-full bg-ink/55 px-2 py-0.5" />
                         <span className="absolute bottom-2 right-3 font-mono text-[11px] text-paper/80">{pendingDays.has(d.day) ? "writing…" : money(d.totalDayCost)}</span>
                       </span>
                       <span className="relative block p-3.5 pt-3">

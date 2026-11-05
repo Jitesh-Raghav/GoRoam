@@ -98,7 +98,7 @@ export function TripGallery({ slides, city, title }: { slides: GallerySlide[]; c
           setDir(1);
           setOpen(0);
         }}
-        className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-2 text-xs text-paper ring-1 ring-white/30 backdrop-blur-md transition-colors hover:bg-white hover:text-ink"
+        className="inline-flex items-center gap-2 rounded-full bg-white/35 px-3.5 py-2 text-xs text-paper ring-1 ring-white/30 transition-colors hover:bg-white hover:text-ink"
       >
         <Camera className="size-4" /> View all {slides.length} photos
       </button>

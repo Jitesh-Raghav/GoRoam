@@ -14,7 +14,7 @@ export function MacWindow({ url = "goroam.app", children, className }: { url?: s
         className
       )}
     >
-      <div className="relative flex h-9 items-center rounded-t-[inherit] border-b border-white/[0.07] bg-[linear-gradient(180deg,#1d2b47,#152239)] px-3.5 md:h-11 md:px-4">
+      <div className="relative flex h-9 items-center rounded-t-[inherit] border-b border-white/[0.07] bg-[#18263f] px-3.5 md:h-11 md:px-4">
         <div aria-hidden className="flex gap-1.5 md:gap-2">
           <span className="size-2.5 rounded-full bg-[#ff5f57] shadow-[inset_0_0_0_0.5px_rgba(0,0,0,0.25)] md:size-3" />
           <span className="size-2.5 rounded-full bg-[#febc2e] shadow-[inset_0_0_0_0.5px_rgba(0,0,0,0.25)] md:size-3" />

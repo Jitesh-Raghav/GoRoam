@@ -1,68 +1,72 @@
-import Link from "next/link";
-import { GuideCover } from "@/components/seo/guide-media";
-import { CARD_FRAME, PHOTO_ARROW, PHOTO_CHIP } from "@/components/site/card-styles";
-import { ArrowUpRight, MapPin } from "@/components/site/icons";
-import { price, monthsLabel, type TripIdea } from "@/lib/trip-ideas";
+/* eslint-disable @next/next/no-img-element -- our own photo route, which redirects to a CDN image already sized by ?w= */
+import { CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { Mountain } from "@/components/site/icons";
+import { QuietLink } from "@/components/site/quiet-link";
+import { monthsLabel, price, type TripIdea } from "@/lib/trip-ideas";
 import { cn } from "@/lib/utils";
 
-/** The year at a glance: one bar a month, filled when the trip is in season. */
-export function SeasonStrip({ months, className }: { months: number[]; className?: string }) {
-  return (
-    <span aria-hidden className={cn("grid grid-cols-12 gap-[3px]", className)}>
-      {Array.from({ length: 12 }, (_, i) => (
-        <span key={i} className={cn("h-1 rounded-full", months.includes(i + 1) ? "bg-brand" : "bg-paper-3")} />
-      ))}
-    </span>
-  );
-}
+const WIDTHS = [480, 720, 1080];
 
 /**
- * A trip idea as a framed photo card: the place on the photo, the name, its season and price below.
- * `fill` lets the photo take up any extra height on wide screens, for a card standing beside a `big` one.
+ * A trip's photo from our own route. `blank=1`: with no photo the route sends an empty image,
+ * so the card's placeholder shows instead of a broken one.
  */
-export function TripCard({ t, big = false, fill = false, className }: { t: TripIdea; big?: boolean; fill?: boolean; className?: string }) {
+const tripPhoto = (slug: string, w: number) => `/trips/${slug}/photo?w=${w}&blank=1`;
+/** The same photo at a few widths, so each screen downloads only what it shows. */
+export const tripPhotoSet = (slug: string, widths = WIDTHS) => widths.map((w) => `${tripPhoto(slug, w)} ${w}w`).join(", ");
+
+/**
+ * A trip idea as a borderless photo card: the photo, then its name, where and how long,
+ * and what it costs in which months. Rendered on the server with a plain lazy image, so a
+ * grid of a hundred of them costs the browser no JavaScript. With no photo the frame keeps
+ * a quiet paper fill and a small mountain.
+ */
+export function TripCard({
+  t,
+  big = false,
+  sizes = "(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 560px) 50vw, 100vw",
+  compact = false,
+  className,
+  photoClassName,
+}: {
+  t: TripIdea;
+  /** The lead card of a section: a wider photo and a larger name. */
+  big?: boolean;
+  /** Two-across on phones (long catalogues): smaller words, the months on a line of their own. */
+  compact?: boolean;
+  /** How wide the photo shows, for the browser's pick from the set. */
+  sizes?: string;
+  className?: string;
+  photoClassName?: string;
+}) {
   const where = t.region === t.country ? t.country : t.region;
   return (
-    <Link href={`/trips/${t.slug}`} className={cn(CARD_FRAME, className)}>
-      <div className={cn("relative shrink-0 overflow-hidden rounded-[1.35rem] bg-ink", big ? "h-72 sm:h-96" : "h-56", fill && "xl:h-auto xl:min-h-56 xl:flex-1")}>
-        <GuideCover
-          destination={t.destination}
-          landscape={t.landscape}
-          width={big ? 1200 : 700}
-          credit={false}
-          shade="none"
-          src={`/trips/${t.slug}/photo?w=${big ? 1200 : 700}`}
-          alt={`${t.name}, ${where}`}
-          className="absolute inset-0 transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.04]"
+    <QuietLink href={`/trips/${t.slug}`} className={cn(CARD_LINK, className)}>
+      <div className={cn(CARD_PHOTO, big ? "aspect-[16/10]" : "aspect-[4/3]", photoClassName)}>
+        <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
+        <img
+          src={tripPhoto(t.slug, big ? 1080 : 720)}
+          srcSet={tripPhotoSet(t.slug)}
+          sizes={big ? "(min-width: 1024px) 50vw, 100vw" : sizes}
+          alt=""
+          width={big ? 1080 : 720}
+          height={big ? 675 : 540}
+          loading="lazy"
+          decoding="async"
+          className={CARD_IMG}
         />
-        <span className={cn(PHOTO_CHIP, "absolute left-3 top-3")}>{t.days} days</span>
-        <span className={cn(PHOTO_ARROW, "absolute right-3 top-3")}>
-          <ArrowUpRight className="size-4" />
+      </div>
+      <div className={cn("px-0.5", big ? "mt-4" : compact ? "mt-2.5 min-[560px]:mt-3.5" : "mt-3.5")}>
+        <span className={cn(CARD_TITLE, "block", big && "lg:text-[1.75rem]", compact && "max-[559px]:text-[1.05rem]")}>{t.name}</span>
+        <span className={cn(CARD_META, "mt-1 block", compact && "max-[559px]:text-[0.8rem]")}>
+          {where} · {t.days} days
         </span>
-        <span className={cn(PHOTO_CHIP, "absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)]")}>
-          <MapPin className="size-3 shrink-0 text-brand" />
-          <span className="truncate">{where}</span>
+        <span className={cn(CARD_META, "mt-0.5 block", compact && "max-[559px]:text-[0.8rem]")}>
+          From <span className="font-medium tabular-nums text-ink">{price(t, t.budget[0])}</span>/day
+          <span className={cn(compact && "max-[559px]:hidden")}> · </span>
+          <span className={cn(compact && "max-[559px]:block")}>{monthsLabel(t.months)}</span>
         </span>
       </div>
-      <div className={cn("flex flex-1 flex-col px-3 pb-3 sm:px-4", big ? "pt-6" : "pt-5", fill && "xl:flex-none")}>
-        <span className={cn("display block leading-[1.04] tracking-[-0.015em] text-ink", big ? "text-[clamp(2rem,3.4vw,2.75rem)]" : "text-[1.6rem]")}>{t.name}</span>
-        <p className={cn("mt-2 text-sm leading-relaxed text-ink/65", big ? "max-w-xl" : "line-clamp-2")}>{t.tagline}</p>
-        <div className="mt-auto pt-5">
-          {/* Labels on one row and values on the next, so both columns line up. */}
-          <dl className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-5 border-t border-line pt-4">
-            <dt className="text-[0.7rem] text-stone">Best time</dt>
-            <dt className="text-right text-[0.7rem] text-stone">From</dt>
-            <dd className="mt-1 truncate text-sm text-ink">{monthsLabel(t.months)}</dd>
-            <dd className="mt-1 whitespace-nowrap text-right text-ink">
-              <span className="display text-[1.3rem] leading-none tabular-nums">{price(t, t.budget[0])}</span>
-              <span className="text-xs text-stone">/day</span>
-            </dd>
-            <dd className="col-span-2">
-              <SeasonStrip months={t.months} className="mt-2.5 max-w-[11rem]" />
-            </dd>
-          </dl>
-        </div>
-      </div>
-    </Link>
+    </QuietLink>
   );
 }

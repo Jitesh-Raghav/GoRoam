@@ -2,15 +2,17 @@
 
 /* eslint-disable @next/next/no-img-element -- remote photo already sized by the source (Unsplash, Google, Wikimedia). */
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { PlacePhoto } from "@/lib/trip";
 import { useInstantImage } from "@/lib/use-instant-image";
 import { cn } from "@/lib/utils";
 
 /**
  * A real photo of the destination laid over the illustrated scene. The scene
- * shows while it loads (and stays if there's no photo); the photo fades in and
- * drifts slowly, Ken Burns style.
+ * shows while it loads (and stays if there's no photo); the photo fades in, and
+ * `onShown` fires once it fully covers what's underneath (so that can unmount).
+ * `drift` adds a slow Ken Burns move; it's off by default (it costs a repaint of
+ * a large image on every frame).
  */
 export function HeroPhoto({
   photo,
@@ -18,7 +20,8 @@ export function HeroPhoto({
   credit = true,
   creditClassName,
   lazy = false,
-  drift = true,
+  drift = false,
+  onShown,
 }: {
   photo: PlacePhoto | null;
   className?: string;
@@ -27,6 +30,8 @@ export function HeroPhoto({
   creditClassName?: string;
   lazy?: boolean;
   drift?: boolean;
+  /** Called once the photo has faded in over the scene. */
+  onShown?: () => void;
 }) {
   const url = photo?.url ?? null;
   const [state, setState] = useState<{ url: string; ok: boolean } | null>(null);
@@ -47,10 +52,16 @@ export function HeroPhoto({
     [url]
   );
 
+  useEffect(() => {
+    if (!loaded || !onShown) return;
+    const t = window.setTimeout(onShown, quick.instant ? 0 : 520);
+    return () => window.clearTimeout(t);
+  }, [loaded, onShown, quick.instant]);
+
   if (!url || broken) return null;
   return (
     <div className={cn("pointer-events-none absolute inset-0", className)}>
-      <div className={cn("absolute inset-0 overflow-hidden", !quick.instant && "transition-opacity duration-[1600ms] ease-out", loaded ? "opacity-100" : "opacity-0")}>
+      <div className={cn("absolute inset-0 overflow-hidden", !quick.instant && "transition-opacity duration-500 ease-out", loaded ? "opacity-100" : "opacity-0")}>
         <img
           key={url}
           ref={markLoaded}
@@ -76,7 +87,7 @@ export function HeroPhoto({
           target="_blank"
           rel="noreferrer"
           className={cn(
-            "no-print pointer-events-auto absolute bottom-2.5 right-4 z-10 max-w-[60%] truncate rounded-full bg-ink/40 px-2.5 py-1 text-[10px] text-paper/80 backdrop-blur-md transition-colors hover:bg-ink/70 hover:text-paper",
+            "no-print pointer-events-auto absolute bottom-2.5 right-4 z-10 max-w-[60%] truncate rounded-full bg-ink/60 px-2.5 py-1 text-[10px] text-paper/80 transition-colors hover:bg-ink/70 hover:text-paper",
             creditClassName
           )}
         >

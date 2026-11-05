@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight, BedDouble, Check, Plane, Star, Ticket, TrainFront } from "@/components/site/icons";
 import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
@@ -107,19 +107,20 @@ function TransportCard() {
 export function BookingSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.35 });
+  const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
 
-  // Cycle through what you can book while the mock is on screen.
+  // Cycle through what you can book while the mock is on screen (never under reduced motion).
   useEffect(() => {
-    if (!inView) return;
-    const t = window.setInterval(() => setActive((a) => (a + 1) % TABS.length), 2600);
+    if (!inView || reduce) return;
+    const t = window.setInterval(() => setActive((a) => (a + 1) % TABS.length), 4200);
     return () => window.clearInterval(t);
-  }, [inView]);
+  }, [inView, reduce]);
 
-  const cards = [<FlightCard key="f" on={inView} />, <StayCard key="s" />, <TicketCard key="t" />, <TransportCard key="r" />];
+  const cards = [<FlightCard key="f" on={inView && !reduce} />, <StayCard key="s" />, <TicketCard key="t" />, <TransportCard key="r" />];
 
   return (
-    <section id="book" className="scroll-mt-10 px-3 sm:px-4">
+    <section id="book" className="scroll-mt-10 px-3 py-6 sm:px-4 lg:py-10">
       <div className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-28">
         <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16">
           <div className="min-w-0">

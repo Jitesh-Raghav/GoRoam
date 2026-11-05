@@ -18,7 +18,7 @@ export function GalleryGrid({ cards, hrefBase = "/itineraries", className }: { c
           <h2 id={`region-${g.region}`} className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">
             {g.region} <span className="ml-1 font-sans text-base font-normal tracking-normal text-stone">{g.cards.length} trips</span>
           </h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-6 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {g.cards.map((pkg, i) => (
               <PackageCard key={pkg.slug} pkg={pkg} index={i} href={`${hrefBase}/${pkg.slug}`} />
             ))}

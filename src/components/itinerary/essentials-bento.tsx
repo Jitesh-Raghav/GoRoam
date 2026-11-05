@@ -23,7 +23,7 @@ function Tile({ icon: Icon, label, children, className, tone = "glass", delay = 
       transition={{ duration: 0.7, ease, delay }}
       className={cn(
         "print-avoid relative flex min-w-0 flex-col overflow-hidden rounded-[24px] p-5",
-        tone === "sun" && "bg-[linear-gradient(135deg,var(--sun-soft),#fff_72%)] shadow-card ring-1 ring-sun/20",
+        tone === "sun" && "bg-sun-soft shadow-card ring-1 ring-sun/20",
         tone === "ink" && "bg-ink text-paper",
         tone === "glass" && "glass",
         className
@@ -283,7 +283,7 @@ function TippingTile({ text, className }: { text?: string; className?: string })
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, ease, delay: 0.3 }}
-                className="absolute inset-y-0 origin-left rounded-full bg-gradient-to-r from-brand-2 to-brand"
+                className="absolute inset-y-0 origin-left rounded-full bg-brand"
                 style={{ left: `${(range[0] / MAX) * 100}%`, width: `${Math.max(((range[1] - range[0]) / MAX) * 100, 3)}%` }}
               />
             )}
@@ -357,7 +357,7 @@ export function EssentialsBento({ essentials, weather, localCurrency, guide }: {
           <TextTile icon={Droplets} label="Tap water" text={water} />
           <TextTile icon={Wifi} label="Mobile data" text={sim} delay={0.05} />
           {(sos.length > 0 || e.emergency) && (
-            <Tile icon={Siren} label="Emergency" className="bg-[linear-gradient(135deg,#fff1ee,#fff_70%)] !ring-1 ring-destructive/15" delay={0.1}>
+            <Tile icon={Siren} label="Emergency" className="bg-[#fff1ee] !ring-1 ring-destructive/15" delay={0.1}>
               {sos.length ? (
                 <ul className="mt-4 flex flex-wrap gap-2">
                   {sos.map(([label, n]) => (

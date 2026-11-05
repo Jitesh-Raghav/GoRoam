@@ -16,7 +16,7 @@ export function CurrencySwitch({ local, typed, className }: { local?: string | n
   return (
     <label
       className={cn(
-        "no-print relative inline-flex h-9 cursor-pointer items-center gap-2 rounded-full bg-white/80 pl-3 pr-2 text-xs text-stone ring-1 ring-line backdrop-blur transition-colors focus-within:ring-2 focus-within:ring-brand/50 hover:text-ink",
+        "no-print relative inline-flex h-9 cursor-pointer items-center gap-2 rounded-full bg-white/80 pl-3 pr-2 text-xs text-stone ring-1 ring-line transition-colors focus-within:ring-2 focus-within:ring-brand/50 hover:text-ink",
         className
       )}
     >

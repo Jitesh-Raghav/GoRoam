@@ -177,7 +177,7 @@ export function Checklist({ tripId, packing }: { tripId: string; packing?: strin
               e.preventDefault();
               add();
             }}
-            className="no-print mt-3 flex items-center gap-2 rounded-full bg-paper-2/70 py-1 pl-4 pr-1 ring-1 ring-line backdrop-blur focus-within:ring-brand/40"
+            className="no-print mt-3 flex items-center gap-2 rounded-full bg-paper-2/70 py-1 pl-4 pr-1 ring-1 ring-line focus-within:ring-brand/40"
           >
             <input
               value={draft}

@@ -65,7 +65,7 @@ export function GuestUnlock({ id, destination, days }: { id: string; destination
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="no-print fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl rounded-[24px] bg-ink/95 p-2.5 pl-4 text-paper shadow-[0_24px_60px_-20px_rgba(14,31,59,0.8)] ring-1 ring-paper/10 backdrop-blur-xl sm:pl-5"
+          className="no-print fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl rounded-[24px] bg-ink/95 p-2.5 pl-4 text-paper shadow-[0_24px_60px_-20px_rgba(14,31,59,0.8)] ring-1 ring-paper/10 sm:pl-5"
         >
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="min-w-0 flex-1">

@@ -102,7 +102,7 @@ export function BoardingPass({
         <div className="absolute inset-0 bg-gradient-to-b from-ink/35 via-transparent to-transparent" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 text-paper">
           <span className="eyebrow text-[0.62rem]">GoRoam · Boarding pass</span>
-          <span className="eyebrow rounded-full bg-paper/15 px-2.5 py-1.5 text-[0.6rem] backdrop-blur">{data.tripType}</span>
+          <span className="eyebrow rounded-full bg-paper/35 px-2.5 py-1.5 text-[0.6rem]">{data.tripType}</span>
         </div>
       </div>
 

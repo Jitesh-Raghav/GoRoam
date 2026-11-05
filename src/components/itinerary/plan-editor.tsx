@@ -220,7 +220,7 @@ export function PlanEditor({ it, startDay = 0, onClose }: { it: ItineraryDetails
 
   return (
     <motion.div
-      className="no-print fixed inset-0 z-[70] flex flex-col bg-[radial-gradient(rgba(14,31,59,0.07)_1px,transparent_1px)] bg-paper [background-size:22px_22px]"
+      className="no-print fixed inset-0 z-[70] flex flex-col bg-paper"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -372,7 +372,7 @@ function DayColumn({
     <section
       data-day={day}
       className={cn(
-        "flex flex-col rounded-[26px] bg-white/75 shadow-[0_1px_2px_rgba(14,31,59,0.05),0_24px_48px_-36px_rgba(14,31,59,0.45)] ring-1 backdrop-blur-sm transition-[box-shadow,background-color] md:max-h-full",
+        "flex flex-col rounded-[26px] bg-white/75 shadow-[0_1px_2px_rgba(14,31,59,0.05),0_24px_48px_-36px_rgba(14,31,59,0.45)] ring-1 transition-[box-shadow,background-color] md:max-h-full",
         hidden && "max-md:hidden",
         isOver ? "bg-brand-soft/70 ring-2 ring-brand/50" : "ring-line"
       )}

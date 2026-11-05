@@ -111,7 +111,7 @@ export function CrewSplit() {
         )}
       </div>
 
-      <div className="flex flex-col rounded-[24px] bg-[linear-gradient(160deg,#0E1F3B,#1A3570)] p-5 text-paper sm:p-6">
+      <div className="flex flex-col rounded-[24px] bg-ink p-5 text-paper sm:p-6">
         <dl className="grid grid-cols-2 gap-4">
           <div>
             <dt className="text-xs text-paper/60">Trip total</dt>

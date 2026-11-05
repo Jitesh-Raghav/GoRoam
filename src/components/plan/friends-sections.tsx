@@ -88,7 +88,7 @@ export function FriendsSections({ body }: { body: string[] }) {
           </Link>
         </Heading>
         <h3 className="mt-6 text-sm font-medium text-stone">In India</h3>
-        <ul className="mt-3 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="mt-4 grid gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">
           {india.map((t) => (
             <li key={t.slug}>
               <TripCard t={t} />
@@ -96,7 +96,7 @@ export function FriendsSections({ body }: { body: string[] }) {
           ))}
         </ul>
         <h3 className="mt-8 text-sm font-medium text-stone">Abroad</h3>
-        <ul className="mt-3 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="mt-4 grid gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">
           {abroad.map((t) => (
             <li key={t.slug}>
               <TripCard t={t} />

@@ -1,10 +1,11 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, CalendarDays, Loader2, Plus, Printer, Search, Trash2, Users, Wallet } from "@/components/site/icons";
+import { CalendarDays, Loader2, Plus, Printer, Search, Trash2 } from "@/components/site/icons";
+import { CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { Scene } from "@/components/scenes/scene";
 import { SCENES } from "@/components/scenes/scenes";
@@ -17,7 +18,7 @@ import { HeroPhoto } from "@/components/itinerary/hero-photo";
 import { countryCodeFor } from "@/lib/flags";
 import { Flag } from "@/components/itinerary/guide/flag";
 import { cn } from "@/lib/utils";
-import { COMPANIONS, VIBES, labelFor, titleCase } from "@/lib/trip";
+import { COMPANIONS, labelFor, titleCase } from "@/lib/trip";
 
 interface Itinerary {
   id: string;
@@ -48,139 +49,93 @@ const formatDate = (dateString: string, withYear = true) =>
 
 const LIST_URL = "/api/itineraries";
 
-function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDelete: (id: string) => Promise<void> }) {
+function Postcard({ it, onDelete }: { it: Itinerary; onDelete: (id: string) => Promise<void> }) {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [covered, setCovered] = useState(false);
+  const onShown = useCallback(() => setCovered(true), []);
   const { scene } = useDestinationScene([it.destination, it.place].filter(Boolean).join(", "), it.landscape);
   const photo = useDestinationPhoto(it.place || it.destination);
+  const href = `/dashboard/itinerary/${it.id}`;
+  const place = titleCase(it.destination);
 
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
-      className="group flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-[0_40px_80px_-50px_rgba(14,31,59,0.5)]"
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="group"
       // Opening a trip is instant when its data is already on the way.
       onPointerEnter={() => prefetchJson(`/api/itinerary/${it.id}`)}
       onFocusCapture={() => prefetchJson(`/api/itinerary/${it.id}`)}
     >
-      <Link href={`/dashboard/itinerary/${it.id}`} className="relative block h-56 overflow-hidden" aria-label={`Open ${titleCase(it.destination)} itinerary`}>
-        <div className="absolute inset-0 transition-transform duration-[1400ms] ease-out-expo group-hover:scale-[1.06]">
-          <LazyScene id={scene} tint={SCENES[scene].tint} />
-          <HeroPhoto photo={photo} credit={false} lazy drift={false} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
-        <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/15 px-2.5 py-1.5 text-center text-paper backdrop-blur-sm">
-          <span className="display block text-xl leading-none">{it.numberOfDays}</span>
-          <span className="eyebrow block text-[0.52rem]">{it.numberOfDays === 1 ? "day" : "days"}</span>
-        </span>
-        <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
-          <p className="eyebrow text-[0.6rem] text-paper/70">
-            {formatDate(it.startDate, false)} – {formatDate(it.endDate)}
-          </p>
-          <h3 className="display mt-2 flex items-center gap-2.5 text-[1.87rem] leading-none">
-            <Flag code={countryCodeFor(it.place || it.destination, it.country)} className="h-[0.6em]" />
-            <span className="truncate">{titleCase(it.destination)}</span>
-          </h3>
+      {/* The photo opens the trip too; the name below is the one link keyboards and screen readers get. */}
+      <Link href={href} className={CARD_LINK} tabIndex={-1} aria-hidden>
+        <div className={cn(CARD_PHOTO, "aspect-[4/3]")}>
+          <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]">
+            {!covered && <LazyScene id={scene} tint={SCENES[scene].tint} paused />}
+            <HeroPhoto photo={photo} credit={false} lazy onShown={onShown} />
+          </div>
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex flex-wrap gap-2 text-xs text-ink/75">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">
-            <Users className="size-3.5 text-brand" /> {it.numberOfPeople} {it.numberOfPeople === 1 ? "traveller" : "travellers"}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">
-            <Wallet className="size-3.5 text-brand" /> ${it.budget.toLocaleString("en-US")}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5">{labelFor(COMPANIONS, it.tripType)}</span>
-        </div>
-        {it.interests.length > 0 && (
-          <p className="mt-4 text-sm text-stone">
-            {it.interests.slice(0, 3).map((i) => labelFor(VIBES, i)).join(" · ")}
-            {it.interests.length > 3 && ` +${it.interests.length - 3}`}
+      <div className="mt-3.5 flex items-start justify-between gap-3 px-0.5">
+        <div className="min-w-0">
+          <Link href={href} className="flex items-center gap-2 outline-none focus-visible:underline">
+            <Flag code={countryCodeFor(it.place || it.destination, it.country)} className="h-[0.8rem] shrink-0" />
+            <h3 className={cn(CARD_TITLE, "truncate")}>{place}</h3>
+          </Link>
+          <p className={cn(CARD_META, "mt-1")}>
+            {formatDate(it.startDate, false)} – {formatDate(it.endDate)} · {it.numberOfDays} {it.numberOfDays === 1 ? "day" : "days"}
           </p>
-        )}
-
-        <div className="mt-auto pt-5">
-          <div className="flex items-center justify-between gap-3 border-t border-line pt-4">
-            <AnimatePresence mode="wait" initial={false}>
-              {confirming ? (
-                <motion.div
-                  key="confirm"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="flex w-full items-center justify-between gap-2"
-                >
-                  <span className="text-sm text-ink">Delete this trip?</span>
-                  <span className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setConfirming(false)}
-                      className="rounded-full px-3 py-1.5 text-sm text-ink/70 hover:bg-paper-2"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      disabled={deleting}
-                      onClick={async () => {
-                        setDeleting(true);
-                        await onDelete(it.id);
-                        setDeleting(false);
-                        setConfirming(false);
-                      }}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3.5 py-1.5 text-sm text-white disabled:opacity-60"
-                    >
-                      {deleting && <Loader2 className="size-3.5 animate-spin" />} Delete
-                    </button>
-                  </span>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="actions"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="flex w-full items-center justify-between gap-2"
-                >
-                  <span className="whitespace-nowrap text-xs text-stone" title={`Created ${formatDate(it.createdAt)}`}>
-                    Created {formatDate(it.createdAt, false)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Link
-                      href={`/dashboard/itinerary/${it.id}?print=1`}
-                      aria-label={`Print ${it.destination} itinerary`}
-                      title="Print or save as PDF"
-                      className="grid size-9 place-items-center rounded-full text-ink/60 transition-colors hover:bg-paper-2 hover:text-ink"
-                    >
-                      <Printer className="size-4" />
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => setConfirming(true)}
-                      aria-label={`Delete ${it.destination} itinerary`}
-                      title="Delete"
-                      className="grid size-9 place-items-center rounded-full text-ink/60 transition-colors hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                    <Link
-                      href={`/dashboard/itinerary/${it.id}`}
-                      className="ml-1 inline-flex items-center gap-1 rounded-full bg-ink px-3.5 py-2 text-sm text-paper transition-colors hover:bg-brand"
-                    >
-                      Open <ArrowUpRight className="size-3.5" />
-                    </Link>
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <p className={cn(CARD_META, "mt-0.5 truncate")}>
+            {it.numberOfPeople} {it.numberOfPeople === 1 ? "traveller" : "travellers"} · {labelFor(COMPANIONS, it.tripType)} · ${it.budget.toLocaleString("en-US")}
+          </p>
+        </div>
+        <div className="-mr-2 -mt-1 flex shrink-0 items-center">
+          <Link
+            href={`${href}?print=1`}
+            aria-label={`Print ${place} itinerary`}
+            title="Print or save as PDF"
+            className="grid size-9 place-items-center rounded-full text-stone transition-colors hover:bg-paper-2 hover:text-ink"
+          >
+            <Printer className="size-4" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            aria-label={`Delete ${place} itinerary`}
+            title="Delete"
+            className="grid size-9 place-items-center rounded-full text-stone transition-colors hover:bg-destructive/10 hover:text-destructive"
+          >
+            <Trash2 className="size-4" />
+          </button>
         </div>
       </div>
+
+      {confirming && (
+        <div role="alertdialog" aria-label={`Delete ${place}?`} className="mt-3 flex items-center justify-between gap-2 rounded-2xl bg-paper-2 py-1.5 pl-4 pr-1.5">
+          <span className="text-sm text-ink">Delete this trip?</span>
+          <span className="flex gap-1">
+            <button type="button" onClick={() => setConfirming(false)} className="rounded-full px-3 py-1.5 text-sm text-ink/70 hover:bg-paper-3">
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={deleting}
+              onClick={async () => {
+                setDeleting(true);
+                await onDelete(it.id);
+                setDeleting(false);
+                setConfirming(false);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3.5 py-1.5 text-sm text-white disabled:opacity-60"
+            >
+              {deleting && <Loader2 className="size-3.5 animate-spin" />} Delete
+            </button>
+          </span>
+        </div>
+      )}
     </motion.article>
   );
 }
@@ -239,16 +194,17 @@ function ItinerariesContent() {
 
       {!loading && !error && itineraries.length > 0 && (
         <>
-          <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {/* One quiet panel, split by hairlines, instead of four boxes. */}
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-line ring-1 ring-line lg:grid-cols-4">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
-                <p className="display text-4xl leading-none text-ink">{s.value}</p>
+              <div key={s.label} className="bg-white px-5 py-5 sm:px-6">
+                <p className="display text-[2.25rem] leading-none tabular-nums text-ink">{s.value}</p>
                 <p className="mt-2 text-sm text-stone">{s.label}</p>
               </div>
             ))}
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <label className="flex h-12 w-full items-center gap-3 rounded-full bg-white/80 px-5 ring-1 ring-line focus-within:ring-2 focus-within:ring-brand/40 sm:max-w-sm">
+            <label className="flex h-12 w-full items-center gap-3 rounded-full bg-white px-5 ring-1 ring-line focus-within:ring-2 focus-within:ring-brand/40 sm:max-w-sm">
               <Search className="size-4 text-stone" />
               <input
                 value={query}
@@ -269,14 +225,14 @@ function ItinerariesContent() {
 
       <div className="mt-8">
         {loading ? (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="overflow-hidden rounded-[28px] bg-white ring-1 ring-line">
-                <div className="skeleton h-56" />
-                <div className="space-y-3 p-5">
-                  <div className="skeleton h-4 w-2/3 rounded-full" />
-                  <div className="skeleton h-4 w-1/2 rounded-full" />
-                  <div className="skeleton mt-6 h-9 rounded-full" />
+              <div key={i}>
+                <div className="skeleton aspect-[4/3] rounded-[1.25rem]" />
+                <div className="mt-4 space-y-2.5 px-0.5">
+                  <div className="skeleton h-5 w-1/2 rounded-full" />
+                  <div className="skeleton h-3.5 w-2/3 rounded-full" />
+                  <div className="skeleton h-3.5 w-3/5 rounded-full" />
                 </div>
               </div>
             ))}
@@ -319,13 +275,13 @@ function ItinerariesContent() {
             </button>
           </div>
         ) : (
-          <motion.div layout className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <AnimatePresence>
-              {filtered.map((it, index) => (
-                <Postcard key={it.id} it={it} index={index} onDelete={handleDelete} />
+          <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+            <AnimatePresence initial={false}>
+              {filtered.map((it) => (
+                <Postcard key={it.id} it={it} onDelete={handleDelete} />
               ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

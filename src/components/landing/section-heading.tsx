@@ -31,7 +31,7 @@ export function SectionHeading({
   const center = align === "center";
   const paper = tone === "paper";
   return (
-    <Reveal y={16} duration={0.9} className={cn(center && "mx-auto text-center", className)}>
+    <Reveal y={12} duration={0.6} className={cn(center && "mx-auto text-center", className)}>
       <p className={cn("eyebrow", paper ? "text-brand-2" : "text-brand")}>{label}</p>
       <h2
         className={cn(

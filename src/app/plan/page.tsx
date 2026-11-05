@@ -43,15 +43,15 @@ export default function PlanHub() {
           </p>
         </header>
 
-        <ul className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {USE_CASES.map((u, i) => (
+        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4">
+          {USE_CASES.map((u) => (
             <li key={u.slug}>
-              <TripTypeCard u={u} index={i} />
+              <TripTypeCard u={u} />
             </li>
           ))}
         </ul>
 
-        <section className="mt-16 rounded-panel bg-[linear-gradient(160deg,#22397A_0%,#4766C4_60%,#86A3EC_100%)] px-5 py-10 text-center text-paper sm:px-10 sm:py-14" aria-labelledby="start-h">
+        <section className="mt-16 rounded-panel bg-ink px-5 py-10 text-center text-paper sm:px-10 sm:py-14" aria-labelledby="start-h">
           <h2 id="start-h" className="display text-[clamp(1.6rem,3vw,2.3rem)]">
             Or just describe your trip
           </h2>

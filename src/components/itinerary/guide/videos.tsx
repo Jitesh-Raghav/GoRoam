@@ -161,7 +161,7 @@ export function Videos({ videos, queries, destination }: { videos?: TripVideo[];
           href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${city} travel`)}`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 self-start rounded-full bg-paper/10 px-4 py-2.5 text-sm text-paper ring-1 ring-inset ring-paper/20 backdrop-blur transition-colors hover:bg-paper hover:text-ink sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-full bg-paper/30 px-4 py-2.5 text-sm text-paper ring-1 ring-inset ring-paper/20 transition-colors hover:bg-paper hover:text-ink sm:self-auto"
         >
           <YouTubeGlyph className="h-3.5 w-5" /> More on YouTube <ArrowUpRight className="size-4" />
         </a>

@@ -126,7 +126,7 @@ export function GeneratingOverlay({ destination, days, source, startDate, people
           initial={{ opacity: 0, y: reduce ? 0 : 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease, delay: finishing ? 0 : 0.2 }}
-          className="mt-9 w-full max-w-[34rem] rounded-[26px] bg-paper/[0.07] p-5 text-left ring-1 ring-inset ring-paper/15 backdrop-blur-xl sm:p-6"
+          className="mt-9 w-full max-w-[34rem] rounded-[26px] bg-paper/[0.07] p-5 text-left ring-1 ring-inset ring-paper/15 sm:p-6"
         >
           <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-end gap-3 sm:gap-4">
             <div className={cn(!from && "invisible")}>

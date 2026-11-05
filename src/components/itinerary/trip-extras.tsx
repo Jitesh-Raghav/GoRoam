@@ -213,7 +213,7 @@ export function Daylight({ day }: { day?: DayWeather }) {
         <Sunrise className="size-4 text-sun" /> {clock(day.sunrise)}
       </span>
       <span className="inline-flex items-center gap-1.5" title="Golden hour starts about 45 minutes before sunset">
-        <span aria-hidden className="size-2 rounded-full bg-gradient-to-br from-sun-2 to-sun" />
+        <span aria-hidden className="size-2 rounded-full bg-sun" />
         Golden {clock(day.sunset, -45)}
       </span>
       <span className="inline-flex items-center gap-1.5 text-stone" title="Sunset">
@@ -357,7 +357,7 @@ export function TransferCard({ transfer, date, people }: { transfer?: Transfer; 
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease }}
-      className="print-avoid mt-6 overflow-hidden rounded-[26px] bg-[linear-gradient(135deg,var(--ink),var(--ink-2))] p-5 text-paper sm:p-6"
+      className="print-avoid mt-6 overflow-hidden rounded-[26px] bg-ink p-5 text-paper sm:p-6"
     >
       <div className="flex flex-wrap items-center gap-4">
         <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand text-white shadow-[0_12px_30px_-12px_rgba(31,111,235,0.9)]">

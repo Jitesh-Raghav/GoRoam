@@ -125,16 +125,13 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
             transition={{ duration: 0.5, ease, delay: 0.6 }}
             className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-50 sm:bottom-7 sm:right-7"
           >
-            {/* A soft halo that breathes, so the launcher is easy to spot on any section. */}
-            <span aria-hidden className="animate-breathe pointer-events-none absolute -inset-2 -z-10 rounded-full bg-[linear-gradient(120deg,var(--brand-2),var(--sun-2),var(--brand))] opacity-60 blur-xl" />
             <button
               type="button"
               onClick={() => setOpen(true)}
               className="glass group inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4 text-sm text-ink transition-transform duration-500 ease-out-expo hover:-translate-y-0.5 sm:pr-5"
               aria-label="Ask GoRoam about this trip"
             >
-              <span className="relative grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,var(--brand-2),var(--brand))] shadow-[0_8px_20px_-8px_rgba(11,130,120,0.9)]">
-                <span className="absolute inset-0 animate-ping rounded-full bg-brand-2/40 [animation-duration:2.6s]" />
+              <span className="relative grid size-10 place-items-center rounded-full bg-brand">
                 <Sparkles className="relative size-4 text-white transition-transform duration-700 group-hover:rotate-[20deg] group-hover:scale-110" />
               </span>
               <span className="flex flex-col items-start leading-tight">
@@ -177,11 +174,11 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
               <div className="absolute -bottom-16 -right-10 size-56 rounded-full bg-sun-2/30 blur-3xl" />
             </div>
             <span aria-hidden className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-ink/15 sm:hidden" />
-            <header className="relative m-2 mb-0 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,rgba(14,31,59,0.94),rgba(11,130,120,0.86))] px-4 pb-4 pt-3.5 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+            <header className="relative m-2 mb-0 overflow-hidden rounded-[24px] bg-ink px-4 pb-4 pt-3.5 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
               <div className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-brand-2/40 blur-3xl" />
               <div className="relative flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="grid size-10 place-items-center rounded-2xl bg-paper/10 ring-1 ring-inset ring-paper/20 backdrop-blur">
+                  <span className="grid size-10 place-items-center rounded-2xl bg-paper/30 ring-1 ring-inset ring-paper/20">
                     <Sparkles className="size-5 text-white" />
                   </span>
                   <div>
@@ -217,7 +214,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, ease, delay: 0.15 + i * 0.06 }}
-                        className="block w-full rounded-2xl bg-white/60 px-4 py-3 text-left text-sm text-ink shadow-[0_6px_18px_-12px_rgba(14,31,59,0.4)] ring-1 ring-inset ring-white backdrop-blur-md transition-colors hover:bg-ink hover:text-paper"
+                        className="block w-full rounded-2xl bg-white/80 px-4 py-3 text-left text-sm text-ink shadow-[0_6px_18px_-12px_rgba(14,31,59,0.4)] ring-1 ring-inset ring-white transition-colors hover:bg-ink hover:text-paper"
                       >
                         {s}
                       </motion.button>
@@ -231,8 +228,8 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                       className={cn(
                         "max-w-[88%] whitespace-pre-wrap break-words rounded-[20px] px-4 py-2.5 text-sm leading-relaxed",
                         m.role === "user"
-                          ? "rounded-br-md bg-ink/90 text-paper shadow-[0_10px_24px_-14px_rgba(14,31,59,0.8)] backdrop-blur"
-                          : "rounded-bl-md bg-white/70 text-ink shadow-[0_8px_22px_-14px_rgba(14,31,59,0.45)] ring-1 ring-inset ring-white backdrop-blur-md"
+                          ? "rounded-br-md bg-ink/90 text-paper shadow-[0_10px_24px_-14px_rgba(14,31,59,0.8)]"
+                          : "rounded-bl-md bg-white/70 text-ink shadow-[0_8px_22px_-14px_rgba(14,31,59,0.45)] ring-1 ring-inset ring-white"
                       )}
                     >
                       {m.content || (
@@ -250,7 +247,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
             </div>
 
             <form onSubmit={submit} className="border-t border-white/70 bg-white/30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3">
-              <div className="flex items-end gap-2 rounded-[22px] bg-white/75 p-1.5 pl-4 shadow-[0_10px_30px_-18px_rgba(14,31,59,0.5)] ring-1 ring-inset ring-white backdrop-blur-md transition-shadow focus-within:ring-2 focus-within:ring-brand/60">
+              <div className="flex items-end gap-2 rounded-[22px] bg-white/75 p-1.5 pl-4 shadow-[0_10px_30px_-18px_rgba(14,31,59,0.5)] ring-1 ring-inset ring-white transition-shadow focus-within:ring-2 focus-within:ring-brand/60">
                 <textarea
                   ref={field}
                   value={input}
@@ -271,7 +268,7 @@ export function Concierge({ tripId, city, asked = 0 }: { tripId: string; city: s
                   type="submit"
                   disabled={busy || !input.trim() || left <= 0}
                   aria-label="Send"
-                  className="grid size-10 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,var(--brand-2),var(--brand))] text-white shadow-[0_8px_18px_-8px_rgba(11,130,120,0.9)] transition-[filter,transform] hover:scale-105 disabled:bg-none disabled:bg-paper-3 disabled:text-stone disabled:shadow-none"
+                  className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-white transition-[filter,transform] hover:scale-105 disabled:bg-none disabled:bg-paper-3 disabled:text-stone disabled:shadow-none"
                 >
                   <ArrowUp className="size-4" />
                 </button>
