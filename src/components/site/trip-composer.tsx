@@ -105,8 +105,26 @@ function useDictation(onText: (text: string, final: boolean) => void) {
 type PickKey = "when" | "who" | "budget";
 
 function Picker({ icon: Icon, label, value, open, onOpen, children }: { icon: typeof MapPin; label: string; value?: string; open: boolean; onOpen: (v: boolean) => void; children: ReactNode }) {
+  // Close on a press anywhere outside, or Escape. A listener rather than a full-screen
+  // catcher, which a contained parent (the hero skips rendering off screen) would confine.
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) onOpen(false);
+    };
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") onOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, onOpen]);
   return (
-    <div className="relative shrink-0">
+    <div ref={box} className="relative shrink-0">
       <button
         type="button"
         onClick={() => onOpen(!open)}
@@ -122,7 +140,6 @@ function Picker({ icon: Icon, label, value, open, onOpen, children }: { icon: ty
       <AnimatePresence>
         {open && (
           <>
-            <button type="button" aria-hidden tabIndex={-1} className="fixed inset-0 z-30 cursor-default" onClick={() => onOpen(false)} />
             <motion.div
               initial={{ opacity: 0, y: 6, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
