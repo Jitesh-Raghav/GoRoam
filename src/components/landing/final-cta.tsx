@@ -16,7 +16,7 @@ export function FinalCta() {
   const onShown = useCallback(() => setCovered(true), []);
 
   return (
-    <section className="px-3 pb-3 pt-6 sm:px-4 sm:pb-4">
+    <section className="cv-block px-3 pb-3 pt-6 sm:px-4 sm:pb-4">
       <div className="relative isolate flex min-h-[72svh] items-center overflow-hidden rounded-panel bg-ink">
         {!covered && <LazyScene id="aurora" paused tint="#0e1f3b" />}
         <HeroPhoto photo={photo} lazy credit={false} onShown={onShown} />

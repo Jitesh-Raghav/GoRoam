@@ -2,12 +2,11 @@
 
 /* eslint-disable @next/next/no-img-element -- remote Wikimedia/Unsplash photos, already sized. */
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
 import { CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { QuietLink } from "@/components/site/quiet-link";
 import { track } from "@/lib/analytics";
 import { usePlacePhoto } from "@/lib/brand-photos";
 import { useMoney } from "@/lib/money";
@@ -35,7 +34,6 @@ export function PackageCard({
 }) {
   const { fmt: money } = useMoney();
   const ref = useRef<HTMLAnchorElement>(null);
-  const router = useRouter();
   const [broken, setBroken] = useState<string[]>([]);
   const [loaded, setLoaded] = useState<string | null>(null);
   const [covered, setCovered] = useState(false);
@@ -72,7 +70,7 @@ export function PackageCard({
   }, [pkg.slug, index]);
 
   return (
-    <Link ref={ref} href={href} onPointerEnter={() => router.prefetch(href)} className={cn(CARD_LINK, className)}>
+    <QuietLink ref={ref} href={href} className={cn(CARD_LINK, className)}>
       <div className={cn(CARD_PHOTO, "aspect-[4/3]")}>
         {!covered && <LazyScene id={scene} tint={SCENES[scene].tint} paused />}
         {src && (
@@ -101,6 +99,6 @@ export function PackageCard({
           From <span className="font-medium tabular-nums text-ink">{money(Math.round(pkg.budget / 2))}</span> per person
         </p>
       </div>
-    </Link>
+    </QuietLink>
   );
 }

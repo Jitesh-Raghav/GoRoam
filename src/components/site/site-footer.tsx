@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { COMPANY, activeSocials, type SocialId } from "@/lib/company";
 import { clockIn, useNow } from "@/lib/use-clock";
 import { Logo } from "./logo";
+import { QuietLink } from "./quiet-link";
 import { TripPrompt } from "./trip-prompt";
 
 /* -------------------------------------------------------------------------- */
@@ -278,7 +279,7 @@ export function SiteFooter({ cta = true }: { cta?: boolean }) {
   const { status } = useSession();
   const signedIn = status === "authenticated";
   return (
-    <footer className="relative overflow-hidden bg-ink text-paper">
+    <footer className="cv-block relative overflow-hidden bg-ink text-paper [contain-intrinsic-size:auto_75rem]">
       {/* Rails, as on the rest of the landing page */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
         <div className="container-x relative h-full">
@@ -329,13 +330,13 @@ export function SiteFooter({ cta = true }: { cta?: boolean }) {
                   const link = l.href === "/auth" && signedIn ? { label: "Dashboard", href: "/dashboard" } : l;
                   return (
                     <li key={l.label}>
-                      <Link href={link.href} className="group relative inline-flex items-center gap-1.5 text-paper/80 transition-colors hover:text-paper">
+                      <QuietLink href={link.href} className="group relative inline-flex items-center gap-1.5 text-paper/80 transition-colors hover:text-paper">
                         <span className="relative">
                           {link.label}
                           <span className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-brand-2 transition-transform duration-500 ease-out-expo group-hover:origin-left group-hover:scale-x-100" />
                         </span>
                         <ArrowUpRight className="size-3.5 -translate-x-1 opacity-0 transition-all duration-500 ease-out-expo group-hover:translate-x-0 group-hover:opacity-100" />
-                      </Link>
+                      </QuietLink>
                     </li>
                   );
                 })}

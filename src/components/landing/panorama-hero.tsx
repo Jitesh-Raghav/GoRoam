@@ -8,7 +8,7 @@ import { PanoramaLandscape, PanoramaSky } from "./panorama";
  */
 export function PanoramaHero() {
   return (
-    <section id="top" aria-label="Plan your next trip" className="pano-still relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#4a69c7] lg:h-[100svh] lg:min-h-[46.25rem]">
+    <section id="top" aria-label="Plan your next trip" className="pano-still cv-block relative isolate flex min-h-[100svh] [contain-intrinsic-size:auto_100svh] flex-col overflow-hidden bg-[#4a69c7] lg:h-[100svh] lg:min-h-[46.25rem]">
       <div className="absolute inset-0 -z-20">
         <PanoramaSky className="size-full" />
       </div>

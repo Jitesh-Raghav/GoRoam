@@ -2,9 +2,9 @@
 
 /* eslint-disable @next/next/no-img-element -- tiny round thumbnails from our own photo route */
 
-import Link from "next/link";
 import { useState } from "react";
 import { ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
+import { QuietLink } from "@/components/site/quiet-link";
 import { cn } from "@/lib/utils";
 
 export interface ExploreLink {
@@ -70,14 +70,14 @@ export function ExploreTrips({ groups }: { groups: ExploreGroup[] }) {
           <ul className="tab-in no-scrollbar -mx-4 mt-5 grid auto-cols-max grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex sm:flex-wrap sm:overflow-visible sm:px-0">
             {g.links.map((l) => (
               <li key={l.href}>
-                <Link
+                <QuietLink
                   href={l.href}
                   className="group inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-white py-1 pl-1 pr-3.5 text-sm text-ink ring-1 ring-line transition-colors duration-200 hover:bg-ink hover:text-paper hover:ring-ink sm:pr-4"
                 >
                   <Thumb link={l} />
                   {l.label}
                   <ArrowUpRight className="-ml-2.5 h-3.5 w-0 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:w-3.5 group-hover:opacity-100" />
-                </Link>
+                </QuietLink>
               </li>
             ))}
           </ul>

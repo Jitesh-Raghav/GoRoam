@@ -700,6 +700,16 @@ html { scroll-padding-top: 5.5rem; }
   }
 }
 
+/* Heavy illustrated blocks with no anchor inside (the hero, the closing banner, the footer):
+   the browser skips their style, layout and paint while they're off screen. */
+@layer components {
+  /* In a layer, so a block's own [contain-intrinsic-size:…] utility can set its size. */
+  .cv-block {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40rem;
+  }
+}
+
 /* Long card grids: a card far off screen skips style, layout and paint until it comes near.
    The 4px of padding (taken back by the margin) keeps a focused card's ring inside its paint box. */
 .cv-card {

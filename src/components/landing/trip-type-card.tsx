@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { QuietLink } from "@/components/site/quiet-link";
 import type { UseCase } from "@/lib/use-cases";
 import { cn } from "@/lib/utils";
 import { TripPhoto } from "./trip-photo";
@@ -7,7 +7,7 @@ import { TripPhoto } from "./trip-photo";
 /** One kind of trip as a borderless card: a tall photo, then its name and one line about it. */
 export function TripTypeCard({ u, className }: { u: UseCase; className?: string }) {
   return (
-    <Link href={`/plan/${u.slug}`} className={cn(CARD_LINK, className)}>
+    <QuietLink href={`/plan/${u.slug}`} className={cn(CARD_LINK, className)}>
       <div className={cn(CARD_PHOTO, "aspect-[4/5]")}>
         <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]">
           <TripPhoto slug={u.slug} />
@@ -19,6 +19,6 @@ export function TripTypeCard({ u, className }: { u: UseCase; className?: string 
         <span className={cn(CARD_TITLE, "hidden sm:block")}>{u.h1.replace(/^./, (c) => c.toUpperCase())}</span>
         <span className={cn(CARD_META, "mt-1 line-clamp-2")}>{u.lede}</span>
       </div>
-    </Link>
+    </QuietLink>
   );
 }

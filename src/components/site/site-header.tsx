@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { ArrowRight } from "@/components/site/icons";
 import { UserAvatar } from "./user-avatar";
@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Scene } from "@/components/scenes/scene";
 import { Logo } from "./logo";
 import { PillLink } from "./pill";
-import { useIntro } from "./use-intro";
 
 const LINKS = [
   { href: "/plan", label: "Plan" },
@@ -25,31 +24,45 @@ const LINKS = [
 
 export function SiteHeader() {
   const { data: session } = useSession();
-  const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
-  const intro = useIntro();
   // The home page opens on the blue-hour hero: light text until the bar turns solid.
   const pathname = usePathname();
   const dark = pathname === "/" && !scrolled && !open;
 
   // Hide on the way down, show on the way up, but only after 16px in one direction,
   // so small wobbles (a trackpad settling, a momentum flick) never make it flicker.
+  // A passive listener read once per frame; state only changes when the bar should.
   const turn = useRef(0);
   const going = useRef<"up" | "down">("up");
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    setScrolled(y > 24);
-    const dir = y > prev ? "down" : y < prev ? "up" : going.current;
-    if (dir !== going.current) {
-      going.current = dir;
-      turn.current = prev;
-    }
-    if (y < 480) setHidden(false);
-    else if (dir === "down" && y - turn.current > 16) setHidden(true);
-    else if (dir === "up" && turn.current - y > 16) setHidden(false);
-  });
+  useEffect(() => {
+    let prev = window.scrollY;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      const dir = y > prev ? "down" : y < prev ? "up" : going.current;
+      if (dir !== going.current) {
+        going.current = dir;
+        turn.current = prev;
+      }
+      if (y < 480) setHidden(false);
+      else if (dir === "down" && y - turn.current > 16) setHidden(true);
+      else if (dir === "up" && turn.current - y > 16) setHidden(false);
+      prev = y;
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
@@ -57,12 +70,8 @@ export function SiteHeader() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -90, opacity: 0 }}
-        animate={intro.ready ? { y: hidden && !open ? -110 : 0, opacity: 1 } : undefined}
-        transition={{ duration: scrolled ? 0.35 : 0.8, ease: [0.16, 1, 0.3, 1], delay: intro.ready && !scrolled ? intro.delay + 0.2 : 0 }}
-        className="fixed inset-x-0 top-0 z-50 no-print"
-      >
+      {/* In place on the first paint; slides away on the compositor (a CSS transform) when hidden. */}
+      <header className={cn("fixed inset-x-0 top-0 z-50 no-print transition-transform duration-300 ease-out-expo", hidden && !open && "-translate-y-[110%]")}>
         <div
           className={cn(
             // Solid once scrolled: a blur behind a fixed bar repaints on every scroll frame.
@@ -123,7 +132,7 @@ export function SiteHeader() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {open && (

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- our own photo route, which redirects to a CDN image already sized by ?w= */
-import Link from "next/link";
 import { CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
 import { Mountain } from "@/components/site/icons";
+import { QuietLink } from "@/components/site/quiet-link";
 import { monthsLabel, price, type TripIdea } from "@/lib/trip-ideas";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +41,7 @@ export function TripCard({
 }) {
   const where = t.region === t.country ? t.country : t.region;
   return (
-    <Link href={`/trips/${t.slug}`} className={cn(CARD_LINK, className)}>
+    <QuietLink href={`/trips/${t.slug}`} className={cn(CARD_LINK, className)}>
       <div className={cn(CARD_PHOTO, big ? "aspect-[16/10]" : "aspect-[4/3]", photoClassName)}>
         <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
         <img
@@ -67,6 +67,6 @@ export function TripCard({
           <span className={cn(compact && "max-[559px]:block")}>{monthsLabel(t.months)}</span>
         </span>
       </div>
-    </Link>
+    </QuietLink>
   );
 }
