@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import type { OverlayTrip } from "@/components/dashboard/generating-overlay";
 import { track } from "@/lib/analytics";
 import { PillButton } from "@/components/site/pill";
 import { formatMoney } from "@/lib/currency";
@@ -177,7 +178,7 @@ const QUICK: QuickAction[] = [
 export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", actions = true }: { ready?: boolean; delay?: number; seed?: string; tone?: "hero" | "light"; actions?: boolean }) {
   const router = useRouter();
   const { status } = useSession();
-  const [guest, setGuest] = useState<{ destination: string; days: number } | null>(null);
+  const [guest, setGuest] = useState<OverlayTrip | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const id = useId();
   const area = useRef<HTMLTextAreaElement>(null);
@@ -267,7 +268,14 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
   const planAsGuest = async (p: ParsedPrompt) => {
     const days = Math.min(p.days ?? 3, 7);
     setNotice(null);
-    setGuest({ destination: p.destination!, days });
+    setGuest({
+      destination: p.destination!,
+      days,
+      startDate: p.startDate,
+      people: p.companions === "solo" ? 1 : p.companions === "couple" ? 2 : undefined,
+      budget: p.budget ? formatMoney(p.budget, p.budgetCurrency ?? "USD") : undefined,
+      vibes: p.interests.map((id) => VIBES.find((v) => v.id === id)?.label).filter((v): v is string => !!v),
+    });
     // Guest trips are planned in USD; a budget in another currency is converted at today's rate.
     const budget = p.budget && (!p.budgetCurrency || p.budgetCurrency === "USD" ? p.budget : toUsd(p.budget, p.budgetCurrency));
     try {
@@ -345,7 +353,7 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
       className="mx-auto w-full max-w-[46rem]"
     >
       {/* Portalled: the composer sits in a transformed container, which would trap a fixed overlay. */}
-      {guest && createPortal(<GeneratingOverlay destination={guest.destination} days={guest.days} />, document.body)}
+      {guest && createPortal(<GeneratingOverlay {...guest} />, document.body)}
       {notice && (
         <p role="alert" className="mb-3 rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink ring-1 ring-sun/40 backdrop-blur">
           {notice}

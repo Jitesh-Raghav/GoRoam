@@ -55,7 +55,7 @@ import { Inspire } from "./inspire";
 import { track } from "@/lib/analytics";
 import { BoardingPass } from "@/components/dashboard/boarding-pass";
 import { PlaceField } from "@/components/dashboard/place-field";
-import { GeneratingOverlay } from "@/components/dashboard/generating-overlay";
+import { GeneratingOverlay, markOpening, type OverlayTrip } from "@/components/dashboard/generating-overlay";
 import { OutOfCredits, PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { PillButton } from "@/components/site/pill";
 import {
@@ -677,6 +677,16 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     setFormData((prev) => ({ ...prev, stops: over > 0 ? next.slice(0, Math.max(0, prev.numberOfDays - 1)) : next }));
   }, [formData.numberOfDays, formData.stops]);
   const cur = formData.budgetCurrency;
+  // The traveller's trip as the planning overlay shows it.
+  const overlayTrip: OverlayTrip = {
+    destination: formData.destination,
+    days: formData.numberOfDays,
+    source: formData.source,
+    startDate: formData.startDate,
+    people,
+    budget: formData.budget > 0 ? formatMoney(formData.budget, cur) : undefined,
+    vibes: formData.interests.map((id) => VIBES.find((v) => v.id === id)?.label).filter((v): v is string => !!v),
+  };
   /** The budget in USD, which is what the planner and the AI work in; null until rates arrive for a non-USD budget. */
   const budgetUsd = cur === "USD" ? formData.budget : money.toUsd(formData.budget, cur);
   const curRate = cur === "USD" ? 1 : (money.rates?.[cur] ?? null);
@@ -797,6 +807,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         // The trips list now has a new card; fetch it fresh next time it's shown.
         invalidate("/api/itineraries");
         track("trip_generated", { destination: formData.destination, days: formData.numberOfDays });
+        markOpening(result.data.itineraryId, overlayTrip);
         router.push(`/dashboard/itinerary/${result.data.itineraryId}`);
         onSubmit?.(result.data);
       } else {
@@ -833,7 +844,9 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
 
   return (
     <>
-      <AnimatePresence>{busy && <GeneratingOverlay destination={formData.destination} days={formData.numberOfDays} />}</AnimatePresence>
+      <AnimatePresence>
+        {busy && <GeneratingOverlay {...overlayTrip} />}
+      </AnimatePresence>
       <AnimatePresence>
         {paywall && <OutOfCredits destination={formData.destination} days={formData.numberOfDays} onClose={() => setPaywall(false)} />}
       </AnimatePresence>
