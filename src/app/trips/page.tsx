@@ -53,6 +53,9 @@ export default function TripsPage() {
             <PillLink href="/weekend-getaways" variant="outline">
               From your city
             </PillLink>
+            <PillLink href="/trip-cost-index" variant="outline">
+              Trip Cost Index
+            </PillLink>
           </div>
         </header>
 
