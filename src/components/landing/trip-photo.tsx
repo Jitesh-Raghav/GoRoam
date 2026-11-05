@@ -37,7 +37,6 @@ export function TripPhoto({ slug }: { slug: string }) {
           className={cn("absolute inset-0 size-full object-cover transition-opacity duration-700", loaded ? "opacity-100" : "opacity-0")}
         />
       )}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
     </>
   );
 }
