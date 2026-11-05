@@ -19,10 +19,12 @@ function useDebounced<T>(value: T, ms: number) {
   return v;
 }
 
-const code = (place: string) => {
+/** "Kyoto, Japan" → "KYO", the way a ticket shows a city. */
+export const cityCode = (place: string) => {
   const letters = place.split(",")[0].replace(/[^a-zA-Z]/g, "").toUpperCase();
   return letters.length >= 3 ? letters.slice(0, 3) : "···";
 };
+const code = cityCode;
 
 function Barcode({ seed }: { seed: string }) {
   const bars = useMemo(() => {

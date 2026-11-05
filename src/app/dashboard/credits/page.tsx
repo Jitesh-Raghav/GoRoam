@@ -3,44 +3,56 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Check, CheckCircle2, Crown, Info, Loader2, Plus, Receipt, Sparkles, X, Zap } from "@/components/site/icons";
+import { AlertCircle, ArrowLeft, Check, CheckCircle2, Info, Loader2, Plus, Receipt, X } from "@/components/site/icons";
 import Link from "next/link";
 import { PLANNER_DRAFT_KEY } from "@/components/dashboard/out-of-credits";
 import { CHECKOUT_KEY, useCheckout, type PendingCheckout } from "@/components/dashboard/use-checkout";
 import { useCredits } from "@/components/dashboard/dashboard-layout";
 import type { SceneId } from "@/components/scenes/scenes";
 import { SplitText } from "@/components/motion/split-text";
-import { Mesh, type MeshTone } from "@/components/site/mesh";
+import { PHOTO_CHIP } from "@/components/site/card-styles";
 import { PhotoPanel } from "@/components/site/photo-panel";
 import { PillButton, PillLink } from "@/components/site/pill";
 import { BRAND_PHOTOS, PHOTO_QUERIES, sizedPhoto, useBrandPhoto } from "@/lib/brand-photos";
 import { cn } from "@/lib/utils";
 import { PackEach, PackPrice } from "@/components/site/pack-price";
+import { passAmount, usePackPrice } from "@/lib/money";
 import { PLANS, freeTrips, type Plan, type PlanId } from "@/lib/plans";
 
 export default function CreditsPage() {
   return <CreditsPageContent />;
 }
 
-const ICONS: Record<PlanId, typeof Zap> = { week: Zap, year: Crown };
 /** Drawn under each pack's photo, and shown if none loads. */
 const PACK_SCENES: Record<PlanId, SceneId> = { week: "lake", year: "fuji" };
-/** Each pack's colour, in the mesh that wakes up on hover. */
-const PACK_TONES: Record<PlanId, MeshTone> = { week: "azure", year: "night" };
+/** Best value first, as in the paywall. */
+const ORDER = [...PLANS].sort((a, b) => Number(!!b.popular) - Number(!!a.popular));
 
-/** A pack's header: a photo of the kind of trip it buys, with its size on top. */
+/** Plain arithmetic on the real prices: a Week Pass every week of the year against one Year Pass. */
+function YearAnchor() {
+  const price = usePackPrice();
+  const week = PLANS.find((p) => p.id === "week");
+  const year = PLANS.find((p) => p.id === "year");
+  if (!week || !year) return null;
+  const w = price(week);
+  const y = price(year);
+  if (w.shown !== y.shown) return null;
+  return (
+    <p className="relative mt-4 text-sm text-paper/55">
+      A Week Pass every week would come to {w.approx ? "≈ " : ""}
+      {passAmount(w.amount * 52, w.shown)} a year.
+    </p>
+  );
+}
+
+/** A pass's photo, inset in its card: the kind of trip it buys, with its name on a frosted chip. */
 function PackPhoto({ plan }: { plan: Plan }) {
   const photo = sizedPhoto(useBrandPhoto(BRAND_PHOTOS.packs[plan.id], PHOTO_QUERIES.packs[plan.id]), 1000);
-  const Icon = ICONS[plan.id];
   return (
-    <PhotoPanel photo={photo} scene={PACK_SCENES[plan.id]} className="aspect-[16/10] shrink-0">
-      <span className="absolute left-5 top-5 grid size-10 place-items-center rounded-xl bg-paper/15 text-paper ring-1 ring-inset ring-paper/25 backdrop-blur-md">
-        <Icon className="size-5" />
+    <PhotoPanel photo={photo} scene={PACK_SCENES[plan.id]} shade="none" creditClassName="bottom-auto top-3" className="aspect-[16/8] shrink-0 rounded-[1.35rem]">
+      <span className={cn(PHOTO_CHIP, "absolute bottom-3 left-3")}>
+        {plan.name} · {plan.days === 365 ? "1 year" : `${plan.days} days`}
       </span>
-      <div className="absolute bottom-4 left-5 text-paper">
-        <p className="eyebrow text-paper/75">{plan.name}</p>
-        <p className="display mt-1.5 text-[2rem] leading-none">Unlimited trips</p>
-      </div>
     </PhotoPanel>
   );
 }
@@ -252,7 +264,7 @@ function CreditsPageContent() {
 
       {/* Balance, over a real photo (the illustration shows until it loads) */}
       <section aria-label="Your balance" className="mt-10">
-        <PhotoPanel photo={balancePhoto} scene="santorini" intro lazy={false} shade="left" creditClassName="bottom-auto top-4" className="rounded-panel text-paper">
+        <PhotoPanel photo={balancePhoto} scene="santorini" intro lazy={false} shade="tint" creditClassName="bottom-auto top-4" className="rounded-panel text-paper">
           <div className="relative flex min-h-[19rem] flex-col justify-end gap-8 p-8 sm:min-h-[22rem] sm:p-12 md:flex-row md:items-end md:justify-between">
             <div>
               {pass ? (
@@ -313,8 +325,8 @@ function CreditsPageContent() {
           )}
         </AnimatePresence>
 
-        <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-2">
-          {PLANS.map((plan, i) => {
+        <div className="mx-auto mt-8 grid max-w-5xl gap-5 md:grid-cols-2">
+          {ORDER.map((plan, i) => {
             const mine = !!pass && pass.plan === plan.id;
             const daysLeft = pass ? Math.max(1, Math.ceil((new Date(pass.until).getTime() - Date.now()) / 86_400_000)) : 0;
             const action = mine ? (plan.id === "week" ? "Add 7 more days" : "Add another year") : pass && plan.id === "year" ? "Upgrade to Year Pass" : `Buy ${plan.name}`;
@@ -325,25 +337,22 @@ function CreditsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 + i * 0.08 }}
               className={cn(
-                "mesh-host relative flex flex-col overflow-hidden rounded-panel transition-transform duration-500 ease-out-expo hover:-translate-y-1",
-                plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(26,95,214,0.6)]" : "bg-white text-ink shadow-card ring-1 ring-line",
+                "relative flex flex-col rounded-[1.75rem] p-2 transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1",
+                plan.popular ? "bg-ink text-paper shadow-[0_50px_100px_-50px_rgba(14,31,59,0.8)]" : "bg-white text-ink shadow-card ring-1 ring-line",
                 (mine || picked === plan.id) && "ring-2 ring-brand"
               )}
             >
               <PackPhoto plan={plan} />
               {mine ? (
-                <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm">
+                <span className="absolute left-5 top-5 z-10 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm">
                   <CheckCircle2 className="size-3.5" /> Your plan
                 </span>
               ) : (
                 plan.popular && (
-                  <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm">
-                    <Sparkles className="size-3.5" /> Most popular
-                  </span>
+                  <span className="absolute left-5 top-5 z-10 rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white shadow-sm">Best value</span>
                 )
               )}
-              <div className="relative isolate flex flex-1 flex-col overflow-hidden p-7 sm:p-8">
-                <Mesh tone={PACK_TONES[plan.id]} />
+              <div className="relative flex flex-1 flex-col px-5 pb-6 pt-7 sm:px-7 sm:pb-8">
                 <div className="relative">
                   <PackPrice plan={plan} className="text-5xl" muted={plan.popular ? "text-paper/60" : "text-stone"} note={`one-time · ${plan.period === "week" ? "7 days" : "1 year"}`} />
                 </div>
@@ -352,6 +361,7 @@ function CreditsPageContent() {
                   <span className={cn("ml-2 font-normal", plan.popular ? "text-paper/50" : "text-stone")}>≈ <PackEach plan={plan} /> a day</span>
                 </p>
                 <p className={cn("relative mt-1", plan.popular ? "text-paper/70" : "text-stone")}>{plan.tagline}</p>
+                {plan.id === "year" && !pass && <YearAnchor />}
                 {mine && pass && (
                   <p className={cn("relative mt-4 inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-sm", plan.popular ? "bg-paper/10 text-paper" : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20")}>
                     <span className="size-2 rounded-full bg-emerald-500" /> Active · ends{" "}
@@ -374,13 +384,11 @@ function CreditsPageContent() {
                   {checkout.pending === plan.id ? "Opening checkout…" : action}
                 </PillButton>
 
-                <ul className="relative mt-8 space-y-3">
+                <ul className={cn("relative mt-8 space-y-2.5 border-t pt-6", plan.popular ? "border-paper/10" : "border-line")}>
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full", plan.popular ? "bg-paper/10 text-brand-2" : "bg-brand-soft text-brand")}>
-                        <Check className="size-3.5" />
-                      </span>
-                      <span className={cn("text-sm", plan.popular ? "text-paper/85" : "text-ink/80")}>{feature}</span>
+                    <li key={feature} className="flex items-start gap-2.5">
+                      <Check className={cn("mt-0.5 size-3.5 shrink-0", plan.popular ? "text-brand-2" : "text-brand")} />
+                      <span className={cn("text-sm leading-snug", plan.popular ? "text-paper/85" : "text-ink/80")}>{feature}</span>
                     </li>
                   ))}
                 </ul>

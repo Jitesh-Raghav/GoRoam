@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ArrowLeft } from '@/components/site/icons';
 import { TripView } from '@/components/itinerary/trip-view';
+import { OpeningOverlay, clearOpening } from '@/components/dashboard/generating-overlay';
 import { Scene } from '@/components/scenes/scene';
 import { PillLink } from '@/components/site/pill';
 import { refetchJson, useCachedJson } from '@/lib/cached-json';
@@ -58,7 +59,13 @@ function ItineraryContent() {
     return () => clearInterval(t);
   }, [writing, id]);
 
-  if (loading) return <Loading />;
+  // Once the trip is on screen, the planner's hand-off note has done its job.
+  useEffect(() => {
+    if (itinerary) clearOpening();
+  }, [itinerary]);
+
+  // Fresh from the planner: keep its overlay up, finishing, rather than flash a skeleton.
+  if (loading) return <OpeningOverlay id={id} fallback={<Loading />} />;
   if (error || !itinerary) return <NotFound message={error || 'The requested itinerary could not be found.'} />;
   return <TripView it={itinerary} />;
 }

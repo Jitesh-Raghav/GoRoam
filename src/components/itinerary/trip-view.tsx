@@ -122,6 +122,7 @@ import { refetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
+import { LockedTab, UnlockCard, type LockedDay } from "@/components/guest/locked-days";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const VIBE_LABELS = Object.fromEntries(VIBES.map((v) => [v.id, v.label]));
@@ -252,9 +253,8 @@ function StopCard({ slot, activity, index, day, destination, last, eager, live, 
       >
         <div className="relative aspect-[16/8] sm:aspect-[16/10] md:aspect-auto md:min-h-[18.75rem]">
           <PlacePhoto activity={activity} destination={destination} icon={cat?.icon ?? Icon} eager={eager} rating />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/60 to-transparent" />
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/35 px-3 py-1.5 text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">
+            <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-ink/60 px-3 py-1.5 text-paper shadow-[0_6px_16px_-8px_rgba(14,31,59,0.6)] ring-1 ring-inset ring-paper/20 backdrop-blur-md">
               <Icon className="size-3.5 shrink-0 text-sun-2" />
               <span className="eyebrow text-[0.6rem]">{slot.label}</span>
               {activity.time && <span className="hidden truncate text-xs text-paper/80 sm:inline">· {activity.time}</span>}
@@ -832,6 +832,7 @@ export function TripView({
   variant = "trip",
   photosEndpoint,
   unlockUrl,
+  locked,
   backHref = "/itineraries",
 }: {
   it: ItineraryDetails;
@@ -844,6 +845,8 @@ export function TripView({
   photosEndpoint?: string;
   /** Guest previews: where sign-in returns to, to claim and unlock the trip. */
   unlockUrl?: string;
+  /** Guest previews: the days after Day 1, ready but locked (theme and cost only). */
+  locked?: LockedDay[];
   /** Packages: where "Trip gallery" leads back to (the public gallery, or the dashboard's copy of it). */
   backHref?: string;
 }) {
@@ -857,8 +860,9 @@ export function TripView({
     // The sign-in page offers Google and an email link, then returns here to claim the trip.
     window.location.href = `/auth?callbackUrl=${encodeURIComponent(unlockUrl ?? "/dashboard")}`;
   };
-  // On a public itinerary page the page itself owns the <h1>.
-  const HeroHeading = isPackage ? motion.h2 : motion.h1;
+  // On a public itinerary page the page itself owns the <h1>; a guest preview's hero is its title.
+  const HeroHeading = isPackage && !isGuest ? motion.h2 : motion.h1;
+  const lockedDays = isGuest ? (locked ?? []) : [];
 
   // Every stop's photo in one request; packages ship with theirs.
   const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
@@ -1243,7 +1247,7 @@ export function TripView({
               <CurrencySwitch local={localCurrency} typed={prefs?.budgetCurrency} />
             </SectionTitle>
 
-            {days.length > 1 && (
+            {days.length + lockedDays.length > 1 && (
               <div
                 role="tablist"
                 aria-label="Days"
@@ -1298,6 +1302,10 @@ export function TripView({
                     </button>
                   );
                 })}
+                {/* Guest previews: the rest of the trip, there but locked. */}
+                {lockedDays.map((d) => (
+                  <LockedTab key={d.day} label={`DAY ${pad(d.day)}`} date={dayLabel(it.startDate, d.day - 1)} theme={d.theme} cost={d.totalDayCost ? money(d.totalDayCost) : undefined} onClick={unlock} />
+                ))}
               </div>
             )}
 
@@ -1322,6 +1330,16 @@ export function TripView({
                   )}
                 </motion.div>
               </AnimatePresence>
+              {lockedDays.length > 0 && unlockUrl && (
+                <UnlockCard
+                  days={lockedDays}
+                  total={it.numberOfDays}
+                  labelFor={(day) => dayLabel(it.startDate, day - 1)}
+                  costFor={(usd) => (usd ? `about ${money(usd)}` : undefined)}
+                  unlockUrl={unlockUrl}
+                  destination={it.destination}
+                />
+              )}
               <div className="hidden space-y-14 print:block">
                 {days.map((d, i) => pendingDays.has(d.day) ? null : (
                   <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} holidays={holidays.get(isoDay(it.startDate, i))} arrival={guide?.arrival} />

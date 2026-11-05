@@ -200,7 +200,14 @@ export interface PackPrice {
   billed: string | null;
   /** The currency checkout should charge in. */
   currency: string;
+  /** `price` as a number, in `shown`: for comparing passes ("52 Week Passes would cost …"). */
+  amount: number;
+  /** The currency `price` is written in. */
+  shown: string;
 }
+
+/** An amount in a pass's shown currency, whole units: "$207", "₹10,348". */
+export const passAmount = (n: number, c: string) => formatMoney(Math.round(n), c, 0);
 
 /** "£0.75" with its pence below `whole`, otherwise rounded ("₹80", "₹2,200"). */
 const perUnit = (n: number, c: string, whole = 10) => {
@@ -224,11 +231,11 @@ const exact = (n: number, c: string) => (c === "USD" ? `$${n.toFixed(2)}` : form
 export function packPrice(plan: Plan, local: string, country: string | null, rates: Record<string, number> | null): PackPrice {
   const fixed = local === "USD" || country ? fixedPrice(plan.id, local) : null;
   if (fixed !== null) {
-    return { approx: false, price: exact(fixed, local), each: local === "USD" ? exact(fixed / plan.days, "USD") : perUnit(fixed / plan.days, local), billed: null, currency: local };
+    return { approx: false, price: exact(fixed, local), each: local === "USD" ? exact(fixed / plan.days, "USD") : perUnit(fixed / plan.days, local), billed: null, currency: local, amount: fixed, shown: local };
   }
   const usd = exact(plan.price, "USD");
   const rate = rates?.[local];
-  if (!rate || local === "USD") return { approx: false, price: usd, each: exact(plan.price / plan.days, "USD"), billed: null, currency: "USD" };
+  if (!rate || local === "USD") return { approx: false, price: usd, each: exact(plan.price / plan.days, "USD"), billed: null, currency: "USD", amount: plan.price, shown: "USD" };
   const converted = plan.price * rate;
   return {
     approx: true,
@@ -237,6 +244,8 @@ export function packPrice(plan: Plan, local: string, country: string | null, rat
     each: perUnit(converted / plan.days, local),
     billed: usd,
     currency: "USD",
+    amount: converted,
+    shown: local,
   };
 }
 

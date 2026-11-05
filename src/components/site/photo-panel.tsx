@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 
 const SHADE = {
   none: "",
+  /** A solid veil over the whole photo, for text anywhere, with no gradient. */
+  tint: "bg-ink/50",
   /** For text along the bottom edge. */
   bottom: "bg-gradient-to-t from-ink/85 via-ink/25 to-transparent",
   /** For text down the left side. */
