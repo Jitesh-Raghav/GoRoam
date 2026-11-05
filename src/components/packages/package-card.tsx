@@ -4,7 +4,7 @@ import { useMoney } from "@/lib/money";
 /* eslint-disable @next/next/no-img-element -- remote Wikimedia/Unsplash photos, already sized. */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
+import { ArrowUpRight, MapPin } from "@/components/site/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +15,7 @@ import type { PackageCardData } from "@/lib/packages-data";
 
 import { usePlacePhoto } from "@/lib/brand-photos";
 import { useDestinationScene } from "@/lib/use-destination-scene";
+import { CARD_FRAME, PHOTO_ARROW, PHOTO_CHIP } from "@/components/site/card-styles";
 import { cn } from "@/lib/utils";
 
 /**
@@ -59,71 +60,60 @@ export function PackageCard({ pkg, index, href = `/itineraries/${pkg.slug}` }: {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.06, 0.4) }}
       className="h-full"
     >
-      <Link
-        ref={ref}
-        href={href}
-        onPointerEnter={() => router.prefetch(href)}
-        className="group flex h-full flex-col overflow-hidden rounded-card bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-float"
-      >
-        <div className="relative h-64 overflow-hidden bg-ink">
-          <div className="absolute inset-0">
+      <Link ref={ref} href={href} onPointerEnter={() => router.prefetch(href)} className={CARD_FRAME}>
+        <div className="relative h-60 shrink-0 overflow-hidden rounded-[1.35rem] bg-ink">
+          {/* Only the picture zooms on hover; the labels stay put. */}
+          <div className="absolute inset-0 transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.04]">
             <LazyScene id={scene} tint={SCENES[scene].tint} />
+            {src && (
+              <img
+                key={src}
+                src={src}
+                alt={cover?.title ?? pkg.name}
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                onLoad={() => setLoaded(src)}
+                onError={() => setBroken((b) => [...b, src])}
+                className={cn("absolute inset-0 size-full object-cover transition-opacity duration-700", loaded === src ? "opacity-100" : "opacity-0")}
+              />
+            )}
           </div>
-          {src && (
-            <img
-              key={src}
-              src={src}
-              alt={cover?.title ?? pkg.name}
-              loading="lazy"
-              decoding="async"
-              referrerPolicy="no-referrer"
-              onLoad={() => setLoaded(src)}
-              onError={() => setBroken((b) => [...b, src])}
-              className={cn(
-                "absolute inset-0 size-full object-cover transition-[opacity,transform] duration-[1400ms] ease-out-expo group-hover:scale-[1.06]",
-                loaded === src ? "opacity-100" : "opacity-0"
-              )}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent" />
-          <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium text-ink shadow-card">
+          <span className={cn(PHOTO_CHIP, "absolute left-3 top-3")}>
             {pkg.days} {pkg.days === 1 ? "day" : "days"}
           </span>
-          <span className="absolute right-4 top-4 grid size-9 place-items-center rounded-full bg-white/95 text-ink opacity-0 shadow-card transition-all duration-500 ease-out-expo group-hover:opacity-100">
+          <span className={cn(PHOTO_ARROW, "absolute right-3 top-3")}>
             <ArrowUpRight className="size-4" />
           </span>
-          <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
-            <p className="eyebrow flex items-center gap-1.5 text-[0.62rem] text-paper/80">
-              <MapPin className="size-3" /> {pkg.country}
-            </p>
-            <h3 className="display mt-2 text-[1.6rem] leading-[1.05]">{pkg.title}</h3>
-          </div>
+          <span className={cn(PHOTO_CHIP, "absolute bottom-3 left-3")}>
+            <MapPin className="size-3 text-brand" /> {pkg.country}
+          </span>
         </div>
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
-          <p className="leading-relaxed text-stone">{pkg.tagline}</p>
+        <div className="flex flex-1 flex-col px-3 pb-3 pt-5 sm:px-4">
+          <h3 className="display text-[1.55rem] leading-[1.06] tracking-[-0.015em] text-ink">{pkg.title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-ink/65">{pkg.tagline}</p>
           {pkg.highlights.length > 0 && (
-            <ul className="mt-4 space-y-2 text-[0.92rem] leading-snug text-ink/85">
-              {pkg.highlights.map((h) => (
-                <li key={h} className="flex gap-2.5">
-                  <span aria-hidden className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-brand" />
-                  <span>{h}</span>
+            // The highlights as stops on a route, the way the plan itself reads.
+            <ol className="mt-5">
+              {pkg.highlights.map((h, i) => (
+                <li key={h} className="relative flex gap-3 pb-3 last:pb-0">
+                  {i < pkg.highlights.length - 1 && <span aria-hidden className="absolute bottom-0 left-[4.5px] top-[1.15rem] w-px bg-line-strong" />}
+                  <span aria-hidden className="relative mt-[0.4rem] size-2.5 shrink-0 rounded-full border-2 border-brand bg-white" />
+                  <span className="text-[0.92rem] leading-snug text-ink/85">{h}</span>
                 </li>
               ))}
-            </ul>
+            </ol>
           )}
           <div className="mt-auto pt-6">
-            <div className="flex items-end justify-between gap-3 border-t border-line pt-4">
-              <div>
-                <p className="eyebrow text-[0.6rem] text-stone">From</p>
-                <p className="mt-1.5 text-ink">
-                  <span className="display text-[1.4rem] leading-none">{money(Math.round(pkg.budget / 2))}</span>
-                  <span className="ml-1 text-xs text-stone">per person</span>
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1.5 text-xs text-stone">
-                <CalendarDays className="size-3.5 text-brand" /> Best {pkg.bestTime}
-              </span>
-            </div>
+            <dl className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4 border-t border-line pt-4">
+              <dt className="text-[0.7rem] text-stone">From</dt>
+              <dt className="text-right text-[0.7rem] text-stone">Best time</dt>
+              <dd className="mt-1 text-ink">
+                <span className="display text-[1.35rem] leading-none tabular-nums">{money(Math.round(pkg.budget / 2))}</span>
+                <span className="ml-1 text-xs text-stone">per person</span>
+              </dd>
+              <dd className="mt-1 text-right text-sm text-ink">{pkg.bestTime}</dd>
+            </dl>
           </div>
         </div>
       </Link>

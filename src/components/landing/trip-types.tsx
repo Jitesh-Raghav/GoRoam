@@ -21,9 +21,9 @@ export function TripTypes() {
           </Link>
         </div>
         <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {USE_CASES.map((u) => (
+          {USE_CASES.map((u, i) => (
             <li key={u.slug}>
-              <TripTypeCard u={u} />
+              <TripTypeCard u={u} index={i} />
             </li>
           ))}
         </ul>

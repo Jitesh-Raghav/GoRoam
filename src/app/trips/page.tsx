@@ -69,9 +69,10 @@ export default function TripsPage() {
               <li className="sm:col-span-2">
                 <TripCard t={lead} big />
               </li>
-              {rest.map((t) => (
+              {rest.map((t, i) => (
                 <li key={t.slug}>
-                  <TripCard t={t} />
+                  {/* The first sits beside the lead card on wide screens, so its photo grows to match. */}
+                  <TripCard t={t} fill={i === 0} />
                 </li>
               ))}
             </ul>
