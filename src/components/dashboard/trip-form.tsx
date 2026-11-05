@@ -1171,7 +1171,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
           </section>
 
           {/* The way on: stays in reach at the bottom of the screen however long the step is. */}
-          <div className="sticky bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-[26px] bg-ink/95 p-2.5 text-paper shadow-[0_24px_50px_-24px_rgba(14,31,59,0.85)] ring-1 ring-paper/10 backdrop-blur-xl sm:p-3 sm:pl-4">
+          <div className="sticky bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-[26px] bg-ink/95 p-2.5 text-paper shadow-[0_24px_50px_-24px_rgba(14,31,59,0.85)] ring-1 ring-paper/10 sm:p-3 sm:pl-4">
             <div className="flex items-center gap-3">
               {step > 0 && (
                 <button type="button" onClick={() => go(step - 1)} aria-label="Previous step" className="grid size-11 shrink-0 place-items-center rounded-full bg-paper/10 transition-colors hover:bg-paper hover:text-ink">

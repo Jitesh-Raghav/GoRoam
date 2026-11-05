@@ -94,7 +94,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full bg-paper/90 text-ink ring-1 ring-line backdrop-blur transition-colors hover:bg-ink hover:text-paper"
+          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full bg-paper/90 text-ink ring-1 ring-line transition-colors hover:bg-ink hover:text-paper"
         >
           <X className="size-4" />
         </button>
@@ -107,7 +107,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
               {photo?.url && (
                 <img src={photo.url} alt="" decoding="async" onLoad={() => setLoaded(true)} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-1000", loaded ? "opacity-100" : "opacity-0")} />
               )}
-              <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink/55 px-3 py-1.5 text-[11px] font-medium text-paper ring-1 ring-inset ring-paper/20 backdrop-blur-md">
+              <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink/75 px-3 py-1.5 text-[11px] font-medium text-paper ring-1 ring-inset ring-paper/20">
                 <span className="size-1.5 rounded-full bg-brand-2" /> {days} {days === 1 ? "day" : "days"} · ready to plan
               </span>
             </div>

@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { getLenis } from "@/components/motion/smooth-scroll";
 import { cn } from "@/lib/utils";
 
 export interface Chapter {
@@ -79,9 +78,7 @@ export function ChapterNav({ chapters, title, className }: { chapters: Chapter[]
     if (!el) return;
     setActive(id);
     const top = el.getBoundingClientRect().top + window.scrollY - offset();
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(top);
-    else window.scrollTo({ top, behavior: "smooth" });
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   if (chapters.length < 2) return null;

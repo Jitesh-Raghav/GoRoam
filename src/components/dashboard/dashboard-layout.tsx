@@ -13,7 +13,6 @@ import { Logo } from "@/components/site/logo";
 import { UserAvatar } from "@/components/site/user-avatar";
 import { Scene } from "@/components/scenes/scene";
 import { prefetchJson } from "@/lib/cached-json";
-import { getLenis } from "@/components/motion/smooth-scroll";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -141,10 +140,11 @@ function SidebarContent({ credits, pass, onNavigate, onClose }: { credits: numbe
           onClick={onNavigate}
           className="group relative block overflow-hidden rounded-3xl bg-ink p-5 text-paper"
         >
-          <div className="absolute inset-0 opacity-60 transition-opacity duration-700 group-hover:opacity-80">
-            <Scene id="peaks" />
+          {/* A still illustration: this card is on screen on every dashboard page. */}
+          <div className="absolute inset-0 opacity-50 transition-opacity duration-300 group-hover:opacity-70">
+            <Scene id="peaks" paused />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
+          <div className="absolute inset-0 bg-ink/60" />
           <div className="relative">
             {pass ? (
               <>
@@ -159,7 +159,7 @@ function SidebarContent({ credits, pass, onNavigate, onClose }: { credits: numbe
                 <p className="mt-2 text-xs text-paper/60">Go unlimited with a pass</p>
               </>
             )}
-            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1.5 text-xs ring-1 ring-inset ring-paper/15 backdrop-blur transition-colors group-hover:bg-paper group-hover:text-ink">
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-paper/30 px-3 py-1.5 text-xs ring-1 ring-inset ring-paper/15 transition-colors group-hover:bg-paper group-hover:text-ink">
               <Plus className="size-3.5" /> {pass ? "Extend" : "Get a pass"}
             </span>
           </div>
@@ -253,12 +253,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const html = document.documentElement;
     const prev = html.style.overflow;
     html.style.overflow = "hidden";
-    getLenis()?.stop();
     const esc = (e: KeyboardEvent) => e.key === "Escape" && setSidebarOpen(false);
     window.addEventListener("keydown", esc);
     return () => {
       html.style.overflow = prev;
-      getLenis()?.start();
       window.removeEventListener("keydown", esc);
     };
   }, [sidebarOpen]);
@@ -287,7 +285,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </aside>
 
         {/* Mobile top bar */}
-        <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:hidden">
+        <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/80 pt-[env(safe-area-inset-top)] lg:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-3 min-[400px]:px-4">
             <Logo />
             <div className="flex shrink-0 items-center gap-2">

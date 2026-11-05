@@ -33,7 +33,7 @@ export function GroupHero({ lede, prompt }: { lede: string; prompt: string }) {
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-sun-2/25 blur-3xl" />
       <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div>
-          <div className="inline-flex items-center gap-3 rounded-full bg-white/12 py-1.5 pl-1.5 pr-4 ring-1 ring-white/20 backdrop-blur">
+          <div className="inline-flex items-center gap-3 rounded-full bg-white/32 py-1.5 pl-1.5 pr-4 ring-1 ring-white/20">
             <AvatarStack size="size-7" />
             <span className="text-sm text-paper/90">5 friends, one plan</span>
           </div>
@@ -63,7 +63,7 @@ export function GroupHero({ lede, prompt }: { lede: string; prompt: string }) {
               </p>
             </div>
           ))}
-          <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-ink/85 px-4 py-3 text-paper shadow-2xl ring-1 ring-white/15 backdrop-blur">
+          <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-ink/85 px-4 py-3 text-paper shadow-2xl ring-1 ring-white/15">
             <p className="flex items-center gap-2 text-xs text-paper/70">
               <Users className="size-4 text-sun-2" /> Group vote
             </p>

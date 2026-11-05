@@ -10,7 +10,7 @@ export default function NotFound() {
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent" />
       <div className="relative flex flex-col p-6 sm:p-10">
-        <div className="rounded-full bg-paper/90 px-4 py-2 backdrop-blur self-start">
+        <div className="rounded-full bg-paper/90 px-4 py-2 self-start">
           <Logo />
         </div>
         <div className="mt-auto max-w-2xl pb-6">

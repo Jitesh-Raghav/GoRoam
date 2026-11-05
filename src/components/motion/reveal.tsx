@@ -18,7 +18,7 @@ interface RevealProps {
 }
 
 /** Fade + rise into place once the element scrolls into view. */
-export function Reveal({ children, className, delay = 0, y = 28, amount = 0.25, duration = 1, fade = true }: RevealProps) {
+export function Reveal({ children, className, delay = 0, y = 16, amount = 0.15, duration = 0.6, fade = true }: RevealProps) {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -44,7 +44,7 @@ export function MaskReveal({ children, className, delay = 0 }: { children: React
       initial={reduce ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
       whileInView={reduce ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1], delay }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay }}
     >
       {children}
     </motion.div>

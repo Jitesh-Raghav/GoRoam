@@ -81,7 +81,7 @@ export function PlacesMap({ points, active, onPick, className, searchUrl }: { po
                 style={{ left: `${p.x}%`, top: `${p.y}%`, zIndex: on ? 20 : 10 - i }}
                 className={cn(
                   "absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-3 text-xs shadow-[0_12px_28px_-8px_rgba(0,0,0,0.7)] ring-2 transition-all duration-300",
-                  on ? "scale-110 bg-sun text-ink ring-white" : "bg-paper/10 text-paper ring-paper/30 backdrop-blur-md hover:bg-paper/20",
+                  on ? "scale-110 bg-sun text-ink ring-white" : "bg-paper/30 text-paper ring-paper/30 hover:bg-paper/40",
                 )}
               >
                 <span className={cn("grid size-6 place-items-center rounded-full font-mono text-[11px]", on ? "bg-ink text-sun-2" : "bg-paper/15")}>{i + 1}</span>
@@ -92,7 +92,7 @@ export function PlacesMap({ points, active, onPick, className, searchUrl }: { po
         </>
       )}
       {searchUrl && (
-        <a href={searchUrl} target="_blank" rel="noreferrer" className="absolute bottom-3 right-3 z-30 inline-flex items-center gap-1 rounded-full bg-paper/90 px-3 py-1.5 text-xs text-ink backdrop-blur hover:bg-paper">
+        <a href={searchUrl} target="_blank" rel="noreferrer" className="absolute bottom-3 right-3 z-30 inline-flex items-center gap-1 rounded-full bg-paper/90 px-3 py-1.5 text-xs text-ink hover:bg-paper">
           Open in Maps <ArrowUpRight className="size-3" />
         </a>
       )}

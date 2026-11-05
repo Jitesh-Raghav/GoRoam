@@ -127,7 +127,7 @@ export function BudgetBreakdown({
     <AnimatePresence>
       {open && (
         <div className="no-print fixed inset-0 z-[300]" role="dialog" aria-modal="true" aria-label="Budget breakdown">
-          <motion.button type="button" aria-label="Close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 cursor-default bg-ink/50 backdrop-blur-sm" />
+          <motion.button type="button" aria-label="Close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 cursor-default bg-ink/70" />
           <motion.aside
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}

@@ -372,7 +372,7 @@ function DayColumn({
     <section
       data-day={day}
       className={cn(
-        "flex flex-col rounded-[26px] bg-white/75 shadow-[0_1px_2px_rgba(14,31,59,0.05),0_24px_48px_-36px_rgba(14,31,59,0.45)] ring-1 backdrop-blur-sm transition-[box-shadow,background-color] md:max-h-full",
+        "flex flex-col rounded-[26px] bg-white/75 shadow-[0_1px_2px_rgba(14,31,59,0.05),0_24px_48px_-36px_rgba(14,31,59,0.45)] ring-1 transition-[box-shadow,background-color] md:max-h-full",
         hidden && "max-md:hidden",
         isOver ? "bg-brand-soft/70 ring-2 ring-brand/50" : "ring-line"
       )}

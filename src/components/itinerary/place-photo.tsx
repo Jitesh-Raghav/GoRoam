@@ -195,7 +195,7 @@ export function PlacePhoto({
           className={cn(
             "absolute inset-0 size-full object-cover print:scale-100 print:opacity-100",
             // A photo straight from cache appears at once; one from the network fades in.
-            !quick.instant && "transition-[opacity,transform] duration-1000 ease-out-expo",
+            !quick.instant && "transition-[opacity,transform] duration-500 ease-out-expo",
             loaded ? "scale-100 opacity-100" : "scale-105 opacity-0",
             imgClassName
           )}
@@ -221,7 +221,7 @@ export function PlacePhoto({
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="print:hidden absolute bottom-2 right-2 max-w-[80%] truncate rounded-full bg-ink/45 px-2 py-0.5 text-[10px] text-paper/85 backdrop-blur-md transition-colors hover:bg-ink/70"
+          className="print:hidden absolute bottom-2 right-2 max-w-[80%] truncate rounded-full bg-ink/65 px-2 py-0.5 text-[10px] text-paper/85 transition-colors hover:bg-ink/70"
         >
           {caption(photo)}
         </a>

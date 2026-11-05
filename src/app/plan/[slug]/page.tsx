@@ -85,7 +85,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
         <header className="relative overflow-hidden rounded-panel bg-[linear-gradient(160deg,#22397A_0%,#4766C4_55%,#86A3EC_100%)] px-5 pb-10 pt-12 text-center text-paper sm:px-10 sm:pb-14 sm:pt-16">
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]" />
           <div className="relative">
-            <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/25 backdrop-blur">
+            <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-white/35 ring-1 ring-white/25">
               <Icon className="size-6" />
             </span>
             <p className="eyebrow mt-5 text-paper/70">GoRoam AI trip planner</p>

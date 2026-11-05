@@ -52,7 +52,7 @@ export default function SquadPage() {
           <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-sun-2/25 blur-3xl" />
           <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
             <div>
-              <p className="inline-flex items-center gap-3 rounded-full bg-white/12 py-1.5 pl-1.5 pr-4 text-sm text-paper/90 ring-1 ring-white/20 backdrop-blur">
+              <p className="inline-flex items-center gap-3 rounded-full bg-white/32 py-1.5 pl-1.5 pr-4 text-sm text-paper/90 ring-1 ring-white/20">
                 <AvatarStack size="size-7" /> New · Squad Match
               </p>
               <h1 className="display mt-6 text-[clamp(2.4rem,5.4vw,4.4rem)] leading-[1] tracking-[-0.03em]">

@@ -155,7 +155,7 @@ export function PlanToolsProvider({ it, enabled, children }: { it: ItineraryDeta
       <AnimatePresence>
         {preview && (
           <motion.div key="plan-preview" className="no-print fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <button type="button" aria-label="Close" className="absolute inset-0 cursor-default bg-ink/50 backdrop-blur-sm" onClick={() => preview.status !== "saving" && setPreview(null)} />
+            <button type="button" aria-label="Close" className="absolute inset-0 cursor-default bg-ink/70" onClick={() => preview.status !== "saving" && setPreview(null)} />
             <motion.div
               role="dialog"
               aria-label={title}

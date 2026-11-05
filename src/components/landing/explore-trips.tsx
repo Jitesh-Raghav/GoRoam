@@ -45,7 +45,7 @@ export function ExploreTrips({ groups, total }: { groups: ExploreGroup[]; total:
   const [active, setActive] = useState(groups[0]?.id);
 
   return (
-    <div className="rounded-panel bg-white/70 p-5 ring-1 ring-line backdrop-blur sm:p-7">
+    <div className="rounded-panel bg-white/70 p-5 ring-1 ring-line sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div role="tablist" aria-label="Explore more trips" className="no-scrollbar -mx-1 flex max-w-full gap-1 overflow-x-auto px-1">
           {groups.map((g) => {

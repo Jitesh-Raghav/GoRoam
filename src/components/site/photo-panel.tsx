@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { HeroPhoto } from "@/components/itinerary/hero-photo";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES, type SceneId } from "@/components/scenes/scenes";
@@ -32,7 +32,7 @@ export function PhotoPanel({
   credit = true,
   creditClassName,
   lazy = true,
-  drift = true,
+  drift = false,
   className,
   children,
 }: {
@@ -48,10 +48,13 @@ export function PhotoPanel({
   className?: string;
   children?: ReactNode;
 }) {
+  const [covered, setCovered] = useState(false);
+  const onShown = useCallback(() => setCovered(true), []);
   return (
     <div className={cn("relative isolate overflow-hidden bg-ink", className)}>
-      <LazyScene id={scene} tint={SCENES[scene].tint} intro={intro} />
-      <HeroPhoto photo={photo} lazy={lazy} credit={credit} creditClassName={creditClassName} drift={drift} />
+      {/* The illustration only until the photo covers it; then it unmounts (its animations with it). */}
+      {!covered && <LazyScene id={scene} tint={SCENES[scene].tint} intro={intro} />}
+      <HeroPhoto photo={photo} lazy={lazy} credit={credit} creditClassName={creditClassName} drift={drift} onShown={onShown} />
       {shade !== "none" && <div aria-hidden className={cn("pointer-events-none absolute inset-0", SHADE[shade])} />}
       {children}
     </div>

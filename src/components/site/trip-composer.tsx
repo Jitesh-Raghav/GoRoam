@@ -346,16 +346,13 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
   });
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 26 }}
-      animate={ready ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 1.2, ease, delay: delay + 0.55 }}
-      className="mx-auto w-full max-w-[46rem]"
-    >
+    // No entrance of its own: the page around it decides (the home hero fades it in with CSS,
+    // so the box shows on first paint instead of waiting for JavaScript).
+    <div className="mx-auto w-full max-w-[46rem]">
       {/* Portalled: the composer sits in a transformed container, which would trap a fixed overlay. */}
       {guest && createPortal(<GeneratingOverlay {...guest} />, document.body)}
       {notice && (
-        <p role="alert" className="mb-3 rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink ring-1 ring-sun/40 backdrop-blur">
+        <p role="alert" className="mb-3 rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink ring-1 ring-sun/40">
           {notice}
         </p>
       )}
@@ -368,7 +365,7 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
         className={cn(
           "group/composer relative isolate z-20 rounded-[28px] p-2 text-left ring-1 ring-inset transition-[background-color,box-shadow] duration-500",
           dark
-            ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.46))] shadow-[0_40px_90px_-36px_rgba(8,18,46,0.7),0_8px_24px_-12px_rgba(14,31,59,0.18),inset_0_1.5px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-white/55 backdrop-blur-2xl backdrop-saturate-[1.8] focus-within:bg-white/75"
+            ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.46))] shadow-[0_40px_90px_-36px_rgba(8,18,46,0.7),0_8px_24px_-12px_rgba(14,31,59,0.18),inset_0_1.5px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-white/55-[1.8] focus-within:bg-white/75"
             : "bg-white shadow-[0_30px_70px_-34px_rgba(14,31,59,0.45)] ring-line-strong focus-within:ring-brand/40"
         )}
       >
@@ -501,9 +498,9 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
               type="button"
               onClick={() => quick(a)}
               className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm backdrop-blur-md transition-colors duration-300",
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-colors duration-300",
                 dark
-                  ? "bg-[rgba(22,36,79,0.42)] text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_8px_20px_-12px_rgba(8,18,46,0.6)] ring-1 ring-inset ring-white/25 backdrop-saturate-150 hover:bg-white hover:text-ink"
+                  ? "bg-[rgba(22,36,79,0.42)] text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_8px_20px_-12px_rgba(8,18,46,0.6)] ring-1 ring-inset ring-white/25 hover:bg-white hover:text-ink"
                   : "bg-white text-ink/80 ring-1 ring-inset ring-line-strong hover:bg-ink hover:text-paper"
               )}
             >
@@ -513,6 +510,6 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
           ))}
         </motion.div>
       )}
-    </motion.div>
+    </div>
   );
 }

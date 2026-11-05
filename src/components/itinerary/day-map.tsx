@@ -180,7 +180,7 @@ export default function DayMap({
         </Map>
       </APIProvider>
       {street && (
-        <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[11px] text-paper backdrop-blur">
+        <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[11px] text-paper">
           {street.km.toFixed(1)} km · ~{street.mins} min {street.mode}
         </span>
       )}

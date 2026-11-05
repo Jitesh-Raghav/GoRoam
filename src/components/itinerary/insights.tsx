@@ -193,17 +193,17 @@ export function DayEats({ day, destination }: { day: number; destination: string
               <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent" />
               <span className="absolute left-3 top-3 flex gap-1.5">
                 {e.rating && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-ink/70 px-2 py-0.5 font-mono text-[11px] text-paper backdrop-blur-md">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-ink/70 px-2 py-0.5 font-mono text-[11px] text-paper">
                     <Star className="size-3 text-sun-2" /> {e.rating.toFixed(1)}
                   </span>
                 )}
                 {e.veg && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/85 px-2 py-0.5 text-[10px] text-emerald-700 backdrop-blur-md">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/85 px-2 py-0.5 text-[10px] text-emerald-700">
                     <Leaf className="size-3" /> Veg-friendly
                   </span>
                 )}
               </span>
-              <span className="absolute bottom-2.5 left-3 rounded-full bg-white/85 px-2 py-0.5 text-[11px] tracking-[0.12em] text-ink backdrop-blur-md">{priceTag(e.price)}</span>
+              <span className="absolute bottom-2.5 left-3 rounded-full bg-white/85 px-2 py-0.5 text-[11px] tracking-[0.12em] text-ink">{priceTag(e.price)}</span>
             </span>
             <span className="block p-4">
             <span className="relative flex items-start justify-between gap-3">
@@ -429,7 +429,7 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
                     <div className="relative h-44 overflow-hidden [mask-image:linear-gradient(to_bottom,black_45%,transparent)]">
                       <Pic name={e.where || e.name} area={city} credit={false} className="transition-transform duration-[1.6s] group-hover:scale-105" />
                     </div>
-                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-[11px] text-ink ring-1 ring-white/60 backdrop-blur-md">
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-[11px] text-ink ring-1 ring-white/60">
                       <Sparkles className="size-3 text-sun" /> {e.when}
                     </span>
                     <div className="-mt-6 px-5 pb-5 sm:px-6 sm:pb-6">

@@ -72,7 +72,7 @@ function Postcard({ it, index, onDelete }: { it: Itinerary; index: number; onDel
           <HeroPhoto photo={photo} credit={false} lazy drift={false} />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent" />
-        <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/15 px-2.5 py-1.5 text-center text-paper backdrop-blur-sm">
+        <span className="absolute right-4 top-4 rounded-md border border-dashed border-paper/70 bg-paper/35 px-2.5 py-1.5 text-center text-paper">
           <span className="display block text-xl leading-none">{it.numberOfDays}</span>
           <span className="eyebrow block text-[0.52rem]">{it.numberOfDays === 1 ? "day" : "days"}</span>
         </span>

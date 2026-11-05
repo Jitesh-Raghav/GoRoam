@@ -5,7 +5,6 @@ import { ArrowUp, ArrowUpRight, Instagram, Linkedin, Lock, Mail, ShieldCheck, Sh
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRef } from "react";
-import { getLenis } from "@/components/motion/smooth-scroll";
 import { COMPANY, activeSocials, type SocialId } from "@/lib/company";
 import { clockIn, useNow } from "@/lib/use-clock";
 import { Logo } from "./logo";
@@ -232,11 +231,7 @@ function HarbourPlate() {
 function BackToTop() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
-  const top = () => {
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(0, { duration: 1.6 });
-    else window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const top = () => window.scrollTo({ top: 0, behavior: "smooth" });
   return (
     <button type="button" onClick={top} aria-label="Back to top" className="group relative grid size-14 place-items-center rounded-full text-paper transition-colors hover:text-ink">
       <span className="absolute inset-1 rounded-full bg-paper/[0.06] transition-colors duration-500 group-hover:bg-paper" />

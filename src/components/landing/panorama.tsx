@@ -356,7 +356,7 @@ function useLiveScene(interactive: boolean) {
 export function PanoramaLandscape({ intro, className }: { intro: boolean; className?: string }) {
   const uid = "pano" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const s = useLandscape(uid);
-  const { ref, paused } = useLiveScene(true);
+  const { ref, paused } = useLiveScene(false);
 
   return (
     <svg
@@ -646,7 +646,7 @@ function useHighPeaks() {
 
 export function PanoramaSky({ className }: { className?: string }) {
   const uid = "sky" + useId().replace(/[^a-zA-Z0-9]/g, "");
-  const { ref, paused } = useLiveScene(true);
+  const { ref, paused } = useLiveScene(false);
   const peaks = useHighPeaks();
 
   return (

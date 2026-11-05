@@ -205,7 +205,7 @@ function Food({ guide, destination }: { guide: TripGuide; destination: string })
             <PlacePhoto activity={asDish(d.name)} destination={destination} icon={UtensilsCrossed} imgClassName="group-hover:scale-[1.05]" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/55 to-transparent" />
             {d.whereToTry && (
-              <span className="absolute bottom-2.5 left-3 inline-flex max-w-[58%] items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink shadow-sm backdrop-blur">
+              <span className="absolute bottom-2.5 left-3 inline-flex max-w-[58%] items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink shadow-sm">
                 <MapPin className="size-3 shrink-0 text-brand" />
                 <span className="truncate">{d.whereToTry.split(",")[0]}</span>
               </span>
@@ -532,7 +532,7 @@ export function LocalGuide({ guide, destination }: { guide: TripGuide; destinati
           </>
         }
       >
-        <p className="no-print inline-flex items-center gap-2 self-start rounded-full bg-ink/80 px-3.5 py-2 text-xs text-paper shadow-lg ring-1 ring-inset ring-paper/15 backdrop-blur sm:self-auto">
+        <p className="no-print inline-flex items-center gap-2 self-start rounded-full bg-ink/80 px-3.5 py-2 text-xs text-paper shadow-lg ring-1 ring-inset ring-paper/15 sm:self-auto">
           <motion.span
             aria-hidden
             animate={touched || reduce ? undefined : { x: [0, 4, 0] }}

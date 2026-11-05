@@ -6,9 +6,8 @@ import { ArrowRight } from "@/components/site/icons";
 import { UserAvatar } from "./user-avatar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { getLenis } from "@/components/motion/smooth-scroll";
 import { Scene } from "@/components/scenes/scene";
 import { Logo } from "./logo";
 import { PillLink } from "./pill";
@@ -35,23 +34,25 @@ export function SiteHeader() {
   const pathname = usePathname();
   const dark = pathname === "/" && !scrolled && !open;
 
+  // Hide on the way down, show on the way up, but only after 16px in one direction,
+  // so small wobbles (a trackpad settling, a momentum flick) never make it flicker.
+  const turn = useRef(0);
+  const going = useRef<"up" | "down">("up");
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
     setScrolled(y > 24);
+    const dir = y > prev ? "down" : y < prev ? "up" : going.current;
+    if (dir !== going.current) {
+      going.current = dir;
+      turn.current = prev;
+    }
     if (y < 480) setHidden(false);
-    else if (y > prev + 1) setHidden(true);
-    else if (y < prev - 1) setHidden(false);
+    else if (dir === "down" && y - turn.current > 16) setHidden(true);
+    else if (dir === "up" && turn.current - y > 16) setHidden(false);
   });
 
   useEffect(() => {
-    const lenis = getLenis();
-    if (open) {
-      lenis?.stop();
-      document.documentElement.style.overflow = "hidden";
-    } else {
-      lenis?.start();
-      document.documentElement.style.overflow = "";
-    }
+    document.documentElement.style.overflow = open ? "hidden" : "";
   }, [open]);
 
   return (
@@ -59,15 +60,14 @@ export function SiteHeader() {
       <motion.header
         initial={{ y: -90, opacity: 0 }}
         animate={intro.ready ? { y: hidden && !open ? -110 : 0, opacity: 1 } : undefined}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: intro.ready && !scrolled ? intro.delay + 0.2 : 0 }}
+        transition={{ duration: scrolled ? 0.35 : 0.8, ease: [0.16, 1, 0.3, 1], delay: intro.ready && !scrolled ? intro.delay + 0.2 : 0 }}
         className="fixed inset-x-0 top-0 z-50 no-print"
       >
         <div
           className={cn(
-            "transition-[background-color,box-shadow,backdrop-filter] duration-500",
-            scrolled && !open
-              ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(236,243,252,0.48))] shadow-[inset_0_-1px_0_rgba(255,255,255,0.6),0_1px_0_rgba(14,31,59,0.07),0_12px_32px_-20px_rgba(14,31,59,0.35)] backdrop-blur-2xl backdrop-saturate-[1.8]"
-              : "bg-transparent"
+            // Solid once scrolled: a blur behind a fixed bar repaints on every scroll frame.
+            "transition-[background-color,box-shadow] duration-300",
+            scrolled && !open ? "bg-paper/[0.97] shadow-[0_1px_0_rgba(14,31,59,0.08)]" : "bg-transparent"
           )}
         >
           <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">
@@ -115,7 +115,7 @@ export function SiteHeader() {
                 aria-expanded={open}
                 aria-controls="mobile-menu"
                 aria-label={open ? "Close menu" : "Open menu"}
-                className={cn("relative grid size-11 place-items-center rounded-full lg:hidden", dark ? "bg-white/15 text-paper ring-1 ring-white/25 backdrop-blur-md" : "bg-ink text-paper")}
+                className={cn("relative grid size-11 place-items-center rounded-full lg:hidden", dark ? "bg-paper/15 text-paper ring-1 ring-paper/25" : "bg-ink text-paper")}
               >
                 <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "rotate-45" : "-translate-y-[3px]")} />
                 <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "-rotate-45" : "translate-y-[3px]")} />
@@ -129,11 +129,10 @@ export function SiteHeader() {
         {open && (
           <motion.div
             id="mobile-menu"
-            data-lenis-prevent
             initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
             exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
-            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-paper pt-[72px] lg:hidden"
           >
             <nav aria-label="Mobile" className="container-x flex flex-col gap-1 pt-8">

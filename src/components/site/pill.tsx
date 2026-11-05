@@ -14,7 +14,7 @@ const variants: Record<Variant, string> = {
   paper: "bg-paper text-ink hover:text-white shadow-[0_10px_30px_-12px_rgba(0,0,0,0.35)]",
   brand: "bg-brand text-white hover:text-white shadow-[0_14px_34px_-12px_rgba(26,95,214,0.6)]",
   outline: "bg-transparent text-ink ring-1 ring-inset ring-ink/15 hover:text-paper",
-  glass: "bg-white/12 text-white ring-1 ring-inset ring-white/25 backdrop-blur-md hover:text-ink",
+  glass: "bg-white/32 text-white ring-1 ring-inset ring-white/25 hover:text-ink",
 };
 
 const fills: Record<Variant, string> = {
