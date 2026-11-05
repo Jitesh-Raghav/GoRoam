@@ -848,7 +848,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
         {busy && <GeneratingOverlay {...overlayTrip} />}
       </AnimatePresence>
       <AnimatePresence>
-        {paywall && <OutOfCredits destination={formData.destination} days={formData.numberOfDays} onClose={() => setPaywall(false)} />}
+        {paywall && <OutOfCredits destination={formData.destination} days={formData.numberOfDays} trip={overlayTrip} onClose={() => setPaywall(false)} />}
       </AnimatePresence>
 
       <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
