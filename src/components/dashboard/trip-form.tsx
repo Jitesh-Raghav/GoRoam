@@ -181,9 +181,7 @@ function Stepper({
           error ? "ring-destructive/60" : "ring-line-strong"
         )}
       >
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line-strong">
-          <Icon className="size-4" />
-        </span>
+        <Icon className="size-5 shrink-0 text-brand" />
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="eyebrow text-[0.6rem] text-stone">{label}</span>
           <span className="mt-1 text-[1.05rem] text-ink" aria-live="polite">
@@ -261,16 +259,12 @@ function ChoiceCard({
       onClick={onClick}
       className={cn(
         "relative flex rounded-2xl text-left ring-1 transition-colors duration-300",
-        compact ? "items-center gap-3 p-3.5" : "flex-col items-start gap-5 p-4",
+        compact ? "items-center gap-3 p-4" : "flex-col items-start gap-6 p-4",
         active ? "text-paper ring-ink" : "bg-paper/60 text-ink ring-line-strong hover:bg-white hover:ring-ink/25"
       )}
     >
       {active && <motion.span layoutId={layoutGroup} className="absolute inset-0 rounded-2xl bg-ink" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
-      {Icon && (
-        <span className={cn("relative grid size-10 shrink-0 place-items-center rounded-xl transition-colors", active ? "bg-brand text-white" : "bg-white text-brand ring-1 ring-line-strong")}>
-          <Icon className="size-5" />
-        </span>
-      )}
+      {Icon && <Icon className={cn("relative size-5 shrink-0 transition-colors", active ? "text-brand-2" : "text-brand")} />}
       <span className="relative min-w-0">
         <span className="block font-medium">{label}</span>
         {hint && <span className={cn("block text-xs", active ? "text-paper/60" : "text-stone")}>{hint}</span>}
@@ -677,6 +671,15 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
     setFormData((prev) => ({ ...prev, stops: over > 0 ? next.slice(0, Math.max(0, prev.numberOfDays - 1)) : next }));
   }, [formData.numberOfDays, formData.stops]);
   const cur = formData.budgetCurrency;
+  // The last step's one-line recap: "5 days in Kyoto · 2 travellers · $3,000 · Balanced pace".
+  const summary = [
+    `${formData.numberOfDays} ${formData.numberOfDays === 1 ? "day" : "days"} in ${formData.destination.split(",")[0] || "your destination"}`,
+    `${people} ${people === 1 ? "traveller" : "travellers"}`,
+    formData.budget > 0 ? compactMoney(formData.budget, cur) : null,
+    `${labelFor(PACES, prefs.pace)} pace`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   // The traveller's trip as the planning overlay shows it.
   const overlayTrip: OverlayTrip = {
     destination: formData.destination,
@@ -895,6 +898,9 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                 );
               })}
             </ol>
+            <div aria-hidden className="mx-3 mb-1 mt-2 h-[3px] overflow-hidden rounded-full bg-paper-3">
+              <motion.div className="h-full rounded-full bg-brand" initial={false} animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
+            </div>
           </nav>
 
           <section className="relative overflow-hidden rounded-[28px] bg-white/80 p-5 ring-1 ring-line-strong sm:p-8">
@@ -1006,9 +1012,7 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
                           errors.budget ? "ring-destructive/60" : "ring-line-strong focus-within:ring-brand/50"
                         )}
                       >
-                        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand ring-1 ring-line-strong">
-                          <Wallet className="size-4" />
-                        </span>
+                        <Wallet className="size-5 shrink-0 text-brand" />
                         <span className="flex min-w-0 flex-1 flex-col">
                           <span className="eyebrow text-[0.6rem] text-stone">Budget ({cur})<span className="hidden sm:inline"> · everything included</span></span>
                           <span className="mt-1 flex items-center text-[1.05rem] text-ink">
@@ -1166,45 +1170,55 @@ export function TripForm({ onSubmit, isLoading: externalLoading = false }: TripF
             </AnimatePresence>
           </section>
 
-          <div className="flex flex-col gap-4 rounded-[28px] bg-ocean p-4 text-paper sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:pl-6">
+          {/* The way on: stays in reach at the bottom of the screen however long the step is. */}
+          <div className="sticky bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-[26px] bg-ink/95 p-2.5 text-paper shadow-[0_24px_50px_-24px_rgba(14,31,59,0.85)] ring-1 ring-paper/10 backdrop-blur-xl sm:p-3 sm:pl-4">
             <div className="flex items-center gap-3">
               {step > 0 && (
                 <button type="button" onClick={() => go(step - 1)} aria-label="Previous step" className="grid size-11 shrink-0 place-items-center rounded-full bg-paper/10 transition-colors hover:bg-paper hover:text-ink">
                   <ArrowLeft className="size-4" />
                 </button>
               )}
-              <p className="text-sm text-paper/60">
+              <div className={cn("min-w-0 flex-1 text-sm", step === 0 && "pl-2")}>
                 {step < STEPS.length - 1 ? (
-                  <>
-                    Step {step + 1} of {STEPS.length} · next: <span className="text-paper">{STEPS[step + 1].label}</span>
-                  </>
-                ) : outOfCredits ? (
-                  <>
-                    You&apos;ve used your free trip · unlimited trips from <span className="text-paper">${cheapestPlan().price}</span>.{" "}
-                    <Link href="/dashboard/credits" className="text-brand-2 underline underline-offset-4">
-                      See passes
-                    </Link>
-                  </>
-                ) : activePass ? (
-                  <>
-                    Included in your <span className="text-paper">{activePass.plan === "week" ? "Week" : "Year"} Pass</span>
-                  </>
+                  <p className="truncate text-paper/60">
+                    <span className="font-mono text-[11px] text-paper/45">
+                      {step + 1}/{STEPS.length}
+                    </span>{" "}
+                    · next: <span className="text-paper">{STEPS[step + 1].label}</span>
+                  </p>
                 ) : (
                   <>
-                    Uses 1 credit · you have <span className="text-paper">{credits}</span> left
+                    {/* The trip they're about to generate, in one line. */}
+                    <p className="truncate text-paper">{summary}</p>
+                    <p className="mt-0.5 truncate text-xs text-paper/55">
+                      {outOfCredits ? (
+                        <>
+                          Free trip used · passes from ${cheapestPlan().price}.{" "}
+                          <Link href="/dashboard/credits" className="text-brand-2 underline underline-offset-4">
+                            See passes
+                          </Link>
+                        </>
+                      ) : activePass ? (
+                        <>Included in your {activePass.plan === "week" ? "Week" : "Year"} Pass</>
+                      ) : (
+                        <>
+                          Uses 1 credit · {credits} left
+                        </>
+                      )}
+                    </p>
                   </>
                 )}
-              </p>
+              </div>
+              {step < STEPS.length - 1 ? (
+                <PillButton type="submit" variant="paper" size="lg" icon={<ArrowRight className="size-4" />}>
+                  Continue
+                </PillButton>
+              ) : (
+                <PillButton type="submit" variant="brand" size="lg" disabled={busy} icon={<Sparkles className="size-4" />}>
+                  {busy ? "Generating…" : outOfCredits ? "Unlock this trip" : <><span className="sm:hidden">Generate</span><span className="hidden sm:inline">Generate my itinerary</span></>}
+                </PillButton>
+              )}
             </div>
-            {step < STEPS.length - 1 ? (
-              <PillButton type="submit" variant="paper" size="lg" icon={<ArrowRight className="size-4" />}>
-                Continue
-              </PillButton>
-            ) : (
-              <PillButton type="submit" variant="brand" size="lg" disabled={busy} icon={<Sparkles className="size-4" />}>
-                {busy ? "Generating…" : outOfCredits ? "Unlock this trip" : "Generate itinerary"}
-              </PillButton>
-            )}
           </div>
           <FieldError message={errors.submit} />
         </div>
