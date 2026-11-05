@@ -89,7 +89,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
         onClick={(e) => e.stopPropagation()}
         className="relative max-h-[94svh] w-full max-w-[60rem] overflow-y-auto overscroll-contain rounded-[30px] bg-paper shadow-[0_50px_140px_-40px_rgba(14,31,59,0.75)]"
       >
-        <span aria-hidden className="absolute left-1/2 top-2 z-10 h-1 w-10 -translate-x-1/2 rounded-full bg-paper/50 sm:hidden" />
+        <span aria-hidden className="absolute left-1/2 top-2 z-10 h-1 w-10 -translate-x-1/2 rounded-full bg-paper/50 lg:hidden" />
         <button
           type="button"
           onClick={onClose}
@@ -102,7 +102,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
         <div className="grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
           {/* The trip they're about to get. */}
           <div className="bg-ink p-2.5 pb-6 text-paper sm:p-3 sm:pb-8">
-            <div className="relative h-28 overflow-hidden rounded-[22px] sm:h-48 lg:h-56">
+            <div className="relative h-28 overflow-hidden rounded-[22px] sm:h-36 lg:h-56">
               <Scene id={scene} intro />
               {photo?.url && (
                 <img src={photo.url} alt="" decoding="async" onLoad={() => setLoaded(true)} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-1000", loaded ? "opacity-100" : "opacity-0")} />
@@ -117,9 +117,9 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-paper/60">You&apos;ve used your free itinerary. A pass plans this trip, and every one after it.</p>
               {/* Phones: the trip on one line, so the passes stay in reach. */}
-              {spec.length > 0 && <p className="mt-4 text-sm text-paper/85 sm:hidden">{spec.filter((r) => r.k !== "Into").map((r) => r.v).join(" · ")}</p>}
+              {spec.length > 0 && <p className="mt-4 text-sm text-paper/85 lg:hidden">{spec.filter((r) => r.k !== "Into").map((r) => r.v).join(" · ")}</p>}
               {spec.length > 0 && (
-                <dl className="mt-5 hidden divide-y divide-paper/10 border-y border-paper/10 text-sm sm:block">
+                <dl className="mt-5 hidden divide-y divide-paper/10 border-y border-paper/10 text-sm lg:block">
                   {spec.map((r) => (
                     <div key={r.k} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-2.5">
                       <dt className="text-paper/45">{r.k}</dt>
@@ -185,7 +185,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
               </p>
             )}
 
-            <div className="sticky bottom-0 -mx-5 mt-5 bg-paper px-5 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-2 sm:static sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0">
+            <div className="sticky bottom-0 -mx-5 mt-5 bg-paper px-5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 sm:-mx-8 sm:px-8 lg:static lg:mx-0 lg:px-0 lg:pb-0 lg:pt-0">
               <button
                 type="button"
                 onClick={() => checkout.start(chosen.id, "planner")}
