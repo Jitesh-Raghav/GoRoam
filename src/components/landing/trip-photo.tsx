@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sizedPhoto } from "@/lib/brand-photos";
 import { useDestinationPhoto } from "@/lib/use-destination-photo";
 import { cn } from "@/lib/utils";
@@ -18,13 +18,22 @@ const PLACE: Record<string, string> = {
   budget: "Hampi, India",
 };
 
-/** The card's picture: a real photo once it loads, the illustration until then (or for good if none turns up). */
+/**
+ * The card's picture: the illustration until a real photo loads, then the photo alone
+ * (the illustration unmounts, its animations with it). With no photo the illustration stays.
+ */
 export function TripPhoto({ slug }: { slug: string }) {
   const photo = sizedPhoto(useDestinationPhoto(PLACE[slug] ?? "India"), 640);
   const [loaded, setLoaded] = useState(false);
+  const [covered, setCovered] = useState(false);
+  useEffect(() => {
+    if (!loaded) return;
+    const t = window.setTimeout(() => setCovered(true), 550);
+    return () => window.clearTimeout(t);
+  }, [loaded]);
   return (
     <>
-      <TripArt slug={slug} />
+      {!covered && <TripArt slug={slug} />}
       {photo?.url && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -33,8 +42,11 @@ export function TripPhoto({ slug }: { slug: string }) {
           loading="lazy"
           decoding="async"
           onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(false)}
-          className={cn("absolute inset-0 size-full object-cover transition-opacity duration-700", loaded ? "opacity-100" : "opacity-0")}
+          onError={() => {
+            setLoaded(false);
+            setCovered(false);
+          }}
+          className={cn("absolute inset-0 size-full object-cover transition-opacity duration-500", loaded ? "opacity-100" : "opacity-0")}
         />
       )}
     </>

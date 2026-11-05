@@ -651,6 +651,20 @@ html { scroll-padding-top: 5.5rem; }
   }
 }
 
+/* Long card grids: a card far off screen skips style, layout and paint until it comes near.
+   The 4px of padding (taken back by the margin) keeps a focused card's ring inside its paint box. */
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 14rem;
+  margin: -0.25rem;
+  padding: 0.25rem;
+}
+@media (min-width: 560px) {
+  .cv-card {
+    contain-intrinsic-size: auto 21rem;
+  }
+}
+
 /* Duotone icons: the soft back layer glows lagoon instead of a grey wash.
    A parent can retint it with --icon-duo / --icon-duo-opacity, or the helpers below. */
 .gr-icon [opacity="0.2"] {

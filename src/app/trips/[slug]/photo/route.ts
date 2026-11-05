@@ -3,6 +3,7 @@ import { destinationPhoto } from '@/lib/destination-photo';
 import { tripBySlug } from '@/lib/trip-ideas';
 
 const tracked = new Set<string>();
+const BLANK = '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="3"/>';
 const size = (v: string | null, fallback: number, max: number) => Math.min(Math.max(Math.round(Number(v)) || fallback, 200), max);
 
 /**
@@ -16,8 +17,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (!t) return new NextResponse(null, { status: 404 });
   const q = request.nextUrl.searchParams;
   const photo = await destinationPhoto(t.destination).catch(() => null);
-  // No photo: a 404, so the page keeps its illustration and nothing indexes a stand-in.
-  if (!photo?.url) return new NextResponse(null, { status: 404, headers: { 'Cache-Control': 'public, max-age=600' } });
+  if (!photo?.url) {
+    // Cards ask with ?blank=1: an empty image lets their quiet placeholder show, where a
+    // failed image would draw the browser's broken-image icon (they have no script to hide it).
+    if (q.get('blank')) return new NextResponse(BLANK, { headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=600', 'X-Robots-Tag': 'noindex' } });
+    // Otherwise a 404, so the page keeps its illustration and nothing indexes a stand-in.
+    return new NextResponse(null, { status: 404, headers: { 'Cache-Control': 'public, max-age=600' } });
+  }
 
   // Unsplash asks apps to ping a photo's download endpoint when they use it.
   const key = process.env.UNSPLASH_ACCESS_KEY?.trim();

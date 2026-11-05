@@ -20,10 +20,10 @@ export function TripTypes() {
             All trip types <ArrowUpRight className="size-4" />
           </Link>
         </div>
-        <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {USE_CASES.map((u, i) => (
+        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4">
+          {USE_CASES.map((u) => (
             <li key={u.slug}>
-              <TripTypeCard u={u} index={i} />
+              <TripTypeCard u={u} />
             </li>
           ))}
         </ul>

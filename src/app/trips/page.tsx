@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/seo/public-shell";
 import { TripCard } from "@/components/seo/trip-card";
-import { TripFilter } from "@/components/seo/trip-filter";
+import { TripFilter, type TripFilterOption } from "@/components/seo/trip-filter";
 import { PillLink } from "@/components/site/pill";
 import { JsonLd, absolute, breadcrumbs } from "@/lib/seo";
-import { MONTH_NAMES, TRIP_IDEAS, inSeason } from "@/lib/trip-ideas";
+import { MONTH_NAMES, TAG_LABEL, TRIP_IDEAS, inSeason, type TripIdea, type TripTag } from "@/lib/trip-ideas";
+
+const FILTERS: ("all" | "india" | TripTag)[] = ["all", "india", "abroad", "beach", "hills", "snow", "desert", "wildlife", "heritage", "festival", "honeymoon", "weekend", "family", "adventure"];
+/** What a card answers to in the filter: its tags, plus "india" for trips in India. */
+const tagsOf = (t: TripIdea) => [...t.tags, ...(t.country === "India" ? ["india"] : [])];
+const OPTIONS: TripFilterOption[] = FILTERS.map((f) => ({
+  id: f,
+  label: f === "all" ? "All trips" : f === "india" ? "India" : TAG_LABEL[f],
+  count: f === "all" ? TRIP_IDEAS.length : TRIP_IDEAS.filter((t) => tagsOf(t).includes(f)).length,
+}));
 
 // "Go this month" is worked out when the page is built, so rebuild it daily.
 export const revalidate = 86400;
@@ -18,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function TripsPage() {
   const month = new Date().getMonth() + 1;
-  const now = inSeason(month).slice(0, 7);
+  const now = inSeason(month).slice(0, 9);
   const [lead, ...rest] = now;
   return (
     <PublicShell crumbs={[{ name: "Home", href: "/" }, { name: "Trending trips", href: "/trips" }]}>
@@ -65,14 +74,14 @@ export default function TripsPage() {
             <h2 id="now-h" className="display mt-3 text-[clamp(1.6rem,3vw,2.2rem)] leading-[1.08] text-ink">
               Best trips for {MONTH_NAMES[month - 1]}
             </h2>
-            <ul className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              <li className="sm:col-span-2">
-                <TripCard t={lead} big />
+            {/* The lead trip takes a two-by-two corner on wide screens, its photo filling the height of the two rows beside it. */}
+            <ul className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+              <li className="sm:col-span-2 lg:row-span-2">
+                <TripCard t={lead} big className="flex h-full flex-col" photoClassName="lg:aspect-auto lg:min-h-72 lg:flex-1" />
               </li>
-              {rest.map((t, i) => (
+              {rest.map((t) => (
                 <li key={t.slug}>
-                  {/* The first sits beside the lead card on wide screens, so its photo grows to match. */}
-                  <TripCard t={t} fill={i === 0} />
+                  <TripCard t={t} sizes="(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
                 </li>
               ))}
             </ul>
@@ -84,7 +93,15 @@ export default function TripsPage() {
           <h2 id="all-h" className="display mt-3 mb-8 text-[clamp(1.6rem,3vw,2.2rem)] leading-[1.08] text-ink">
             Find your kind of trip
           </h2>
-          <TripFilter trips={TRIP_IDEAS} />
+          <TripFilter options={OPTIONS}>
+            <ul data-trip-grid className="mt-5 grid grid-cols-2 gap-x-3 gap-y-8 min-[560px]:gap-x-5 min-[560px]:gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
+              {TRIP_IDEAS.map((t) => (
+                <li key={t.slug} data-tags={tagsOf(t).join(" ")} className="cv-card">
+                  <TripCard t={t} compact sizes="(min-width: 1280px) 300px, (min-width: 1024px) 33vw, 50vw" />
+                </li>
+              ))}
+            </ul>
+          </TripFilter>
         </section>
       </div>
     </PublicShell>

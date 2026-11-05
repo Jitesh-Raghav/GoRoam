@@ -165,7 +165,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
                 All itineraries <ArrowRight className="size-4" />
               </Link>
             </div>
-            <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-6 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {samples.map((pkg, i) => (
                 <PackageCard key={pkg.slug} pkg={pkg} index={i} />
               ))}

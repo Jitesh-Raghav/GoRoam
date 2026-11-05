@@ -790,7 +790,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               All trending trips <ArrowRight className="size-4" />
             </Link>
           </div>
-          <ul className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <ul className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((o) => (
               <li key={o.slug}>
                 <TripCard t={o} />
