@@ -2102,9 +2102,27 @@ export function relatedTrips(t: TripIdea, n = 6) {
 }
 
 /** Questions people search, answered from the trip's own data. */
+/** A note's first sentence, ending in a full stop; "St. Regis" and the like don't end one. */
+export const firstSentence = (s: string) => s.split(/(?<!\b(?:St|Mt|Dr|Ft))\.\s+(?=[A-Z])/)[0].replace(/\.?\s*$/, ".");
+
+/**
+ * A stay with its area: "Hotel Maitai Polynesia in Matira", or with the area in
+ * brackets where the name already says where ("Hotels by the canals (Old town)")
+ * and on its own where it names the area itself ("Inns in Yountville").
+ */
+export function stayAt(x: TripIdea["stays"][number]) {
+  if (x.name.toLowerCase().includes(x.area.toLowerCase())) return x.name;
+  return /\b(in|by|near|on|at|around)\b/i.test(x.name) || /^(around|near|by|on|at|in)\b/i.test(x.area) ? `${x.name} (${x.area})` : `${x.name} in ${x.area}`;
+}
+
 export function tripFaqs(t: TripIdea) {
   const [lo, mid, hi] = t.budget;
+  const base = t.stays.find((x) => x.tier === "Mid-range") ?? t.stays[0];
   const faqs = [
+    {
+      q: `How do I plan a trip to ${t.name}?`,
+      a: `Go in ${monthsLabel(t.months)}, give it ${t.days} ${t.days === 1 ? "day" : "days"} and budget about ${price(t, lo)}–${price(t, mid)} a day per person before travel. ${firstSentence(t.reach)} For a mid-range stay, try ${stayAt(base)}. Then follow the day-by-day itinerary, or let GoRoam plan it for your dates.`,
+    },
     { q: `How many days are enough for ${t.name}?`, a: `${t.days} ${t.days === 1 ? "day is" : "days are"} enough to see the highlights: ${t.highlights.slice(0, 3).map((h) => h[0]).join(", ")}. Add a day or two if you like a slower pace.` },
     { q: `How much does a ${t.days}-day ${t.name} trip cost?`, a: `Roughly ${price(t, lo)} a day per person on a budget, ${price(t, mid)} mid-range and ${price(t, hi)}+ for luxury, not counting travel to get there. For two people mid-range, that's about ${price(t, tripTotal(t, 1))} for ${t.days} days.` },
     { q: `What is the best time to visit ${t.name}?`, a: `${monthsLabel(t.months)}. ${t.why}` },

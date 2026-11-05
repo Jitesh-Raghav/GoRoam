@@ -14,6 +14,7 @@ import { Insider, Nearby, RealPrices, StayAreas } from "@/components/trip/deep-s
 import { Essentials } from "@/components/trip/essentials";
 import { GalleryOpen, type GallerySlide } from "@/components/trip/gallery";
 import { PackList, type PackGroup } from "@/components/trip/pack-list";
+import { PlanSteps, type PlanStep } from "@/components/trip/plan-steps";
 import { SeasonBar } from "@/components/trip/season-bar";
 import { ShareTrip } from "@/components/trip/share-trip";
 import { TripHero, idealFor } from "@/components/trip/trip-hero";
@@ -28,7 +29,7 @@ import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { deepFor } from "@/lib/trip-deep";
 import { daysFor } from "@/lib/trip-days";
 import { fromCities } from "@/lib/trip-hubs";
-import { TRIP_IDEAS, placeLabel, price, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
+import { TRIP_IDEAS, firstSentence, placeLabel, price, monthsLabel, relatedTrips, stayAt, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
 import { extraFor } from "@/lib/trip-ideas-extra";
 import { rankSentence } from "@/lib/trip-index";
 import { VIBES, vibeVerdict, vibesFor } from "@/lib/trip-vibes";
@@ -66,9 +67,11 @@ export const revalidate = 86400;
 
 const YEAR = 2026;
 // When the trip pages' content last changed; shown as "Updated" and in the structured data.
-const UPDATED = "2026-10-26";
-const title = (t: TripIdea) => `${t.name} Trip: ${t.days} Days Itinerary, Budget & Hotels (${YEAR})`;
+const UPDATED = "2026-11-05";
+// A flagship guide can set its own, where search data shows the words people use for the place.
+const title = (t: TripIdea) => deepFor(t.slug)?.title ?? `${t.name} Trip: ${t.days} Days Itinerary, Budget & Hotels (${YEAR})`;
 const blurb = (t: TripIdea) =>
+  deepFor(t.slug)?.description ??
   `Planning a ${t.days}-day trip to ${t.name}? A day-by-day itinerary, what it costs (from ${price(t, t.budget[0])} a day), where to stay and the best time to go (${monthsLabel(t.months)}).`;
 
 const photoAlt = (t: TripIdea) => `${t.name}, ${placeLabel(t)}`;
@@ -196,11 +199,58 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
 
   const quick = `A ${t.days}-day ${t.name} trip costs about ${price(t, t.budget[0] * t.days)}–${price(t, t.budget[1] * t.days)} per person (${price(t, t.budget[0])}–${price(t, t.budget[1])} a day), not counting travel to get there. The best time to go is ${monthsLabel(t.months)}. Stay in ${(stayOf("Mid-range") ?? t.stays[0]).area} for comfort or ${(stayOf("Budget") ?? t.stays[0]).area} on a budget, and don't miss ${[h1, h2, h3].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1")}.`;
 
+  // How to plan it: the page's answers as six decisions, each linking to its chapter.
+  const midStay = stayOf("Mid-range") ?? t.stays[0];
+  const budgetStay = stayOf("Budget") ?? t.stays[0];
+  const area = deep?.areas[0];
+  const reachRest = t.reach.slice(firstSentence(t.reach).length).trim();
+  const plugs = facts ? `Plugs ${facts.plugs.replace(" · ", " at ")}.` : "";
+  const steps: PlanStep[] = [
+    { title: "Pick your dates", fact: `The best months are ${monthsLabel(t.months)}.`, detail: extra ? firstSentence(extra.weather) : undefined, href: "#when", cta: "Check a month" },
+    {
+      title: "Decide how long",
+      fact: `${t.days} ${t.days === 1 ? "day covers" : "days cover"} it.`,
+      detail: t.days > 1 ? `${shorter} ${shorter === 1 ? "day works" : "days work"} if you focus; ${longer} let you slow down.` : `${longer} days let you slow down.`,
+      href: "#itinerary",
+      cta: "See the day-by-day plan",
+    },
+    {
+      title: "Set a budget",
+      fact: `About ${price(t, t.budget[0])}–${price(t, t.budget[1])} a day per person, before travel.`,
+      detail: `Luxury from ${price(t, t.budget[2])} a day. Two people mid-range spend about ${price(t, tripTotal(t, 1))} for ${t.days} ${t.days === 1 ? "day" : "days"}.`,
+      href: "#budget",
+      cta: "Work out yours",
+    },
+    {
+      title: "Choose where to stay",
+      fact: `Mid-range: ${stayAt(midStay)}, from ${price(t, midStay.from)} a night.`,
+      detail: area ? `Best area: ${area[0].replace(/\s*\(.*\)$/, "")}. ${firstSentence(area[1])}` : budgetStay !== midStay ? `On a budget: ${stayAt(budgetStay)}, from ${price(t, budgetStay.from)} a night.` : undefined,
+      href: "#stay",
+      cta: "Compare the hotels",
+    },
+    {
+      title: "Book getting there",
+      fact: firstSentence(t.reach),
+      detail: from[0] ? `From ${from[0].city}: ${from[0].how}.` : reachRest || undefined,
+      href: "#reach",
+      cta: "All the routes",
+    },
+    {
+      title: t.visa ? "Sort the paperwork" : "Check the essentials",
+      fact: t.visa ? firstSentence(t.visa) : facts ? `Money: ${facts.currency}. ${plugs}` : `Pack for ${monthsLabel(t.months)}.`,
+      detail: t.visa && facts ? `Money: ${facts.currency}. ${plugs}` : facts ? `Tap water: ${facts.water}` : undefined,
+      href: "#essentials",
+      cta: facts ? "Know before you go" : "The packing list",
+    },
+  ];
+
   const own = deep?.faqs ?? [];
+  const [planFaq, ...general] = tripFaqs(t);
   const faqs = [
-    // The questions written for this place first; skip the generic "how many days" if one of them covers it.
+    // "How do I plan a trip to X?" first, then the questions written for this place; skip a generic one if they already ask it.
+    ...(own.some((o) => o.q.startsWith("How do I plan a trip to")) ? [] : [planFaq]),
     ...own,
-    ...tripFaqs(t).filter((f) => !(f.q.startsWith("How many days") && own.some((o) => o.q.startsWith("How many days")))),
+    ...general.filter((f) => !(f.q.startsWith("How many days") && own.some((o) => o.q.startsWith("How many days")))),
     {
       q: `Is ${shorter} ${shorter === 1 ? "day" : "days"} enough for ${t.name}?`,
       a: `Yes, if you focus: follow days 1 to ${shorter} of the itinerary above${days?.[t.days - 1] ? ` and skip "${days[t.days - 1][0]}"` : ""}. ${t.days} days is the comfortable length.`,
@@ -334,16 +384,19 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               <p className="mt-6 max-w-3xl text-[1.0625rem] leading-relaxed text-stone">
                 {extra?.about ?? `Planning a ${t.days}-day trip to ${t.name}? Here's a day-by-day itinerary with what it costs, where to stay and how to get there.`}
               </p>
-              <div className="mt-8">
+              <div id="when" className="mt-8 scroll-mt-28">
                 <SeasonBar months={t.months} weather={extra?.weather} name={city} hrefs={monthHrefs} />
               </div>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <PillLink href={plan}>Create my {city} trip</PillLink>
-                {guide && (
-                  <PillLink href={`/destinations/${guide.slug}`} variant="outline">
-                    Full {guide.name} guide
-                  </PillLink>
-                )}
+              <div className="mt-16">
+                <PlanSteps name={t.name} steps={steps}>
+                  <span className="text-sm text-stone">Or skip the homework:</span>
+                  <PillLink href={plan}>Create my {city} trip</PillLink>
+                  {guide && (
+                    <PillLink href={`/destinations/${guide.slug}`} variant="outline">
+                      Full {guide.name} guide
+                    </PillLink>
+                  )}
+                </PlanSteps>
               </div>
             </section>
 

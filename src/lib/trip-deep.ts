@@ -24,6 +24,9 @@ export interface TripDeep {
   faqs?: { q: string; a: string }[];
   /** The trips people weigh this one against, listed first in the comparison. */
   rivals?: string[];
+  /** The page's search title and description, where search data shows the words people use for this place. */
+  title?: string;
+  description?: string;
 }
 
 export type Vibe = "romance" | "beaches" | "adventure" | "culture" | "food" | "value";
@@ -552,6 +555,9 @@ export const TRIP_DEEP: Record<string, TripDeep> = {
   },
 
   "bora-bora": {
+    // Bing shows this page for "plan a trip to bora bora" far more than anything else.
+    title: "Plan a Trip to Bora Bora: 5-Day Itinerary, Costs & Hotels (2026)",
+    description: "Plan a trip to Bora Bora in six steps: when to go (May–Oct), how many days you need, what it really costs (from $300 a day), which motu to stay on and a 5-day plan.",
     prices: [
       ["Air Tahiti, Papeete to Bora Bora return", "about $350–550"],
       ["Small-group lagoon tour with lunch", "$120–200 per person"],

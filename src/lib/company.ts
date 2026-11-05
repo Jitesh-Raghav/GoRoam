@@ -24,7 +24,7 @@ export type SocialId = "x" | "instagram" | "youtube" | "linkedin";
 /** GoRoam's social accounts. An account with no link simply isn't shown. */
 export const SOCIALS: { id: SocialId; label: string; handle: string; href: string }[] = [
   { id: "x", label: "X", handle: "@okayjitesh", href: "https://x.com/okayjitesh" },
-  { id: "instagram", label: "Instagram", handle: "", href: "" },
+  { id: "instagram", label: "Instagram", handle: "@goroam.world", href: "https://www.instagram.com/goroam.world/" },
   { id: "youtube", label: "YouTube", handle: "", href: "" },
   { id: "linkedin", label: "LinkedIn", handle: "", href: "" },
 ];
