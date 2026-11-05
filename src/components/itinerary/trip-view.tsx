@@ -122,6 +122,7 @@ import { refetchJson, updateCached, useCachedJson } from "@/lib/cached-json";
 import { PlacePhoto, TripPhotosProvider, asStop } from "./place-photo";
 import { RouteMap, type RouteStop } from "./route-map";
 import { ShareButton } from "./share-dialog";
+import { LockedTab, UnlockCard, type LockedDay } from "@/components/guest/locked-days";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const VIBE_LABELS = Object.fromEntries(VIBES.map((v) => [v.id, v.label]));
@@ -832,6 +833,7 @@ export function TripView({
   variant = "trip",
   photosEndpoint,
   unlockUrl,
+  locked,
   backHref = "/itineraries",
 }: {
   it: ItineraryDetails;
@@ -844,6 +846,8 @@ export function TripView({
   photosEndpoint?: string;
   /** Guest previews: where sign-in returns to, to claim and unlock the trip. */
   unlockUrl?: string;
+  /** Guest previews: the days after Day 1, ready but locked (theme and cost only). */
+  locked?: LockedDay[];
   /** Packages: where "Trip gallery" leads back to (the public gallery, or the dashboard's copy of it). */
   backHref?: string;
 }) {
@@ -857,8 +861,9 @@ export function TripView({
     // The sign-in page offers Google and an email link, then returns here to claim the trip.
     window.location.href = `/auth?callbackUrl=${encodeURIComponent(unlockUrl ?? "/dashboard")}`;
   };
-  // On a public itinerary page the page itself owns the <h1>.
-  const HeroHeading = isPackage ? motion.h2 : motion.h1;
+  // On a public itinerary page the page itself owns the <h1>; a guest preview's hero is its title.
+  const HeroHeading = isPackage && !isGuest ? motion.h2 : motion.h1;
+  const lockedDays = isGuest ? (locked ?? []) : [];
 
   // Every stop's photo in one request; packages ship with theirs.
   const packagePhotos = isPackage && !Object.keys(data?.photos ?? {}).length ? `/api/packages/${it.id.replace(/^package-/, "")}/photos` : null;
@@ -1243,7 +1248,7 @@ export function TripView({
               <CurrencySwitch local={localCurrency} typed={prefs?.budgetCurrency} />
             </SectionTitle>
 
-            {days.length > 1 && (
+            {days.length + lockedDays.length > 1 && (
               <div
                 role="tablist"
                 aria-label="Days"
@@ -1298,6 +1303,10 @@ export function TripView({
                     </button>
                   );
                 })}
+                {/* Guest previews: the rest of the trip, there but locked. */}
+                {lockedDays.map((d) => (
+                  <LockedTab key={d.day} label={`DAY ${pad(d.day)}`} date={dayLabel(it.startDate, d.day - 1)} theme={d.theme} cost={d.totalDayCost ? money(d.totalDayCost) : undefined} onClick={unlock} />
+                ))}
               </div>
             )}
 
@@ -1322,6 +1331,16 @@ export function TripView({
                   )}
                 </motion.div>
               </AnimatePresence>
+              {lockedDays.length > 0 && unlockUrl && (
+                <UnlockCard
+                  days={lockedDays}
+                  total={it.numberOfDays}
+                  labelFor={(day) => dayLabel(it.startDate, day - 1)}
+                  costFor={(usd) => (usd ? `about ${money(usd)}` : undefined)}
+                  unlockUrl={unlockUrl}
+                  destination={it.destination}
+                />
+              )}
               <div className="hidden space-y-14 print:block">
                 {days.map((d, i) => pendingDays.has(d.day) ? null : (
                   <DayPanel key={i} day={d} index={i} it={it} total={days.length} print weather={byDate.get(isoDay(it.startDate, i))} holidays={holidays.get(isoDay(it.startDate, i))} arrival={guide?.arrival} />
