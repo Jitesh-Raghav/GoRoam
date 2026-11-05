@@ -30,6 +30,7 @@ import { daysFor } from "@/lib/trip-days";
 import { fromCities } from "@/lib/trip-hubs";
 import { TRIP_IDEAS, placeLabel, price, monthsLabel, relatedTrips, tripBySlug, tripFaqs, tripTotal, type TripIdea } from "@/lib/trip-ideas";
 import { extraFor } from "@/lib/trip-ideas-extra";
+import { rankSentence } from "@/lib/trip-index";
 import { VIBES, vibeVerdict, vibesFor } from "@/lib/trip-vibes";
 import { cn } from "@/lib/utils";
 
@@ -517,6 +518,12 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             <Section id="budget" n={n("budget")} eyebrow="What it costs" heading={`${t.name} trip budget`} intro={`About ${price(t, t.budget[0])} a day per person on a budget, ${price(t, t.budget[1])} mid-range and ${price(t, t.budget[2])}+ for luxury. For two people mid-range, that's about ${price(t, tripTotal(t, 1))} for ${t.days} days.`}>
               <BudgetPlanner name={t.name} currency={t.currency === "USD" ? "USD" : "INR"} budget={t.budget} days={t.days} stays={nights} />
               {deep && <RealPrices prices={deep.prices} place={t.name} />}
+              <Link href="/trip-cost-index#index" className="group mt-10 flex flex-col gap-2 border-t border-line pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                <span className="text-sm leading-relaxed text-stone">{rankSentence(t)}</span>
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-ink transition-colors group-hover:text-brand">
+                  See how it compares <ArrowRight className="size-4 transition-transform duration-500 group-hover:translate-x-0.5" />
+                </span>
+              </Link>
             </Section>
 
             <Section id="stay" n={n("stay")} eyebrow="Where to stay" heading={`Best hotels in ${t.name} for every budget`}>

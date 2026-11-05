@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/squad", 0.9, "weekly"),
     ...USE_CASES.map((u) => page(`/plan/${u.slug}`, 0.9)),
     page("/trips", 0.9, "weekly"),
+    page("/trip-cost-index", 0.9),
     page("/weekend-getaways", 0.8),
     ...CITY_HUBS.map((c) => page(`/weekend-getaways/${c.slug}`, 0.8)),
     page("/places-to-visit", 0.8),
