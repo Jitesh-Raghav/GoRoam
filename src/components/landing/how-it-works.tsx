@@ -37,11 +37,12 @@ const STEPS = [
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
+// Opacity and a short rise only: animating blur repaints the whole mock on every frame.
 const stateMotion = {
-  initial: { opacity: 0, y: 18, filter: "blur(6px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -14, filter: "blur(6px)" },
-  transition: { duration: 0.6, ease },
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+  transition: { duration: 0.4, ease },
 };
 
 function useTyped(text: string, speed = 70) {
@@ -122,10 +123,9 @@ function FormState() {
         ))}
       </div>
       <div className="mt-auto pt-1">
-        <div className="relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-brand py-3 text-sm font-medium text-white sm:py-3.5">
-          <span className="animate-ping-soft absolute inset-0 rounded-full bg-brand/40" />
-          <Sparkles className="relative size-4" />
-          <span className="relative">Generate itinerary</span>
+        <div className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-sm font-medium text-white sm:py-3.5">
+          <Sparkles className="size-4" />
+          Generate itinerary
         </div>
       </div>
     </motion.div>
@@ -201,8 +201,8 @@ function ResultState() {
   return (
     <motion.div {...stateMotion} className="flex h-full flex-col">
       <div className="relative h-24 shrink-0 overflow-hidden rounded-2xl sm:h-28">
-        <Scene id="fuji" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+        <Scene id="fuji" paused />
+        <div className="absolute inset-0 bg-ink/35" />
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-2 text-paper">
           <p className="display text-[1.36rem] leading-none sm:text-2xl">5 days in Kyoto</p>
           <span className="eyebrow shrink-0 rounded-full bg-paper/35 px-2.5 py-1.5">$2,380</span>
@@ -253,8 +253,7 @@ function ResultState() {
 function PlannerMock({ step, className }: { step: number; className?: string }) {
   return (
     <div className={cn("relative overflow-hidden rounded-panel bg-paper-2 ring-1 ring-line", className)}>
-      <LazyScene id="fuji" className="opacity-95" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink/20" />
+      <LazyScene id="fuji" paused />
       <div className="relative flex h-full items-center justify-center px-3 py-8 sm:p-10">
         <div className="w-full max-w-[460px] overflow-hidden rounded-[22px] sm:rounded-[26px] bg-white/[0.96] shadow-[0_40px_90px_-40px_rgba(14,31,59,0.6)] ring-1 ring-black/5">
           <div className="flex items-center gap-2 border-b border-line px-4 py-3 sm:px-5 sm:py-3.5">

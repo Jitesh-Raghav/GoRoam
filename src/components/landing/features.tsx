@@ -25,57 +25,42 @@ import { SectionHeading } from "./section-heading";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function Tile({ className, visual, visualClassName, title, body, delay = 0 }: { className?: string; visual: ReactNode; visualClassName?: string; title: string; body: string; delay?: number }) {
+/** One feature: its little working visual on a soft panel, the words beneath it (no frame). */
+function Tile({ className, visual, visualClassName, title, body }: { className?: string; visual: ReactNode; visualClassName?: string; title: string; body: string; delay?: number }) {
   return (
-    <Reveal delay={delay} className={className}>
-      <div className="group flex h-full flex-col overflow-hidden rounded-panel bg-white p-2 ring-1 ring-line transition-shadow duration-700 hover:shadow-float">
-        <div className={cn("relative h-52 overflow-hidden rounded-card bg-paper sm:h-60", visualClassName)}>{visual}</div>
-        <div className="p-5 pt-5 sm:p-6 sm:pt-6">
-          <h3 className="display text-[1.4rem] leading-tight text-ink">{title}</h3>
-          <p className="mt-2.5 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
+    <Reveal className={className}>
+      <div className="flex h-full flex-col">
+        <div className={cn("relative h-52 overflow-hidden rounded-[1.5rem] bg-paper-2 sm:h-60", visualClassName)}>{visual}</div>
+        <div className="px-1 pt-5">
+          <h3 className="display text-[1.3rem] leading-tight text-ink">{title}</h3>
+          <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-stone">{body}</p>
         </div>
       </div>
     </Reveal>
   );
 }
 
+/** Five days of mornings, afternoons and evenings, with one evening called out. Still: nothing here needs to move. */
 function DaysVisual() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.4 });
   const slots = [Sunrise, Sun, Moon];
   return (
-    <div ref={ref} className="absolute inset-0 flex items-center justify-center p-6">
+    <div className="absolute inset-0 flex items-center justify-center p-6">
       <div className="grid w-full max-w-[35rem] grid-cols-5 gap-2.5">
         {Array.from({ length: 5 }, (_, day) => (
           <div key={day} className="space-y-2.5">
             <p className="eyebrow text-center text-[0.6rem] text-stone">Day {day + 1}</p>
             {slots.map((Icon, s) => (
-              <motion.div
-                key={s}
-                initial={{ opacity: 0, y: 10 }}
-                animate={inView ? { opacity: 1, y: 0 } : undefined}
-                transition={{ duration: 0.6, ease, delay: day * 0.12 + s * 0.08 }}
-                className="relative grid h-12 place-items-center overflow-hidden rounded-xl bg-white ring-1 ring-line"
-              >
-                <span
-                  className="features-pulse absolute inset-0 bg-brand"
-                  style={{ animationDelay: `${(day * 3 + s) * 0.18}s` }}
-                />
-                <Icon className="relative size-4 text-ink/70" />
-              </motion.div>
+              <div key={s} className={cn("grid h-12 place-items-center rounded-xl", day === 2 && s === 2 ? "bg-ink text-paper" : "bg-white text-ink/70")}>
+                <Icon className="size-4" />
+              </div>
             ))}
           </div>
         ))}
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 20, rotate: -2 }}
-        animate={inView ? { opacity: 1, y: 0, rotate: -3 } : undefined}
-        transition={{ duration: 1, ease, delay: 1 }}
-        className="absolute bottom-5 right-5 hidden rounded-2xl bg-ink px-4 py-3 text-paper shadow-xl sm:block"
-      >
+      <div className="absolute bottom-5 right-5 hidden -rotate-3 rounded-2xl bg-ink px-4 py-3 text-paper shadow-xl sm:block">
         <p className="eyebrow text-[0.6rem] text-paper/60">Day 3 · Evening</p>
         <p className="mt-1 text-sm">Kaiseki dinner in Gion</p>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -175,7 +160,7 @@ function GuideVisual() {
           initial={{ opacity: 0, x: i % 2 ? 30 : -30 }}
           animate={inView ? { opacity: 1, x: 0 } : undefined}
           transition={{ duration: 0.9, ease, delay: 0.2 + i * 0.18 }}
-          className={cn("flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_14px_30px_-22px_rgba(14,31,59,0.6)] ring-1 ring-line", i === 1 && "ml-8")}
+          className={cn("flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-[0_14px_30px_-22px_rgba(14,31,59,0.45)]", i === 1 && "ml-8")}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- tiny flag */}
           <img src={`https://flagcdn.com/${p.flag}.svg`} alt="" className="h-3.5 w-5 rounded-[2px] object-cover ring-1 ring-black/10" />
@@ -198,7 +183,7 @@ function ConciergeVisual() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.5, once: true });
   return (
-    <div ref={ref} className="absolute inset-0 flex flex-col justify-center gap-2.5 bg-ocean px-6 text-sm">
+    <div ref={ref} className="absolute inset-0 flex flex-col justify-center gap-2.5 bg-ink px-6 text-sm">
       <motion.p
         initial={{ opacity: 0, y: 12 }}
         animate={inView ? { opacity: 1, y: 0 } : undefined}
@@ -221,7 +206,7 @@ function ConciergeVisual() {
         transition={{ type: "spring", stiffness: 300, damping: 16, delay: 1.4 }}
         className="inline-flex items-center gap-2 self-start rounded-full bg-paper py-1.5 pl-1.5 pr-3.5 text-xs text-ink"
       >
-        <span className="grid size-6 place-items-center rounded-full bg-gradient-to-br from-brand-2 to-brand">
+        <span className="grid size-6 place-items-center rounded-full bg-brand">
           <Sparkles className="size-3 text-white" />
         </span>
         Ask GoRoam
@@ -238,7 +223,7 @@ function ToolCard({ className, label, icon: Icon, children, i, inView }: { class
       initial={{ opacity: 0, y: 18 }}
       animate={inView ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.8, ease, delay: 0.1 + i * 0.1 }}
-      className={cn("relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white p-3.5 shadow-[0_14px_30px_-24px_rgba(14,31,59,0.6)] ring-1 ring-line", className)}
+      className={cn("relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white p-3.5 shadow-[0_14px_30px_-24px_rgba(14,31,59,0.45)]", className)}
     >
       <span className="flex items-center justify-between gap-2">
         <span className="eyebrow truncate text-[0.55rem] text-stone">{label}</span>
@@ -417,7 +402,7 @@ export function Features() {
           label="Built for travellers"
           title={[[{ text: "Everything a trip needs." }], [{ text: "Nothing it " }, { text: "doesn't.", className: "accent" }]]}
         />
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <div className="mt-12 grid gap-x-5 gap-y-12 md:grid-cols-2 lg:grid-cols-6">
           <Tile
             className="md:col-span-2 lg:col-span-4"
             visual={<DaysVisual />}
@@ -426,7 +411,6 @@ export function Features() {
           />
           <Tile
             className="lg:col-span-2"
-            delay={0.08}
             visual={<BudgetVisual />}
             title="Honest about money"
             body="Every stop carries an estimated cost, and each day is planned to land inside the budget you set."
@@ -439,14 +423,12 @@ export function Features() {
           />
           <Tile
             className="lg:col-span-2"
-            delay={0.08}
             visual={<GuideVisual />}
             title="A local in your pocket"
             body="Phrases with audio, the dishes to order, culture do's and don'ts, and what's on that week."
           />
           <Tile
             className="md:col-span-2 lg:col-span-2"
-            delay={0.16}
             visual={<ConciergeVisual />}
             title="Ask anything, anytime"
             body="Every trip has its own AI concierge that knows your days, stays and budget: rainy-day swaps, what to wear, how to get there."

@@ -112,14 +112,14 @@ export function BookingSection() {
   // Cycle through what you can book while the mock is on screen.
   useEffect(() => {
     if (!inView) return;
-    const t = window.setInterval(() => setActive((a) => (a + 1) % TABS.length), 2600);
+    const t = window.setInterval(() => setActive((a) => (a + 1) % TABS.length), 4200);
     return () => window.clearInterval(t);
   }, [inView]);
 
   const cards = [<FlightCard key="f" on={inView} />, <StayCard key="s" />, <TicketCard key="t" />, <TransportCard key="r" />];
 
   return (
-    <section id="book" className="scroll-mt-10 px-3 sm:px-4">
+    <section id="book" className="scroll-mt-10 px-3 py-6 sm:px-4 lg:py-10">
       <div className="relative overflow-hidden rounded-panel bg-ocean py-20 text-paper lg:py-28">
         <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-16">
           <div className="min-w-0">

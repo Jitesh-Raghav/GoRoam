@@ -90,7 +90,7 @@ export function TripPrompt({
           "group relative flex h-16 items-center gap-3 rounded-full pl-5 pr-2 text-left transition-shadow duration-500",
           tone === "light"
             ? "bg-white shadow-[0_24px_60px_-28px_rgba(14,31,59,0.45)] ring-1 ring-ink/[0.07] focus-within:ring-2 focus-within:ring-brand/40"
-            : "bg-[linear-gradient(180deg,rgba(255,255,255,0.22),rgba(255,255,255,0.1))] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_24px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-white/30 focus-within:ring-white/60"
+            : "bg-white/15 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-white/30 focus-within:ring-white/60"
         )}
       >
         <MapPin className={cn("size-5 shrink-0", tone === "light" ? "text-brand" : "text-white/80")} aria-hidden />

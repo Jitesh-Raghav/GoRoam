@@ -2,10 +2,9 @@
 
 /* eslint-disable @next/next/no-img-element -- tiny round thumbnails from our own photo route */
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
+import { ArrowUpRight, CalendarDays, MapPin } from "@/components/site/icons";
 import { cn } from "@/lib/utils";
 
 export interface ExploreLink {
@@ -21,8 +20,6 @@ export interface ExploreGroup {
   label: string;
   links: ExploreLink[];
 }
-
-const ease = [0.16, 1, 0.3, 1] as const;
 
 function Thumb({ link }: { link: ExploreLink }) {
   const [broken, setBroken] = useState(false);
@@ -41,11 +38,11 @@ function Thumb({ link }: { link: ExploreLink }) {
  * More trips to explore, under the trending cards: one tab at a time of photo
  * chips. Every tab's links are in the page, so search engines follow them all.
  */
-export function ExploreTrips({ groups, total }: { groups: ExploreGroup[]; total: number }) {
+export function ExploreTrips({ groups }: { groups: ExploreGroup[] }) {
   const [active, setActive] = useState(groups[0]?.id);
 
   return (
-    <div className="rounded-panel bg-white/70 p-5 ring-1 ring-line sm:p-7">
+    <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div role="tablist" aria-label="Explore more trips" className="no-scrollbar -mx-1 flex max-w-full gap-1 overflow-x-auto px-1">
           {groups.map((g) => {
@@ -59,27 +56,23 @@ export function ExploreTrips({ groups, total }: { groups: ExploreGroup[]; total:
                 aria-selected={on}
                 aria-controls={`explore-${g.id}`}
                 onClick={() => setActive(g.id)}
-                className={cn("relative shrink-0 rounded-full px-4 py-2 text-sm transition-colors", on ? "text-paper" : "text-ink/75 hover:text-ink")}
+                className={cn("shrink-0 rounded-full px-4 py-2 text-sm transition-colors duration-200", on ? "bg-ink text-paper" : "text-ink/70 hover:bg-paper-2 hover:text-ink")}
               >
-                {on && <motion.span layoutId="explore-pill" className="absolute inset-0 rounded-full bg-ink shadow-[0_6px_14px_-6px_rgba(14,31,59,0.6)]" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
-                <span className="relative">{g.label}</span>
+                {g.label}
               </button>
             );
           })}
         </div>
-        <Link href="/trips" className="group hidden items-center gap-1.5 text-sm text-ink hover:text-brand sm:inline-flex">
-          See all {total} trips <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-        </Link>
       </div>
 
       {groups.map((g) => (
         <div key={g.id} id={`explore-${g.id}`} role="tabpanel" aria-labelledby={`explore-tab-${g.id}`} hidden={g.id !== active}>
-          <motion.ul key={g.id === active ? "on" : "off"} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease }} className="no-scrollbar -mx-5 mt-5 grid auto-cols-max grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex sm:flex-wrap sm:overflow-visible sm:px-0">
+          <ul className="tab-in no-scrollbar -mx-4 mt-5 grid auto-cols-max grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex sm:flex-wrap sm:overflow-visible sm:px-0">
             {g.links.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="group inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-white py-1 pl-1 pr-3.5 text-sm text-ink ring-1 ring-line transition-colors duration-300 hover:bg-ink hover:text-paper hover:ring-ink sm:pr-4"
+                  className="group inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-white py-1 pl-1 pr-3.5 text-sm text-ink ring-1 ring-line transition-colors duration-200 hover:bg-ink hover:text-paper hover:ring-ink sm:pr-4"
                 >
                   <Thumb link={l} />
                   {l.label}
@@ -87,13 +80,10 @@ export function ExploreTrips({ groups, total }: { groups: ExploreGroup[]; total:
                 </Link>
               </li>
             ))}
-          </motion.ul>
+          </ul>
         </div>
       ))}
 
-      <Link href="/trips" className="group mt-5 inline-flex items-center gap-1.5 text-sm text-ink hover:text-brand sm:hidden">
-        See all {total} trips <ArrowRight className="size-4" />
-      </Link>
     </div>
   );
 }
