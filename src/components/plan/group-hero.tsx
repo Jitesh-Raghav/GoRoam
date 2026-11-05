@@ -28,9 +28,7 @@ export function AvatarStack({ size = "size-9", className }: { size?: string; cla
 /** The friends page hero: the search phrase and the composer, beside a scatter of trip postcards. */
 export function GroupHero({ lede, prompt }: { lede: string; prompt: string }) {
   return (
-    <header className="relative overflow-hidden rounded-panel bg-[linear-gradient(150deg,#1B2C66_0%,#3550B0_45%,#7C9BEA_100%)] px-5 pb-10 pt-10 text-paper sm:px-10 sm:pb-14 sm:pt-14">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_30%_40%,#000_25%,transparent_75%)]" />
-      <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-sun-2/25 blur-3xl" />
+    <header className="relative overflow-hidden rounded-panel bg-ink px-5 pb-10 pt-10 text-paper sm:px-10 sm:pb-14 sm:pt-14">
       <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div>
           <div className="inline-flex items-center gap-3 rounded-full bg-white/32 py-1.5 pl-1.5 pr-4 ring-1 ring-white/20">

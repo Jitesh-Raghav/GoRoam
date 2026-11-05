@@ -64,10 +64,7 @@ export function TripHero({ t, alt, inSeason, slides }: { t: TripIdea; alt: strin
               </span>
               {inSeason && (
                 <span className="inline-flex items-center gap-2 rounded-full bg-sun-2 px-3 py-1.5 text-xs font-medium text-ink shadow-lg">
-                  <span className="relative flex size-2">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-ink/40" />
-                    <span className="relative inline-flex size-2 rounded-full bg-ink" />
-                  </span>
+                  <span className="inline-flex size-2 rounded-full bg-ink" />
                   In season in {MONTH_NAMES[new Date().getMonth()]}
                 </span>
               )}

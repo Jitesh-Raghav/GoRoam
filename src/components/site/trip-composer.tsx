@@ -365,13 +365,10 @@ export function TripComposer({ ready = true, delay = 0, seed, tone = "hero", act
         className={cn(
           "group/composer relative isolate z-20 rounded-[28px] p-2 text-left ring-1 ring-inset transition-[background-color,box-shadow] duration-500",
           dark
-            ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.46))] shadow-[0_40px_90px_-36px_rgba(8,18,46,0.7),0_8px_24px_-12px_rgba(14,31,59,0.18),inset_0_1.5px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.35)] ring-white/55-[1.8] focus-within:bg-white/75"
+            ? "bg-white shadow-[0_40px_90px_-36px_rgba(8,18,46,0.7),0_8px_24px_-12px_rgba(14,31,59,0.18)] ring-white/60 focus-within:ring-2 focus-within:ring-white"
             : "bg-white shadow-[0_30px_70px_-34px_rgba(14,31,59,0.45)] ring-line-strong focus-within:ring-brand/40"
         )}
       >
-        {/* Liquid glass: a specular sheen across the top, a light edge, and a soft glow on focus. */}
-        <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/75 via-white/25 to-transparent" />
-        <span aria-hidden className="composer-glow pointer-events-none absolute -inset-[2px] -z-10 rounded-[30px] opacity-0 blur-md transition-opacity duration-700 group-focus-within/composer:opacity-100" />
         <label htmlFor={id} className="sr-only">
           Describe the trip you want to plan
         </label>

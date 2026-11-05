@@ -220,7 +220,7 @@ export function PlanEditor({ it, startDay = 0, onClose }: { it: ItineraryDetails
 
   return (
     <motion.div
-      className="no-print fixed inset-0 z-[70] flex flex-col bg-[radial-gradient(rgba(14,31,59,0.07)_1px,transparent_1px)] bg-paper [background-size:22px_22px]"
+      className="no-print fixed inset-0 z-[70] flex flex-col bg-paper"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}

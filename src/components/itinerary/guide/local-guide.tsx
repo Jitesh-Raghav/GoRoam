@@ -435,10 +435,10 @@ function TipArt({ category }: { category: TipCategory }) {
 }
 
 const TIP_TONE = [
-  { band: "from-brand-soft to-white", art: "text-brand/45", chip: "bg-white text-brand" },
-  { band: "from-sun-soft to-white", art: "text-sun/70", chip: "bg-white text-ink" },
-  { band: "from-coral-soft to-white", art: "text-coral/55", chip: "bg-white text-coral" },
-  { band: "from-emerald-50 to-white", art: "text-emerald-500/50", chip: "bg-white text-emerald-700" },
+  { band: "bg-brand-soft", art: "text-brand/45", chip: "bg-white text-brand" },
+  { band: "bg-sun-soft", art: "text-sun/70", chip: "bg-white text-ink" },
+  { band: "bg-coral-soft", art: "text-coral/55", chip: "bg-white text-coral" },
+  { band: "bg-emerald-50", art: "text-emerald-500/50", chip: "bg-white text-emerald-700" },
 ];
 
 function Tips({ guide }: { guide: TripGuide }) {
@@ -457,7 +457,7 @@ function Tips({ guide }: { guide: TripGuide }) {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
             className={cn("print-avoid group relative overflow-hidden rounded-[26px] transition-transform duration-500 hover:-translate-y-1", hero ? cn("bg-ink text-paper", (guide.tips.length + 1) % 3 === 0 && "lg:col-span-2") : "bg-white ring-1 ring-line")}
           >
-            <div className={cn("relative h-[4.5rem]", hero ? "bg-gradient-to-r from-brand/40 to-transparent text-brand-2/60" : cn("bg-gradient-to-b", tone.band, tone.art))}>
+            <div className={cn("relative h-[4.5rem]", hero ? "bg-brand/25 text-brand-2/60" : cn(tone.band, tone.art))}>
               <TipArt category={t.category} />
               <span className={cn("absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs shadow-sm", hero ? "bg-paper/10 text-paper ring-1 ring-paper/20" : tone.chip)}>
                 <c.icon className="size-4" /> {c.label}

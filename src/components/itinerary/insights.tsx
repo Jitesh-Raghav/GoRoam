@@ -142,7 +142,7 @@ export function StopInsightRow({ activity, date }: { activity: ActivitySlot; dat
 const NoIcon = (() => null) as unknown as LucideIcon;
 
 /** A real photo (Google Places, then Wikimedia, then the city) filling its positioned parent. */
-function Pic({ name, area, credit = true, className }: { name: string; area?: string; credit?: boolean; className?: string }) {
+function Pic({ name, area, credit = true, className }: { name: string; area?: string; credit?: boolean | "text"; className?: string }) {
   // Always a place lookup, so a miss still falls back to the trip's city photo.
   const slot = useMemo(() => asStop(name, area), [name, area]);
   // No camera glyph when nothing is found: the card's own gradient carries it.
@@ -189,7 +189,8 @@ export function DayEats({ day, destination }: { day: number; destination: string
             className="group relative min-w-[78%] snap-start overflow-hidden rounded-[22px] bg-white ring-1 ring-line transition-shadow hover:shadow-[0_24px_48px_-30px_rgba(14,31,59,0.55)] sm:min-w-0"
           >
             <span className="relative block h-36 overflow-hidden">
-              <Pic name={e.name} area={e.near} className="transition-transform duration-700 group-hover:scale-105" />
+              {/* The card is a link, so the photo's credit is plain text. */}
+              <Pic name={e.name} area={e.near} credit="text" className="transition-transform duration-700 group-hover:scale-105" />
               <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent" />
               <span className="absolute left-3 top-3 flex gap-1.5">
                 {e.rating && (
@@ -386,7 +387,7 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
                 </p>
               )}
             </Card>
-            <Card className="bg-[linear-gradient(160deg,#E3EEFF,#F5F8FC)] ring-1 ring-brand/15 lg:col-span-5" delay={0.06}>
+            <Card className="bg-brand-soft ring-1 ring-brand/15 lg:col-span-5" delay={0.06}>
               <CardHead icon={HandCoins} eyebrow="Money manners" title="Tipping, bargaining, scams" />
               <dl className="mt-5 space-y-3 text-sm leading-relaxed">
                 {insights.money.tipping && (
@@ -477,7 +478,7 @@ export function KnowBeforeYouGo({ it, guide }: { it: ItineraryDetails; guide?: T
                           whileInView={{ width: `${(p.kg / maxPart) * 100}%` }}
                           viewport={{ once: true }}
                           transition={{ duration: 1.2, ease, delay: 0.2 + i * 0.1 }}
-                          className="h-full rounded-full bg-gradient-to-r from-emerald-300 to-sun-2"
+                          className="h-full rounded-full bg-emerald-300"
                         />
                       </div>
                     </div>

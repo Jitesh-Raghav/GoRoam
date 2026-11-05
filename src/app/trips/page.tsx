@@ -46,12 +46,12 @@ export default function TripsPage() {
         ]}
       />
       <div className="container-x pb-24 pt-8">
-        <header className="max-w-3xl">
+        <header>
           <p className="eyebrow text-brand">Trending trips</p>
           <h1 className="display mt-5 text-[clamp(2.4rem,5.2vw,4.25rem)] leading-[1.02] text-ink">
             Where to go <span className="accent">right now.</span>
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-stone">
+          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-stone">
             {TRIP_IDEAS.length} trips at their best this season, in India and around the world. Each comes with a day-by-day plan, what it really costs and three places to stay. Like one? Make it yours in 30 seconds.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

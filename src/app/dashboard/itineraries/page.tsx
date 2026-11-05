@@ -194,16 +194,17 @@ function ItinerariesContent() {
 
       {!loading && !error && itineraries.length > 0 && (
         <>
-          <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {/* One quiet panel, split by hairlines, instead of four boxes. */}
+          <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-line ring-1 ring-line lg:grid-cols-4">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-3xl bg-white/80 p-5 ring-1 ring-line">
-                <p className="display text-4xl leading-none text-ink">{s.value}</p>
+              <div key={s.label} className="bg-white px-5 py-5 sm:px-6">
+                <p className="display text-[2.25rem] leading-none tabular-nums text-ink">{s.value}</p>
                 <p className="mt-2 text-sm text-stone">{s.label}</p>
               </div>
             ))}
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <label className="flex h-12 w-full items-center gap-3 rounded-full bg-white/80 px-5 ring-1 ring-line focus-within:ring-2 focus-within:ring-brand/40 sm:max-w-sm">
+            <label className="flex h-12 w-full items-center gap-3 rounded-full bg-white px-5 ring-1 ring-line focus-within:ring-2 focus-within:ring-brand/40 sm:max-w-sm">
               <Search className="size-4 text-stone" />
               <input
                 value={query}

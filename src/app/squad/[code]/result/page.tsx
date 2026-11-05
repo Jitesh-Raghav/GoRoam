@@ -203,7 +203,7 @@ export default async function SquadResultPage({ params }: { params: Promise<{ co
           </section>
         )}
 
-        <section className="mt-12 rounded-panel bg-[linear-gradient(150deg,#1B2C66_0%,#3550B0_60%,#7C9BEA_100%)] p-6 text-paper sm:p-10">
+        <section className="mt-12 rounded-panel bg-ink p-6 text-paper sm:p-10">
           <h2 className="display text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.05]">Got another group chat that can&apos;t decide?</h2>
           <Link href="/squad" className="mt-5 inline-flex items-center gap-2 rounded-full bg-sun-2 px-6 py-3.5 text-ink hover:bg-white">
             Start a new Squad Match <ArrowRight className="size-4" />

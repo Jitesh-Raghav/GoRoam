@@ -133,7 +133,8 @@ export function PlacePhoto({
   /** Used for lookups outside a trip's photo context. */
   destination?: string;
   icon?: LucideIcon;
-  credit?: boolean;
+  /** The photo's credit chip: a link to its source, or "text" when the photo sits inside a link (links can't nest). */
+  credit?: boolean | "text";
   /** Load straight away (the print copy, which is hidden until printing). */
   eager?: boolean;
   /** Show the Google rating chip when there is one. */
@@ -173,7 +174,7 @@ export function PlacePhoto({
     <div className={cn("absolute inset-0 overflow-hidden bg-paper-2", className)}>
       {(photo === undefined || (url && !loaded)) && <div className="skeleton absolute inset-0 print:hidden" />}
       {empty && (
-        <div className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,var(--brand)_0%,#16305a_55%,var(--ink)_100%)]">
+        <div className="absolute inset-0 grid place-items-center bg-ink-2">
           <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-brand-2/30 blur-2xl" />
           <Icon className="relative size-10 text-paper/70" strokeWidth={1.4} />
         </div>
@@ -215,7 +216,9 @@ export function PlacePhoto({
           {photo.reviews ? <span className="font-normal text-stone">· {compact(photo.reviews)}</span> : null}
         </a>
       )}
-      {credit && photo?.url && loaded && !usingFallback && (
+      {credit && photo?.url && loaded && !usingFallback && (credit === "text" ? (
+        <span className="print:hidden absolute bottom-2 right-2 max-w-[80%] truncate rounded-full bg-ink/65 px-2 py-0.5 text-[10px] text-paper/85">{caption(photo)}</span>
+      ) : (
         <a
           href={photo.sourceUrl}
           target="_blank"
@@ -225,7 +228,7 @@ export function PlacePhoto({
         >
           {caption(photo)}
         </a>
-      )}
+      ))}
     </div>
   );
 }
