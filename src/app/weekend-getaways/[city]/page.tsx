@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { CreateYoursBar } from "@/components/seo/create-yours";
 import { HubList } from "@/components/seo/hub-list";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
+import { tripPhotoSet } from "@/components/seo/trip-card";
+import { PageCover } from "@/components/site/page-cover";
 import { PillLink } from "@/components/site/pill";
+import { SectionHead } from "@/components/site/section-head";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { CITY_HUBS, cityHub, cityTrips } from "@/lib/trip-hubs";
 import { price } from "@/lib/trip-ideas";
@@ -46,30 +49,41 @@ export default async function CityHubPage({ params }: { params: Promise<{ city: 
           breadcrumbs(crumbs),
         ]}
       />
-      <div className="container-x pb-24 pt-8">
-        <header className="max-w-3xl">
-          <p className="eyebrow text-brand">Short trips from {c.city}</p>
-          <h1 className="display mt-5 text-[clamp(2.2rem,5vw,4rem)] leading-[1.03] text-ink">
-            Best getaways from <span className="accent">{c.city}.</span>
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-stone">{c.intro}</p>
-          <div className="mt-8">
-            <PillLink href={`/dashboard?notes=${encodeURIComponent(`Starting from ${c.city}`)}`}>Plan a trip from {c.city}</PillLink>
-          </div>
-        </header>
-        <div className="mt-14 max-w-4xl">
+      <div className="container-x pb-24 pt-6">
+        <PageCover
+          eyebrow={`Short trips from ${c.city}`}
+          title={
+            <>
+              Best getaways from <span className="accent">{c.city}.</span>
+            </>
+          }
+          lede={c.intro}
+          stats={[
+            { value: String(items.length), label: "short trips" },
+            ...(cheapest ? [{ value: price(cheapest.trip, cheapest.trip.budget[0]), label: "a day, at the cheapest" }] : []),
+            { value: String(new Set(items.map((x) => x.trip.region)).size), label: "states and regions" },
+          ]}
+          links={others.slice(0, 3).map((o) => ({ href: `/weekend-getaways/${o.slug}`, label: `From ${o.city}` }))}
+          photos={items.slice(0, 3).map((x) => ({ src: `/trips/${x.trip.slug}/photo?w=1080&blank=1`, srcSet: tripPhotoSet(x.trip.slug), href: `/trips/${x.trip.slug}`, label: x.trip.name }))}
+        >
+          <PillLink href={`/dashboard?notes=${encodeURIComponent(`Starting from ${c.city}`)}`} className="mt-8">
+            Plan a trip from {c.city}
+          </PillLink>
+        </PageCover>
+        <section aria-labelledby="list-h" className="mt-24 max-w-4xl">
+          <SectionHead id="list-h" kicker="The list" title={`${items.length} getaways from ${c.city}`} className="mb-8" />
           <HubList items={items} />
-        </div>
-        <section className="mt-20 max-w-4xl">
-          <h2 className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">Good questions</h2>
-          <div className="mt-6">
+        </section>
+        <section aria-labelledby="faq-h" className="mt-24 max-w-4xl">
+          <SectionHead id="faq-h" kicker="Questions" title="Good questions" />
+          <div className="mt-8">
             <FaqList faqs={faqs} />
           </div>
         </section>
         <nav aria-label="Other cities" className="mt-16 flex flex-wrap items-center gap-2">
           <span className="eyebrow mr-2 text-stone">Getaways from</span>
           {others.map((o) => (
-            <Link key={o.slug} href={`/weekend-getaways/${o.slug}`} className="rounded-full bg-white px-3.5 py-1.5 text-sm text-ink ring-1 ring-line hover:bg-ink hover:text-paper">
+            <Link key={o.slug} href={`/weekend-getaways/${o.slug}`} className="rounded-full bg-paper-2 px-3.5 py-1.5 text-sm text-ink transition-colors hover:bg-ink hover:text-paper">
               {o.city}
             </Link>
           ))}

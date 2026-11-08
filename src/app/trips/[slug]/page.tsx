@@ -6,7 +6,9 @@ import { CreateYoursBar } from "@/components/seo/create-yours";
 import { GuideCover, GuidePhoto } from "@/components/seo/guide-media";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { TripCard } from "@/components/seo/trip-card";
-import { ArrowRight, ArrowUpRight, BedDouble, Check, Lightbulb, MapPin, Navigation, Sparkles, Stamp } from "@/components/site/icons";
+import { ArrowRight, ArrowUpRight, Banknote, CalendarDays, Check, Clock3, Coins, Heart, MapPin, Navigation, Stamp } from "@/components/site/icons";
+import { FactStrip } from "@/components/site/fact-strip";
+import { SectionHead } from "@/components/site/section-head";
 import { PillLink } from "@/components/site/pill";
 import { BudgetPlanner } from "@/components/trip/budget-planner";
 import { CompareTrips, type CompareRow } from "@/components/trip/compare-trips";
@@ -17,7 +19,7 @@ import { PackList, type PackGroup } from "@/components/trip/pack-list";
 import { PlanSteps, type PlanStep } from "@/components/trip/plan-steps";
 import { SeasonBar } from "@/components/trip/season-bar";
 import { ShareTrip } from "@/components/trip/share-trip";
-import { TripHero, idealFor } from "@/components/trip/trip-hero";
+import { TripHero, firstClause, idealFor } from "@/components/trip/trip-hero";
 import { VibeScores } from "@/components/trip/vibe-scores";
 import { mapsSearchUrl, stayPartners } from "@/lib/booking";
 import { COMPANY } from "@/lib/company";
@@ -93,8 +95,7 @@ const COMMON = new Set(["beach", "beaches", "island", "islands", "temple", "temp
 
 // A stay written as a kind of place ("Guesthouses near the lake") is searched by its area instead.
 const GENERIC = /\b(guesthouses|hostels|homestays|huts|cottages|stays|lodges|camps|resorts|villas|hotels|ships|houses)\b/i;
-const TIER = { Budget: "bg-emerald-50 text-emerald-700", "Mid-range": "bg-brand-soft text-brand", Luxury: "bg-sun-soft text-ink" } as const;
-const TIER_BAR = { Budget: "bg-emerald-500", "Mid-range": "bg-brand", Luxury: "bg-sun" } as const;
+const TIER_DOT = { Budget: "bg-stone-2", "Mid-range": "bg-brand", Luxury: "bg-ink" } as const;
 
 /** Highlights on a 6-column grid: the first full width, the rest in thirds, with any odd ones out spread to fill the row. */
 function highlightSpan(i: number, n: number) {
@@ -107,19 +108,11 @@ function highlightSpan(i: number, n: number) {
   return "sm:col-span-2";
 }
 
-function Section({ id, n, eyebrow, heading, intro, children }: { id: string; n: number; eyebrow: string; heading: string; intro?: string; children: React.ReactNode }) {
+function Section({ id, eyebrow, heading, intro, children }: { id: string; eyebrow: string; heading: string; intro?: string; children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-28" aria-labelledby={`${id}-h`}>
-      <p className="flex items-center gap-3 text-brand">
-        <span className="font-mono text-xs text-stone-2">{String(n).padStart(2, "0")}</span>
-        <span aria-hidden className="h-px w-8 bg-brand/30" />
-        <span className="eyebrow">{eyebrow}</span>
-      </p>
-      <h2 id={`${id}-h`} className="display mt-3 text-[clamp(1.75rem,3.2vw,2.4rem)] leading-[1.06] tracking-[-0.02em] text-ink">
-        {heading}
-      </h2>
-      {intro && <p className="mt-3 max-w-2xl leading-relaxed text-stone">{intro}</p>}
-      <div className="mt-7">{children}</div>
+      <SectionHead id={`${id}-h`} kicker={eyebrow} title={heading} intro={intro} />
+      <div className="mt-9">{children}</div>
     </section>
   );
 }
@@ -282,7 +275,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
   const packages = PACKAGES.filter((p) => p.destination.toLowerCase().includes(t.name.toLowerCase().split(" ")[0])).slice(0, 2);
   const crumbs = [
     { name: "Home", path: "/" },
-    { name: "Trending trips", path: "/trips" },
+    { name: "Where to go", path: "/trips" },
     { name: t.name, path: `/trips/${t.slug}` },
   ];
 
@@ -300,7 +293,6 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
     { id: "compare", label: "Compare" },
     { id: "faq", label: "FAQ" },
   ];
-  const n = (id: string) => chapters.findIndex((c) => c.id === id) + 1;
 
   const words = [t.why, t.tagline, extra?.about, ...(days ?? []).flat(), ...t.highlights.flat(), ...faqs.map((f) => f.a), ...(deep ? [...deep.secrets, ...deep.mistakes] : [])].join(" ").split(/\s+/).length;
   const minutes = Math.max(3, Math.round(words / 230));
@@ -338,23 +330,29 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
       <article className="container-x pb-24 pt-6">
         <TripHero t={t} alt={photoAlt(t)} inSeason={inSeason} slides={slides} />
 
-        {/* Byline */}
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-6">
-          <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-full bg-ink font-mono text-xs text-paper">{COMPANY.founder.initials}</span>
-            <div>
-              <p className="text-sm text-ink">
-                By{" "}
-                <Link href="/about" className="underline decoration-line-strong underline-offset-4 hover:text-brand">
-                  {COMPANY.founder.name}
-                </Link>
-                , GoRoam
-              </p>
-              <p className="text-xs text-stone">
-                Updated <time dateTime={UPDATED}>{updated}</time> · {minutes} min read
-              </p>
-            </div>
-          </div>
+        {/* The facts people look for first, then who wrote it. */}
+        <FactStrip
+          className="mt-6"
+          facts={[
+            { icon: CalendarDays, label: "Best time", value: monthsLabel(t.months) },
+            { icon: Clock3, label: "Ideal length", value: `${t.days} days` },
+            { icon: Coins, label: "From", value: `${price(t, t.budget[0])} a day` },
+            { icon: Heart, label: "Ideal for", value: idealFor(t) },
+            { icon: Navigation, label: "Getting there", value: firstClause(t.reach) },
+            ...(t.visa ? [{ icon: Stamp, label: t.country === "India" ? "Permits" : "Visa", value: firstClause(t.visa) }] : facts ? [{ icon: Banknote, label: "Money", value: facts.currency.split(" (")[0] }] : []),
+          ]}
+        />
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="flex items-center gap-3 text-sm text-stone">
+            <span className="grid size-8 place-items-center rounded-full bg-ink font-mono text-[10px] text-paper">{COMPANY.founder.initials}</span>
+            <span>
+              By{" "}
+              <Link href="/about" className="text-ink underline decoration-line-strong underline-offset-4 hover:text-brand">
+                {COMPANY.founder.name}
+              </Link>{" "}
+              · Updated <time dateTime={UPDATED}>{updated}</time> · {minutes} min read
+            </span>
+          </p>
           <ShareTrip path={`/trips/${t.slug}`} title={`${t.days} days in ${t.name}: itinerary, budget and hotels`} />
         </div>
 
@@ -364,22 +362,13 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
           <div className="min-w-0 space-y-24">
             {/* Overview */}
             <section id="overview" className="scroll-mt-28" aria-label="Overview">
-              <div className="relative overflow-hidden rounded-panel bg-white p-6 ring-1 ring-line sm:p-7">
-                <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-brand" />
-                <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.16em] text-brand">
-                  <Sparkles className="size-4" /> The short answer
-                </p>
-                <p className="mt-3 text-[1.08rem] leading-relaxed text-ink/85">{quick}</p>
-              </div>
-              <div className="mt-4">
+              <p className="eyebrow text-brand">The short answer</p>
+              <p className="mt-4 text-[1.2rem] leading-[1.6] text-ink sm:text-[1.32rem]">{quick}</p>
+              <div className="mt-10">
                 <VibeScores name={t.name} verdict={vibeVerdict(vibeScores)} scores={vibeRows} />
               </div>
 
-              <p className="mt-12 flex items-center gap-3 text-brand">
-                <span className="font-mono text-xs text-stone-2">01</span>
-                <span aria-hidden className="h-px w-8 bg-brand/30" />
-                <span className="eyebrow">Why go now</span>
-              </p>
+              <p className="eyebrow mt-14 text-brand">Why go now</p>
               <blockquote className="display mt-4 max-w-3xl text-[clamp(1.45rem,2.6vw,2rem)] leading-[1.25] tracking-[-0.01em] text-ink">&ldquo;{t.why}&rdquo;</blockquote>
               <p className="mt-6 max-w-3xl text-[1.0625rem] leading-relaxed text-stone">
                 {extra?.about ?? `Planning a ${t.days}-day trip to ${t.name}? Here's a day-by-day itinerary with what it costs, where to stay and how to get there.`}
@@ -400,46 +389,30 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               </div>
             </section>
 
-            <Section id="highlights" n={n("highlights")} eyebrow="Don't miss" heading={`Best things to do in ${t.name}`}>
-              <ul className="grid gap-4 sm:grid-cols-6">
+            <Section id="highlights" eyebrow="Don't miss" heading={`Best things to do in ${t.name}`}>
+              <ul className="grid gap-x-5 gap-y-10 sm:grid-cols-6">
                 {t.highlights.map(([name, note], i) => (
-                  <li key={name} className={cn("group relative overflow-hidden rounded-card bg-white ring-1 ring-line", highlightSpan(i, t.highlights.length))}>
-                    <div className={cn("relative overflow-hidden", i === 0 ? "h-64 sm:h-[22rem]" : "h-44")}>
+                  <li key={name} className={cn("group min-w-0", highlightSpan(i, t.highlights.length))}>
+                    <div className={cn("relative overflow-hidden rounded-[1.25rem] bg-paper-2", i === 0 ? "aspect-[16/9]" : "aspect-[4/3]")}>
                       <GuidePhoto name={name} city={t.destination} />
-                      {i === 0 && <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent" />}
                       <GalleryOpen index={1 + i} label={`Open the photo of ${name}`} />
-                      <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
-                      {i === 0 && (
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] p-6 text-paper">
-                          <h3 className="display text-[clamp(1.6rem,3vw,2.2rem)] leading-tight">{name}</h3>
-                          <p className="mt-1.5 max-w-xl text-paper/85">{note}</p>
-                        </div>
-                      )}
                     </div>
-                    {i > 0 && (
-                      <div className="p-5">
-                        <h3 className="display text-[1.2rem] leading-tight text-ink">{name}</h3>
-                        <p className="mt-1.5 text-sm leading-relaxed text-ink/70">{note}</p>
-                      </div>
-                    )}
-                    <a
-                      href={mapsSearchUrl(name, t.destination)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${name} on Google Maps`}
-                      className={cn(
-                        "absolute right-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] shadow-sm transition-colors",
-                        "bg-white/95 text-ink hover:bg-ink hover:text-paper"
-                      )}
-                    >
-                      <MapPin className="size-3" /> Map
-                    </a>
+                    <div className="mt-4 flex items-baseline justify-between gap-4 px-0.5">
+                      <h3 className={cn("display leading-tight text-ink", i === 0 ? "text-[clamp(1.5rem,2.6vw,2rem)]" : "text-[1.2rem]")}>
+                        <span className="mr-2 font-mono text-xs text-stone">{String(i + 1).padStart(2, "0")}</span>
+                        {name}
+                      </h3>
+                      <a href={mapsSearchUrl(name, t.destination)} target="_blank" rel="noopener noreferrer" aria-label={`${name} on Google Maps`} className="inline-flex shrink-0 items-center gap-1 text-sm text-stone transition-colors hover:text-brand">
+                        <MapPin className="size-3.5" /> Map
+                      </a>
+                    </div>
+                    <p className={cn("mt-1.5 px-0.5 leading-relaxed text-ink/70", i === 0 ? "max-w-2xl" : "text-[0.95rem]")}>{note}</p>
                   </li>
                 ))}
               </ul>
             </Section>
 
-            <Section id="itinerary" n={n("itinerary")} eyebrow="Day by day" heading={`${t.name} itinerary for ${t.days} days`}>
+            <Section id="itinerary" eyebrow="Day by day" heading={`${t.name} itinerary for ${t.days} days`}>
               {days ? (
                 <>
                   {/* The trip at a glance: one line, a dot a day. */}
@@ -568,7 +541,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               </div>
             </Section>
 
-            <Section id="budget" n={n("budget")} eyebrow="What it costs" heading={`${t.name} trip budget`} intro={`About ${price(t, t.budget[0])} a day per person on a budget, ${price(t, t.budget[1])} mid-range and ${price(t, t.budget[2])}+ for luxury. For two people mid-range, that's about ${price(t, tripTotal(t, 1))} for ${t.days} days.`}>
+            <Section id="budget" eyebrow="What it costs" heading={`${t.name} trip budget`} intro={`About ${price(t, t.budget[0])} a day per person on a budget, ${price(t, t.budget[1])} mid-range and ${price(t, t.budget[2])}+ for luxury. For two people mid-range, that's about ${price(t, tripTotal(t, 1))} for ${t.days} days.`}>
               <BudgetPlanner name={t.name} currency={t.currency === "USD" ? "USD" : "INR"} budget={t.budget} days={t.days} stays={nights} />
               {deep && <RealPrices prices={deep.prices} place={t.name} />}
               <Link href="/trip-cost-index#index" className="group mt-10 flex flex-col gap-2 border-t border-line pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
@@ -579,33 +552,34 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               </Link>
             </Section>
 
-            <Section id="stay" n={n("stay")} eyebrow="Where to stay" heading={`Best hotels in ${t.name} for every budget`}>
+            <Section id="stay" eyebrow="Where to stay" heading={`Best hotels in ${t.name} for every budget`}>
               {deep && <StayAreas areas={deep.areas} />}
-              <ul className="grid gap-4 md:grid-cols-3">
+              <ul className="grid gap-x-5 gap-y-10 md:grid-cols-3">
                 {t.stays.map((x) => {
                   const search = GENERIC.test(x.name) ? `${x.area}, ${city}` : `${x.name}, ${city}`;
                   const book = stayPartners({ destination: t.destination, checkIn: "", checkOut: "", adults: 2 }, search)[0];
                   return (
-                    <li key={x.name} className="group flex flex-col overflow-hidden rounded-card bg-white ring-1 ring-line transition-shadow duration-500 hover:shadow-float">
-                      <span aria-hidden className={cn("h-1", TIER_BAR[x.tier])} />
-                      <div className="relative h-40 overflow-hidden">
+                    <li key={x.name} className="group flex flex-col">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-paper-2">
                         <GuidePhoto name={GENERIC.test(x.name) ? x.area : x.name} city={t.destination} />
-                        <span className={cn("absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] shadow-sm", TIER[x.tier])}>{x.tier}</span>
                       </div>
-                      <div className="flex flex-1 flex-col p-5">
-                        <h3 className="display text-[1.15rem] leading-tight text-ink">{x.name}</h3>
-                        <p className="mt-1.5 inline-flex items-center gap-1 text-xs text-stone">
-                          <MapPin className="size-3" /> {x.area}
+                      <div className="mt-4 flex flex-1 flex-col px-0.5">
+                        <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-stone">
+                          <span aria-hidden className={cn("size-1.5 rounded-full", TIER_DOT[x.tier])} /> {x.tier}
                         </p>
-                        <p className="mt-2.5 flex-1 text-sm leading-relaxed text-ink/75">{x.note}</p>
+                        <h3 className="display mt-2 text-[1.2rem] leading-tight text-ink">{x.name}</h3>
+                        <p className="mt-1 inline-flex items-center gap-1 text-sm text-stone">
+                          <MapPin className="size-3.5" /> {x.area}
+                        </p>
+                        <p className="mt-2.5 flex-1 text-[0.95rem] leading-relaxed text-ink/75">{x.note}</p>
                         <div className="mt-4 flex items-end justify-between gap-3 border-t border-line pt-4">
                           <p className="text-sm text-ink">
-                            <span className="block text-[11px] text-stone">from, a night for two</span>
+                            <span className="block text-xs text-stone">From, a night for two</span>
                             <span className="display text-xl tabular-nums">{price(t, x.from)}</span>
                           </p>
                           {book && (
-                            <a href={book.href} target="_blank" rel="noopener noreferrer sponsored nofollow" className="inline-flex items-center gap-1 rounded-full bg-ink px-3.5 py-2 text-xs text-paper transition-colors hover:bg-brand">
-                              Check prices <ArrowUpRight className="size-3.5" />
+                            <a href={book.href} target="_blank" rel="noopener noreferrer sponsored nofollow" className="group/b inline-flex items-center gap-1 text-sm font-medium text-ink transition-colors hover:text-brand">
+                              Check prices <ArrowUpRight className="size-3.5 transition-transform group-hover/b:-translate-y-0.5 group-hover/b:translate-x-0.5" />
                             </a>
                           )}
                         </div>
@@ -617,19 +591,16 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             </Section>
 
             {extra && (
-              <Section id="food" n={n("food")} eyebrow="What to eat" heading={`Food to try in ${t.name}`}>
-                <ul className="grid gap-4 sm:grid-cols-3">
+              <Section id="food" eyebrow="What to eat" heading={`Food to try in ${t.name}`}>
+                <ul className="grid gap-x-5 gap-y-10 sm:grid-cols-3">
                   {extra.food.map(([dish, note], i) => (
-                    <li key={dish} className="group overflow-hidden rounded-card bg-white ring-1 ring-line">
-                      <div className="relative h-36 overflow-hidden">
+                    <li key={dish} className="group">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-paper-2">
                         <GuidePhoto name={dish} city={t.destination} kind="dish" />
                         <GalleryOpen index={foodStart + i} label={`Open the photo of ${dish}`} />
-                        <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-full bg-white/95 px-2.5 py-1 font-mono text-[11px] text-ink shadow-sm">{String(i + 1).padStart(2, "0")}</span>
                       </div>
-                      <div className="p-5">
-                        <h3 className="display text-[1.15rem] leading-tight text-ink">{dish}</h3>
-                        <p className="mt-1.5 text-sm leading-relaxed text-ink/70">{note}</p>
-                      </div>
+                      <h3 className="display mt-4 px-0.5 text-[1.2rem] leading-tight text-ink">{dish}</h3>
+                      <p className="mt-1.5 px-0.5 text-[0.95rem] leading-relaxed text-ink/70">{note}</p>
                     </li>
                   ))}
                 </ul>
@@ -637,61 +608,59 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
             )}
 
             {deep && (
-              <Section id="insider" n={n("insider")} eyebrow="Insider" heading={`${t.name} like a local`}>
+              <Section id="insider" eyebrow="Insider" heading={`${t.name} like a local`}>
                 <Insider deep={deep} />
               </Section>
             )}
 
             {deep && (
-              <Section id="nearby" n={n("nearby")} eyebrow="Beyond the plan" heading={`Day trips and events around ${t.name}`}>
+              <Section id="nearby" eyebrow="Beyond the plan" heading={`Day trips and events around ${t.name}`}>
                 <Nearby deep={deep} />
               </Section>
             )}
 
-            <Section id="reach" n={n("reach")} eyebrow="Getting there" heading={`How to reach ${t.name}`}>
-              <dl className="grid gap-3 sm:grid-cols-2">
+            <Section id="reach" eyebrow="Getting there" heading={`How to reach ${t.name}`}>
+              <dl className="border-t border-line">
                 {[
                   { icon: Navigation, k: "Getting there", v: t.reach },
                   ...(extra ? [{ icon: MapPin, k: "Getting around", v: extra.around }] : []),
                   ...(t.visa ? [{ icon: Stamp, k: t.country === "India" ? "Permits" : "Visa", v: t.visa }] : []),
-                ].map((r, i, all) => (
-                  <div key={r.k} className={cn("flex gap-4 rounded-card bg-white p-5 ring-1 ring-line sm:p-6", all.length % 2 === 1 && i === all.length - 1 && "sm:col-span-2")}>
-                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand">
-                      <r.icon className="size-5" />
-                    </span>
-                    <div className="min-w-0">
-                      <dt className="font-medium text-ink">{r.k}</dt>
-                      <dd className="mt-1 leading-relaxed text-ink/70">{r.v}</dd>
-                    </div>
+                ].map((r) => (
+                  <div key={r.k} className="grid gap-x-5 gap-y-1 border-b border-line py-5 sm:grid-cols-[11rem_minmax(0,1fr)]">
+                    <dt className="flex items-center gap-2.5 font-medium text-ink">
+                      <r.icon className="size-4 text-brand" /> {r.k}
+                    </dt>
+                    <dd className="leading-relaxed text-ink/75">{r.v}</dd>
                   </div>
                 ))}
               </dl>
               {from.length > 0 && (
-                <div className="mt-3 rounded-card bg-white p-5 ring-1 ring-line sm:p-6">
+                <div className="mt-12">
                   <h3 className="font-medium text-ink">{t.name} trip from your city</h3>
-                  <ul className="mt-3 divide-y divide-line text-sm">
+                  <ul className="mt-3 border-t border-line">
                     {from.map((f) => (
-                      <li key={f.city} className="flex flex-wrap gap-x-2 py-2.5 leading-relaxed text-ink/75 first:pt-0 last:pb-0">
+                      <li key={f.city} className="grid gap-x-5 gap-y-1 border-b border-line py-3.5 sm:grid-cols-[11rem_minmax(0,1fr)]">
                         <Link href={`/weekend-getaways/${f.hub}`} className="font-medium text-ink hover:text-brand">
-                          From {f.city}:
+                          From {f.city}
                         </Link>
-                        {f.how}
+                        <span className="leading-relaxed text-ink/75">{f.how}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
-              <h3 className="mt-8 text-sm font-medium text-ink">Good to know</h3>
-              <ul className="mt-3 space-y-3">
-                {t.tips.map((tip) => (
-                  <li key={tip} className="flex gap-3 rounded-card bg-sun-soft/60 p-4 leading-relaxed text-ink/85">
-                    <Lightbulb className="mt-0.5 size-4 shrink-0 text-sun" /> {tip}
+              <h3 className="mt-12 font-medium text-ink">Good to know</h3>
+              <ol className="mt-3 border-t border-line">
+                {t.tips.map((tip, i) => (
+                  <li key={tip} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-2 border-b border-line py-4 leading-relaxed text-ink/85">
+                    <span className="pt-1 font-mono text-xs text-stone">{String(i + 1).padStart(2, "0")}</span>
+                    {tip}
                   </li>
                 ))}
-              </ul>
+              </ol>
             </Section>
 
-            <Section id="essentials" n={n("essentials")} eyebrow="Before you go" heading={facts ? `Know before you go: ${t.name}` : `What to pack for ${t.name}`}>
+            <Section id="essentials" eyebrow="Before you go" heading={facts ? `Know before you go: ${t.name}` : `What to pack for ${t.name}`}>
               {facts && <Essentials facts={facts} place={city} />}
               {facts && <h3 className="display mb-4 mt-12 text-[1.4rem] text-ink">What to pack for {t.name}</h3>}
               <PackList slug={t.slug} title={`${t.name} packing list`} groups={packing(t, facts)} />
@@ -699,7 +668,7 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
 
             <Section
               id="compare"
-              n={n("compare")}
+             
               eyebrow="Weighing it up"
               heading={rivals.length ? `${t.name} vs ${rivals.slice(0, 2).map((o) => o.name).join(" vs ")}` : `${t.name} compared with similar trips`}
               intro={`How ${t.name} stacks up on length, cost and the best time to go. Prices are per person a day, not counting travel${new Set([t, ...rivals].map((o) => o.currency ?? "INR")).size > 1 ? ", in each trip's own currency" : ""}.`}
@@ -707,16 +676,16 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
               <CompareTrips rows={compareRows} />
             </Section>
 
-            <Section id="faq" n={n("faq")} eyebrow="Good questions" heading={`${t.name} trip FAQs`}>
+            <Section id="faq" eyebrow="Good questions" heading={`${t.name} trip FAQs`}>
               <FaqList faqs={faqs} />
             </Section>
           </div>
 
-          <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-            <GuideCover destination={t.destination} landscape={t.landscape} width={700} src={`/trips/${t.slug}/photo?w=700`} alt={photoAlt(t)} shade="soft" credit={false} className="rounded-panel text-paper">
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/55 to-ink/90" />
+          <aside className="space-y-8 lg:sticky lg:top-28 lg:self-start">
+            <GuideCover destination={t.destination} landscape={t.landscape} width={700} src={`/trips/${t.slug}/photo?w=700`} alt={photoAlt(t)} shade="none" credit={false} className="rounded-panel text-paper">
+              <div aria-hidden className="absolute inset-0 bg-ink/60" />
               <div className="relative p-6">
-                <p className="eyebrow text-sun-2">Make it yours</p>
+                <p className="eyebrow text-paper/75">Make it yours</p>
                 <p className="display mt-3 text-[1.45rem] leading-snug">Your dates, your budget, your crew.</p>
                 <p className="mt-2 text-sm leading-relaxed text-paper/80">A full {t.days}-day {city} plan with maps, costs and bookings in under a minute.</p>
                 <ul className="mt-4 space-y-1.5 text-sm text-paper/90">
@@ -726,16 +695,16 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                     </li>
                   ))}
                 </ul>
-                <Link href={plan} className="group mt-6 flex items-center justify-center gap-2 rounded-full bg-sun-2 px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-white">
+                <Link href={plan} className="group mt-6 flex items-center justify-center gap-2 rounded-full bg-paper px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-brand hover:text-white">
                   Create yours free <ArrowRight className="size-4 transition-transform duration-500 group-hover:translate-x-0.5" />
                 </Link>
                 <p className="mt-3 text-center text-xs text-paper/60">First trip free · no card needed</p>
               </div>
             </GuideCover>
 
-            <div className="rounded-panel bg-white p-6 ring-1 ring-line">
+            <div>
               <p className="eyebrow text-stone">At a glance</p>
-              <dl className="mt-4 divide-y divide-line text-sm">
+              <dl className="mt-3 divide-y divide-line border-y border-line text-sm">
                 {[
                   ["Best time", monthsLabel(t.months)],
                   ["Length", `${t.days} days`],
@@ -743,31 +712,29 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
                   ["Stays from", `${price(t, nights[0])} a night`],
                   ...(facts ? [["Currency", facts.currency.split(" (")[0]] as [string, string]] : []),
                 ].map(([k, v]) => (
-                  <div key={k} className="flex items-baseline justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
+                  <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
                     <dt className="text-stone">{k}</dt>
                     <dd className="text-right text-ink">{v}</dd>
                   </div>
                 ))}
               </dl>
-              <p className="mt-4 flex items-center gap-2 border-t border-line pt-4 text-xs text-stone">
-                <BedDouble className="size-4 text-brand" /> Prices are rough guides for {YEAR}.
-              </p>
+              <p className="mt-3 text-xs text-stone">Prices are rough guides for {YEAR}.</p>
             </div>
 
             {(packages.length > 0 || guide) && (
-              <div className="rounded-panel bg-white p-6 ring-1 ring-line">
+              <div>
                 <p className="eyebrow text-stone">Go deeper</p>
-                <ul className="mt-3 space-y-1">
+                <ul className="mt-3 divide-y divide-line border-y border-line">
                   {guide && (
                     <li>
-                      <Link href={`/destinations/${guide.slug}`} className="flex items-center justify-between gap-3 rounded-xl p-2 text-ink hover:bg-paper">
+                      <Link href={`/destinations/${guide.slug}`} className="flex items-center justify-between gap-3 py-2.5 text-sm text-ink hover:text-brand">
                         {guide.name} travel guide <ArrowRight className="size-4 text-stone" />
                       </Link>
                     </li>
                   )}
                   {packages.map((p) => (
                     <li key={p.slug}>
-                      <Link href={`/itineraries/${p.slug}`} className="flex items-center justify-between gap-3 rounded-xl p-2 text-ink hover:bg-paper">
+                      <Link href={`/itineraries/${p.slug}`} className="flex items-center justify-between gap-3 py-2.5 text-sm text-ink hover:text-brand">
                         {p.title}, full itinerary <ArrowRight className="size-4 text-stone" />
                       </Link>
                     </li>
@@ -779,21 +746,11 @@ export default async function TripIdeaPage({ params }: { params: Promise<{ slug:
         </div>
 
         <section aria-labelledby="more-h" className="mt-28 border-t border-line pt-16">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow text-brand">You might also like</p>
-              <h2 id="more-h" className="display mt-3 text-[clamp(1.75rem,3.2vw,2.4rem)] leading-[1.06] tracking-[-0.02em] text-ink">
-                More trips like {t.name}
-              </h2>
-            </div>
-            <Link href="/trips" className="inline-flex items-center gap-1.5 text-sm text-ink hover:text-brand">
-              All trending trips <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <ul className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <SectionHead id="more-h" kicker="You might also like" title={`More trips like ${t.name}`} action={{ href: "/trips", label: "All trips" }} />
+          <ul className="mt-9 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((o) => (
               <li key={o.slug}>
-                <TripCard t={o} />
+                <TripCard t={o} hook />
               </li>
             ))}
           </ul>

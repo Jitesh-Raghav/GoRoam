@@ -1009,11 +1009,12 @@ export function TripView({
     const names = (data?.trip?.legs ?? []).map((l) => cityOf(l.city));
     return names.length > 1 ? `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}` : names[0] ?? cityOf(title);
   })();
+  // In page order: the plan first, then how to get there, where to stay and how to get around.
   const chapters: Chapter[] = [
+    { id: "chapter-plan", label: "Plan" },
     ...(hasThere ? [{ id: "chapter-there", label: "Get there" }] : []),
     { id: "chapter-stay", label: "Stay" },
     ...(hasAround ? [{ id: "chapter-around", label: "Get around" }] : []),
-    { id: "chapter-plan", label: "Plan" },
     ...(hasDo ? [{ id: "chapter-do", label: "Do & see" }] : []),
     ...(guide ? [{ id: "chapter-local", label: "Local guide" }] : []),
     { id: "chapter-before", label: "Before you go" },
@@ -1174,74 +1175,7 @@ export function TripView({
 
       <ChapterNav chapters={chapters} title={`${cityOf(title)} · ${it.numberOfDays} ${it.numberOfDays === 1 ? "day" : "days"}`} className={cn(moments.length ? "mt-14" : "mt-6", shared ? "top-3" : "top-[calc(4.75rem+env(safe-area-inset-top))] lg:top-4")} />
 
-      {/* Getting there: how to reach the destination from home, and what it costs */}
-      {hasThere && (
-        <Band id="chapter-there">
-          <SectionTitle eyebrow="Getting there" title={<>From your door to <span className="accent">{cityOf(title)}.</span></>}>
-            <p className="max-w-sm text-sm text-stone">The best ways from {data?.trip?.source ? titleCase(cityOf(data.trip.source)) : "home"}, with typical fares per person for your dates. Booked separately, so not counted in your budget.</p>
-          </SectionTitle>
-          <GettingThere it={it} logistics={logistics} />
-        </Band>
-      )}
-
-      {/* Stays */}
-      <Band id="chapter-stay">
-        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
-          <p className="max-w-sm text-sm text-stone">
-            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
-            <ArrowRight className="inline size-3.5 -translate-y-px" /> {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
-          </p>
-        </SectionTitle>
-        {data?.stays?.length ? (
-          <div className="mt-8 grid gap-4 lg:grid-cols-12">
-            {stayPoints.length > 1 && (
-              <div className="no-print lg:order-2 lg:col-span-4">
-                <PlacesMap points={stayPoints} active={stayPin} onPick={setStayPin} className="h-56 sm:h-72 lg:sticky lg:top-24 lg:h-[34rem]" searchUrl={mapsSearchUrl(prefs ? `${labelFor(STAYS, prefs.stay)} stays` : "stays", title)} />
-              </div>
-            )}
-            <div className={cn("no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3", stayPoints.length > 1 ? "lg:order-1 lg:col-span-8" : "lg:col-span-12 lg:grid-cols-3")}>
-              {data.stays.map((s, i) => (
-                <div key={`${s.name}-${i}`} onMouseEnter={() => setStayPin(String(i))} className="contents md:block">
-                  <StayCard stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="no-print mt-8 grid gap-3 md:grid-cols-3">
-            {stayPartners(query).map((p, i) => (
-              <a
-                key={p.id}
-                href={p.href}
-                target="_blank"
-                rel="noopener noreferrer sponsored nofollow"
-                className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
-              >
-                <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
-                  <BedDouble className="size-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="display block text-xl leading-none">{p.name}</span>
-                  <span className="mt-1 block text-sm text-stone group-hover:text-paper/60">{i === 0 ? `Stays in ${cityOf(title)}` : p.blurb}</span>
-                </span>
-                <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
-              </a>
-            ))}
-          </div>
-        )}
-      </Band>
-
-
-      {/* Getting around: rent your own wheels */}
-      {hasAround && (
-        <Band id="chapter-around">
-          <SectionTitle eyebrow="Getting around" title={<>Rent your own wheels in <span className="accent">{wheelsCity}.</span></>}>
-            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops in {wheelsCity}, with typical day rates. Switch it on to add it to your budget.</p>
-          </SectionTitle>
-          <GetAroundSection it={it} logistics={logistics} />
-        </Band>
-      )}
-
+      {/* The plan comes first: the days are what people open an itinerary for. */}
       <div id="chapter-plan" className="mt-24 grid scroll-mt-28 gap-10 lg:grid-cols-12 lg:gap-8">
         {/* Plan */}
         <main className="min-w-0 lg:col-span-8">
@@ -1391,6 +1325,74 @@ export function TripView({
           </div>
         </aside>
       </div>
+
+      {/* Getting there: how to reach the destination from home, and what it costs */}
+      {hasThere && (
+        <Band id="chapter-there">
+          <SectionTitle eyebrow="Getting there" title={<>From your door to <span className="accent">{cityOf(title)}.</span></>}>
+            <p className="max-w-sm text-sm text-stone">The best ways from {data?.trip?.source ? titleCase(cityOf(data.trip.source)) : "home"}, with typical fares per person for your dates. Booked separately, so not counted in your budget.</p>
+          </SectionTitle>
+          <GettingThere it={it} logistics={logistics} />
+        </Band>
+      )}
+
+      {/* Stays */}
+      <Band id="chapter-stay">
+        <SectionTitle eyebrow="Where to stay" title={<>Pick your <span className="accent">base.</span></>}>
+          <p className="max-w-sm text-sm text-stone">
+            Hand-picked for {prefs ? `a ${labelFor(STAYS, prefs.stay).toLowerCase()} stay` : "this trip"} · {fmt(it.startDate, { month: "short", day: "numeric" })}{" "}
+            <ArrowRight className="inline size-3.5 -translate-y-px" /> {fmt(`${query.checkOut}T00:00:00Z`, { month: "short", day: "numeric" })}
+          </p>
+        </SectionTitle>
+        {data?.stays?.length ? (
+          <div className="mt-8 grid gap-4 lg:grid-cols-12">
+            {stayPoints.length > 1 && (
+              <div className="no-print lg:order-2 lg:col-span-4">
+                <PlacesMap points={stayPoints} active={stayPin} onPick={setStayPin} className="h-56 sm:h-72 lg:sticky lg:top-24 lg:h-[34rem]" searchUrl={mapsSearchUrl(prefs ? `${labelFor(STAYS, prefs.stay)} stays` : "stays", title)} />
+              </div>
+            )}
+            <div className={cn("no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 scroll-px-5 min-[400px]:-mx-4 min-[400px]:px-6 min-[400px]:scroll-px-6 md:scroll-px-0 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 print:grid print:grid-cols-3", stayPoints.length > 1 ? "lg:order-1 lg:col-span-8" : "lg:col-span-12 lg:grid-cols-3")}>
+              {data.stays.map((s, i) => (
+                <div key={`${s.name}-${i}`} onMouseEnter={() => setStayPin(String(i))} className="contents md:block">
+                  <StayCard stay={s} index={i} query={s.city ? { ...query, destination: s.city } : query} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="no-print mt-8 grid gap-3 md:grid-cols-3">
+            {stayPartners(query).map((p, i) => (
+              <a
+                key={p.id}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer sponsored nofollow"
+                className="glass group flex items-center gap-4 rounded-[26px] p-6 transition-colors hover:bg-ink hover:text-paper"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand">
+                  <BedDouble className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="display block text-xl leading-none">{p.name}</span>
+                  <span className="mt-1 block text-sm text-stone group-hover:text-paper/60">{i === 0 ? `Stays in ${cityOf(title)}` : p.blurb}</span>
+                </span>
+                <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
+              </a>
+            ))}
+          </div>
+        )}
+      </Band>
+
+
+      {/* Getting around: rent your own wheels */}
+      {hasAround && (
+        <Band id="chapter-around">
+          <SectionTitle eyebrow="Getting around" title={<>Rent your own wheels in <span className="accent">{wheelsCity}.</span></>}>
+            <p className="max-w-sm text-sm text-stone">Scooters, motorbikes and cars from well-rated shops in {wheelsCity}, with typical day rates. Switch it on to add it to your budget.</p>
+          </SectionTitle>
+          <GetAroundSection it={it} logistics={logistics} />
+        </Band>
+      )}
 
       {/* The local guide */}
       {guide ? (

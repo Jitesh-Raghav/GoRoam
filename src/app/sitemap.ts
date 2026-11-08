@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ADVENTURES } from "@/lib/adventures";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { PACKAGES } from "@/lib/packages";
 import { SITE_URL } from "@/lib/seo";
@@ -29,6 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...MONTH_HUBS.map((m) => page(`/places-to-visit/${m.slug}`, 0.8)),
     // Each trip's photo too, for Google Images.
     ...TRIP_IDEAS.map((t) => ({ ...page(`/trips/${t.slug}`, 0.8), images: [`${SITE_URL}/trips/${t.slug}/photo`] })),
+    page("/adventures", 0.9, "weekly"),
+    ...ADVENTURES.map((a) => ({ ...page(`/adventures/${a.slug}`, 0.8), images: [`${SITE_URL}/adventures/${a.slug}/photo`] })),
     page("/itineraries", 0.9, "weekly"),
     page("/destinations", 0.9, "weekly"),
     ...DESTINATION_GUIDES.map((d) => page(`/destinations/${d.slug}`, 0.8)),

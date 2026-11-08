@@ -1,6 +1,6 @@
 import { GuideCover, GuidePhoto } from "@/components/seo/guide-media";
-import { CalendarDays, Clock3, Coins, Heart, MapPin, Navigation } from "@/components/site/icons";
-import { MONTH_NAMES, monthsLabel, placeLabel, price, type TripIdea, type TripTag } from "@/lib/trip-ideas";
+import { MapPin } from "@/components/site/icons";
+import { MONTH_NAMES, placeLabel, type TripIdea, type TripTag } from "@/lib/trip-ideas";
 import { GalleryOpen, TripGallery, type GallerySlide } from "./gallery";
 
 /** Who a trip suits, from its tags, in the order people search for them. */
@@ -24,22 +24,15 @@ export const idealFor = (t: TripIdea) => {
 };
 
 /** "Fly to Port Blair (IXZ) from Chennai…" → "Fly to Port Blair (IXZ)": the first clause, for a one-line fact. */
-const firstClause = (s: string) => s.split(/[;.]| from /)[0].trim();
+export const firstClause = (s: string) => s.split(/[;.]| from /)[0].trim();
 
 /**
- * The top of a trip page: a full-bleed photo with the title, two of the highlights
- * alongside on wide screens, and a floating card of the facts people look for first.
+ * The top of a trip page: a full-bleed photo with the title, and two of the highlights
+ * alongside on wide screens. The facts people look for first follow it as a FactStrip.
  */
 export function TripHero({ t, alt, inSeason, slides }: { t: TripIdea; alt: string; inSeason: boolean; slides: GallerySlide[] }) {
   const where = placeLabel(t);
   const side = t.highlights.slice(0, 2);
-  const facts = [
-    { icon: CalendarDays, k: "Best time", v: monthsLabel(t.months) },
-    { icon: Clock3, k: "Ideal length", v: `${t.days} days` },
-    { icon: Coins, k: "From", v: `${price(t, t.budget[0])} a day` },
-    { icon: Heart, k: "Ideal for", v: idealFor(t) },
-    { icon: Navigation, k: "Getting there", v: firstClause(t.reach) },
-  ];
 
   return (
     <section aria-label={`${t.name} at a glance`}>
@@ -57,7 +50,7 @@ export function TripHero({ t, alt, inSeason, slides }: { t: TripIdea; alt: strin
           <div className="absolute left-5 top-5 z-[2] sm:left-8 sm:top-8">
             <TripGallery slides={slides} city={t.destination} title={t.name} />
           </div>
-          <header className="absolute inset-x-0 bottom-0 p-6 pb-20 text-paper sm:p-10 sm:pb-24">
+          <header className="absolute inset-x-0 bottom-0 p-6 pb-8 text-paper sm:p-10 sm:pb-12">
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/35 px-3 py-1.5 text-xs text-paper ring-1 ring-white/25">
                 <MapPin className="duo-paper size-3.5" /> {where}
@@ -93,16 +86,6 @@ export function TripHero({ t, alt, inSeason, slides }: { t: TripIdea; alt: strin
         </div>
       </div>
 
-      <dl className="relative z-10 mx-3 -mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-[22px] bg-line shadow-float ring-1 ring-line sm:mx-6 lg:mr-[calc(19rem+1.5rem)] lg:grid-cols-5">
-        {facts.map((f, i) => (
-          <div key={f.k} className={i === facts.length - 1 ? "col-span-2 min-w-0 bg-white px-5 py-4 lg:col-span-1" : "min-w-0 bg-white px-5 py-4"}>
-            <dt className="flex items-center gap-1.5 text-[0.7rem] uppercase tracking-[0.14em] text-stone">
-              <f.icon className="size-3.5 text-brand" /> {f.k}
-            </dt>
-            <dd className="mt-1.5 line-clamp-3 text-[0.95rem] leading-snug text-ink">{f.v}</dd>
-          </div>
-        ))}
-      </dl>
     </section>
   );
 }

@@ -26,12 +26,12 @@ const COLS = [
 /** This trip beside the ones people weigh it against; scrolls sideways on phones with the names pinned. */
 export function CompareTrips({ rows }: { rows: CompareRow[] }) {
   return (
-    <div className="overflow-hidden rounded-panel bg-white ring-1 ring-line">
+    <div className="-mx-4 border-y border-line sm:mx-0">
       <div className="no-scrollbar overflow-x-auto">
         <table className="w-full min-w-[44rem] border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-paper-2/60 text-[0.7rem] uppercase tracking-[0.12em] text-stone">
-              <th scope="col" className="sticky left-0 z-10 bg-paper-2 px-5 py-3.5 font-normal sm:px-6">
+            <tr className="border-b border-line text-[0.7rem] uppercase tracking-[0.12em] text-stone">
+              <th scope="col" className="sticky left-0 z-10 bg-paper px-4 py-3.5 font-normal sm:pl-0">
                 Trip
               </th>
               {COLS.map((c) => (
@@ -43,8 +43,8 @@ export function CompareTrips({ rows }: { rows: CompareRow[] }) {
           </thead>
           <tbody className="divide-y divide-line">
             {rows.map((r) => (
-              <tr key={r.slug} className={cn("transition-colors", r.current ? "bg-brand-soft/40" : "hover:bg-paper/70")}>
-                <th scope="row" className={cn("sticky left-0 z-10 px-5 py-4 font-normal sm:px-6", r.current ? "bg-[#e9f1fd]" : "bg-white")}>
+              <tr key={r.slug} className={cn("transition-colors", r.current ? "bg-brand-soft/40" : "hover:bg-paper-2/50")}>
+                <th scope="row" className={cn("sticky left-0 z-10 px-4 py-4 font-normal sm:pl-0", r.current ? "bg-[#e9f1fd]" : "bg-paper")}>
                   {r.current ? (
                     <span className="flex items-center gap-3">
                       <img src={`/trips/${r.slug}/photo?w=120`} alt="" loading="lazy" className="size-10 shrink-0 rounded-xl object-cover ring-2 ring-brand" />

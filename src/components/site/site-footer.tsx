@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowUp, ArrowUpRight, Instagram, Linkedin, Lock, Mail, ShieldCheck, Shield, Twitter, Youtube, type LucideIcon } from "@/components/site/icons";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { COMPANY, activeSocials, type SocialId } from "@/lib/company";
 import { clockIn, useNow } from "@/lib/use-clock";
@@ -18,11 +17,12 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "Plan a trip", href: "/dashboard" },
-      { label: "Trending trips", href: "/trips" },
+      { label: "Where to go", href: "/trips" },
+      { label: "Adventures abroad", href: "/adventures" },
       { label: "Squad Match", href: "/squad" },
       { label: "Weekend getaways", href: "/weekend-getaways" },
       { label: "Where to go by month", href: "/places-to-visit" },
-      { label: "Trip gallery", href: "/itineraries" },
+      { label: "Ready-made itineraries", href: "/itineraries" },
       { label: "How it works", href: "/#how" },
       { label: "Pricing", href: "/#pricing" },
     ],

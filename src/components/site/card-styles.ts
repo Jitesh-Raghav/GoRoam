@@ -12,6 +12,8 @@ export const CARD_IMG = "absolute inset-0 size-full object-cover transition-tran
 export const CARD_TITLE = "display text-[1.3rem] leading-[1.12] tracking-[-0.015em] text-ink";
 /** The one-line facts under the name. */
 export const CARD_META = "text-[0.9rem] leading-snug text-stone";
+/** A featured card's one-line hook (its tagline), under the facts. */
+export const CARD_HOOK = "line-clamp-2 text-[0.9rem] leading-relaxed text-ink/75";
 
 /** The small label that sits on a photo (the pass cards on the credits page). */
 export const PHOTO_CHIP = "inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink shadow-[0_6px_16px_-8px_rgb(14_31_59/0.55)] ring-1 ring-white/60";

@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
-import { CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
 import { QuietLink } from "@/components/site/quiet-link";
 import { track } from "@/lib/analytics";
 import { usePlacePhoto } from "@/lib/brand-photos";
@@ -24,12 +24,15 @@ export function PackageCard({
   pkg,
   index,
   href = `/itineraries/${pkg.slug}`,
+  hook = false,
   className,
 }: {
   pkg: PackageCardData;
   index: number;
   /** Where the card opens; the dashboard keeps its own copy of each trip. */
   href?: string;
+  /** Add the trip's one-line tagline under the facts. */
+  hook?: boolean;
   className?: string;
 }) {
   const { fmt: money } = useMoney();
@@ -98,6 +101,7 @@ export function PackageCard({
         <p className={cn(CARD_META, "mt-0.5")}>
           From <span className="font-medium tabular-nums text-ink">{money(Math.round(pkg.budget / 2))}</span> per person
         </p>
+        {hook && <p className={cn(CARD_HOOK, "mt-1.5")}>{pkg.tagline}</p>}
       </div>
     </QuietLink>
   );

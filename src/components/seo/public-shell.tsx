@@ -41,19 +41,22 @@ export function PublicShell({ crumbs, children }: { crumbs?: { name: string; hre
   );
 }
 
-/** A FAQ list rendered as plain HTML (details/summary), so it's readable without JavaScript. */
+/**
+ * A FAQ list as open hairline rows of native details/summary: every answer is in the HTML
+ * and readable without JavaScript, and opens with the homepage FAQ's CSS ease.
+ */
 export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
   return (
-    <div className="divide-y divide-line overflow-hidden rounded-panel bg-white ring-1 ring-line">
+    <div className="border-t border-line">
       {faqs.map((f) => (
-        <details key={f.q} className="group px-5 py-4 sm:px-7 sm:py-5">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.05rem] text-ink">
-            <h3 className="font-medium">{f.q}</h3>
-            <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-paper-2 text-ink transition-transform group-open:rotate-45">
+        <details key={f.q} className="faq group border-b border-line">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left outline-none focus-visible:text-brand [&::-webkit-details-marker]:hidden">
+            <h3 className="text-[1.05rem] font-medium leading-snug text-ink transition-colors group-hover:text-brand sm:text-[1.1rem]">{f.q}</h3>
+            <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full text-ink ring-1 ring-inset ring-line transition-[transform,background-color,color] duration-300 ease-out-expo group-open:rotate-45 group-open:bg-ink group-open:text-paper group-open:ring-ink">
               <Plus className="size-3.5" />
             </span>
           </summary>
-          <p className="mt-3 leading-relaxed text-stone">{f.a}</p>
+          <p className="max-w-2xl pb-6 pr-10 leading-relaxed text-stone">{f.a}</p>
         </details>
       ))}
     </div>
