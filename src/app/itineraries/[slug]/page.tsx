@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Price } from "@/components/site/price";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TripView } from "@/components/itinerary/trip-view";
 import { CreateYoursBar } from "@/components/seo/create-yours";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
-import { ArrowRight } from "@/components/site/icons";
+import { FactStrip } from "@/components/site/fact-strip";
+import { CalendarDays, Clock3, Coins, Footprints } from "@/components/site/icons";
+import { PillLink } from "@/components/site/pill";
+import { Price } from "@/components/site/price";
+import { SectionHead } from "@/components/site/section-head";
 import { guideBySlug } from "@/lib/destination-guides";
 import { PACKAGES, packageBySlug } from "@/lib/packages";
 import { loadPackage, packageTrip } from "@/lib/packages-data";
@@ -28,8 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description,
     alternates: { canonical: `/itineraries/${slug}` },
-    openGraph: { title, description, type: "article", url: `/itineraries/${slug}` },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { title, description, type: "article", url: `/itineraries/${slug}`, images: [{ url: `/itineraries/${slug}/photo?w=1200&h=630`, width: 1200, height: 630, alt: pkg.title }] },
+    twitter: { card: "summary_large_image", title, description, images: [`/itineraries/${slug}/photo?w=1200&h=630`] },
   };
 }
 
@@ -76,7 +79,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
     <PublicShell
       crumbs={[
         { name: "Home", href: "/" },
-        { name: "Trip gallery", href: "/itineraries" },
+        { name: "Itineraries", href: "/itineraries" },
         { name: pkg.title, href: `/itineraries/${slug}` },
       ]}
     >
@@ -86,7 +89,7 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
           ...(seo ? [faqPage(seo.faqs)] : []),
           breadcrumbs([
             { name: "Home", path: "/" },
-            { name: "Trip gallery", path: "/itineraries" },
+            { name: "Itineraries", path: "/itineraries" },
             { name: pkg.title, path: `/itineraries/${slug}` },
           ]),
         ]}
@@ -95,49 +98,57 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
       {/* What the search result promised, readable before any script runs. */}
       <section className="container-x pt-6">
         <div className="max-w-3xl">
-          <p className="eyebrow text-brand">
-            {pkg.country} · Ready-made itinerary
-          </p>
-          <h1 className="display mt-5 text-[clamp(2.1rem,4.6vw,3.5rem)] leading-[1.04] text-ink">{seo?.seoTitle ?? pkg.title}</h1>
+          <p className="eyebrow text-brand">{pkg.country} · Ready-made itinerary</p>
+          <h1 className="display mt-5 text-[clamp(2.2rem,4.8vw,3.75rem)] leading-[1.02] tracking-[-0.025em] text-ink">{seo?.seoTitle ?? pkg.title}</h1>
           <p className="mt-5 text-lg leading-relaxed text-stone">{seo?.intro ?? pkg.tagline}</p>
         </div>
-        <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            { k: "Length", v: `${pkg.days} days` },
-            { k: "Budget for two", v: <><Price usd={pkg.budget} /> incl. stays</> },
-            { k: "Best time", v: pkg.bestTime },
-            { k: "Pace", v: pkg.pace[0].toUpperCase() + pkg.pace.slice(1) },
-          ].map((f) => (
-            <div key={f.k} className="rounded-card bg-white p-4 ring-1 ring-line">
-              <dt className="eyebrow text-[0.6rem] text-stone">{f.k}</dt>
-              <dd className="mt-1.5 text-ink">{f.v}</dd>
-            </div>
-          ))}
-        </dl>
+        <FactStrip
+          className="mt-9"
+          facts={[
+            { icon: Clock3, label: "Length", value: `${pkg.days} days` },
+            {
+              icon: Coins,
+              label: "Budget for two",
+              value: (
+                <>
+                  <Price usd={pkg.budget} /> incl. stays
+                </>
+              ),
+            },
+            { icon: CalendarDays, label: "Best time", value: pkg.bestTime },
+            { icon: Footprints, label: "Pace", value: pkg.pace[0].toUpperCase() + pkg.pace.slice(1) },
+          ]}
+        />
         {seo?.whoFor && (
-          <p className="mt-4 max-w-3xl text-ink/70">
-            <strong className="font-medium text-ink">Who it suits:</strong> {seo.whoFor}
+          <p className="mt-5 max-w-3xl text-stone">
+            <span className="font-medium text-ink">Who it suits:</span> {seo.whoFor}
           </p>
         )}
 
-        {/* The plan at a glance, as plain text for readers and crawlers. */}
-        <ol className="mt-10 grid gap-3 md:grid-cols-2">
-          {days.map((d, i) => (
-            <li key={i} className="rounded-card bg-white p-5 ring-1 ring-line">
-              <h2 className="text-lg font-medium text-ink">
-                Day {i + 1}: {d.theme}
-              </h2>
-              <ul className="mt-2 space-y-1 text-sm text-stone">
-                {dayActivities(d).map((a) => (
-                  <li key={a.place.name}>
-                    <span className="text-ink/80">{a.time.split(" - ")[0]}</span> · {a.place.name}
-                    {a.place.area ? `, ${a.place.area}` : ""}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
+        {/* The route at a glance, as plain text for readers and crawlers. */}
+        <section aria-labelledby="glance-h" className="mt-14">
+          <SectionHead id="glance-h" kicker="Route at a glance" title={`${pkg.days} days, stop by stop`} size="sm" as="h2" />
+          <ol className="mt-8 grid gap-x-12 md:grid-cols-2">
+            {days.map((d, i) => (
+              <li key={i} className="relative border-l border-line pb-9 pl-7 last:pb-0 md:[&:nth-last-child(2):nth-child(odd)]:pb-0">
+                <span aria-hidden className={i === 0 ? "absolute -left-[6px] top-1.5 size-3 rounded-full bg-brand ring-4 ring-paper" : "absolute -left-[6px] top-1.5 size-3 rounded-full bg-ink ring-4 ring-paper"} />
+                <p className="font-mono text-xs text-stone">Day {i + 1}</p>
+                <h3 className="mt-1 text-lg font-medium leading-snug text-ink">{d.theme}</h3>
+                <ul className="mt-2.5 space-y-1.5 text-[0.95rem]">
+                  {dayActivities(d).map((a) => (
+                    <li key={a.place.name} className="flex gap-3 text-stone">
+                      <span className="w-[4.75rem] shrink-0 whitespace-nowrap tabular-nums text-ink/70">{a.time.split(" - ")[0]}</span>
+                      <span className="min-w-0">
+                        {a.place.name}
+                        {a.place.area ? `, ${a.place.area}` : ""}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
       </section>
 
       <div className="px-3 pt-12 min-[400px]:px-4 sm:px-6 lg:px-8">
@@ -145,45 +156,50 @@ export default async function ItineraryPage({ params }: { params: Promise<{ slug
       </div>
 
       <section className="container-x pb-20 pt-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <div>
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+          <div className="min-w-0">
             {seo && (
               <>
-                <h2 className="display text-[clamp(1.6rem,3vw,2.2rem)] text-ink">Questions about this trip</h2>
-                <div className="mt-6">
+                <SectionHead kicker="Questions" title="Questions about this trip" />
+                <div className="mt-8">
                   <FaqList faqs={seo.faqs} />
                 </div>
               </>
             )}
           </div>
-          <aside className="space-y-4">
-            <div className="rounded-panel bg-ink p-6 text-paper">
-              <p className="eyebrow text-paper/60">Make it yours</p>
-              <p className="mt-3 text-lg">Different dates, budget or crew? Plan your own version in a minute.</p>
-              <Link href={plan} className="group mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white hover:bg-brand/90">
-                Customise this trip <ArrowRight className="duo-paper size-4 transition-transform duration-500 group-hover:translate-x-0.5" />
-              </Link>
+          <aside className="space-y-10 lg:pt-2">
+            <div>
+              <p className="eyebrow text-brand">Make it yours</p>
+              <p className="mt-3 leading-relaxed text-ink">Different dates, budget or crew? Plan your own version in about a minute.</p>
+              <PillLink href={plan} className="mt-4">
+                Customise this trip
+              </PillLink>
             </div>
             {guide && (
-              <Link href={`/destinations/${guide.slug}`} className="block rounded-panel bg-white p-6 ring-1 ring-line hover:ring-brand/40">
+              <div className="border-t border-line pt-6">
                 <p className="eyebrow text-stone">Destination guide</p>
-                <p className="mt-2 inline-flex items-center gap-2 text-lg text-ink">
-                  {guide.name} travel guide <ArrowRight className="size-4 text-brand" />
-                </p>
+                <Link href={`/destinations/${guide.slug}`} prefetch={false} className="mt-2 block text-lg text-ink underline decoration-line underline-offset-4 transition-colors hover:text-brand">
+                  {guide.name} travel guide
+                </Link>
                 <p className="mt-1 text-sm text-stone">Best time, where to stay, costs and top sights.</p>
-              </Link>
+              </div>
             )}
             {related.length > 0 && (
-              <div className="rounded-panel bg-white p-6 ring-1 ring-line">
+              <div className="border-t border-line pt-6">
                 <p className="eyebrow text-stone">More trips like this</p>
-                <ul className="mt-3 space-y-2">
+                <ul className="mt-3 space-y-2.5">
                   {related.map((r) => (
                     <li key={r.slug}>
-                      <Link href={`/itineraries/${r.slug}`} className="inline-flex items-center gap-2 text-ink hover:text-brand">
-                        {r.title} <ArrowRight className="size-3.5 text-brand" />
+                      <Link href={`/itineraries/${r.slug}`} prefetch={false} className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-brand">
+                        {r.title}
                       </Link>
                     </li>
                   ))}
+                  <li>
+                    <Link href="/itineraries" prefetch={false} className="text-sm text-stone transition-colors hover:text-brand">
+                      All itineraries →
+                    </Link>
+                  </li>
                 </ul>
               </div>
             )}
