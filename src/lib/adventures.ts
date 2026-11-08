@@ -160,6 +160,11 @@ export function monthsText(months: number[], tight = false) {
   return runs.map((r) => (r.length === 1 ? MONTHS[r[0] - 1] : `${MONTHS[r[0] - 1]}${dash}${MONTHS[r[r.length - 1] - 1]}`)).join(", ");
 }
 
+/** The title without a leading "The", for tight spots: "Ha Giang Loop", "Hill-country train and Ella's hikes". */
+export const shortTitle = (a: Adventure) => {
+  const t = a.title.replace(/^The /, "");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
 export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 export const daysText = (a: Adventure) => (a.days[0] === a.days[1] ? `${a.days[0]} days` : `${a.days[0]}–${a.days[1]} days`);
 
@@ -232,6 +237,16 @@ export function adventureFaqs(a: Adventure) {
   ].filter((f): f is { q: string; a: string } => !!f);
   return [...general, ...a.faqs];
 }
+
+/** The Indian state each adventure in India belongs to, to sit it beside the trips and guides there. */
+export const INDIA_STATE: Record<string, string> = {
+  "spiti-valley": "Himachal Pradesh",
+  "manali-leh-highway": "Ladakh",
+  "rishikesh-rafting": "Uttarakhand",
+  "hampi-bouldering": "Karnataka",
+  "andaman-diving": "Andaman & Nicobar",
+  "meghalaya-root-bridges": "Meghalaya",
+};
 
 /** Others like it: the same kind first, then the same part of the world. */
 export function relatedAdventures(a: Adventure, n = 3) {

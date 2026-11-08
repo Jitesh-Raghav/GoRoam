@@ -4,7 +4,7 @@ import { GuideCard } from "@/components/seo/guide-card";
 import { TripCard } from "@/components/seo/trip-card";
 import { ROW_ITEM, ROW_SIZES, ScrollRow } from "@/components/site/scroll-row";
 import { SectionHead } from "@/components/site/section-head";
-import { ADVENTURES, POPULAR as POPULAR_ADVENTURES } from "@/lib/adventures";
+import { ADVENTURES, POPULAR as POPULAR_ADVENTURES, shortTitle } from "@/lib/adventures";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { packageCards } from "@/lib/packages-data";
 import { CITY_HUBS, MONTH_HUBS } from "@/lib/trip-hubs";
@@ -124,7 +124,7 @@ export async function StartTrips() {
             {
               id: "adventures",
               label: "Adventures",
-              links: POPULAR_ADVENTURES.slice(0, 12).map((a) => ({ href: `/adventures/${a.slug}`, label: a.title.replace(/^The /, ""), photo: `/adventures/${a.slug}/photo?w=120` })),
+              links: POPULAR_ADVENTURES.slice(0, 12).map((a) => ({ href: `/adventures/${a.slug}`, label: shortTitle(a), photo: `/adventures/${a.slug}/photo?w=120` })),
             },
             { id: "cities", label: "From your city", links: CITY_HUBS.map((c) => ({ href: `/weekend-getaways/${c.slug}`, label: `Getaways from ${c.city}`, icon: "city" as const })) },
             { id: "months", label: "By month", links: MONTH_HUBS.map((m) => ({ href: `/places-to-visit/${m.slug}`, label: `Where to go in ${MONTH_NAMES[m.month - 1]}`, icon: "month" as const })) },

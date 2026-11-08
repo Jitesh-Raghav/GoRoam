@@ -7,7 +7,7 @@ import { PageCover } from "@/components/site/page-cover";
 import { PillLink } from "@/components/site/pill";
 import { QuietLink } from "@/components/site/quiet-link";
 import { SectionHead } from "@/components/site/section-head";
-import { ADVENTURES, AREAS, DIFFICULTIES, KIND_LABEL, POPULAR, adventureBySlug, areaId, usd, usedKinds, type Adventure } from "@/lib/adventures";
+import { ADVENTURES, AREAS, DIFFICULTIES, KIND_LABEL, POPULAR, adventureBySlug, areaId, shortTitle, usd, usedKinds, type Adventure } from "@/lib/adventures";
 import { JsonLd, absolute, breadcrumbs, faqPage } from "@/lib/seo";
 import { MONTH_NAMES } from "@/lib/trip-ideas";
 
@@ -144,7 +144,7 @@ export default function AdventuresPage() {
             { href: "#regions", label: "By region" },
             { href: "#how-hard", label: "How hard is it?" },
           ]}
-          photos={COVER.map((a) => ({ src: adventurePhoto(a.slug, 1080), srcSet: adventurePhotoSet(a.slug), href: `/adventures/${a.slug}`, label: a.title.replace(/^The /, "") }))}
+          photos={COVER.map((a) => ({ src: adventurePhoto(a.slug, 1080), srcSet: adventurePhotoSet(a.slug), href: `/adventures/${a.slug}`, label: shortTitle(a) }))}
         >
           <PillLink href="/dashboard" className="mt-8">
             Plan my own adventure free

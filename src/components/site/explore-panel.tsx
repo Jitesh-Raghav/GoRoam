@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- our own photo routes, already sized */
 import { ArrowRight } from "@/components/site/icons";
 import { QuietLink } from "@/components/site/quiet-link";
-import { ADVENTURES, adventureBySlug } from "@/lib/adventures";
+import { ADVENTURES, adventureBySlug, shortTitle } from "@/lib/adventures";
 import { DESTINATION_GUIDES, guideBySlug } from "@/lib/destination-guides";
 import { PACKAGES, packageBySlug } from "@/lib/packages";
 import { MONTH_NAMES, TRIP_IDEAS, inSeason } from "@/lib/trip-ideas";
@@ -56,7 +56,7 @@ function columns(): Column[] {
       photo: `/adventures/${ADVENTURE_PICKS[0]}/photo?w=640&blank=1`,
       links: ADVENTURE_PICKS.flatMap((s) => {
         const a = adventureBySlug(s);
-        return a ? [{ href: `/adventures/${a.slug}`, label: a.title.replace(/^The /, "") }] : [];
+        return a ? [{ href: `/adventures/${a.slug}`, label: shortTitle(a) }] : [];
       }),
     },
     {
