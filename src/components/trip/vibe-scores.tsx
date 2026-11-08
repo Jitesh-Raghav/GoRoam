@@ -9,11 +9,11 @@ const ease = [0.16, 1, 0.3, 1] as const;
 /** "Is it for you?": six scores out of 5 as segmented bars that fill in as they scroll into view. */
 export function VibeScores({ name, verdict, scores }: { name: string; verdict: string; scores: { label: string; score: number }[] }) {
   return (
-    <div className="rounded-panel bg-white p-6 ring-1 ring-line sm:p-7">
+    <div className="border-y border-line py-7">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.16em] text-brand">
-            <Heart className="size-4" /> Is {name} for you?
+          <p className="flex items-center gap-2 text-sm font-medium text-ink">
+            <Heart className="size-4 text-brand" /> Is {name} for you?
           </p>
           <p className="display mt-2 text-[1.35rem] leading-snug text-ink">{verdict}</p>
         </div>

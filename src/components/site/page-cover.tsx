@@ -44,13 +44,13 @@ export function PageCover({
         <h1 className="display mt-5 text-[clamp(2.5rem,5.4vw,4.4rem)] leading-[1] tracking-[-0.035em] text-ink">{title}</h1>
         <div className="mt-6 max-w-xl text-lg leading-relaxed text-stone">{lede}</div>
         {stats.length > 0 && (
-          <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+          <dl className="mt-8 grid max-w-xl grid-cols-3 gap-x-5 sm:flex sm:flex-wrap sm:gap-x-10 sm:gap-y-4">
             {stats.map((s) => (
-              <div key={s.label}>
+              <div key={s.label} className="min-w-0">
                 <dt className="sr-only">{s.label}</dt>
                 <dd>
-                  <span className="display block text-[2rem] leading-none tabular-nums text-ink">{s.value}</span>
-                  <span className="mt-1.5 block text-sm text-stone">{s.label}</span>
+                  <span className="display block text-[1.65rem] leading-none tabular-nums text-ink sm:text-[2rem]">{s.value}</span>
+                  <span className="mt-1.5 block text-xs leading-snug text-stone sm:text-sm">{s.label}</span>
                 </dd>
               </div>
             ))}
