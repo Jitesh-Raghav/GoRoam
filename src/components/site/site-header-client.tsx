@@ -1,0 +1,272 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { ArrowRight, ChevronDown } from "@/components/site/icons";
+import { UserAvatar } from "./user-avatar";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Scene } from "@/components/scenes/scene";
+import { Logo } from "./logo";
+import { PillLink } from "./pill";
+
+// Explore (where to go, adventures, itineraries, guides) sits after Plan, in its own menu.
+const LINKS = [
+  { href: "/plan", label: "Plan" },
+  { href: "/squad", label: "Squad Match" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/about", label: "About" },
+];
+
+export interface ExploreLink {
+  href: string;
+  label: string;
+}
+
+/**
+ * The site's top bar. `explore` is the Explore panel, rendered on the server (so no trip
+ * data ships to the browser) and kept in the HTML while closed, so its links are crawlable;
+ * `exploreLinks` are the same destinations for the phone menu.
+ */
+export function SiteHeaderClient({ explore, exploreLinks }: { explore: ReactNode; exploreLinks: ExploreLink[] }) {
+  const { data: session } = useSession();
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [exploring, setExploring] = useState(false);
+  const bar = useRef<HTMLElement>(null);
+  const exploreButton = useRef<HTMLButtonElement>(null);
+  const hover = useRef(0);
+  // The home page opens on the blue-hour hero: light text until the bar turns solid.
+  const pathname = usePathname();
+  const dark = pathname === "/" && !scrolled && !open && !exploring;
+
+  // Hide on the way down, show on the way up, but only after 16px in one direction,
+  // so small wobbles (a trackpad settling, a momentum flick) never make it flicker.
+  // A passive listener read once per frame; state only changes when the bar should.
+  const turn = useRef(0);
+  const going = useRef<"up" | "down">("up");
+  useEffect(() => {
+    let prev = window.scrollY;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      const dir = y > prev ? "down" : y < prev ? "up" : going.current;
+      if (dir !== going.current) {
+        going.current = dir;
+        turn.current = prev;
+      }
+      if (y < 480) setHidden(false);
+      else if (dir === "down" && y - turn.current > 16) setHidden(true);
+      else if (dir === "up" && turn.current - y > 16) setHidden(false);
+      prev = y;
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
+  // Explore closes on a new page, on Escape (focus back on its button), on a press outside
+  // the bar, and when the bar slides away.
+  useEffect(() => setExploring(false), [pathname]);
+  useEffect(() => {
+    if (hidden) setExploring(false);
+  }, [hidden]);
+  useEffect(() => {
+    if (!exploring) return;
+    const onDown = (e: PointerEvent) => {
+      if (!bar.current?.contains(e.target as Node)) setExploring(false);
+    };
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setExploring(false);
+      exploreButton.current?.focus();
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [exploring]);
+  // With a mouse, hovering opens it (after a beat, so passing over doesn't) and leaving the bar closes it.
+  const intend = (next: boolean, e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    window.clearTimeout(hover.current);
+    hover.current = window.setTimeout(() => setExploring(next), next ? 90 : 220);
+  };
+  useEffect(() => () => window.clearTimeout(hover.current), []);
+
+  return (
+    <>
+      {/* In place on the first paint; slides away on the compositor (a CSS transform) when hidden. */}
+      <header
+        ref={bar}
+        onPointerLeave={(e) => intend(false, e)}
+        className={cn("fixed inset-x-0 top-0 z-50 no-print transition-transform duration-300 ease-out-expo", hidden && !open && "-translate-y-[110%]")}
+      >
+        <div
+          className={cn(
+            // Solid once scrolled: a blur behind a fixed bar repaints on every scroll frame.
+            "transition-[background-color,box-shadow] duration-300",
+            exploring ? "bg-paper" : scrolled && !open ? "bg-paper/[0.97] shadow-[0_1px_0_rgba(14,31,59,0.08)]" : "bg-transparent"
+          )}
+        >
+          <div className="container-x flex h-[4.5rem] items-center justify-between gap-6">
+            <Logo tone={dark ? "paper" : "ink"} />
+
+            <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
+              {LINKS.map((l, i) => (
+                <span key={l.href} className="contents">
+                  <Link
+                    href={l.href}
+                    className={cn("group relative py-2 text-[0.94rem] font-medium transition-colors duration-300", dark ? "text-paper/80 hover:text-paper" : "text-ink/70 hover:text-ink")}
+                  >
+                    {l.label}
+                    <span className={cn("absolute inset-x-0 bottom-1 h-px origin-left scale-x-0 transition-transform duration-500 ease-out-expo group-hover:scale-x-100", dark ? "bg-paper" : "bg-ink")} />
+                  </Link>
+                  {i === 0 && (
+                    <button
+                      ref={exploreButton}
+                      type="button"
+                      aria-expanded={exploring}
+                      aria-controls="explore-panel"
+                      onClick={() => setExploring((v) => !v)}
+                      onPointerEnter={(e) => intend(true, e)}
+                      className={cn(
+                        "inline-flex items-center gap-1 py-2 text-[0.94rem] font-medium transition-colors duration-300",
+                        exploring ? "text-ink" : dark ? "text-paper/80 hover:text-paper" : "text-ink/70 hover:text-ink"
+                      )}
+                    >
+                      Explore
+                      <ChevronDown className={cn("size-3.5 transition-transform duration-300", exploring && "rotate-180")} />
+                    </button>
+                  )}
+                </span>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2 sm:gap-3">
+              {session ? (
+                <>
+                  <PillLink href="/dashboard" size="md" variant={dark ? "paper" : "ink"} className="hidden sm:inline-flex">
+                    Dashboard
+                  </PillLink>
+                  <Link href="/dashboard/settings" aria-label="Your account" className="hidden sm:block">
+                    <UserAvatar user={session.user} className="size-10 ring-2 ring-paper" />
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth"
+                    className={cn("hidden rounded-full px-3 py-2 text-[0.94rem] font-medium transition-colors duration-300 sm:inline-flex", dark ? "text-paper/85 hover:text-paper" : "text-ink/75 hover:text-ink")}
+                  >
+                    Sign in
+                  </Link>
+                  <PillLink href="/dashboard" size="md" variant={dark ? "paper" : "ink"} className="hidden sm:inline-flex">
+                    Plan a trip
+                  </PillLink>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                aria-label={open ? "Close menu" : "Open menu"}
+                className={cn("relative grid size-11 place-items-center rounded-full lg:hidden", dark ? "bg-paper/15 text-paper ring-1 ring-paper/25" : "bg-ink text-paper")}
+              >
+                <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "rotate-45" : "-translate-y-[3px]")} />
+                <span className={cn("absolute h-[1.5px] w-4 bg-current transition-transform duration-500 ease-out-expo", open ? "-rotate-45" : "translate-y-[3px]")} />
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* In the HTML even when closed (display: none until opened), so search engines follow its links and its photos wait. */}
+        <div
+          id="explore-panel"
+          hidden={!exploring}
+          onPointerEnter={(e) => intend(true, e)}
+          className="explore-in absolute inset-x-0 top-full hidden max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-line bg-paper shadow-[0_30px_60px_-40px_rgb(14_31_59/0.55)] lg:block"
+        >
+          {explore}
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
+            animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
+            transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-paper pt-[72px] lg:hidden"
+          >
+            <nav aria-label="Mobile" className="container-x flex flex-col gap-1 pt-8">
+              {[...LINKS, { href: session ? "/dashboard" : "/auth", label: session ? "Dashboard" : "Sign in" }].map((l, i) => (
+                <div key={l.href} className="contents">
+                  <div className="overflow-hidden">
+                    <motion.div
+                      initial={{ y: "100%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 + i * 0.05 }}
+                    >
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-between border-b border-line py-4"
+                      >
+                        <span className="display text-[2rem] leading-none">{l.label}</span>
+                        <ArrowRight aria-hidden className="size-5 text-stone" />
+                      </Link>
+                    </motion.div>
+                  </div>
+                  {/* Explore, right after Plan: where to go, adventures, itineraries and guides. */}
+                  {i === 0 && exploreLinks.length > 0 && (
+                    <div className="border-b border-line pb-4 pt-5">
+                      <p className="eyebrow text-stone">Explore</p>
+                      <ul className="mt-2 grid grid-cols-2 gap-x-5">
+                        {exploreLinks.map((x) => (
+                          <li key={x.href}>
+                            <Link href={x.href} onClick={() => setOpen(false)} className="flex items-center justify-between gap-2 py-2.5 text-[1.02rem] text-ink">
+                              {x.label}
+                              <ArrowRight aria-hidden className="size-4 shrink-0 text-stone-2" />
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+            <div className="container-x mt-8">
+              <PillLink href="/dashboard" variant="brand" size="lg" onClick={() => setOpen(false)} className="w-full justify-between">
+                Plan a trip
+              </PillLink>
+            </div>
+            <div className="relative mt-auto h-56 w-full overflow-hidden">
+              <Scene id="santorini" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

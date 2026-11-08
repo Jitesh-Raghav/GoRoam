@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- our own photo route, which redirects to a CDN image already sized by ?w= */
-import { CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
 import { Mountain } from "@/components/site/icons";
 import { QuietLink } from "@/components/site/quiet-link";
 import { monthsLabel, price, type TripIdea } from "@/lib/trip-ideas";
@@ -26,10 +26,13 @@ export function TripCard({
   big = false,
   sizes = "(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 560px) 50vw, 100vw",
   compact = false,
+  hook = false,
   className,
   photoClassName,
 }: {
   t: TripIdea;
+  /** Add the trip's one-line tagline under the facts (featured rows). */
+  hook?: boolean;
   /** The lead card of a section: a wider photo and a larger name. */
   big?: boolean;
   /** Two-across on phones (long catalogues): smaller words, the months on a line of their own. */
@@ -66,6 +69,7 @@ export function TripCard({
           <span className={cn(compact && "max-[559px]:hidden")}> · </span>
           <span className={cn(compact && "max-[559px]:block")}>{monthsLabel(t.months)}</span>
         </span>
+        {hook && <span className={cn(CARD_HOOK, "mt-1.5 block")}>{t.tagline}</span>}
       </div>
     </QuietLink>
   );
