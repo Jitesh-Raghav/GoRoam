@@ -1,8 +1,10 @@
 import { PackageCard } from "@/components/packages/package-card";
+import { AdventureCard } from "@/components/seo/adventure-card";
 import { GuideCard } from "@/components/seo/guide-card";
 import { TripCard } from "@/components/seo/trip-card";
 import { ROW_ITEM, ROW_SIZES, ScrollRow } from "@/components/site/scroll-row";
 import { SectionHead } from "@/components/site/section-head";
+import { ADVENTURES, POPULAR as POPULAR_ADVENTURES } from "@/lib/adventures";
 import { DESTINATION_GUIDES } from "@/lib/destination-guides";
 import { packageCards } from "@/lib/packages-data";
 import { CITY_HUBS, MONTH_HUBS } from "@/lib/trip-hubs";
@@ -25,8 +27,9 @@ const tripLinks = (slugs: string[]): ExploreLink[] =>
   });
 
 /**
- * "Start from a trip": four rows, all on show. What's in season this month, the
- * ready-made itineraries, the destination guides and each kind of trip, then the photo
+ * "Start from a trip": five rows, all on show. What's in season this month, the
+ * ready-made itineraries, cheap adventures abroad, the destination guides and each kind of
+ * trip, then the photo
  * chips of popular trips, cities and months. All rendered on the server, so every link is
  * in the page for search engines; each row swipes on phones and pages with arrows on laptops.
  */
@@ -72,6 +75,25 @@ export async function StartTrips() {
         </ScrollRow>
 
         <ScrollRow
+          label="Cheap adventures abroad"
+          head={
+            <SectionHead
+              as="h3"
+              size="sm"
+              title="Cheap adventures abroad"
+              intro="Hitchhike Kyrgyzstan, ride the Ha Giang Loop, cross a Himalayan pass: step-by-step guides with real costs in dollars, visas and safety."
+              action={{ href: "/adventures", label: `All ${ADVENTURES.length} adventures` }}
+            />
+          }
+        >
+          {POPULAR_ADVENTURES.slice(0, 10).map((a) => (
+            <li key={a.slug} className={ROW_ITEM}>
+              <AdventureCard a={a} sizes={ROW_SIZES} />
+            </li>
+          ))}
+        </ScrollRow>
+
+        <ScrollRow
           label="Destination guides"
           head={<SectionHead as="h3" size="sm" title="Destination guides" intro="When to go, how to get there, where to stay and what a day really costs, in depth." action={{ href: "/destinations", label: `All ${DESTINATION_GUIDES.length} guides` }} />}
         >
@@ -99,6 +121,11 @@ export async function StartTrips() {
           groups={[
             { id: "india", label: "Popular in India", links: tripLinks(POPULAR_INDIA) },
             { id: "abroad", label: "Popular abroad", links: tripLinks(POPULAR_ABROAD) },
+            {
+              id: "adventures",
+              label: "Adventures",
+              links: POPULAR_ADVENTURES.slice(0, 12).map((a) => ({ href: `/adventures/${a.slug}`, label: a.title.replace(/^The /, ""), photo: `/adventures/${a.slug}/photo?w=120` })),
+            },
             { id: "cities", label: "From your city", links: CITY_HUBS.map((c) => ({ href: `/weekend-getaways/${c.slug}`, label: `Getaways from ${c.city}`, icon: "city" as const })) },
             { id: "months", label: "By month", links: MONTH_HUBS.map((m) => ({ href: `/places-to-visit/${m.slug}`, label: `Where to go in ${MONTH_NAMES[m.month - 1]}`, icon: "month" as const })) },
           ]}

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import { AdventureCard } from "@/components/seo/adventure-card";
 import { PublicShell } from "@/components/seo/public-shell";
 import { TripCard, tripPhotoSet } from "@/components/seo/trip-card";
 import { TripFilter, type TripFilterOption } from "@/components/seo/trip-filter";
 import { PageCover } from "@/components/site/page-cover";
 import { PillLink } from "@/components/site/pill";
+import { ROW_ITEM, ROW_SIZES, ScrollRow } from "@/components/site/scroll-row";
 import { SectionHead } from "@/components/site/section-head";
+import { ADVENTURES, POPULAR as POPULAR_ADVENTURES } from "@/lib/adventures";
 import { JsonLd, absolute, breadcrumbs } from "@/lib/seo";
 import { MONTH_NAMES, TAG_LABEL, TRIP_IDEAS, inSeason, type TripIdea, type TripTag } from "@/lib/trip-ideas";
 
@@ -99,6 +102,25 @@ export default function TripsPage() {
             </ul>
           </section>
         )}
+
+        <ScrollRow
+          className="mt-24"
+          label="Cheap adventures abroad"
+          head={
+            <SectionHead
+              kicker="Adventures"
+              title="Cheap adventures abroad"
+              intro="Hitchhiking in Kyrgyzstan, motorbike loops in Vietnam, Himalayan passes and volcano nights, each a step-by-step guide with costs in dollars."
+              action={{ href: "/adventures", label: `All ${ADVENTURES.length} adventures` }}
+            />
+          }
+        >
+          {POPULAR_ADVENTURES.slice(0, 12).map((a) => (
+            <li key={a.slug} className={ROW_ITEM}>
+              <AdventureCard a={a} sizes={ROW_SIZES} />
+            </li>
+          ))}
+        </ScrollRow>
 
         <section id="all" aria-labelledby="all-h" className="mt-24 scroll-mt-4">
           <SectionHead id="all-h" kicker="Every trip" title="Find your kind of trip" intro="Narrow by the kind of trip and the month you can go, then sort by cost or length." className="mb-6" />

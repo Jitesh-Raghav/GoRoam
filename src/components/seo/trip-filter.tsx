@@ -4,9 +4,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type TripFilterOption = { id: string; label: string; count: number };
-export type TripSort = "popular" | "cost" | "days";
+export type TripSort = string;
+export type TripSortOption = { id: TripSort; label: string };
 
-const SORTS: { id: TripSort; label: string }[] = [
+const SORTS: TripSortOption[] = [
   { id: "popular", label: "Popular" },
   { id: "cost", label: "Lowest cost" },
   { id: "days", label: "Shortest" },
@@ -14,15 +15,35 @@ const SORTS: { id: TripSort; label: string }[] = [
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /**
- * A sticky bar that narrows and sorts a server-rendered grid of trips: kind of trip, best
- * month, and order. Every card stays in the HTML; a choice only writes one small style
+ * A sticky bar that narrows and sorts a server-rendered grid of cards (trips, adventures):
+ * kind, best month, and order. Every card stays in the HTML; a choice only writes one small style
  * block (hide by `data-tags` / `data-months`, order by each card's `--o-cost` / `--o-days`),
  * so the grid never re-renders. The count reads what's left on screen.
  */
-export function TripFilter({ options, children, startMonth = 0 }: { options: TripFilterOption[]; children: ReactNode; startMonth?: number }) {
+export function TripFilter({
+  options,
+  children,
+  startMonth = 0,
+  label = "Kind of trip",
+  noun = ["trip", "trips"],
+  sorts = SORTS,
+  wrap = false,
+}: {
+  options: TripFilterOption[];
+  children: ReactNode;
+  startMonth?: number;
+  /** What the chips choose between, for screen readers. */
+  label?: string;
+  /** What's being counted: [one, many]. */
+  noun?: [string, string];
+  /** The orders on offer; each card carries a matching `--o-{id}` value. The first keeps the HTML order. */
+  sorts?: TripSortOption[];
+  /** Let the chips wrap onto a second line on wide screens instead of scrolling. */
+  wrap?: boolean;
+}) {
   const [filter, setFilter] = useState(options[0]?.id ?? "all");
   const [month, setMonth] = useState(startMonth);
-  const [sort, setSort] = useState<TripSort>("popular");
+  const [sort, setSort] = useState<TripSort>(sorts[0]?.id ?? "popular");
   const [count, setCount] = useState<number | null>(null);
   const box = useRef<HTMLDivElement>(null);
   const safe = (s: string) => s.replace(/[^a-z0-9-]/g, "");
@@ -38,7 +59,7 @@ export function TripFilter({ options, children, startMonth = 0 }: { options: Tri
   const rules = [
     filter !== "all" && `[data-trip-grid] > li:not([data-tags~="${safe(filter)}"]) { display: none; }`,
     month > 0 && `[data-trip-grid] > li:not([data-months~="${month}"]) { display: none; }`,
-    sort !== "popular" && `[data-trip-grid] > li { order: var(--o-${sort}); }`,
+    sort !== sorts[0]?.id && `[data-trip-grid] > li { order: var(--o-${safe(sort)}); }`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -48,7 +69,7 @@ export function TripFilter({ options, children, startMonth = 0 }: { options: Tri
   return (
     <div ref={box}>
       <div className="sticky top-0 z-30 -mx-4 border-b border-line bg-paper/[0.97] px-4 pb-3 pt-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
-        <div role="group" aria-label="Kind of trip" className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1">
+        <div role="group" aria-label={label} className={cn("no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1", wrap && "lg:flex-wrap lg:gap-y-1.5 lg:overflow-visible")}>
           {options.map((o) => (
             <button key={o.id} type="button" aria-pressed={filter === o.id} onClick={() => setFilter(o.id)} className={chip(filter === o.id)}>
               {o.label}
@@ -68,16 +89,16 @@ export function TripFilter({ options, children, startMonth = 0 }: { options: Tri
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="text-stone" aria-live="polite">
-              {shown} {shown === 1 ? "trip" : "trips"}
+              {shown} {shown === 1 ? noun[0] : noun[1]}
             </span>
             <label className="flex items-center gap-2">
               <span className="sr-only">Sort</span>
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value as TripSort)}
+                onChange={(e) => setSort(e.target.value)}
                 className="h-9 cursor-pointer rounded-full bg-paper-2 px-3.5 pr-8 text-sm text-ink outline-none ring-brand/40 focus-visible:ring-2"
               >
-                {SORTS.map((s) => (
+                {sorts.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.label}
                   </option>

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- our own photo routes, already sized */
 import { ArrowRight } from "@/components/site/icons";
 import { QuietLink } from "@/components/site/quiet-link";
+import { ADVENTURES, adventureBySlug } from "@/lib/adventures";
 import { DESTINATION_GUIDES, guideBySlug } from "@/lib/destination-guides";
 import { PACKAGES, packageBySlug } from "@/lib/packages";
 import { MONTH_NAMES, TRIP_IDEAS, inSeason } from "@/lib/trip-ideas";
@@ -17,6 +18,7 @@ interface Column {
 
 const GUIDE_PICKS = ["goa", "jaipur", "ladakh", "kerala"];
 const PACKAGE_PICKS = ["kerala-5-days", "japan-5-days", "bali-4-days", "udaipur-3-days-couples"];
+const ADVENTURE_PICKS = ["hitchhike-kyrgyzstan", "ha-giang-loop", "annapurna-circuit", "hitchhike-mongolia"];
 
 /** The Explore menu's columns, built from the site's own data on the server. */
 function columns(): Column[] {
@@ -48,6 +50,16 @@ function columns(): Column[] {
       }),
     },
     {
+      href: "/adventures",
+      title: "Adventures",
+      note: `${ADVENTURES.length} cheap adventures abroad`,
+      photo: `/adventures/${ADVENTURE_PICKS[0]}/photo?w=640&blank=1`,
+      links: ADVENTURE_PICKS.flatMap((s) => {
+        const a = adventureBySlug(s);
+        return a ? [{ href: `/adventures/${a.slug}`, label: a.title.replace(/^The /, "") }] : [];
+      }),
+    },
+    {
       href: "/destinations",
       title: "Destination guides",
       note: `${DESTINATION_GUIDES.length} in-depth guides`,
@@ -64,6 +76,7 @@ function columns(): Column[] {
 export const EXPLORE_LINKS: ExploreLink[] = [
   { href: "/trips", label: "Where to go" },
   { href: "/itineraries", label: "Itineraries" },
+  { href: "/adventures", label: "Adventures" },
   { href: "/destinations", label: "Guides" },
   { href: "/places-to-visit", label: "By month" },
   { href: "/weekend-getaways", label: "From your city" },
@@ -71,14 +84,14 @@ export const EXPLORE_LINKS: ExploreLink[] = [
 ];
 
 /**
- * The Explore menu's panel: one column each for where to go, ready-made itineraries and
- * destination guides (a photo, a count and a few ways in), with the kinds of trip along
+ * The Explore menu's panel: one column each for where to go, ready-made itineraries,
+ * adventures and destination guides (a photo, a count and a few ways in), with the kinds of trip along
  * the bottom. Rendered on the server; its photos load only when the panel first opens.
  */
 export function ExplorePanel() {
   return (
     <div className="container-x py-8">
-      <div className="grid grid-cols-3 gap-8 xl:gap-10">
+      <div className="grid grid-cols-4 gap-7 xl:gap-9">
         {columns().map((c) => (
           <div key={c.href} className="min-w-0">
             <QuietLink href={c.href} className="group block outline-none">
