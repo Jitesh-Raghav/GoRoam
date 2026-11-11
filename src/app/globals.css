@@ -412,7 +412,6 @@ html { scroll-padding-top: 5.5rem; }
    edge. Individual transform properties, so the two animations don't fight; on the compositor. */
 .hero-drift {
   transform-origin: 50% 100%;
-  scale: 1.1;
 }
 @keyframes hero-settle {
   from {
@@ -426,6 +425,7 @@ html { scroll-padding-top: 5.5rem; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-drift {
+    scale: 1.1;
     animation: hero-settle 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   @supports (animation-timeline: scroll()) {
