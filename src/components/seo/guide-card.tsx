@@ -41,6 +41,8 @@ export function GuideCard({
       <div className={cn(CARD_PHOTO, big ? "aspect-[16/10]" : "aspect-[4/3]", photoClassName)}>
         <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
         <img
+          data-photo=""
+          referrerPolicy="no-referrer"
           src={guidePhoto(g.slug, big ? 1080 : 720)}
           srcSet={guidePhotoSet(g.slug)}
           sizes={big ? "(min-width: 1024px) 60vw, 100vw" : sizes}

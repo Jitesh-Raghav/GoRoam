@@ -39,7 +39,8 @@ export async function photoRedirect(request: NextRequest, destination: string) {
     if (q.get('h')) u.searchParams.set('h', String(size(q.get('h'), 900, 1600)));
     url = u.toString();
   }
-  return NextResponse.redirect(url, {
+  // Google Places photos come back as our own relative proxy URL; a redirect needs an absolute one.
+  return NextResponse.redirect(new URL(url, request.url), {
     status: 302,
     headers: { 'Cache-Control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400' },
   });

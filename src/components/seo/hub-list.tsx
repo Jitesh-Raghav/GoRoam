@@ -20,6 +20,8 @@ export function HubList({ items }: { items: { trip: TripIdea; how?: string }[] }
             <div className={cn(CARD_PHOTO, "aspect-[4/3]")}>
               <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
               <img
+                data-photo=""
+                referrerPolicy="no-referrer"
                 src={`/trips/${t.slug}/photo?w=720&blank=1`}
                 srcSet={tripPhotoSet(t.slug)}
                 sizes="(min-width: 640px) 240px, 100vw"
