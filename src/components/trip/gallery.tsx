@@ -14,6 +14,8 @@ export interface GallerySlide {
   kind: "trip" | "place" | "dish";
   name: string;
   caption: string;
+  /** A line under the caption, e.g. what a sight is. */
+  note?: string;
   src?: string;
 }
 
@@ -33,7 +35,7 @@ export function GalleryOpen({ index, label }: { index: number; label: string }) 
 }
 
 function Slide({ slide, city }: { slide: GallerySlide; city: string }) {
-  if (slide.kind === "trip" && slide.src) return <img src={slide.src} alt={slide.caption} className="absolute inset-0 size-full object-cover" />;
+  if (slide.kind === "trip" && slide.src) return <img src={slide.src} alt={slide.caption} referrerPolicy="no-referrer" className="absolute inset-0 size-full object-cover" />;
   return <GuidePhoto name={slide.name} city={city} kind={slide.kind === "dish" ? "dish" : "place"} />;
 }
 
@@ -123,6 +125,7 @@ export function TripGallery({ slides, city, title }: { slides: GallerySlide[]; c
                       {open + 1} / {slides.length}
                     </p>
                     <p className="display mt-0.5 truncate text-lg sm:text-xl">{current.caption}</p>
+                    {current.note && <p className="mt-0.5 line-clamp-2 text-sm text-paper/65">{current.note}</p>}
                   </div>
                   <button type="button" onClick={() => setOpen(null)} aria-label="Close photos" className="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 ring-1 ring-white/15 transition-colors hover:bg-white hover:text-ink">
                     <X className="size-5" />

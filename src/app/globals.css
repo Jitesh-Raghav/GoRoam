@@ -406,29 +406,42 @@ html { scroll-padding-top: 5.5rem; }
   .hero-rise { animation: none; }
 }
 
-/* Trip hero photo: a slow drift so a still photo feels alive. */
-.hero-kenburns {
-  transform-origin: 60% 40%;
-  animation: hero-kenburns 28s ease-in-out infinite alternate;
-  will-change: transform;
+/* A hero photo with some life (HeroPhoto's `drift`): it settles in from a slight zoom on load,
+   then sinks a little as the page scrolls past, slower than the page (a parallax). Scaled from
+   its bottom edge, so the extra photo is all above the frame and the sinking never shows an
+   edge. Individual transform properties, so the two animations don't fight; on the compositor. */
+.hero-drift {
+  transform-origin: 50% 100%;
+  scale: 1.1;
 }
-@keyframes hero-kenburns {
+@keyframes hero-settle {
   from {
-    transform: scale(1.03) translate3d(0, 0, 0);
-  }
-  to {
-    transform: scale(1.13) translate3d(-1.5%, -1%, 0);
+    scale: 1.16;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .hero-kenburns {
-    animation: none;
+@keyframes hero-sink {
+  to {
+    translate: 0 8%;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-drift {
+    animation: hero-settle 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @supports (animation-timeline: scroll()) {
+    .hero-drift {
+      animation:
+        hero-settle 2.4s cubic-bezier(0.16, 1, 0.3, 1) both,
+        hero-sink linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0px 90vh;
+    }
   }
 }
 @media print {
-  .hero-kenburns {
+  .hero-drift {
     animation: none;
-    transform: none;
+    scale: none;
   }
 }
 
@@ -785,3 +798,76 @@ html { scroll-padding-top: 5.5rem; }
 }
 @keyframes arrival-drift { from { transform: translate(-14px, -6px); } to { transform: translate(10px, 6px); } }
 @keyframes lang-wave { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* ------------------------------------------------------------------ */
+/* Adventure pages                                                     */
+/* ------------------------------------------------------------------ */
+/* All on scroll timelines, so they run on the compositor with no script; without scroll
+   timelines, or for anyone who prefers reduced motion, everything simply shows finished. */
+@keyframes meter-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes route-draw {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes dot-pop {
+  0% {
+    scale: 0.3;
+    opacity: 0;
+  }
+  60% {
+    scale: 1.15;
+    opacity: 1;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+@keyframes parallax-drift {
+  from {
+    translate: 0 -8%;
+  }
+  to {
+    translate: 0 8%;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* A meter fills while its tile scrolls in, and is full once the whole tile is on screen,
+       so a part-filled bar is never there to be read as a value. */
+    .meters {
+      view-timeline: --meters block;
+    }
+    .meter-fill {
+      transform-origin: left;
+      animation: meter-fill linear both;
+      animation-timeline: --meters;
+      animation-range: entry 0% entry 100%;
+    }
+    /* The route's line (a segment per gap between stops) reaches 60% of the way down the screen as you read; each stop pops as it arrives. */
+    .route-draw {
+      transform-origin: top;
+      animation: route-draw linear both;
+      animation-timeline: view();
+      animation-range: cover 40vh cover calc(100% - 60vh);
+    }
+    .dot-pop {
+      animation: dot-pop linear both;
+      animation-timeline: view();
+      animation-range: cover 40vh cover calc(40vh + 90px);
+    }
+    /* The photo break's picture drifts behind its frame (the frame clips, so the timeline is the frame's). */
+    .photo-band {
+      view-timeline: --band block;
+    }
+    .parallax-drift {
+      animation: parallax-drift linear both;
+      animation-timeline: --band;
+    }
+  }
+}

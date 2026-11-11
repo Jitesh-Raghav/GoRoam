@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils";
  * A real photo of the destination laid over the illustrated scene. The scene
  * shows while it loads (and stays if there's no photo); the photo fades in, and
  * `onShown` fires once it fully covers what's underneath (so that can unmount).
- * `drift` adds a slow Ken Burns move; it's off by default (it costs a repaint of
- * a large image on every frame).
+ * `drift` lets the photo settle in from a slight zoom, then sink a little as the page
+ * scrolls past (`.hero-drift`, CSS on the compositor; off with reduced motion).
  */
 export function HeroPhoto({
   photo,
@@ -76,7 +76,7 @@ export function HeroPhoto({
             setState({ url, ok: true });
           }}
           onError={() => setState({ url, ok: false })}
-          className={cn("absolute inset-0 size-full object-cover", drift && "hero-kenburns")}
+          className={cn("absolute inset-0 size-full object-cover", drift && "hero-drift")}
         />
         {/* Photos are brighter than the illustrations: a touch more shade keeps the title legible. */}
         <div className="absolute inset-0 bg-ink/15" />
