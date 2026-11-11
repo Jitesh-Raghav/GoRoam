@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { AdventureCard, adventurePhoto, adventurePhotoSet } from "@/components/seo/adventure-card";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
+import { KindRow } from "@/components/seo/kind-row";
 import { TripFilter, type TripFilterOption } from "@/components/seo/trip-filter";
 import { PageCover } from "@/components/site/page-cover";
 import { PillLink } from "@/components/site/pill";
@@ -33,6 +34,12 @@ const BY_EASY = rank((a) => DIFFICULTIES.indexOf(a.difficulty) * 1000 + a.days[0
 const BY_DAYS = rank((a) => a.days[0] * 1000 + a.days[1]);
 
 const COVER = ["ha-giang-loop", "hitchhike-kyrgyzstan", "annapurna-circuit"].map((s) => adventureBySlug(s)!);
+
+// Each kind's tile shows its most popular guide, passing over the three on the cover.
+const KINDS = usedKinds().map(({ kind, count }) => {
+  const of = POPULAR.filter((a) => a.kind === kind);
+  return { kind, count, a: of.find((a) => !COVER.includes(a)) ?? of[0] };
+});
 
 const LEVELS: Record<Adventure["difficulty"], string> = {
   Easy: "No experience needed: transport and beds are easy to arrange and nothing is technical.",
@@ -172,6 +179,8 @@ export default function AdventuresPage() {
             </ul>
           </section>
         )}
+
+        <KindRow kinds={KINDS} className="mt-24" />
 
         <section id="all" aria-labelledby="all-h" className="mt-24 scroll-mt-4">
           <SectionHead id="all-h" kicker="Every adventure" title="Find your kind of adventure" intro="Narrow by region, kind of trip or the month you can go, then sort by cost, difficulty or length." className="mb-6" />
