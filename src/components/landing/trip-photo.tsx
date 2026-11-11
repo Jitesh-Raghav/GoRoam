@@ -41,6 +41,7 @@ export function TripPhoto({ slug }: { slug: string }) {
           alt=""
           loading="lazy"
           decoding="async"
+          referrerPolicy="no-referrer"
           onLoad={() => setLoaded(true)}
           onError={() => {
             setLoaded(false);

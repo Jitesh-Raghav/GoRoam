@@ -13,6 +13,19 @@ const SORTS: TripSortOption[] = [
   { id: "days", label: "Shortest" },
 ];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const PICK = "goroam:trip-filter";
+
+/**
+ * A link to the grid (`#all`) that also picks one of its filters, e.g. a "Trekking" tile above
+ * it. Without script it's still the link, to the whole grid.
+ */
+export function FilterLink({ filter, href = "#all", className, children }: { filter: string; href?: string; className?: string; children: ReactNode }) {
+  return (
+    <a href={href} className={className} onClick={() => window.dispatchEvent(new CustomEvent(PICK, { detail: filter }))}>
+      {children}
+    </a>
+  );
+}
 
 /**
  * A sticky bar that narrows and sorts a server-rendered grid of cards (trips, adventures):
@@ -46,7 +59,30 @@ export function TripFilter({
   const [sort, setSort] = useState<TripSort>(sorts[0]?.id ?? "popular");
   const [count, setCount] = useState<number | null>(null);
   const box = useRef<HTMLDivElement>(null);
+  const chips = useRef<HTMLDivElement>(null);
   const safe = (s: string) => s.replace(/[^a-z0-9-]/g, "");
+
+  // Picked from a FilterLink elsewhere on the page: show all of that kind, whatever the month,
+  // and (once the chips have re-rendered) bring its chip into view along the row.
+  const picked = useRef(false);
+  useEffect(() => {
+    const onPick = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (!options.some((o) => o.id === id)) return;
+      picked.current = true;
+      setFilter(id);
+      setMonth(0);
+    };
+    window.addEventListener(PICK, onPick);
+    return () => window.removeEventListener(PICK, onPick);
+  }, [options]);
+  useEffect(() => {
+    if (!picked.current) return;
+    picked.current = false;
+    const row = chips.current;
+    const on = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (row && on) row.scrollTo({ left: on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2 });
+  }, [filter]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -69,7 +105,7 @@ export function TripFilter({
   return (
     <div ref={box}>
       <div className="sticky top-0 z-30 -mx-4 border-b border-line bg-paper/[0.97] px-4 pb-3 pt-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
-        <div role="group" aria-label={label} className={cn("no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1", wrap && "lg:flex-wrap lg:gap-y-1.5 lg:overflow-visible")}>
+        <div ref={chips} role="group" aria-label={label} className={cn("no-scrollbar relative -mx-1 flex gap-1 overflow-x-auto px-1", wrap && "lg:flex-wrap lg:gap-y-1.5 lg:overflow-visible")}>
           {options.map((o) => (
             <button key={o.id} type="button" aria-pressed={filter === o.id} onClick={() => setFilter(o.id)} className={chip(filter === o.id)}>
               {o.label}

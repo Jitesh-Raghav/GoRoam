@@ -96,6 +96,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+// Image errors don't bubble, so listen in the capture phase; only our photo images opt in.
+const HIDE_BROKEN_PHOTOS = `document.addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&t.hasAttribute("data-photo"))t.style.visibility="hidden"},true);`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -106,6 +109,11 @@ export default function RootLayout({
   preconnect("https://upload.wikimedia.org");
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* A photo that fails (a host down, a link gone stale) hides itself, so its card shows
+            the quiet placeholder instead of a broken-image icon. Runs before any image loads. */}
+        <script dangerouslySetInnerHTML={{ __html: HIDE_BROKEN_PHOTOS }} />
+      </head>
       <body
         className={`${display.variable} ${sans.variable} ${mono.variable} font-sans antialiased`}
       >

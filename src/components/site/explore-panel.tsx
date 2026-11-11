@@ -96,7 +96,7 @@ export function ExplorePanel() {
           <div key={c.href} className="min-w-0">
             <QuietLink href={c.href} className="group block outline-none">
               <span className="relative block aspect-[16/9] overflow-hidden rounded-[1.1rem] bg-paper-2 ring-offset-2 ring-offset-paper group-focus-visible:ring-2 group-focus-visible:ring-brand">
-                <img src={c.photo} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]" />
+                <img data-photo="" referrerPolicy="no-referrer" src={c.photo} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]" />
               </span>
               <span className="mt-3.5 flex items-baseline justify-between gap-3">
                 <span className="display text-[1.25rem] leading-tight text-ink transition-colors group-hover:text-brand">{c.title}</span>

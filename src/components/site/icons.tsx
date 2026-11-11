@@ -25,8 +25,8 @@ const escapeText = (t: string) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<
  * scripts/build-icons.mjs). Same markup as Phosphor's: a 256-unit viewBox, filled with
  * currentColor, the duotone layer at opacity 0.2 (tinted by `.gr-icon` in globals.css).
  */
-function make(icon: string, weight: Weight, name: string, mark = false): LucideIcon {
-  const paths = ICON_PATHS[`${icon}:${weight}`] ?? "";
+function make(icon: string, weight: Weight, name: string, mark = false, from: Record<string, string> = ICON_PATHS): LucideIcon {
+  const paths = from[`${icon}:${weight}`] ?? "";
   function GrIcon({ className, strokeWidth: _strokeWidth, size = 24, color = "currentColor", mirrored = false, alt, weight: _weight, ...rest }: Props) {
     void _strokeWidth;
     void _weight;
@@ -48,6 +48,15 @@ function make(icon: string, weight: Weight, name: string, mark = false): LucideI
   GrIcon.displayName = name;
   return GrIcon;
 }
+
+/**
+ * A maker for icons whose paths live in a generated file of their own, next to the only code
+ * that draws them (adventure-kind.tsx), so they stay out of the set every page loads.
+ */
+export const iconMaker =
+  (from: Record<string, string>) =>
+  (icon: string, weight: Weight, name: string, mark = false) =>
+    make(icon, weight, name, mark, from);
 
 export const AlertCircle = make("WarningCircle", "duotone", "AlertCircle");
 export const ArrowDownUp = make("ArrowsDownUp", "duotone", "ArrowDownUp");
@@ -196,6 +205,7 @@ export const TriangleAlert = make("Warning", "duotone", "TriangleAlert");
 export const Volume2 = make("SpeakerHigh", "duotone", "Volume2");
 export const Wand2 = make("MagicWand", "duotone", "Wand2");
 export const Waves = make("Waves", "duotone", "Waves");
+// Kinds of adventure, and the adventure pages' sections.
 export const Wifi = make("WifiHigh", "duotone", "Wifi");
 export const Send = make("PaperPlaneTilt", "duotone", "Send");
 export const Lock = make("LockSimple", "duotone", "Lock");

@@ -105,7 +105,7 @@ export function OutOfCredits({ destination, days, trip, onClose }: { destination
             <div className="relative h-28 overflow-hidden rounded-[22px] sm:h-36 lg:h-56">
               <Scene id={scene} intro />
               {photo?.url && (
-                <img src={photo.url} alt="" decoding="async" onLoad={() => setLoaded(true)} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-1000", loaded ? "opacity-100" : "opacity-0")} />
+                <img src={photo.url} alt="" decoding="async" referrerPolicy="no-referrer" onLoad={() => setLoaded(true)} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-1000", loaded ? "opacity-100" : "opacity-0")} />
               )}
               <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ink/75 px-3 py-1.5 text-[11px] font-medium text-paper ring-1 ring-inset ring-paper/20">
                 <span className="size-1.5 rounded-full bg-brand-2" /> {days} {days === 1 ? "day" : "days"} · ready to plan

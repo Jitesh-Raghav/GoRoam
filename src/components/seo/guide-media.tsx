@@ -50,6 +50,7 @@ export function GuideCover({
   src,
   alt,
   priority = false,
+  drift = false,
   className,
   children,
 }: {
@@ -63,6 +64,8 @@ export function GuideCover({
   alt?: string;
   /** The page's main image: loads first instead of lazily. */
   priority?: boolean;
+  /** Settle in from a slight zoom, then sink a little as the page scrolls (see HeroPhoto). */
+  drift?: boolean;
   /** About how wide it's shown, so Unsplash can send a smaller file. */
   width?: number;
   shade?: "bottom" | "left" | "soft" | "none";
@@ -74,7 +77,7 @@ export function GuideCover({
   const looked = usePlacePhoto(destination, !src || credit);
   const photo = src ? { ...looked, url: src, title: alt ?? looked?.title ?? destination } : sizedPhoto(looked, width);
   return (
-    <PhotoPanel photo={photo} scene={SCENE[landscape]} lazy={!priority} shade={shade} credit={credit} creditClassName="bottom-auto top-3" className={className}>
+    <PhotoPanel photo={photo} scene={SCENE[landscape]} lazy={!priority} drift={drift} shade={shade} credit={credit} creditClassName="bottom-auto top-3" className={className}>
       {children}
     </PhotoPanel>
   );

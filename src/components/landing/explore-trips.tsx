@@ -24,7 +24,7 @@ export interface ExploreGroup {
 function Thumb({ link }: { link: ExploreLink }) {
   const [broken, setBroken] = useState(false);
   if (link.photo && !broken) {
-    return <img src={link.photo} alt="" loading="lazy" decoding="async" onError={() => setBroken(true)} className="size-7 shrink-0 rounded-full object-cover ring-2 ring-white" />;
+    return <img src={link.photo} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" data-photo="" onError={() => setBroken(true)} className="size-7 shrink-0 rounded-full object-cover ring-2 ring-white" />;
   }
   const Icon = link.icon === "month" ? CalendarDays : MapPin;
   return (

@@ -81,6 +81,8 @@ export function PageCover({
             >
               <Mountain className="absolute left-1/2 top-1/2 -z-10 size-8 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
               <img
+                data-photo=""
+                referrerPolicy="no-referrer"
                 src={p.src}
                 srcSet={p.srcSet}
                 sizes={i === 0 ? "(min-width: 1024px) 40vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"}

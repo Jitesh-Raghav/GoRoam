@@ -3,15 +3,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { ChapterNav, type Chapter } from "@/components/itinerary/chapter-nav";
-import { AdventureCard } from "@/components/seo/adventure-card";
+import { AdventureCard, adventurePhoto } from "@/components/seo/adventure-card";
+import { Glance, HeroSights, PackingTiles, PhotoBreak, RouteLine, SightsMosaic } from "@/components/seo/adventure-parts";
 import { CreateYoursBar } from "@/components/seo/create-yours";
 import { GuideCover } from "@/components/seo/guide-media";
 import { FaqList, PublicShell } from "@/components/seo/public-shell";
 import { FactStrip } from "@/components/site/fact-strip";
-import { AlertCircle, CalendarDays, Check, Clock3, Coins, Compass, Dumbbell, MapPin } from "@/components/site/icons";
+import { AlertCircle, CalendarDays, Clock3, Coins, Compass, Dumbbell, MapPin } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill";
 import { SectionHead } from "@/components/site/section-head";
+import { TripGallery, type GallerySlide } from "@/components/trip/gallery";
 import { ShareTrip } from "@/components/trip/share-trip";
+import { adventureSights } from "@/lib/adventure-sights";
 import { ADVENTURES, KIND_LABEL, adventureBySlug, adventureFaqs, adventureName, daysText, monthsLong, monthsText, relatedAdventures, usd, type Adventure, type AdventureKind } from "@/lib/adventures";
 import { COMPANY } from "@/lib/company";
 import type { DestinationGuide } from "@/lib/destination-guides";
@@ -66,7 +69,7 @@ const stepName = (s: string) => {
 function Section({ id, kicker, title, intro, children }: { id: string; kicker: string; title: string; intro?: ReactNode; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-28" aria-labelledby={`${id}-h`}>
-      <SectionHead id={`${id}-h`} kicker={kicker} title={title} intro={intro} />
+      <SectionHead id={`${id}-h`} kicker={kicker} title={title} intro={intro} className="reveal" />
       <div className="mt-9">{children}</div>
     </section>
   );
@@ -96,9 +99,17 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
   const inSeason = a.months.includes(month);
   const plan = plannerHref({ destination: a.place, days: Math.min(a.days[0], 14), interests: [], diet: [], notes: `${a.title}: ${a.tagline}` });
   const onGround: [number, number] = [a.budget[0] * a.days[0], a.budget[1] * a.days[1]];
+  const sights = adventureSights(a);
+
+  // Every photo on the page, in order, for the full-screen viewer: the adventure's own, then its sights.
+  const slides: GallerySlide[] = [
+    { kind: "trip", name: a.title, caption: `${a.title}, ${a.country}`, src: `/adventures/${a.slug}/photo?w=1600&blank=1` },
+    ...sights.map((x, i) => ({ kind: "trip" as const, name: x.name, caption: x.name, note: x.note, src: adventurePhoto(a.slug, 1600, i) })),
+  ];
 
   const chapters: Chapter[] = [
     { id: "why", label: "Why go" },
+    ...(sights.length ? [{ id: "sights", label: "What you'll see" }] : []),
     { id: "how", label: "How to do it" },
     { id: "route", label: "The route" },
     { id: "costs", label: "Costs" },
@@ -169,7 +180,7 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
     >
       <JsonLd data={data} />
       <div className="container-x pb-24 pt-4">
-        <section aria-label={`${a.title} at a glance`}>
+        <section aria-label={`${a.title} at a glance`} className="grid gap-3 lg:h-[min(80svh,46rem)] lg:grid-cols-[minmax(0,1fr)_19rem]">
           <GuideCover
             destination={a.place}
             landscape={SCENE[a.kind]}
@@ -177,9 +188,13 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
             src={`/adventures/${a.slug}/photo?w=2000`}
             alt={`${a.title}, ${a.country}`}
             priority
-            className="min-h-[32rem] rounded-panel sm:min-h-[34rem] lg:h-[min(76svh,42rem)] lg:min-h-0"
+            drift
+            className="min-h-[32rem] rounded-panel sm:min-h-[34rem] lg:h-full lg:min-h-0"
           >
             <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/45 to-transparent" />
+            <div className="absolute left-5 top-5 z-[2] sm:left-8 sm:top-8">
+              <TripGallery slides={slides} city={a.place} title={a.title} />
+            </div>
             <header className="absolute inset-x-0 bottom-0 p-6 pb-8 text-paper sm:p-10 sm:pb-12">
               <div className="mb-5 flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/35 px-3 py-1.5 text-xs text-paper ring-1 ring-white/25">
@@ -195,10 +210,11 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
               <p className="eyebrow text-paper/70">
                 {KIND_LABEL[a.kind]} · {daysText(a)}
               </p>
-              <h1 className="display mt-4 max-w-4xl text-[clamp(2.5rem,6.4vw,5rem)] leading-[0.96] tracking-[-0.03em]">{a.title}</h1>
+              <h1 className="display mt-4 max-w-3xl text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.96] tracking-[-0.03em]">{a.title}</h1>
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-paper/85 sm:text-xl">{a.tagline}</p>
             </header>
           </GuideCover>
+          <HeroSights a={a} sights={sights} />
         </section>
 
         <FactStrip
@@ -233,6 +249,9 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
             <section id="why" className="scroll-mt-28" aria-label="Why go">
               <p className="eyebrow text-brand">Why go</p>
               <p className="display mt-5 max-w-3xl text-[clamp(1.45rem,2.6vw,1.95rem)] leading-[1.3] tracking-[-0.01em] text-ink">{a.why}</p>
+              <div className="mt-10">
+                <Glance a={a} />
+              </div>
               <div className="mt-10 max-w-3xl">
                 <ol aria-label={`Best months: ${monthsLong(a.months)}`} className="grid grid-cols-12 gap-1">
                   {MONTHS.map((m, i) => {
@@ -264,10 +283,16 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
               </div>
             </section>
 
+            {sights.length > 0 && (
+              <Section id="sights" kicker="What you'll see" title="Highlights along the way" intro="The places that make the trip. Open any photo to see it full screen.">
+                <SightsMosaic a={a} sights={sights} />
+              </Section>
+            )}
+
             <Section id="how" kicker="Step by step" title="How to do it">
               <ol className="divide-y divide-line border-y border-line">
                 {a.steps.map((s, i) => (
-                  <li key={i} className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-4 py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)]">
+                  <li key={i} className="reveal grid grid-cols-[2.75rem_minmax(0,1fr)] gap-4 py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)]">
                     <span className="display text-2xl leading-none tabular-nums text-brand">{String(i + 1).padStart(2, "0")}</span>
                     <p className="leading-relaxed text-ink">{s}</p>
                   </li>
@@ -276,16 +301,10 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
             </Section>
 
             <Section id="route" kicker="The route" title="Stage by stage" intro={`Plan on ${daysText(a)}. The usual way it goes:`}>
-              <ol className="relative ml-1.5 border-l border-line">
-                {a.route.map(([stage, detail], i) => (
-                  <li key={stage} className={cn("relative pl-8", i < a.route.length - 1 && "pb-9")}>
-                    <span aria-hidden className={cn("absolute -left-[7px] top-1.5 size-3.5 rounded-full ring-4 ring-paper", i === 0 || i === a.route.length - 1 ? "bg-brand" : "bg-ink")} />
-                    <h3 className="text-lg font-medium leading-snug text-ink">{stage}</h3>
-                    <p className="mt-1.5 max-w-2xl leading-relaxed text-stone">{detail}</p>
-                  </li>
-                ))}
-              </ol>
+              <RouteLine route={a.route} />
             </Section>
+
+            <PhotoBreak a={a} sights={sights} />
 
             <Section
               id="costs"
@@ -335,14 +354,7 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
             </Section>
 
             <Section id="pack" kicker="Packing" title="What to bring">
-              <ul className="grid gap-x-10 gap-y-3.5 sm:grid-cols-2">
-                {a.gear.map((g) => (
-                  <li key={g} className="flex gap-3 leading-relaxed text-ink">
-                    <Check className="mt-1 size-4 shrink-0 text-brand" />
-                    {g}
-                  </li>
-                ))}
-              </ul>
+              <PackingTiles gear={a.gear} />
             </Section>
 
             <Section id="safety" kicker="Safety" title="Staying safe">
@@ -381,7 +393,7 @@ export default async function AdventurePage({ params }: { params: Promise<{ slug
             <Section id="tips" kicker="From the road" title="Tips worth knowing">
               <ol className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {a.tips.map((tip, i) => (
-                  <li key={tip} className="border-t border-line pt-4">
+                  <li key={tip} className="reveal border-t border-line pt-4">
                     <span className="font-mono text-xs text-stone">{String(i + 1).padStart(2, "0")}</span>
                     <p className="mt-2 leading-relaxed text-ink">{tip}</p>
                   </li>

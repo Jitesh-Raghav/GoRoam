@@ -58,7 +58,7 @@ export async function StartTrips() {
         >
           {picks.map((t) => (
             <li key={t.slug} className={ROW_ITEM}>
-              <TripCard t={t} sizes={ROW_SIZES} />
+              <TripCard t={t} tall sizes={ROW_SIZES} />
             </li>
           ))}
         </ScrollRow>
@@ -69,7 +69,7 @@ export async function StartTrips() {
         >
           {ready.map((pkg, i) => (
             <li key={pkg.slug} className={ROW_ITEM}>
-              <PackageCard pkg={pkg} index={i} />
+              <PackageCard pkg={pkg} index={i} tall />
             </li>
           ))}
         </ScrollRow>
@@ -88,7 +88,7 @@ export async function StartTrips() {
         >
           {POPULAR_ADVENTURES.slice(0, 10).map((a) => (
             <li key={a.slug} className={ROW_ITEM}>
-              <AdventureCard a={a} sizes={ROW_SIZES} />
+              <AdventureCard a={a} tall sizes={ROW_SIZES} />
             </li>
           ))}
         </ScrollRow>
@@ -99,7 +99,7 @@ export async function StartTrips() {
         >
           {DESTINATION_GUIDES.map((g) => (
             <li key={g.slug} className={ROW_ITEM}>
-              <GuideCard g={g} hook={false} sizes={ROW_SIZES} />
+              <GuideCard g={g} tall hook={false} sizes={ROW_SIZES} />
             </li>
           ))}
         </ScrollRow>

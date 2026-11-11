@@ -5,7 +5,8 @@
 import { useEffect, useRef, useState } from "react";
 import { LazyScene } from "@/components/scenes/lazy-scene";
 import { SCENES } from "@/components/scenes/scenes";
-import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
+import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE, PHOTO_PRICE, PHOTO_PRICE_VALUE, PHOTO_TAG, cardAspect } from "@/components/site/card-styles";
+import { CalendarDays } from "@/components/site/icons";
 import { QuietLink } from "@/components/site/quiet-link";
 import { track } from "@/lib/analytics";
 import { usePlacePhoto } from "@/lib/brand-photos";
@@ -25,6 +26,7 @@ export function PackageCard({
   index,
   href = `/itineraries/${pkg.slug}`,
   hook = false,
+  tall = false,
   className,
 }: {
   pkg: PackageCardData;
@@ -33,6 +35,8 @@ export function PackageCard({
   href?: string;
   /** Add the trip's one-line tagline under the facts. */
   hook?: boolean;
+  /** A tall 4:5 photo, for the homepage's swipe rows. */
+  tall?: boolean;
   className?: string;
 }) {
   const { fmt: money } = useMoney();
@@ -74,7 +78,7 @@ export function PackageCard({
 
   return (
     <QuietLink ref={ref} href={href} className={cn(CARD_LINK, className)}>
-      <div className={cn(CARD_PHOTO, "aspect-[4/3]")}>
+      <div className={cn(CARD_PHOTO, cardAspect(tall))}>
         {!covered && <LazyScene id={scene} tint={SCENES[scene].tint} paused />}
         {src && (
           <img
@@ -92,14 +96,17 @@ export function PackageCard({
             className={cn(CARD_IMG, "transition-[opacity,transform]", shown ? "opacity-100" : "opacity-0")}
           />
         )}
+        <span className={PHOTO_TAG}>
+          <CalendarDays className="size-3.5 text-brand" /> {pkg.days} days
+        </span>
+        <span className={PHOTO_PRICE}>
+          <span className={PHOTO_PRICE_VALUE}>{money(Math.round(pkg.budget / 2))}</span>per person
+        </span>
       </div>
       <div className="mt-3.5 px-0.5">
         <h3 className={CARD_TITLE}>{pkg.title}</h3>
         <p className={cn(CARD_META, "mt-1")}>
-          {pkg.country} · Best {pkg.bestTime}
-        </p>
-        <p className={cn(CARD_META, "mt-0.5")}>
-          From <span className="font-medium tabular-nums text-ink">{money(Math.round(pkg.budget / 2))}</span> per person
+          {pkg.country} · Best {pkg.bestTime} · {pkg.stops}+ stops
         </p>
         {hook && <p className={cn(CARD_HOOK, "mt-1.5")}>{pkg.tagline}</p>}
       </div>

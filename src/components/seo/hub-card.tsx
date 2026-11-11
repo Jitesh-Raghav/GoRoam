@@ -15,6 +15,8 @@ export function HubCard({ href, trip, title, meta, hook, className }: { href: st
       <div className={cn(CARD_PHOTO, "aspect-[4/3]")}>
         <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
         <img
+          data-photo=""
+          referrerPolicy="no-referrer"
           src={`/trips/${trip}/photo?w=720&blank=1`}
           srcSet={tripPhotoSet(trip)}
           sizes="(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 560px) 50vw, 100vw"
