@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- our own photo route, which redirects to a CDN image already sized by ?w= */
-import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE } from "@/components/site/card-styles";
-import { Mountain } from "@/components/site/icons";
+import { CARD_HOOK, CARD_IMG, CARD_LINK, CARD_META, CARD_PHOTO, CARD_TITLE, PHOTO_PRICE, PHOTO_PRICE_VALUE, PHOTO_TAG, cardAspect } from "@/components/site/card-styles";
+import { MapPin, Mountain } from "@/components/site/icons";
 import { QuietLink } from "@/components/site/quiet-link";
 import type { DestinationGuide } from "@/lib/destination-guides";
 import { cn } from "@/lib/utils";
@@ -24,6 +24,7 @@ export const bestMonths = (g: DestinationGuide) =>
 export function GuideCard({
   g,
   big = false,
+  tall = false,
   hook = true,
   sizes = "(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 560px) 50vw, 100vw",
   className,
@@ -31,6 +32,8 @@ export function GuideCard({
 }: {
   g: DestinationGuide;
   big?: boolean;
+  /** A tall 4:5 photo, for the homepage's swipe rows. */
+  tall?: boolean;
   hook?: boolean;
   sizes?: string;
   className?: string;
@@ -38,7 +41,7 @@ export function GuideCard({
 }) {
   return (
     <QuietLink href={`/destinations/${g.slug}`} className={cn(CARD_LINK, className)}>
-      <div className={cn(CARD_PHOTO, big ? "aspect-[16/10]" : "aspect-[4/3]", photoClassName)}>
+      <div className={cn(CARD_PHOTO, big ? "aspect-[16/10]" : cardAspect(tall), photoClassName)}>
         <Mountain className="absolute left-1/2 top-1/2 -z-10 size-7 -translate-x-1/2 -translate-y-1/2 text-stone-2/70" />
         <img
           data-photo=""
@@ -48,16 +51,22 @@ export function GuideCard({
           sizes={big ? "(min-width: 1024px) 60vw, 100vw" : sizes}
           alt=""
           width={big ? 1080 : 720}
-          height={big ? 675 : 540}
+          height={big ? 675 : tall ? 900 : 540}
           loading="lazy"
           decoding="async"
           className={CARD_IMG}
         />
+        <span className={PHOTO_TAG}>
+          <MapPin className="size-3.5 text-brand" /> {g.state}
+        </span>
+        <span className={PHOTO_PRICE}>
+          <span className={PHOTO_PRICE_VALUE}>Guide</span>· best {bestMonths(g)}
+        </span>
       </div>
       <div className={cn("px-0.5", big ? "mt-4" : "mt-3.5")}>
         <span className={cn(CARD_TITLE, "block", big && "lg:text-[1.9rem]")}>{g.name}</span>
         <span className={cn(CARD_META, "mt-1 block")}>
-          {g.state} · Best {bestMonths(g)}
+          {g.state}, India · {g.attractions.length} sights, stays and budgets
         </span>
         {hook && <span className={cn(CARD_HOOK, "mt-1.5", big ? "block max-w-xl" : "block")}>{g.tagline}</span>}
       </div>

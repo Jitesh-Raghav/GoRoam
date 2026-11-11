@@ -117,7 +117,7 @@ export default function TripsPage() {
         >
           {POPULAR_ADVENTURES.slice(0, 12).map((a) => (
             <li key={a.slug} className={ROW_ITEM}>
-              <AdventureCard a={a} sizes={ROW_SIZES} />
+              <AdventureCard a={a} tall sizes={ROW_SIZES} />
             </li>
           ))}
         </ScrollRow>

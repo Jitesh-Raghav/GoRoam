@@ -99,7 +99,7 @@ export default async function GalleryPage() {
         >
           {DESTINATION_GUIDES.map((g) => (
             <li key={g.slug} className={ROW_ITEM}>
-              <GuideCard g={g} hook={false} sizes={ROW_SIZES} />
+              <GuideCard g={g} tall hook={false} sizes={ROW_SIZES} />
             </li>
           ))}
         </ScrollRow>
