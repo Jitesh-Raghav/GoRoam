@@ -101,6 +101,7 @@ export function GeneratingOverlay({ destination, days, source, startDate, people
             src={photo.url}
             alt=""
             decoding="async"
+            referrerPolicy="no-referrer"
             onLoad={() => setLoaded(true)}
             className={cn("absolute inset-0 size-full object-cover transition-opacity duration-[1400ms]", loaded ? "opacity-100" : "opacity-0")}
           />

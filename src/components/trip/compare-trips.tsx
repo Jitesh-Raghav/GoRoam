@@ -47,7 +47,7 @@ export function CompareTrips({ rows }: { rows: CompareRow[] }) {
                 <th scope="row" className={cn("sticky left-0 z-10 px-4 py-4 font-normal sm:pl-0", r.current ? "bg-[#e9f1fd]" : "bg-paper")}>
                   {r.current ? (
                     <span className="flex items-center gap-3">
-                      <img src={`/trips/${r.slug}/photo?w=120`} alt="" loading="lazy" className="size-10 shrink-0 rounded-xl object-cover ring-2 ring-brand" />
+                      <img src={`/trips/${r.slug}/photo?w=120&blank=1`} alt="" loading="lazy" referrerPolicy="no-referrer" data-photo="" className="size-10 shrink-0 rounded-xl bg-paper-2 object-cover ring-2 ring-brand" />
                       <span>
                         <span className="block font-medium text-ink">{r.name}</span>
                         <span className="block text-xs text-brand">This trip</span>
@@ -55,7 +55,7 @@ export function CompareTrips({ rows }: { rows: CompareRow[] }) {
                     </span>
                   ) : (
                     <Link href={`/trips/${r.slug}`} className="group flex items-center gap-3">
-                      <img src={`/trips/${r.slug}/photo?w=120`} alt="" loading="lazy" className="size-10 shrink-0 rounded-xl object-cover" />
+                      <img src={`/trips/${r.slug}/photo?w=120&blank=1`} alt="" loading="lazy" referrerPolicy="no-referrer" data-photo="" className="size-10 shrink-0 rounded-xl bg-paper-2 object-cover" />
                       <span>
                         <span className="flex items-center gap-1 font-medium text-ink group-hover:text-brand">
                           {r.name} <ArrowUpRight className="size-3.5 opacity-50 transition-opacity group-hover:opacity-100" />
