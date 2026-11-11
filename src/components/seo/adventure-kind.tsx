@@ -1,7 +1,21 @@
-import { Bike, Cactus, Fire, Fish, Hiker, Horse, Jeep, Lifebuoy, Motorcycle, Mountain, Palmtree, Parachute, Sailboat, ThumbsUp, TrainFront, Waves, type LucideIcon } from "@/components/site/icons";
+import { KIND_ICON_PATHS } from "@/components/seo/kind-icon-paths";
+import { Bike, Motorcycle, Mountain, Palmtree, Sailboat, ThumbsUp, TrainFront, Waves, iconMaker, type LucideIcon } from "@/components/site/icons";
 import type { AdventureKind, Difficulty } from "@/lib/adventures";
 import { DIFFICULTIES } from "@/lib/adventures";
 import { cn } from "@/lib/utils";
+
+// The icons only adventure kinds use. Their paths are generated into kind-icon-paths.ts (run
+// `npm run icons` after adding a line), which only these server-rendered cards import, so
+// they stay off the icon set every page loads.
+const make = iconMaker(KIND_ICON_PATHS);
+const Cactus = make("Cactus", "duotone", "Cactus");
+const Fire = make("Fire", "duotone", "Fire");
+const Fish = make("Fish", "duotone", "Fish");
+const Hiker = make("PersonSimpleHike", "duotone", "Hiker");
+const Horse = make("Horse", "duotone", "Horse");
+const Jeep = make("Jeep", "duotone", "Jeep");
+const Lifebuoy = make("Lifebuoy", "duotone", "Lifebuoy");
+const Parachute = make("Parachute", "duotone", "Parachute");
 
 /** Each kind of adventure as an icon: a thumb for hitchhiking, a horse for horse treks… */
 export const KIND_ICON: Record<AdventureKind, LucideIcon> = {
